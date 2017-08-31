@@ -26,11 +26,14 @@ public class TestDateType{
 		int i = c + 2;
 		char c1 = (char)i;//强制转型
 		System.out.println(c1);
-		
+		/*
 		for(int j=0;j<26;j++){
 			char temp = (char)(c + j);
 			System.out.println(temp);
 		}
+		*/
+		
+		
 		
 	}
 }

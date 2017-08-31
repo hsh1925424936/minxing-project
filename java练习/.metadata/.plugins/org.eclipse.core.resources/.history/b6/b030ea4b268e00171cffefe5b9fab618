@@ -1,0 +1,14 @@
+package javaDemo;
+//²âÊÔifÓï¾ä
+public class TestIf {
+	public static void main(String[] args){
+		double a = Math.random();
+		int b = (int)a*100;
+		if(a<0.5){
+			System.out.println("a:" + a + "c:" + b );
+		}else{
+			System.out.println("a:" + a + "  " + "b:" + b);
+		}
+		
+	}
+}
