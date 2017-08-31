@@ -1,0 +1,4 @@
+1.tail -f catalina.out--------查看日志（在log目录下查看）
+2.grep import catalina.out-------在日志中搜索关键字import（在log目录下查看）
+3../shutdown.sh----------------停止进程（在bin文件夹下运行）
+4../startup.sh-----------------启动进程（在bin文件夹下运行）
