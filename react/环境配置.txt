@@ -1,0 +1,5 @@
+1.npm install create-react-app -g---全局安装
+1.create-react-app myapp-----建react项目
+cd myapp之后运行：
+2.npm start----运行项目
+3.
