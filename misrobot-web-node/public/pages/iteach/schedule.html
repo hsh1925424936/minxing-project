@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/iteach/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>课程表</title>
+		<style type="text/css">
+
+			.calendar { width:100%; overflow:hidden; position:relative; display: none; }
+			.calendar .last,.calendar .next { position:absolute; top:6px; text-decoration:none; }
+			.last{ left:0; color: #000;}
+			.next{ right:0; color: #000;}
+			.calendar .calendarTitle { font-weight: normal; font-size: 18px; height:30px; text-align:center; line-height:30px;}
+			.calendar ol { overflow:hidden;}
+			.calendar-ul { overflow:hidden; height: 70px;  position: relative; }
+			.calendar ul { overflow:hidden;  }
+			.calendar li { float:left; width:14.28%; height:40px; line-height:40px; text-align:center; border-bottom: 1px solid #ccc;}
+			.calendar ul li { height: 60px; }
+			.calendar ul li span { display: block; margin: 5px auto; width: 60%; text-align: center; border: 1px solid #fff;border-radius:50% ;}
+			.calendar ul li i { display: none; margin: 4px auto; width: 8px; height: 8px; background: #c5c5c5; border-radius: 50%;}
+			.calendar ul li.task i { display: block;}			
+			.week_end{ color:-red}
+			.past { color:#ccc}
+			.calendar .today span { background:#0496ca; color:#fff; }			
+			
+			.calendar li.selday span { border: 1px solid #0496ca; }
+			.calendar1 .today span {background:none; color: #0496ca;}
+			.calendar1 li { border-bottom: none;}
+			.calendar1 .calendar-ul { border-bottom: 1px solid #ccc;}
+			.calendar1 .last { left:0; padding: 1em;top: -8px;}
+			.calendar1 .next { right: 1em;}
+			
+			.calendar2 { position: absolute; left: 0; top: 55px; z-index: 2; background: #fff; }
+			.calendar1 { display: block;}			
+			
+			.outer { position: relative; height: 100%;}
+		
+			.schedule-list{
+				overflow: auto;
+			}
+			.scheduleOuter{
+				width:100%; border-bottom:1px solid #F4F4F4;
+			}
+			.timeBucket{
+				width:18.2%; height:14px; line-height:14px; text-align:center;
+				font-size:16px; float:left; margin-top:20px;
+			}
+			.scheduleCon{
+				width:81%; float:left;
+			}
+			.scheduleBox{
+				border-bottom:1px solid #F4F4F4; padding:10px;
+			}
+			.scheduleBox div{
+				width:50%; float:left; line-height:35px; font-size:12px;
+			}
+			.time{
+				
+			}
+			.address{
+				text-align:right;
+			}
+			.address span{
+				font-size:10px; color:#AEAEAE;
+			}
+			.lesson{
+				
+			}
+			.txt{
+				text-align:right; font-size:10px; color:#AEAEAE;
+			}
+			.grey{
+				color:#AEAEAE;
+			}
+
+			.pass,.pass .time,.pass .address,.pass .lesson{
+				color:#AEAEAE;
+			}
+			
+						
+		</style>
+		<script type="text/javascript" src="../../js/iteach/jquery.touchSwipe.min.js" ></script>
+	</head>
+	<body>
+		
+		<div class="box clearfix">
+			<div class="outer clearfix">
+				<div class="topOuter">
+					<div class="topTxt">
+						课程
+					</div>
+					<div class="topRight">
+						本周 
+					</div>
+				</div>
+
+				<div class="calendar calendar1" id="div2">
+					<!-- <span class="last">本周</span> -->
+					<!-- <span class="next"></span> -->
+					<!-- <h3 class="calendarTitle"></h3> -->
+					<ol>
+						<li>一</li>
+						<li>二</li>
+						<li>三</li>
+						<li>四</li>
+						<li>五</li>
+						<li class="week_end">六</li>
+						<li class="week_end">日</li>
+					</ol>
+					<div class="calendar-ul">
+						<ul class="clearfix"></ul>
+					</div>
+				</div>
+				
+			    <div class="calendar calendar2" id="div1">
+			    	
+					<!-- <span class="last"></span>
+					<span class="next"></span>
+					<h3 class="calendarTitle"></h3> -->
+					<ol>
+						<li>一</li>
+						<li>二</li>
+						<li>三</li>
+						<li>四</li>
+						<li>五</li>
+						<li class="week_end">六</li>
+						<li class="week_end">日</li>
+					</ol>
+					<ul>
+					
+					</ul>    	
+			    	
+			    </div>						
+				
+				
+				<div class="schedule-list"></div>
+
+				<div class="bottomOuter">
+					<a href="schedule.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/kebiaoon.png"/>
+						<span class="bottomItemOn">课表</span>
+					</a>
+
+					<a href="report.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/baogao.png"/>
+						<span>报告</span>
+					</a>
+
+					<a href="message-list.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/message.png"/>
+						<span>通知</span>
+					</a>
+
+					<a href="person-center.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/head2.png"/>
+						<span>我</span>
+					</a>
+				</div>
+
+			</div>			
+
+		</div>
+		
+		<script>
+		
+			window.onload = function () {
+				'use strict';
+				webcommon();				
+				$('.calendar1 .last,.topRight').click(function () {
+					window.location.href="schedule-week.html";
+				});
+				
+				
+				var oBox = document.getElementsByClassName('calendar1')[0];
+				var oBox2 = document.getElementsByClassName('calendar2')[0];
+				var nowDate = new Date();
+				var oWeekToday = nowDate.getDate();
+				var selDay = oWeekToday;
+				var oWeek = document.getElementById('div2');
+				var oWeekUl = oWeek.getElementsByTagName('ul')[0];
+				var oWeekiNow = 0;
+				var oWeekNum=0;
+				var iW=0;
+				writecalendar('change',nowDate.getFullYear(),nowDate.getMonth()-1,nowDate.getDate());
+
+				function writecalendar(type,year,month,date) {
+					oWeekUl.innerHTML = '';
+					oWeekUl.style.width = 'auto';
+					oWeekUl.style.position = 'relative';
+					
+					var oDate = new Date();
+					if (year) {
+						oDate.setFullYear(year);
+					}
+					if (month) {
+						oDate.setMonth(month);
+					}
+					if (date) {
+						oDate.setDate(date);
+						selDay = date;
+					}
+					
+					oDate.setMonth(nowDate.getMonth()+oWeekiNow);
+					oDate.setDate(1);
+					var day = oDate.getDay();
+					if (day ==0) { 
+						day = 7;
+					}
+					day--;
+					for (var i = 0; i<day; i++) { 
+						var oLi = document.createElement('li');
+						oWeekUl.appendChild(oLi);
+					}
+					oDate.setMonth(oDate.getMonth()+1);
+					oDate.setDate(0);
+					var allday = oDate.getDate();
+					for (var i = 0; i < allday; i++) { 
+						var oLi = document.createElement('li');
+						oLi.innerHTML ='<span>'+(i+1)+'</span><i></i>';
+						if (oWeekiNow < 0) { 
+							oLi.className = 'past';
+						} else if (oWeekiNow == 0) { 
+							if (i+1 < oWeekToday ) { 
+								oLi.className = 'past';
+							} else if ( i+1 == oWeekToday) { 
+								oLi.className = 'today';
+							}
+						}
+						if ((i+1)==date) {
+							oLi.className = 'selday';
+						}
+						oWeekUl.appendChild(oLi);							
+					}
+					iW = oWeekUl.children[oWeekUl.children.length-1].offsetWidth;
+					for (var i = 0; i <  oWeekUl.children.length; i++) { 
+						oWeekUl.children[i].style.width = iW+'px';
+						oWeekUl.children[i].style.float = 'left';							
+						if (i % 7 == 5 ||i % 7 ==6) {
+							if (oWeekUl.children[i].className == '') { 
+								oWeekUl.children[i].className = 'week_end';
+							} 
+						}
+					}					
+					$(oWeekUl).find('li span').css({'height':iW*0.6+'px','line-height':iW*0.6+'px'});							
+					oWeekUl.style.width = iW*oWeekUl.children.length+'px';
+					oWeekUl.style.position = 'absolute';
+					switch (type){
+						case 'prev':
+							oWeekNum = Math.ceil(oWeekUl.children.length/7)-1;
+							break;
+						case 'next':
+							oWeekNum = 0;
+							break;
+						case 'new':
+							oWeekNum = Math.ceil(oWeekToday/7);
+							break;
+						case 'change':
+							selDay = oWeekToday;
+							var count = 0;
+							for (var i = 0 ; i < oWeekUl.children.length;  i++) {
+								count++;
+								var _span = oWeekUl.children[i].getElementsByTagName('span');
+								if (_span.length>0&&parseInt(_span[0].innerHTML)>=date) {
+									break;
+								}
+							}
+							if (count%7>3) {
+								oWeekNum = Math.ceil(selDay/7)-1;
+							} else {
+								oWeekNum = Math.ceil(selDay/7);
+							}
+							if (oWeekUl.offsetWidth<=(iW*7)*oWeekNum) {
+								oWeekNum--;
+							}
+							oWeekNum = Math.ceil(count/7)-1;
+							break;
+					}
+					oWeekUl.style.left = -(iW*7)*oWeekNum+ 'px';						
+				};
+
+				$(oWeekUl).parent().swipe({
+					swipeLeft:function(event, direction, distance, duration, fingerCount) {
+						oWeekNum++;
+						if (oWeekNum>(Math.ceil(oWeekUl.children.length/7)-1)) {
+							oWeekiNow++;
+							writecalendar('next');
+							return false;
+						}
+						$(oWeekUl).stop().animate({'left':-(iW*7)*oWeekNum});
+					  },
+					swipeRight:function(event, direction, distance, duration, fingerCount) {
+						oWeekNum--;
+						if (oWeekNum<0) {
+							oWeekiNow--;
+							writecalendar('prev');
+							return false;
+						}
+						$(oWeekUl).stop().animate({'left':-(iW*7)*oWeekNum});
+					},
+				});
+				var arr = ['一','二','三','四','五','六','日'];
+				
+				function newcalendar(year,month,date) {
+					oUl.innerHTML = '';
+					oUl.style.height = 'auto';
+					var oDate = new Date();
+					if (year) {
+						oDate.setFullYear(year);
+					}
+					if (month) {
+						oDate.setMonth(month);
+					}					
+					oDate.setMonth(nowDate.getMonth()+oWeekiNow);
+					oTitle.innerHTML = '<span>'+oDate.getFullYear() + '</span>年 <span>' + (oDate.getMonth()+1) + '</span>月';
+					oLast.innerHTML = '< '+oDate.getMonth() + '月';
+					oNext.innerHTML = (oDate.getMonth()+2) + '月 >';
+					var today = oDate.getDate();
+					oDate.setDate(1);
+					var day = oDate.getDay();
+					if (day ==0) { 
+						day = 7;
+					}
+					day--;
+					for (var i = 0; i<day; i++) { 
+						var oLi = document.createElement('li');
+						oUl.appendChild(oLi);
+					}
+					oDate.setMonth(oDate.getMonth()+1);
+					oDate.setDate(0);
+					var allday = oDate.getDate();
+					for (var i = 0; i < allday; i++) { 
+						var oLi = document.createElement('li');
+						oLi.innerHTML ='<span>'+(i+1)+'</span><i></i>';
+						if (oWeekiNow < 0) { 
+							oLi.className = 'past';
+						} else if (oWeekiNow == 0) { 
+							if (i+1 < today ) { 
+								oLi.className = 'past';
+							} else if ( i+1 == today) { 
+								oLi.className = 'today';
+							}  
+						}
+						if ( (i+1) == date&&(month+1)==oTitle.getElementsByTagName('span')[1].innerHTML) {
+							oLi.className = 'selday';
+						}							
+						var oYear = oTitle.getElementsByTagName('span')[0].innerHTML;
+						var oMonth = oTitle.getElementsByTagName('span')[1].innerHTML;
+						oLi.setAttribute('date',oYear+'-'+oMonth+'-'+(i+1));
+						oUl.appendChild(oLi);
+					}
+					for (var i = 0; i <  oUl.children.length; i++) { 
+						if (i % 7 == 5 ||i % 7 ==6) {
+							if (oUl.children[i].className == '') { 
+								oUl.children[i].className = 'week_end';
+							} 
+						}
+					}	
+					$(oUl).find('li span').css({'height':iW*0.6+'px','line-height':iW*0.6+'px'});							
+					oUl.style.height = (oUl.offsetHeight-2)+'px';						
+				};
+				
+				var iH = $(window).height();
+				$('.schedule-list').css('height',iH-75-140-55+'px');
+				$('.calendar2').css('height',iH-55-55+'px');
+				var cDate = new Date();
+				getcoursetable(cDate.getDate());
+				
+				function getcoursetable(date) {
+					Api.R({
+						url: "/course/querycousreinfo",
+						isShade: 1,
+						json: {
+							"1": {
+								command: "course/querycousreinfo",
+								uid: getCookie('gy_u'),
+								sessionid: getCookie('gy_t'),
+								timetype: 1,
+								loginid: getCookie('gy_u')
+							}
+						},
+						fn: function(result){
+							if(result["1"].errcode){
+								uselayer(3, result["1"].errdesc);
+								return;
+							}
+
+							var _arr = result["1"].schedules;
+							$('.schedule-list').html('');
+							if(_arr.length < 1) {
+								return;
+							}
+							var arrTimes = {"0": {str:''}, "1": {str:""}, "2": {str:""} };
+							var _str = '';
+							for (var i = 0; i < _arr.length; i++) {
+								var isPass = ((new Date(_arr[i].endtime).getTime()) > (new Date().getTime())) ? true : false;
+								_str =
+										'<div class="scheduleBox clearfix '+(isPass?'pass':'')+'">'
+											+'<div class="time">'+_arr[i].starttime.substr(11,5)+'</div>'
+											+'<div class="address">'
+												+'<span>技能中心</span>&nbsp;'+_arr[i].roomnum+'室'
+											+'</div>'
+											+'<div class="lesson">'+_arr[i].coursename+'</div>'
+											+'<div class="txt">上课人数：'+ _arr[i].totalstudents +'人</div>'
+										+'</div>';
+
+								if(_arr[i].starttime.substr(11,2) <= 12) {
+									arrTimes["0"].str += _str;
+								}else if(_arr[i].starttime.substr(11,2) <= 18){
+									arrTimes["1"].str += _str;
+								}else{
+									arrTimes["2"].str += _str;
+								}
+							}
+
+							if(arrTimes["0"].str != ''){
+								var str = 
+									'<div class="scheduleOuter clearfix">'
+										+'<div class="timeBucket"> 上午 </div>'
+										+'<div class="scheduleCon">'
+											+ arrTimes["0"].str
+										+'</div>'
+									+'</div>';							
+								$('.schedule-list').append(str);
+							}
+
+							if(arrTimes["1"].str != ''){
+								var str = 
+									'<div class="scheduleOuter clearfix">'
+										+'<div class="timeBucket"> 下午 </div>'
+										+'<div class="scheduleCon">'
+											+ arrTimes["1"].str
+										+'</div>'
+									+'</div>';							
+								$('.schedule-list').append(str);
+							}
+
+							if(arrTimes["2"].str != ''){
+								var str = 
+									'<div class="scheduleOuter clearfix">'
+										+'<div class="timeBucket"> 晚上 </div>'
+										+'<div class="scheduleCon">'
+											+ arrTimes["2"].str
+										+'</div>'
+									+'</div>';							
+								$('.schedule-list').append(str);
+							}
+
+							if ($('.schedule-list').html()=='') {
+								$('.schedule-list').html('<p class="no-data">该日暂无课程</p>');
+							}
+						}
+					});
+				};			
+			};
+		</script>
+	</body>
+	
+</html>

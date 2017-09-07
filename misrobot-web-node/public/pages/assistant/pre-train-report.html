@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/assistant/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>课前训练报告</title>
+		<style type="text/css">
+			body{
+				background-color:#F1F1F1; padding-bottom:30px;
+			}
+			.allOuter{
+				width:1024px; margin:auto;
+			}
+			.topOuter{
+				width:100%; height:70px; position:relative;
+			}
+
+			.topOuter>h3{
+				width:100%; height:100%; line-height:70px;
+				text-align:center; font-size:26px;
+			}
+			.return1{
+				position:absolute; width:90px; height:24px; top:50%; margin-top:-12px;
+			}
+			.return1>img{
+				display:block; float:left; width:22px; height:100%;
+			}
+			.return1>span{
+				display:block; float:left; width:60px; height:100%; line-height:24px;
+				color:#6A7DB8; margin-left:5px;
+			}
+			
+			.info1Outer{
+				width:100%; background-color:white;
+				padding:30px; font-size:16px;
+			}
+			.skill-list{
+				font-size:20px;
+			}
+			.info1Outer>p{
+				width:100%; height:28px; line-height:28px;
+			}
+			.info1Outer span{
+				display:block; float:left;
+			}
+			.cu{
+				font-weight:bold;
+			}
+			.xi{
+				margin-right:40px; margin-left:10px;
+			}
+
+			.info2Outer{
+				width:100%; margin-top:14px;
+			}
+			.chart1Outer{
+				width:49.5%; float:left; background-color:white; padding:30px;
+				height:460px;
+			}
+			.chart2Outer{
+				width:49.5%; float:right; background-color:white; padding:30px;
+				height:460px; overflow:auto;
+			}
+
+			.chartTit{
+				width:100%; height:30px; line-height:30px; font-size:22px; margin-bottom:20px;
+			}
+
+			.chart2Outer>h4{
+				width:100%; height:25px; font-size:18px; line-height:25px;
+			}
+			.chart2Outer>p{
+				width:100%; font-size:16px; line-height:22px; height:70px;
+				overflow:auto;
+			}
+
+			.wrongOuter{
+				margin-top:14px; background-color:white; padding:30px;
+			}
+			.table{
+				width:100%; font-size:16px; line-height:18px; border-top:1px solid #F2F2F2;
+				border-left:1px solid #F2F2F2;
+				border-right:1px solid #F2F2F2;
+			}
+			.tr{
+				width:100%; border-bottom:1px solid #F2F2F2;
+			}
+			.tr div{
+				min-height:42px; padding-top:18px; padding-bottom:18px;
+				padding-left:12px; padding-right:12px; float:left;
+			}
+			.td1{
+				width:10%; text-align:center;
+			}
+			.td2{
+				width:90%; border-left:1px solid #F2F2F2;
+			}
+
+			.chart3Outer{
+				margin-top:14px; background-color:white; padding:30px;
+			}
+			.wrongDetail{
+				margin-top:14px; background-color:white; padding:30px;
+			}
+			.wrongDetail .chartTit{
+				border-bottom:1px solid #F2F2F2; padding-bottom:20px; margin-bottom:0px;
+				height:auto;
+			}
+			.topP,.itemP{
+				border-bottom:1px solid #F1F1F1; line-height:18px;
+			}
+			#wrongDetailRed{
+				color:#F1AC8B;
+			}
+			.topP{
+				font-size:16px; font-weight:bold;
+			}
+			.wrongDetail h4,.wrongDetail span,.wrongDetail h3{
+				padding-top:15px; padding-bottom:15px; font-size:18px;
+			}
+			.topP>h4,.topP>span,.topP>h3{
+				padding-top:20px; padding-bottom:20px; font-size:18px; font-weight:bold;
+			}
+			.wrongDetail h3{
+				width:40%; float:left; padding-left:30px;
+			}
+			.wrongDetail h4{
+				width:50%; float:left; padding-left:30px;
+			}
+			.wrongDetail span{
+				width:10%; text-align:center; float:left;
+			}
+
+
+			.itemP{
+				font-size:14px;
+			}
+			.skill-list li.active { background: #ccc;}
+			.train-time { height: 250px;}
+			
+			.result-count{
+				height:350px;
+			}
+			.error-rate{
+				height:400px;
+			}
+
+		</style>
+		<script src="../../js/echarts-all.js"></script>
+		<script src="../../js/assistant/web_chart.js"></script>
+		<script src="../../js/assistant/pc_pre-train-report.js"></script>		
+		
+		
+	</head>
+	<body>
+		<div class="allOuter">
+			<div class="topOuter">
+				<!--<div class="return1">
+					<img src="../img/return3.png"/><span>返回</span>
+				</div>-->
+					
+				<h3 class="report-title">无</h3>
+			</div>
+
+			<div class="info1Outer">
+				<p><span class="cu"> 课程：</span><span class="courseName xi">无</span></p>
+				<p>
+					<span class="cu">上课时间：</span><span class="report-time xi">无</span>
+					<span class="cu">班级：</span><span class="class-name xi">无</span>
+					<span class="cu">系别：</span><span class="depart xi">无</span>
+					<span class="cu">学院：</span><span class="college xi">无</span>
+					<span class="cu">学生人数：</span><span class="studentNum xi">0人</span>
+					
+				</p>
+				<ul class="skill-list">
+					<li></li><span class="cu">在线训练：</span><span>无</span></li>
+					
+				</ul>
+			</div>
+
+			<div class="info2Outer clearfix">
+				<div class="chart1Outer">
+					<h3 class="chartTit">班级成绩统计</h3>
+					<div class="result-count">
+					</div>
+				</div>
+				<div class="chart2Outer">
+					<h3 class="chartTit">完成人数</h3>
+					<div class="train-time"></div>
+					<h4>未训练名单</h4>
+					<p class="jNotrain"></p>
+				</div>
+			</div>
+
+			<div class="wrongOuter">
+				<h3 class="chartTit">典型错误</h3>
+				<div class="table">
+					<div class="tr clearfix">
+						<div class="td1">
+							严重错误
+						</div>
+						<div class="td2">
+							无
+						</div>
+					</div>
+					<div class="tr clearfix">
+						<div class="td1">
+							一般错误
+						</div>
+						<div class="td2">
+							无
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="chart3Outer">
+				<h3 class="chartTit">错误率</h3>
+				<div class="error-rate">
+				</div>
+			</div>
+
+			<div class="wrongDetail">
+				<h2 class="chartTit">操作错误详情</h3>
+				<div class="topP clearfix">
+					<h3>步骤</h3>
+					<h4>错误点</h4>
+					<span>错误人数</span>
+				</div>
+				<div class="wrongDetailCon">
+					<div class="itemP clearfix">
+						<h3>步骤1</h3>
+						<h4>无</h4>
+						<span>无</span>
+					</div>
+					<div class="itemP clearfix" id="wrongDetailRed">
+						<h3>步骤2</h3>
+						<h4>无</h4>
+						<span>无</span>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+		
+	</body>
+	
+	<script type="text/javascript">
+		
+
+	</script>
+
+</html>

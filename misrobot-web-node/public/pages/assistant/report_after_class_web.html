@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript" src="../../js/assistant/layout.js" ></script>
+    <script type="text/javascript" src="../../js/echarts-all.js"></script>
+
+    <meta charset="UTF-8">
+    <title>报告-课堂</title>
+    <style type="text/css">
+        body{
+            background-color:#ECECEC;
+            font-family: "微软雅黑";
+        }
+
+        .topBar {
+            width:100%; height:60px; background-color:#f5f5f5; border-top:1px solid #DEDEDE;
+            border-bottom:1px solid #D4D4D4; font-size:14px;
+        }
+        .topBar button {
+            display:block; float:right; position:relative;
+            top:50%; margin-top:-18px; height:38px; text-align:center; line-height:36px;
+            border:1px solid #0496C9; box-sizing:border-box; border-radius:3px;
+
+        }
+        .chooseBtn{
+            width:118px; margin-right:12px; background-color:#0496ca; color:white;
+        }
+        .chooseBtn:hover{
+            background-color:#0487b5;
+        }
+
+        .mainCon{
+            width:1024px; height:688px; margin:auto; margin-top:20px;
+        }
+        h3{font-size: 18px; font-weight: 300; padding-left: 30px; padding-top: 16px;}
+        .frm{width: 1024px;float: left;}
+        .class_report{width: 1024px; height: 100%; position: relative; top: 17px; margin: 0 auto;}
+        .content_box{
+            width: 1024px; background-color: #FFFFFF; float: left;
+            padding-bottom:15px;
+        }
+        .content_box h2{font-size: 18px; font-weight: 300; text-align: center; padding-top: 18px;}
+        .date_box{text-align: center; font-size: 12px;}
+        .content_box p{
+            margin: 0; padding-left: 16px; font-size: 14px; line-height: 24px; padding-right: 16px;
+        }
+        .class_style{padding-left: 30px;}
+        .carry_people{width: 507px; background-color: #FFFFFF; float: left; margin-top: 13px;}
+        .serious_error{width: 515px; background-color: #FFFFFF; float: left; margin-top: 13px; margin-left: 1px; padding-top: 35px;}
+        .mrgL{margin-left: 10px;}
+        .list_name{width: 460px; float: left; margin-left: 32px;}
+        .list_name p{
+            margin: 0; line-height: 24px; font-size: 13px; margin-bottom: 30px; color: #6F6F6F;
+            height:72px; overflow-y:auto;
+        }
+        .list_name h2{font-size: 15px; font-weight: 300;}
+        .error_rate{width: 1024px; background-color: #FFFFFF; float: left;}
+        .error_rate>h4 {
+            text-align: center; padding: 0;
+            margin-bottom: -30px; font-size: 18px;
+            font-weight: 300; margin-top: 25px;
+        }
+        .tablebox{width: 980px; float: left; margin: 20px 0 80px 33px;}
+        .ranking{width: 470px; height: 394px; float: left; margin: 20px 0 30px 20px;}
+        .ranking_list,.scoreshow{
+            height:551px;
+        }
+        table {border-left: 1px solid #CCCCCC; border-right: 1px solid #CCCCCC;}
+        table thead:first-child{background: #e5e5e5;}
+        table tbody tr:nth-of-type(odd){background: #f0f0f0;}
+        table tr{color: #464646; border-top:1pt solid #CCCCCC;}
+        td{ padding:5px 10px; text-align:center;border-bottom:1pt solid #CCCCCC;}
+        td img {width: 20px;}
+        .fontcolor{color: #2BA0CF;}
+        .number_of{width: 30px; line-height: 18px; position: relative; float: right; right: 12px; top: -23px; font-size: 11px;}
+        .x_txt{width: 40px; line-height: 18px; position: relative; float: right; right: 40px; top: -53px; font-size: 11px;}
+        .x_txt2{width: 38px; line-height: 18px; position: relative; font-size: 8px; font-family: "Adobe 黑体 Std R"; float: right; right: 40px; top: -53px;color: #C1C1C1;}
+        .fraction{
+            width: 506px; line-height: 22px; text-align: center;
+            position: relative; top: -20px; float: right;
+            margin-top: 35px;   margin-bottom: -5px;
+        }
+        .hint{padding: 12px 12px 25px 20px; margin-top: 8px; color: #8B8B8B; font-size: 13px; line-height: 22px;}
+        .correct{width: 40px; line-height: 18px; position: relative; float: right; right: 62px; top: -32px; font-size: 11px;}
+        .studentAppraise{width: 100%; line-height: 28px; position: relative; top: -25px; text-align: center; font-size: 13px; float: left;}
+        .classInfo{width: 100%; float: left; font-size: 14px;}
+        
+        li {
+            display: inline-block;
+            padding: 20px 15px 0 15px;
+            text-align: center;
+            cursor:pointer;
+            float: left;
+            border-bottom: 2px solid transparent;
+        }
+        .li-active {
+            border-bottom: 2px solid #0495CA;
+            color: #0495CA;
+        }
+        #errInfo{
+            font-size:14px;
+        }
+        #errInfo tr:nth-child(1),#errInfo tr:nth-child(2),#errInfo tr:nth-child(3){
+            color:#0495CA;
+        }
+    </style>
+
+</head>
+<body>
+<div class="topBar">
+    <!-- <button type="button" class="chooseBtn">返回</button> -->
+</div>
+<div class="class_report">
+    <div class="content_box">
+        <h2><span id="beforereport"></span> 课堂训练报告</h2>
+        <p class="date_box" id="reportdate"></p>
+        <p>课程名：<span id="course_name"></span></p>
+        <div class="classInfo">
+            <div style="float:left; margin-left: 16px; padding-right: 18px;">班级：<span id="classnameID"></span></div>
+            <div style="float:left; margin-left: 16px; padding-right: 18px;">上课总人数：<span id="attendClassNum"></span></div>
+            <div style="float:left;">上课时间：<span id="attendClassTime"></span></div>
+        </div>
+        <p>出勤情况：出勤<span id="attendance"></span>人，缺勤<span id="absenteeism"></span>人，缺勤学生：<span id="absent_student"></span></p>
+    </div>
+
+    <div class="frm">
+        <!--训练项成绩统计-->
+        <div class="carry_people">
+            <h3>训练项成绩统计</h3>
+            <div id="main" style="width:100%; height: 280px;float:left;"></div>
+            <div class="x_txt">训练项</div>
+        </div>
+        <!--学生评分-->
+        <div class="carry_people mrgL">
+            <h3>学生评分</h3>
+            <div class="main5" style="width:100%; height: 254px;float:left;margin-top:16px;"></div>
+            <div class="studentAppraise">学生对你的评分：<span id="appraise"></span></div>
+        </div>
+    </div>
+
+    <div class="content_box" style="margin-top: 12px;">
+        <!--菜单-->
+        <div id="menuFrm">
+            <div style="padding-top: 20px; padding-left: 16px; float:left;"> 训练项：</div>
+            <div id="navigation">
+            <ul id="menu"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="frm">
+        <div class="carry_people ranking_list">
+            <!--排行-->
+            <h3>排行</h3>
+            <div class="ranking">
+                <table id="randingName" width="100%" border="0" cellspacing="0" cellpadding="0" align='center'>
+                    <thead >
+                    <tr>
+                        <td>排名</td>
+                        <td>姓名</td>
+                        <td>分数</td>
+                    </tr>
+                    </thead>
+                    <tbody id="ranking">
+                    <tr>
+                        <td><img src="../../images/assistant/paihang01.png"/></td>
+                        <td id="studentName">无</td>
+                        <td id="gradeRank">-</td>
+                    </tr>
+                    <tr>
+                        <td><img src="../../images/assistant/paihang02.png"/></td>
+                        <td id="studentName2">无</td>
+                        <td id="gradeRank2">-</td>
+                    </tr>
+                    <tr>
+                        <td><img src="../../images/assistant/paihang03.png"/></td>
+                        <td id="studentName3">无</td>
+                        <td id="gradeRank3">-</td>
+                    </tr>
+                    <tr>
+                        <td id="rankNum4">-</td>
+                        <td id="studentName4">无</td>
+                        <td id="gradeRank4">-</td>
+                    </tr>
+                    <tr>
+                        <td id="rankNum5">-</td>
+                        <td id="studentName5">无</td>
+                        <td id="gradeRank5">-</td>
+                    </tr>
+                    <tr>
+                        <td id="rankNum6">-</td>
+                        <td id="studentName6">无</td>
+                        <td id="gradeRank6">-</td>
+                    </tr>
+                    <tr>
+                        <td id="rankNum7">-</td>
+                        <td id="studentName7">无</td>
+                        <td id="gradeRank7">-</td>
+                    </tr>
+                    <tr>
+                        <td id="rankNum8">-</td>
+                        <td id="studentName8">无</td>
+                        <td id="gradeRank8">-</td>
+                    </tr>
+                    <tr>
+                        <td id="rankNum9">-</td>
+                        <td id="studentName9">无</td>
+                        <td id="gradeRank9">-</td>
+                    </tr>
+                    <tr>
+                        <td id="rankNum10">-</td>
+                        <td id="studentName10">无</td>
+                        <td id="gradeRank10">-</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--成绩统计-->
+        <div class="carry_people mrgL scoreshow">
+            <h3>成绩统计</h3>
+            <div class="fraction">平均分：<span id="average"></span> &nbsp; 最高分：<span id="the_tallest"></span> &nbsp; 最低分：<span id="minimum"></span> </div>
+            <div id="main9" style="width:100%; height: 346px;float:left;"></div>
+            <div class="list_name">
+                <h2>未完成训练名单：</h2>
+                <p id="undone_student">
+                    暂无
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="frm typicalerror">
+        <!--典型错误-->
+        <div class="carry_people">
+            <h3>典型错误</h3>
+            <div id="main2" style="width:100%; height: 280px;float:left;"></div>
+            <div class="x_txt2">知识点</div>
+        </div>
+        <!--严重错误-->
+        <div class="serious_error">
+            <div id="main3" style="width:100%; height: 280px;float:left;"></div>
+            <div class="x_txt2">知识点</div>
+        </div>
+    </div>
+    <!--错误率-->
+    <div class="error_rate" style="margin-top: 1px;">
+        <h4>top 10 错误率</h4>
+        <div id="main4" style="width:100%; height: 280px;float:left;"></div>
+        <div class="x_txt2">知识点</div>
+    </div>
+
+    <!--教学成果对比（正确率提高38%）-->
+    <div class="error_rate teachingresult">
+        <h3 id="error_rate_num">教学成果对比（正确率平均提高了0%）</h3>
+        <div id="main10" style="width:100%; height: 480px;float:left;"></div>
+        <div class="correct">正确率</div>
+    </div>
+
+    <!--操作错误详情-->
+    <div class="error_rate" style="margin-top: 10px;">
+        <h3>操作错误详情</h3>
+        <div class="tablebox">
+            <table id="tbitem" width="97%" border="0" cellspacing="0" cellpadding="0" align='center'>
+                <thead >
+                <tr>
+                    <td>步骤</td>
+                    <td>错误点</td>
+                    <td>错误人数</td>
+        
+                </tr>
+                </thead>
+                <tbody id="errInfo">
+                    <!-- <tr><td>步骤</td><td>错误点</td><td>5</td></tr> -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript" src="../../js/assistant/report_after_class.js"></script>
+<script type="text/javascript">
+
+    set_default_report();//页面加载显示报告的默认值
+
+    var json = {
+        '1':{
+            command:'report/querypostreport',
+            accountname:GetQueryString('accountname'),
+            reportid:GetQueryString('reportid')
+        }
+    };
+
+    Api.dataToJava({
+        json:{
+            url:'/report/querypostreport', //课前报告接口
+            data:JSON.stringify(json)
+        },
+        fn:function (base) {
+            base = base[1]; //取接口的第一个返回值
+            console.log(base);
+            
+            //判断接口是否走成功， errcode为0是成功
+            if (base.errcode!=0) {
+                uselayer(3,base.errdesc);
+                return false;
+            }
+
+            show_report(base);//显示报告的所有内容
+
+        }
+
+    })
+
+</script>
+</body>
+
+</html>

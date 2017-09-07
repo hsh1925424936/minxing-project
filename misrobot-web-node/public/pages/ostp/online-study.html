@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="../../js/layout.js" ></script>
+	<script type="text/javascript" src="../../js/jqPaginator.js"></script>
+	<link href="../../../css/ostp/basePage.css" rel="stylesheet" type="text/css">
+	<meta charset="UTF-8">
+	<title>自主学习</title>
+	<style type="text/css">
+
+		.conditionOuter{
+			width:100%; height:70px;
+		}
+		.conditionOuter>span{
+			width:80px; height:100%; float:left;margin-left: 20px;
+			font-size:16px; line-height:70px;
+		}
+		.searchOuter{
+			width:516px; height:40px; float:left;
+			margin-left:70px; margin-top:15px; position:relative;
+		}
+		.searchOuter>input{
+			border-radius:40px;
+		}
+		.searchOuter>img{
+			display:block; position:absolute; right:20px;
+			top:50%; margin-top:-16px; width:25px; height:25px; cursor: pointer;
+		}
+		.searchType { float: right; margin:18px 20px;
+			width: 100px;
+		}
+
+		.subjectList{
+			width:25%; float:left; padding-left:15px;
+			padding-right:15px; font-size:14px;
+			font-weight:bold;
+		}
+		.subjectTit{
+			width:100%; height:44px; line-height:44px;
+			text-align:center; color:white;
+			background-color:#0497CB;
+		}
+		.subjectItem{
+			width:100%; cursor: pointer;
+			padding-left:25px; border-bottom:1px solid #F4F5F9;
+			background-color:white; padding-top:15px; padding-bottom:15px;
+		}
+
+		.fileOuter{
+			width:75%; float:left;
+		}
+		.fileCon{
+			width:235px; color: #000; background-color:white;
+			float:left; margin-right:20px; padding-bottom:20px;
+			margin-bottom:20px;
+		}
+		.filePic{
+			width:100%; height:170px; overflow:hidden; position: relative;
+		}
+		.filePic img { display: block; width: 100%; height: 100%;}
+		.fileTxt{
+			width:100%; margin-top:21px; position: absolute; top: 0; left: 0;
+			background-color:rgba(255,255,255,0.5); padding-left:30px; padding-right:30px;
+			padding-top:12px; padding-bottom:12px; text-align: center;
+		}
+		.fileTxt1{
+			display:block; font-size:14px;
+		}
+		.fileTxt2{
+			display:block; font-size:24px; overflow:hidden; height:102px;
+		}
+		.fileName{
+			width:195px; height:22px; margin:20px auto; overflow:hidden;
+		}
+		.fileBottom{
+			width:100%; height:26px;
+		}
+		.headIcon{
+			width:12px; height:16px; margin-top:5px;
+			background-image:url('../../images/ostp/head4.png');
+			background-size:100% 100%; background-repeat:no-repeat;
+			float:left; margin-left:30px;
+		}
+		.count{
+			float:left; color:#999999; font-size:12px;
+			width:70px; height:100%; line-height:26px;
+			margin-left:5px;
+		}
+		.fileType{
+			float:right; width:26px; height:26px;
+			margin-right:30px;
+			background: no-repeat center;
+			background-size: 100% 100%;
+		}
+		.video { background-image: url(../../images/ostp/online-read-video.png);}
+		.word { background-image: url(../../images/ostp/online-read-word.png);}
+		.ppt { background-image: url(../../images/ostp/online-read-ppt.png);}
+		.excel { background-image: url(../../images/ostp/online-read-excel.png);}
+		.pdf { background-image: url(../../images/ostp/online-read-pdf.png);}
+
+		.subjectItem.active {
+			color:rgb(4,151,203);
+		}
+		.fenyeCon{
+			width:700px; padding-bottom:50px; margin-left: 280px;
+		}
+		.allSubject{
+			width: 100%;
+			cursor: pointer;
+			padding-left: 25px;
+			border-bottom: 1px solid #F4F5F9;
+			background-color: white;
+			padding-top: 15px;
+			padding-bottom: 15px;
+		}
+	</style>
+	<script>
+		var status=1;
+		var learnid = -1;                     //学科id(默认为全部-1)， 如果不为-1，则查找对应学科
+		var class_type = -1;                //资源类型过滤(-1为全部)， 1 word， 2 excel， 3 ppt 4 pdf 5 mp4
+		var key_word = "";                //按资源查找， 默认为空
+		var sort_type = 0;               //排序类型， 0 按时间， 1 按浏览量
+		var page = 1;                   //请求的页
+		var reqnum = 12;               //每页请求的条数，默认12
+		var pages;                     //返回总页数
+		var jsonDataQueList= {
+			command: "onlinesrc/resourcelist",
+			uid: getCookie('gy_u'),
+			loginid: getCookie('gy_u'),
+			sessionid: getCookie('gy_t'),
+			discipline_id: -1,
+			class_type: -1,
+			key_word: "",
+			sort_type: 0,
+			page: 1,
+			reqnum: 12
+		};
+		function trim(str){
+			return str.replace(/(^\s*)|(\s*$)/g, "");
+
+		}
+		var resrourceargs = {
+			command:"onlinesrc/existeddiscipline", //有相关资源的学科列表
+			uid: getCookie('gy_u'),
+			loginid: getCookie('gy_u'),
+			sessionid: getCookie('gy_t')
+		};
+		existeddiscipline();
+		function existeddiscipline(){
+
+			$.ajax({
+				type: "POST",
+				url: "/onlinesrc/existeddiscipline",  //有相关资源的学科列表
+				dataType: "json",
+				data: JSON.stringify({
+					"1": resrourceargs
+				}),
+				contentType: "application/json; charset=utf-8",
+				success : function (result){
+					if(result["1"].errcode == 9904){
+                        //alert("登录信息过期，请重新登录");
+						window.location.href="login.html";
+						return;
+					}else if(result["1"].errcode != 0){
+                        alert(result["1"].errdesc);
+						return;
+					}else{
+                        console.log(result);
+					//学科名称
+					var vidoeInfo = document.getElementById("vidoeInfo");
+					var videoName = "";
+					for(var i=0;i<result["1"].list.length;i++){
+						videoName += '<div class="subjectItem" id="src_'+result["1"].list[i].discipline_id +'">' + result["1"].list[i].discipline_name + '</div>';
+					}
+					vidoeInfo.innerHTML+= videoName;
+					//学科单击切换
+					$(".subjectItem").click(function(){
+						jsonDataQueList.key_word = "";
+						jsonDataQueList.sort_type = 0;
+						jsonDataQueList.page = 1;
+						jsonDataQueList.reqnum = 12;
+						jsonDataQueList.discipline_id = (this.id).split("_")[1];
+						learnid = jsonDataQueList.discipline_id;
+						queList(jsonDataQueList);
+						$(".subjectItem").eq($(this).index()).addClass("active").siblings().removeClass("active");
+					});
+					}
+					
+				}
+			})
+		}
+		queList (jsonDataQueList);
+		function queList (){
+			$.ajax({
+				type: "POST",
+				url: "/onlinesrc/resourcelist",  //资源文件列表
+				dataType: "json",
+				data: JSON.stringify({
+					"1":jsonDataQueList
+				}),
+				contentType: "application/json; charset=utf-8",
+				success : function(results){
+					if(results["1"].errcode == 9904){
+                        //alert("登录信息过期，请重新登录");
+						window.location.href="login.html";
+						return;
+					}else if(results["1"].errcode != 0){
+                        alert(results["1"].errdesc);
+						return;
+					}else{
+                        console.log(results);
+                 
+
+						pages = results["1"].pages;
+						var arr = results["1"].list;
+						var htmlstr = "";
+						for(var i=0;i<arr.length;i++){
+							var _type = 'word';
+							switch (arr[i].resource_class){
+								case 1: _type = 'word';
+									break;
+								case 2: _type = 'excel';
+									break;
+								case 3: _type = 'ppt';
+									break;
+								case 4: _type = 'pdf';
+									break;
+								case 5: _type = 'video';
+									break;
+							}
+							var str =
+									'<a href="online-read.html?file='+arr[i].resource_id+'" class="fileCon clearfix">'
+									+'<div class="filePic">'
+									+'<img src="'+ arr[i].resource_thumbnailpath + '" class="" />'
+									+'<div class="fileTxt">'
+									+'<span class="fileTxt2">'
+									+'</span>'
+									+'</div>'
+									+'</div>'
+									+'<div class="fileName">'+arr[i].resource_name+'</div>'
+									+'<div class="fileBottom clearfix">'
+									+'<div class="headIcon"></div>'
+									+'<div class="count">阅读'+arr[i].resource_viewed+'次</div>'
+									+'<div class="fileType '+_type+'"></div>'
+									+'</div>'
+									+'</a>';
+									htmlstr = htmlstr + str;
+								}
+							$('.fileOuter').html(htmlstr);
+							//搜索
+							$(".searchImg").click(function(){
+								jsonDataQueList.key_word = trim($("#search").val());
+								queList();
+	
+							});
+							//学科全部
+							$("#subjectItem").click(function(){
+								jsonDataQueList.discipline_id = (this.id).split("_")[1];
+								learnid = jsonDataQueList.discipline_id;
+								queList();
+								$(".allSubject").eq($(this).index()).addClass("active").siblings().removeClass("active");
+							});
+							//分页
+							var pageJson = {"page":results["1"].page,"pages":pages};
+							quePage(pageJson,class_type);
+						}
+
+					
+				}
+			})
+		}
+		//最新最热切换
+		function gradeChange(value){
+			jsonDataQueList.sort_type = value;
+			queList();
+		}
+
+
+        window.onload = function () {
+			'use strict';
+			common();
+
+		};
+
+
+
+	</script>
+</head>
+<body>
+
+<div class="top1Con">
+	<div class="top1Outer clearfix">
+		<a href="index.html" class="top1Tit">临床技能中心</a>
+		<div class="top1Tit-right">
+			<img src="../../images/ostp/bell.png" class="bell" />
+			<img src="../../images/ostp/redCircle.png" class="redCircle" />
+			<img src="../../images/ostp/feifei.png" class="headImg" />
+			<div class="nameAndYear clearfix">
+				<div class="nameAndYearInner clearfix">
+					<div class="userName"></div>
+					<div class="year"></div>
+					<span class="arrow"></span>
+				</div>
+				<ul class="selectUl"></ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="top2Outer">
+	<div class="top2Con clearfix">
+		<a href="index.html" class="top2Con-index">
+			<img src="../../images/ostp/logo.png" class="logoPng" />
+			<div class="top2Tit">在线自主技能训练平台</div>
+		</a>
+		<div class="navigateOuter clearfix">
+			<a href="index.html" class="navigate">
+				首页
+			</a>
+			<a href="my-work.html" class="navigate">
+				我的作业
+			</a>
+			<a href="self-train.html" class="navigate">
+				自主训练
+			</a>
+			<a href="online-study.html" class="navigate navigateOn">
+				自主学习
+			</a>
+			<div class="navigate">
+				成长中心
+				<ul>
+					<li><a href="grow-center.html">学习指数</a></li>
+					<li><a href="train-record.html">训练记录</a></li>
+				</ul>
+			</div>
+			<!-- <a href="subscribe-train.html" class="navigate">
+                预约训练
+            </a> -->
+		</div>
+	</div>
+</div>
+
+<div class="mainOuter">
+	<div class="conditionOuter clearfix">
+		<span>自主学习</span>
+		<div class="searchOuter">
+			<input class="form-control searchCon" id="search" maxlength="30" />
+			<img class="searchImg" src="../../images/ostp/search.png" />
+		</div>
+		<div class="searchType">
+			<select class="form-control ordertype" onchange="gradeChange(this.value)">
+				<option value="0" selected="selected">最新</option>
+				<option value="1">最热</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="subjectList">
+		<div class="subjectTit">
+			学科
+		</div>
+
+		<div class="subjectList-list" id="vidoeInfo">
+			<div class="subjectItem" id="allDiscipline">全部</div>
+		</div>
+
+	</div>
+	<div class="fileOuter clearfix">
+
+	</div>
+	<!--
+    <div class="fenyeCon">
+        <ul class="pagination" id="pagination1"></ul>
+    </div>
+    -->
+	<!--分页-->
+	<div  class="pages">
+		<ul id="pagesBtn"></ul>
+	</div>
+
+</div>
+<script type="text/javascript" src="../../js/basePage.js"></script>
+</body>
+</html>

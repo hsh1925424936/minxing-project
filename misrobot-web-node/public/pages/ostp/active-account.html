@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>激活帐号</title>
+		<style type="text/css">
+			.topOuter{
+				width:100%; height:150px; background-color:#EFF2F5;
+			}
+			.topContent{
+				width:885px; height:100%; margin:0 auto;
+			}
+			.logoPng{
+				width:170px; height:95px; display:block;
+				float:left; margin-top:40px;
+			}
+			.titleOuter{
+				width:350px; height:60px; float:left; 
+				margin-left:10px; margin-top:52px;
+			}
+			.titleOuter span{
+				width:100%;
+				float:left; display:block;
+			}
+			.titleOuter .span1{
+				height:40px; font-size:25px; 
+				font-weight:bold; line-height:40px;
+			}
+			.titleOuter .span2{
+				font-size:18px;
+				line-height:30px;
+			}
+			.link{
+				width:60px; height:18px; line-height:18px; 
+				font-size:14px; color:#949494; float:left;
+				margin-top:70px;
+			}
+			.link1{
+				margin-left:130px;
+			}
+			.link2{
+				margin-left:60px;
+			}
+			.loginOuter{
+				width:400px; margin:90px auto;
+			}
+			.loginTitle{
+				width:100%; height:30px; font-size:20px; line-height:30px;
+			}
+
+			.loginOuter input{
+				height:50px; margin-top:30px; 
+				border-radius:0px;
+			}
+			.inpOuter{
+				position:relative;
+			}
+			.next{
+				width:100%; height:50px; background-color:#3499DA; 
+				border-radius:2px; font-size:16px; color:white;
+				margin-top:20px;
+			}
+			
+			.link a{
+				outline:none; text-decoration:none; color:#949494;
+			}
+			.dynamicCode{
+				position:absolute;right:5px; top:50%; margin-top:-20px;
+				width:100px; height:40px; background-color:#999999; 
+				font-size:14px; color:white;
+			}
+
+		</style>
+		<script>
+			window.onload = function () {
+				'use strict';
+				var timer = null;
+				var bCode = false;
+				
+				$('.dynamicCode').click(function () {
+					if ($('.dynamicCode')[0].bClick) {
+						return false;
+					}
+					var reg=/^1[3-578]\d{9}$/;
+					if(!reg.test($.trim($('.phoneNum').val()))){
+						uselayer(3,'请输入正确的手机号');
+						return false;
+					}
+					$('.dynamicCode')[0].bClick = true;
+					Api.sendMobile({
+						istoken:1,
+						isShade:1,
+						json:{
+							mobile:$.trim($('.phoneNum').val())
+						},
+						fn:function (json) {
+							if (json.code!=1) {
+								uselayer(1,json.message);
+								$('.dynamicCode')[0].bClick = false;
+							} else {
+								bCode = true;
+								$('.phoneNum').attr('disabled','disabled');
+								var num = 10;
+								$('.dynamicCode').html(num+'秒');
+								timer = setInterval(function () {
+									num--;
+									$('.dynamicCode').html(num+'秒');
+									if (num<0) {
+										clearInterval(timer);
+										$('.dynamicCode')[0].bClick = false;
+										$('.dynamicCode').html('重新发送');
+									}
+								},1000);						
+							}
+						}
+					});				
+				});
+				
+				
+				$('.next').click(function () {
+					
+					if ($.trim($('.stCode').val()) == '' ) {
+						uselayer(3,'学号不能为空');
+						return false;					
+					}					
+					if ($.trim($('.name').val()) == '' ) {
+						uselayer(3,'姓名不能为空');
+						return false;					
+					}
+
+					if (!bCode) {
+						uselayer(3,'请先获取动态码');
+						return false;							
+					}
+					if ($.trim($('.code').val())=='') {
+						uselayer(3,'请填写动态码');
+						return false;					
+					}
+					
+					Api.activeAccount({
+						istoken:1,
+						isShade:1,
+						json:{
+							stcode: $.trim($('.stCode').val()),
+							name: $.trim($('.name').val()),
+							mobile:$.trim($('.phoneNum').val()),
+							code:$.trim($('.code').val())
+						},
+						fn:function (json) {
+							uselayer(1,json.message,function () {
+								if (json.code==1) {
+									setCookie('stcode', $.trim($('.stCode').val()),7); //用户id
+									window.location.href="init-profile.html";
+								}
+							});
+						}
+					});					
+						
+				});
+				
+			};
+			
+		</script>
+	</head>
+	<body>
+		<div class="topOuter clearfix">
+			<div class="topContent">
+				<img src="../../images/ostp/logo.png" class="logoPng"/>
+				<div class="titleOuter clearfix">
+					<span class="span1">欢迎来到临床技能中心</span>
+					<span class="span2">四川大学华西临床医学院/华西医院</span>
+				</div>
+
+				<div class="link link1">
+					<a href="#">关于助教</a>
+				</div>
+
+				<div class="link link2">
+					<a href="#">下载中心</a>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="loginOuter clearfix">
+			<div class="loginTitle">
+				激活帐号
+			</div>
+
+			<input type="text" class="form-control stCode" placeholder="请填写学号" />
+			<input type="text" class="form-control name" placeholder="请填写姓名" />
+
+			<div class="inpOuter">
+				<input type="text" class="form-control phoneNum" placeholder="请输入您的手机号" maxlength="18" />
+				<button type="button" class="dynamicCode">
+					获取动态码
+				</button>
+			</div>
+
+			<input type="text" class="form-control code" placeholder="填写动态码" />
+			<button type="button" class="next">
+				下一步
+			</button>
+			
+		</div>
+	</body>
+</html>

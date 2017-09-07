@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../common/js/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>训练报告</title>
+		 <script type="text/javascript" src="../common/js/layout.js" ></script>
+    	 <script src="../../../js/echarts.min.js"></script>
+		 <script src="../common/js/web-chart.js"></script>
+		<style type="text/css">
+			body{
+				background-color:#F6F6F6;
+			}
+			.flex{
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+		.nav{
+			background: rgb(246,246,246);
+			width: 100vw;
+			padding: 0.5rem 5rem;
+			font-size: 1rem;
+		}
+		.navRight img:nth-of-type(1){
+			width: 1.5rem;
+			height: 1.5rem;
+			margin-right: 1rem;
+		}
+		.navRight img:nth-of-type(2){
+			width: 2rem;
+			height: 2rem;
+			margin-right: 1rem;
+			border-radius: 50%;
+		}
+		.navRight img:nth-of-type(3){
+			width: 0.7rem;
+			height: 0.5rem;
+			margin-left: 5rem;
+		}
+		.header{
+			background:rgb(255,255,255);
+			/*border-bottom: solid 1px gray;*/
+			padding: 0.5rem 1rem;
+		}
+		.headerLeft img{
+			width: 5rem;
+			height: 2.8rem;
+			margin-right: 1rem;
+		}
+		.headerLeft span{
+			font-weight: 450;
+			font-size: 1.2rem;
+		}
+		.headerRight ul li{
+			font-size: 1rem;
+			/*width: 4rem;*/
+			padding: 0 0.3rem;
+			text-align: center;
+			height: 2rem;
+			line-height: 2rem;
+			border-radius: 0.2rem;
+		}
+		.headerRight ul li:nth-child(3){
+			color: rgb(0,141,196);
+		}
+			.main{
+				width: 100vw;
+				background: white;
+				padding-top: 1vh;
+			}
+			.mainTitle{
+				position: relative;
+			}
+			.mainTitle p{
+				width: 100vw;
+				text-align: center;
+				margin-bottom: 0.8vh;
+				color: gray;
+				font-size: 0.8rem;
+			}
+			
+			.mainTitle p:nth-child(1){
+				font-size: 1rem;
+				font-weight: 450;
+				color: black;
+			}
+			.mainTitle p:nth-child(4){
+				width: 10vw;
+				position: absolute;
+				top: 1vh;
+				right: 3vw;
+				display: flex;
+				align-items: center;
+			}
+			.mainTitle p:nth-child(4) img{
+				width: 2vw;
+			}
+			 .echartsLeft,.echartsRight{
+					width: 50vw;
+			}
+        .echartsLeft{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /*padding: 2vh 0;*/
+            /*font-size: 2.4vh;*/
+            color: gray;
+        }
+        .score{
+           width:160px; height:160px; margin: 0 auto; position: relative;
+				background: url(../common/images/train-record-detail-bg.png) no-repeat; 
+				background-size: 100% 100%; text-align: center; line-height: 160px;
+				color: #333; border-radius: 50%; overflow: hidden;
+        }
+		.score span,strong{
+			position: relative;
+			z-index:10;
+		}
+		.score strong{
+			font-size: 5vh;
+		}
+		.orange{
+			position: absolute;
+			left: 0;
+			bottom: 0;
+			background: rgb(255,128,25);
+			width: 100%;
+			height: 89%;
+		}
+       
+        .title{
+            margin: 1.5vh 0;
+            width: 90%;
+			font-size: 1rem;
+        }
+        .title span{
+            display: inline-block;
+            width: 32%;
+            text-align: center;
+        }
+        .detail{
+            width: 90%;
+			padding-bottom: 1vh;
+			font-size: 1rem;
+			/*border-bottom:solid 0.2vh rgb(240,240,240);*/
+        }
+        .detail span{
+            display: inline-block;
+            width: 32%;
+            text-align: center;
+        }
+        .echarts{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .echartsRight{
+            width:50vw;
+            height: 270px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /*padding: 2vh 0;*/
+            font-size: 2vh;
+            color: gray;
+            padding: 0;
+        }
+        .echartsRight canvas{
+            width: 100%;
+            height: 270px!important;
+        }
+		.table{
+			width: 100vw;
+			font-size: 0.8rem;
+		}
+		.thead{
+			width: 100vw;
+			display: flex;
+			/*align-items: center;*/
+			height: 4.5vh;
+			background: rgb(247,247,247);
+			border-top: solid 1px lightgray;
+		}
+		.thead li{
+			height:4.5vh;
+			line-height: 4.5vh;
+			text-align: center;
+			border-left: solid 1px lightgray;
+		}
+		.thead li:nth-child(1){
+			width: 20%;
+			border-left: none;
+		}
+		.thead li:nth-child(2){
+			width: 40%;
+		}
+		.thead li:nth-child(3){
+			width: 10%;
+		}
+		.thead li:nth-child(4){
+			width: 10%;
+		}
+		.thead li:nth-child(5){
+			width: 20%;
+		}
+		.tbody{
+			width: 100vw;
+		}
+		.tbody ul{
+			width: 100vw;
+		}
+		.tbody ul li{
+			width: 100vw;
+			/*height: 4.5vh;*/
+			border-top: solid 1px lightgray;
+		}
+		.tbody ul li p{
+			padding: 2vh 0.5vw;
+			box-sizing: border-box;
+		}
+		.step{
+			width:20%;
+			padding-left: 2.5vw!important;
+		}
+		.actStep{
+			width: 40%;
+		}
+		.tbodyScore{
+			width: 10%;
+			text-align: center;
+		}
+		.fish{
+			width: 20%;
+		}
+		.fish img{
+			width: 1rem;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<nav class="nav flex">
+				<div class="navLeft">
+					<span>临床技能中心</span>
+				</div>
+				<div class="navRight flex">
+					<img src="../../../images/ostp/bell.png">
+					<img src="../../../images/ostp/feifei.png">
+					<span>禹落兴</span>
+					<img src="../common/images/turnDown.png" alt="">
+				</div>
+			</nav>
+			<header class="header flex"> 
+				<div class="headerLeft flex">
+					<img src="../../../images/ostp/logo.png">
+					<span>在线自主技能训练平台</span>
+				</div>
+				<div class="headerRight">
+					<ul class="flex">
+						<li>首页</li>
+						<li>我的作业</li>
+						<li>自主训练</li>
+						<li>课件库</li>
+						<li>在线试题</li>
+						<li>成长中心</li>
+					</ul>
+				</div>
+			</header>
+			<main class="main">
+				<div class="mainTitle">
+					<p>胸腔穿刺术</p>
+					<p>来源：在线训练</p>
+					<p>2017-03-07</p>
+					<p>
+						<img src="../common/images/head.png" alt="">
+						<span>刘邵雯</span>
+					</p>
+				</div>
+				 <div class="echarts">
+					<div class="echartsLeft">
+						<div class="score">
+							<span class="scores"><strong>89</strong>分</span>
+							<div class="orange"></div>
+						</div>
+						<p class="title">
+							<span>答题数</span>
+							<span>总用时长</span>
+							<span>击败同学</span>
+						</p>
+						<p class="detail">
+							<span><span style="color: rgb(255,128,25);">27</span>/27题</span>
+							<span><span style="color: rgb(255,128,25);">12</span>分钟</span>
+							<span><span style="color: rgb(255,128,25);">95</span>%</span>
+						</p>
+					</div>
+					<div class="echartsRight"></div>
+				</div>
+				<div class="table">
+					<ul class="thead">
+						<li>操作步骤</li>
+						<li>实际操作</li>
+						<li>附件</li>
+						<li>得分</li>
+						<li>能力变化</li>
+					</ul>
+					<div class="tbody">
+						<ul>
+							<li v-for="(item,key) in list" class="flex">
+								<p class="step">{{item.step}}</p>
+								<p class="actStep">{{item.actStep}}</p>
+								<p style="width:10%;"></p>
+								<p class="tbodyScore">{{item.score}}</p>
+								<p class="fish">
+									<img v-for="v in item.num" src="../common/images/fishOn.png" alt="">
+									<!--<img src="../common/images/fishOn.png" alt="">
+									<img src="../common/images/fishOn.png" alt="">
+									<img src="../common/images/fishOn.png" alt="">-->
+									<img v-for="n in item.Num" src="../common/images/fish.png" alt="">
+								</p>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</main>
+		</div>
+	</body>
+
+	<script>
+
+		var vm = new Vue({
+			el:'.container',
+			data:{
+				list:[
+					{step:'禁忌判断',actStep:'排除禁忌症',score:3,num:5},
+					{step:'术前核对沟通',actStep:'核查患者检查资料',score:3,num:5},
+					{step:'用物准备',actStep:'根据病人实际情况，选择用物',score:4,num:5},
+					{step:'调整体位',actStep:'患者常规取坐位，面向椅背，双手前臂平放于椅背，前额扶于前臂上（不能坐立者取半卧位）',score:2,num:5},
+					{step:'穿刺定位',actStep:'胸部叩诊，选择实音明显的部位进行穿刺',score:2,num:4,Num:1},
+					{step:'穿刺定位',actStep:'选肩胛下角线第7~9肋间或者腋后线第7、8肋间',score:3,num:3,Num:2},
+					{step:'穿刺定位',actStep:'穿刺点可用甲紫在皮肤上做标记',score:3,num:5},
+					{step:'消毒',actStep:'拿取新棉球准备开始第一次消毒',score:1,num:5},
+					{step:'消毒',actStep:'第一次消毒以穿刺点为圆心',score:2,num:5},
+					{step:'消毒',actStep:'以穿刺点为中心，半径不小于15cm',score:2,num:5},
+					{step:'消毒',actStep:'更新新棉球准备开始第二次消毒',score:2,num:5},
+					{step:'消毒',actStep:'第二次消毒以穿刺点为圆心',score:2,num:5},
+					{step:'消毒',actStep:'以穿刺点为中心，半径略不小于第一次，约10cm',score:2,num:5},
+					{step:'消毒',actStep:'更新新棉球准备开始第三次消毒',score:2,num:5},
+					{step:'消毒',actStep:'第三次消毒以穿刺点为圆心',score:2,num:5},
+					{step:'消毒',actStep:'以穿刺点为中心，半径略不小于第一次，约8cm',score:2,num:5},
+					{step:'消毒',actStep:'消毒过程中术区应该无污染',score:3,num:3,Num:2},
+					{step:'消毒',actStep:'每次消毒应该留白',score:4,num:4,Num:1},
+					{step:'消毒',actStep:'一般情况下，消毒次数应为2-3次',score:2,num:5},
+					{step:'铺巾',actStep:'将消毒孔巾铺在穿刺部位，使穿刺点位于孔巾的中心',score:1,num:5},
+					{step:'铺巾',actStep:'将胶带孔巾固定牢固，过程中无移动',score:1,num:5},
+					{step:'局麻',actStep:'核对麻药名称，剂量等',score:1,num:4,Num:1},
+					{step:'局麻',actStep:'用5ml注射器，抽吸2ml利多卡因麻醉药',score:2,num:5},
+					{step:'局麻',actStep:'打皮丘角度，与皮肤呈0~15度夹角打皮丘',score:2,num:4,Num:1},
+					{step:'局麻',actStep:'打皮丘成功皮肤表面应该有皮丘出现',score:2,num:5},
+					{step:'局麻',actStep:'局麻进针位置应为穿刺位置，在皮丘中心处进针',score:2,num:5},
+					{step:'局麻',actStep:'垂直进针',score:3,num:5},
+					{step:'局麻',actStep:'每次推注麻醉药前回抽，观察有无气体、血液、腹水',score:2,num:3,Num:2},
+					{step:'局麻',actStep:'各层都匀速推药',score:2,num:5},
+					{step:'局麻',actStep:'局麻进针时，穿刺针应平稳，不晃动',score:2,num:3,Num:2},
+					{step:'局麻',actStep:'穿刺针经肋骨上缘垂直胸壁刺入',score:3,num:5},
+					{step:'局麻',actStep:'穿刺进针时，穿刺针应平稳，不晃动',score:2,num:5},
+					{step:'局麻',actStep:'抽液量：首次不超过600ml，以后每次不超过1000ml',score:4,num:5},
+					{step:'术后处理',actStep:'覆盖纱布、胶布固定',score:2,num:5},
+					{step:'标本收集',actStep:'标本送检（病原体检查，常规，生化，其他：TB-ab、CEA、细胞学等（只要有一种即可））顺序：'
+					+'第一管送病原体检查，其余不定',score:2,num:5},
+				],
+				// num:[]
+			},
+			mounted:function(){
+				
+			}
+		})
+var arr1 = [
+		{text:'病人安全',max:100},
+		{text:'无菌观念',max:100},
+		{text:'人文关怀',max:100},
+		{text:'专业知识',max:100},
+		{text:'专业技能',max:100},
+		{text:'临床思维',max:100},
+		{text:'职业素养',max:100},
+		{text:'医患沟通',max:100}
+	];			
+	writeradar({
+		obj:$('.echartsRight')[0],
+		name:arr1,
+		value:[80,90,50,90,95,0,100,100],
+		show:true,
+		bg:'#ffffff',
+		line:'#0496ca',
+		type:'solid',
+		color:'rgba(4,150,202,0.2)'
+	});			
+	</script>
+	
+</html>

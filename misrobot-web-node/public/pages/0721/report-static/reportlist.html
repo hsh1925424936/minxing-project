@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理与优化</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <script src="../common/js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../common/js/vue.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../common/js/swiper.min.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../common/css/swiper.min.css" type="text/css" />
+</head>
+<body>
+<div id="reportlist">
+    <div>
+        <div class="menus">
+            <p class="tabBar" @click="tabBar(1)">按角色查看</p>
+            <p class="tabBar" @click="tabBar(2)">按时间查看</p>
+        </div>
+        <div class="main">
+            <div class="swiper-list">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <p>学生</p>
+                        <ul class="student">
+                            <li v-for="(item,index) in student">
+                                <a :href="item.url">
+                                    <i></i>
+                                </a>
+                                <span>
+                                    {{item.name}}
+                                </span>
+                            </li>
+                        </ul>
+                        <p>老师</p>
+                        <ul class="teacher">
+                            <li v-for="(item,index) in teacher">
+                                <a :href="item.url">
+                                    <i></i>
+                                </a>
+                                <span>
+                                    {{item.name}}
+                                </span>
+                            </li>
+                        </ul>
+                        <p>管理者</p>
+                        <ul class="admin">
+                            <li v-for="(item,index) in admin">
+                                <a :href="item.url">
+                                    <i></i>
+                                </a>
+                                <span>
+                                    {{item.name}}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="swiper-slide">
+                        <p>课前</p>
+                        <ul class="before">
+                            <li v-for="(item,index) in before">
+                                <a :href="item.url">
+                                    <i></i>
+                                </a>
+                                <span>
+                                    {{item.name}}
+                                </span>
+                            </li>
+                        </ul>
+                        <p>课上</p>
+                        <ul class="doing">
+                            <li v-for="(item,index) in doing">
+                                <a :href="item.url">
+                                    <i></i>
+                                </a>
+                                <span>
+                                    {{item.name}}
+                                </span>
+                            </li>
+                        </ul>
+                        <p>课后</p>
+                        <ul class="after">
+                            <li v-for="(item,index) in after">
+                                <a :href="item.url">
+                                    <i></i>
+                                </a>
+                                <span>
+                                    {{item.name}}
+                                </span>
+                            </li>
+                        </ul>
+                        <p>OSCE考试</p>
+                        <ul class="exam">
+                            <li v-for="(item,index) in exam">
+                                <a :href="item.url">
+                                    <i></i>
+                                </a>
+                                <span>
+                                    {{item.name}}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var vm = new Vue({
+        el: '#reportlist',
+        data: {
+            student:[
+                {'url':'./train-record-detail-phone.html',name:'学生-单次-在线虚拟训练报告'},
+                {'url':'./train-record.html',name:'学生-单次-虚实结合训练报告'},
+                {'url':'./friendsHelp.html',name:'学生-单次-同伴互助训练报告'},
+                {'url':'./osce_student.html',name:'学生-个人成绩报告'}
+            ],
+            teacher:[
+                {'url':'./report.html',name:'班级-在线虚拟训练汇总报告'},
+                {'url':'./report_after_class.html',name:'班级-随堂训练汇总报告'},
+                {'url':'./allreport.html',name:'班级-教学情况汇总报告'},
+                {'url':'./osce_teacher.html',name:'考官-该站汇总分析报告'}
+            ],
+            admin:[
+                {'url':'./weekreport-wap.html',name:'管理者-教学情况周报'},
+                {'url':'./osce_admin.html',name:'管理者-整场考试汇总分析报告'}
+            ],
+            before:[
+                {'url':'./train-record-detail-phone.html',name:'学生-单次-在线虚拟训练报告'},
+                {'url':'./report.html',name:'班级-在线虚拟训练汇总报告'}
+            ],
+            doing:[
+                {'url':'./train-record.html',name:'学生-单次-虚实结合训练报告'},
+                {'url':'./friendsHelp.html',name:'学生-单次-同伴互助训练报告'},
+                {'url':'./report_after_class.html',name:'班级-随堂训练汇总报告'}
+            ],
+            after:[
+                {'url':'./allreport.html',name:'班级-教学情况汇总报告'},
+                {'url':'./weekreport-wap.html',name:'管理者-教学情况周报'}
+            ],
+            exam:[
+                {'url':'./osce_student.html',name:'学生-个人成绩报告'},
+                {'url':'./osce_teacher.html',name:'考官-该站汇总分析报告'},
+                {'url':'./osce_admin.html',name:'管理者-整场考试汇总分析报告'}
+            ],
+            mySwiper:{},
+            index:0
+        },
+        created() {
+
+        },
+        mounted () {
+            let self = this;
+            setTimeout(function(){
+                self.mySwiper = new Swiper('.swiper-list', {
+                    autoHeight:true,
+                    onSlideChangeEnd:function(swiper){
+                        self.index = swiper.activeIndex
+                    }
+                });
+            },100);
+            $($('.tabBar')[0]).addClass('active')
+        },
+        watch:{
+            'index':function(val,oldval){
+                $('.tabBar').removeClass('active');
+                $($('.tabBar')[val]).addClass('active')
+            }
+        },
+        methods: {
+            tabBar(val) {
+                $('.tabBar').removeClass('active');
+                $(event.target).addClass('active');
+                if(val == 1){
+                    this.mySwiper.slidePrev();
+                }else if(val == 2){
+                    this.mySwiper.slideNext();
+                }
+            }
+        }
+    })
+</script>
+<style lang="scss" scoped>
+    body {
+        background: #f2f2f2;
+    }
+    * {
+        margin:0;
+        padding:0;
+    }
+    .menus {
+        position: fixed;
+        width: 100vw;
+        height: 7vh;
+        background: #fff;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        z-index:2;
+    }
+    .menus p {
+        /* width: 50%; */
+        height: 8vh;
+        line-height: 8vh;
+        text-align: center;
+        font-size: 1.1rem;
+        padding: 0 10px;
+    }
+    .main {
+        padding-top:7vh;
+    }
+    .active {
+        color: #3499db;
+        border-bottom: solid 3px #3499db;
+    }
+    ul {
+        display: flex;
+        flex-wrap: wrap;
+        overflow: hidden;
+        padding:0.5rem;
+        background: #e8e8e8;
+    }
+    .before li:first-child i {
+        background: url('../common/images/report-2.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .before li:nth-child(2) i {
+        background: url('../common/images/report-5.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .doing li:first-child i {
+        background: url('../common/images/report-3.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .doing li:nth-child(2) i {
+        background: url('../common/images/report-9.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .doing li:nth-child(3) i {
+        background: url('../common/images/report-4.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .exam li:first-child i {
+        background: url('../common/images/report-1.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .exam li:nth-child(2) i {
+        background: url('../common/images/report-10.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .exam li:nth-child(3) i {
+        background: url('../common/images/report-7.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .after li:first-child i {
+        background: url('../common/images/report-8.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .after li:nth-child(2) i {
+        background: url('../common/images/report-6.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .student li:first-child i {
+        background: url('../common/images/report-2.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .student li:nth-child(2) i {
+        background: url('../common/images/report-3.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .student li:nth-child(3) i {
+        background: url('../common/images/report-9.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .student li:nth-child(4) i {
+        background: url('../common/images/report-1.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .teacher li:first-child i {
+        background: url('../common/images/report-5.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .teacher li:nth-child(2) i {
+        background: url('../common/images/report-4.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .teacher li:nth-child(3) i {
+        background: url('../common/images/report-8.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .teacher li:nth-child(4) i {
+        background: url('../common/images/report-10.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .admin li:nth-child(1) i {
+        background: url('../common/images/report-6.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    .admin li:nth-child(2) i {
+        background: url('../common/images/report-7.png'),0 0 no-repeat;
+        background-size: cover;
+    }
+    li {
+        width:calc(25vw - 0.3rem);
+        display: block;
+        float: left;
+    }
+    i {
+        display: block;
+        width:23vw;
+        height:23vw;
+    }
+    span {
+        text-align: center;
+        font-size: 0.2rem;
+        color: #666;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+    }
+    ul a {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #fff;
+        border-radius: 6px;
+        margin:0.2rem;
+    }
+    p {
+        color: #333;
+        margin:0;
+        line-height: 35px;
+        padding-left:0.5rem;
+    }
+</style>
+</body>
+</html>

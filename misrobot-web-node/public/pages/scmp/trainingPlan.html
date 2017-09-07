@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>培训计划管理</title>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/element.js"></script>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+    <link rel="stylesheet" href="../../css/element.css">
+    <link rel="stylesheet" href="../../css/reset.css">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        * {
+            margin:0;
+            padding:0;
+        }
+        body {
+            padding:15px;
+            background: #fff;
+        }
+        i {
+            font-style: normal;
+        }
+        .search {
+            width:200px;
+            float: right;
+        }
+        .new-plan {
+            width:680px;
+        }
+        .shade {
+            position: absolute;
+            z-index: 999;
+            width:100%;
+            height:100%;
+            background: #fff;
+            opacity: 0;
+            top:0;
+            left:0;
+            display: block
+        }
+        .new-plan {
+            position: absolute;
+            top:100px;
+            margin:0 auto;
+            left:0;
+            right:0;
+            z-index: 1000;
+            background: #fff;
+            border:1px solid #ddd;
+        }
+        .new-plan header {
+            padding:5px 10px;
+            line-height: 20px;
+            background: #eee;
+        }
+        .new-plan header p {
+
+        }
+        .new-plan header p i {
+            float: right;
+            cursor: pointer;
+        }
+        .new-plan section {
+            padding:10px 20px;
+        }
+        span i:first-child {
+            display: inline-block;
+            width:115px;
+            text-align: left;
+        }
+        li span:first-child {
+            display: inline-block;
+            width:50%;
+        }
+        .bottom-line {
+            border-bottom: 1px solid #ddd;
+        }
+        .bottom-line p,li {
+            padding:10px;
+        }
+        .course {
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div id="train-plan" v-cloak>
+        <p style="padding-bottom: 10px">培训计划管理</p>
+        <header>
+            <el-button type="info" @click="newPlan">增加</el-button>
+            <div class="search">
+                <el-input placeholder="请输入计划名称" v-model="searchName">
+                    <el-button slot="append" icon="search" @click="searchPlan"></el-button>
+                </el-input>
+            </div>
+        </header>
+        <section>
+            <template>
+                <el-tabs v-model="activeName" @tab-click="handleClick">
+                    <el-tab-pane label="编辑中" name="edit">
+                        <template>
+                            <el-table :data="list" border max-height="700" style="width: 100%">
+                                <el-table-column type="index" label="序号" width="70"></el-table-column>
+                                <el-table-column prop="trainingname" label="计划名称"  width="200"></el-table-column>
+                                <el-table-column prop="limitedcount" label="人数" width="100"></el-table-column>
+                                <el-table-column prop="trainingcost" label="培训费用（元）" width="140"></el-table-column>
+                                <el-table-column prop="remarks" label="备注" min-width="300"></el-table-column>
+                                <el-table-column label="操作" width="260">
+                                    <template scope="scope">
+                                        <el-button size="small" type="info" @click="look(scope.row.trainingplanid)">查看</el-button>
+                                        <el-button size="small" type="info" @click="showUpdate(scope.row)">修改</el-button>
+                                        <el-button size="small" type="info" @click="publish(scope.row.trainingplanid,'2')">发布</el-button>
+                                        <el-button size="small" type="danger" @click="deletePlan(scope.row.trainingplanid)">删除</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </template>
+                    </el-tab-pane>
+                    <el-tab-pane label="报名中" name="enlist">
+                        <template>
+                            <el-table :data="list" border max-height="700" style="width: 100%">
+                                <el-table-column type="index" label="序号" width="70"></el-table-column>
+                                <el-table-column prop="trainingname" label="计划名称"  width="200"></el-table-column>
+                                <el-table-column prop="limitedcount" label="预计人数" width="100"></el-table-column>
+                                <el-table-column prop="realcount" label="实际人数" width="100"></el-table-column>
+                                <el-table-column prop="trainingcost" label="培训费用（元）" width="140"></el-table-column>
+                                <el-table-column prop="remarks" label="备注" min-width="300"></el-table-column>
+                                <el-table-column label="操作" width="280">
+                                    <template scope="scope">
+                                        <el-button size="small" type="info" @click="look(scope.row.trainingplanid)">查看</el-button>
+                                        <el-button size="small" type="info" @click="studentinfo(scope.row.trainingplanid,'1,2,3',scope.row.trainingname)">学员</el-button>
+                                        <el-button size="small" type="danger" @click="showUpdate(scope.row)">修改</el-button>
+                                        <el-button size="small" type="danger" @click="publish(scope.row.trainingplanid,'3',scope.row.trainingname)">结束报名</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </template>
+                    </el-tab-pane>
+                    <el-tab-pane label="开课中" name="course">
+                        <template>
+                            <el-table :data="list" border max-height="700" style="width: 100%">
+                                <el-table-column type="index" label="序号" width="70"></el-table-column>
+                                <el-table-column prop="trainingname" label="计划名称" width="200"></el-table-column>
+                                <el-table-column prop="limitedcount" label="预计人数" width="100"></el-table-column>
+                                <el-table-column prop="realcount" label="实际人数" width="100"></el-table-column>
+                                <el-table-column prop="trainingcost" label="培训费用（元）" width="140"></el-table-column>
+                                <el-table-column prop="remarks" label="备注" min-width="300"></el-table-column>
+                                <el-table-column label="操作" width="200">
+                                    <template scope="scope">
+                                        <el-button size="small" type="info" @click="look(scope.row.trainingplanid)">查看</el-button>
+                                        <el-button size="small" type="info" @click="studentinfo(scope.row.trainingplanid,3,scope.row.trainingname)">学员</el-button>
+                                        <el-button size="small" type="danger" @click="publish(scope.row.trainingplanid,'4',scope.row.trainingname,2)">结课</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </template>
+                    </el-tab-pane>
+                    <el-tab-pane label="已结课" name="lessons">
+                        <template>
+                            <el-table :data="list" border max-height="700" style="width: 100%">
+                                <el-table-column type="index" label="序号" width="70"></el-table-column>
+                                <el-table-column prop="trainingname" label="计划名称"  width="200"></el-table-column>
+                                <el-table-column prop="limitedcount" label="预计人数" width="100"></el-table-column>
+                                <el-table-column prop="realcount" label="实际人数" width="100"></el-table-column>
+                                <el-table-column prop="trainingcost" label="培训费用（元）" width="140"></el-table-column>
+                                <el-table-column prop="remarks" label="备注" min-width="300"></el-table-column>
+                                <el-table-column label="操作" width="85">
+                                    <template scope="scope">
+                                        <el-button size="small" type="info" @click="look(scope.row.trainingplanid)">查看</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </template>
+                    </el-tab-pane>
+                </el-tabs>
+            </template>
+        </section>
+        <div class="shade" v-show="planBox"></div>
+        <div v-show="planBox" class="new-plan">
+            <header>
+                <p>
+                    <span><template v-if="addView">新建培训计划</template><template v-else>修改培训计划</template></span>
+                    <i class="el-icon-close" @click="closePlan('form')"></i>
+                </p>
+            </header>
+            <section>
+                <el-form :model="form" :rules="rules" ref="form" label-width="120px" :label-position="labelPosition">
+                    <el-row :gutter="20">
+                        <el-col :span="24">
+                            <el-form-item label="计划名称" prop="trainingname">
+                                <el-input :disabled="isDisabled" v-model="form.trainingname"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="24">
+                            <el-form-item label="培训内容" prop="content">
+                                <el-input type="textarea" v-model="form.content"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="预计举办期数" prop="expectedcount">
+                                <el-input v-model.number="form.expectedcount"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="培训学时" prop="trainingcycles" label-width="80px">
+                                <el-input placeholder="以学时为单位（学时/期）" v-model.number="form.trainingcycles"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="培训费用" prop="trainingcost">
+                                <el-input placeholder="单位（元）" v-model.number="form.trainingcost"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="举办时间" prop="runtime" label-width="80px">
+                                <el-input v-model="form.runtime"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="报名截止" prop="deadline">
+                                <el-date-picker :disabled="isDisabled" type="date" placeholder="报名截止" v-model="form.deadline" :picker-options="pickerOptions" @change="dateChange"></el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="限定人数" prop="limitedcount" label-width="80px">
+                                <el-input :disabled="isDisabled" placeholder="无限制可不填" v-model.number="form.limitedcount"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="24">
+                            <el-form-item label="备注说明" style="width: 100%;" prop="rul">
+                                <el-input type="textarea" v-model="form.remarks"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="24">
+                            <el-form-item>
+                                <el-button v-if="addView" type="primary" @click="onSubmit('form')">提交</el-button>
+                                <el-button v-else type="primary" @click="update(form.trainingplanid,'form')">提交</el-button>
+                                <el-button @click="closePlan('form')">取消</el-button>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </section>
+        </div>
+        <div class="shade" v-show="detail"></div>
+        <div class="new-plan" v-show="detail">
+            <header>
+                <p>
+                    <span>培训计划详情</span>
+                    <i class="el-icon-close" @click="closeDetail"></i>
+                </p>
+            </header>
+            <section>
+                <div class="bottom-line">
+                    <p><span>名称：</span><span>{{view.trainingname}}</span></p>
+                    <p><span>培训内容：</span><span>{{view.content}}</span></p>
+                </div>
+                <div>
+                    <ul>
+                        <li>
+                            <span><i>预期举办期数：</i><i>{{view.expectedcount}}期</i></span>
+                            <span><i>培训学时：</i><i>{{view.trainingcycles}}学时/期</i></span>
+                        </li>
+                        <li>
+                            <span><i>培训费用：</i><i>{{view.trainingcost}}元</i></span>
+                            <span><i>限定人数：</i><i>{{view.limitedcount}}</i></span>
+                        </li>
+                        <li>
+                            <span><i>举办时间：</i><i>{{view.runtime}}</i></span>
+                            <span><i>结束时间：</i><i>{{view.deadline}}</i></span>
+                        </li>
+                        <li>
+                            <span><i>备注：</i><i>{{view.remarks}}</i></span>
+                            <span v-show="courselist.length!==0"><i>实际人数：</i><i>{{view.realcount}}</i></span>
+                        </li>
+                        <li>
+                            <span><i>状态：</i><i>{{status}}</i></span>
+                        </li>
+                    </ul>
+                </div>
+                <div v-show="courselist.length!==0" class="course">
+                    <template>
+                        <el-table :data="courselist" border max-height="500" style="width: 100%">
+                            <el-table-column type="index" label="序号" width="70"></el-table-column>
+                            <el-table-column prop="coursename" label="课程名称"></el-table-column>
+                            <el-table-column prop="teachingplace" label="授课地点"></el-table-column>
+                            <el-table-column label="授课时间">
+                                <template scope="scope">
+                                    <span>{{ scope.row.starttime.substr(0,16) }}-{{ scope.row.endtime.substr(11,5) }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="teacher" label="授课老师"></el-table-column>
+                        </el-table>
+                    </template>
+                </div>
+            </section>
+        </div>
+        <div class="shade" v-show="student"></div>
+        <div v-show="student" class="new-plan">
+            <header>
+                <p>
+                    <span>{{planname}}学员详情</span>
+                    <i class="el-icon-close" @click="closeStudent"></i>
+                </p>
+            </header>
+            <template>
+                <el-table :data="studentList" border max-height="500" style="width: 100%">
+                    <el-table-column type="index" label="序号" width="70"></el-table-column>
+                    <el-table-column prop="studentname" label="学员姓名"></el-table-column>
+                    <el-table-column prop="studenttel" label="手机号码"></el-table-column>
+                    <el-table-column label="报名时间">
+                        <template scope="scope">
+                            <span v-if="scope.row.signuptime">{{ scope.row.signuptime.substr(0,10)}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="状态">
+                        <template scope="scope">
+                            <span v-show="scope.row.signupstatus==1">待审核</span>
+                            <span v-show="scope.row.signupstatus==2">待缴费</span>
+                            <span v-show="scope.row.signupstatus==3">已缴费</span>
+                            <span v-show="scope.row.signupstatus==0">已取消</span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </template>
+        </div>
+    </div>
+</body>
+<script>
+    var vm = new Vue( {
+        el:"#train-plan",
+        data() {
+            var checkNum = function(rule, value, callback){
+                if (value=='') {
+                    callback();
+                }else if (value!==''&&!Number.isInteger(value)){
+                    callback(new Error('请输入数字值'));
+                }else {
+                    callback();
+                }
+            };
+            return {
+                planname:'',
+                tab:'',
+                isDisabled:false,
+                searchName:'',
+                addView:true,
+                activeName: 'edit',
+                list:[],
+                planBox:false,
+                labelPosition:'left',
+                rul:false,
+                view:[],
+                search:1,
+                detail:false,
+                courselist:[],
+                student:false,
+                studentList:[],
+                status:'',
+                form: {
+                    trainingname: '',//计划名称
+                    content: '',//培训内容
+                    expectedcount: '',//预计举办期数
+                    trainingcycles: '',//培训周期
+                    trainingcost: '',//培训费用
+                    runtime: '',//举办时间
+                    deadline: '',//报名截止
+                    limitedcount: '',//限定人数
+                    remarks:''//备注说明
+                },
+                rules: {
+                    trainingname: [
+                        { required: true, message: '请输入计划名称'}
+                    ],
+                    content: [
+                        { required: true, message: '请输入培训内容'}
+                    ],
+                    expectedcount: [
+                        { required: true, message: '请输入预计举办期数'},
+                        { type: 'number', message: '请输入数字'}
+                    ],
+                    trainingcycles: [
+                        { required: true, message: '请输入培训学时'},
+                        { type: 'number', message: '请输入数字'}
+                    ],
+                    trainingcost: [
+                        { required: true, message: '请输入培训费用'},
+                        { type: 'number', message: '请输入数字'}
+                    ],
+                    runtime: [
+                        { required: true, message: '请输入举办时间'}
+                    ],
+                    deadline: [
+                        { required: true, message: '请输入报名截止时间'}
+                    ],
+                    limitedcount: [
+                        { validator: checkNum, trigger: 'blur' }
+                    ]
+                },
+                pickerOptions: {
+                    disabledDate(time) {
+                        return time.getTime() < Date.now() - 8.64e7;
+                    }
+                }
+            };
+        },
+        watch: {
+            'activeName': function(val, oldVal){
+               if (val=='edit'){
+                   this.init(1);
+                   this.search=1;
+               }else if (val=='enlist'){
+                   this.init(2);
+                   this.search=2;
+               }else if (val=='course'){
+                   this.init(3);
+                   this.search=3;
+               }else if (val=='lessons'){
+                   this.init(4);
+                   this.search=4;
+               }
+            }
+        },
+        filter: {
+
+        },
+        mounted () {
+            this.init(1)
+        },
+        methods: {
+            handleClick(tab, event) {
+                if (tab.name=='enlist'){
+                    this.tab='enlist'
+                }else {
+                    this.tab=''
+                }
+            },
+            init:function(prama){
+                var _this=this;
+                var _json={ "1":{
+                    command:"trainingplan/querytrainingplanlist",
+                    sessionid:getCookie('sid'),
+                    loginid:getCookie('uid'),
+                    trainingstatus:prama
+                }};
+                var json=JSON.stringify(_json);
+                $.ajax({
+                    url: "/trainingplan/querytrainingplanlist",
+                    type: "POST",
+                    data:json,
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            _this.list=data.list;
+                        }else if(data.errcode==9904){
+                            layer.msg("登录信息已失效，请重新登录");
+                        }
+                    },
+                    error:function() {
+                        errfn();
+                    }
+                })
+            },
+            newPlan:function(){
+                this.$refs["form"].resetFields();
+                this.planBox=true;
+            },
+            closePlan:function(prama){
+                this.planBox=false;
+                this.addView=true;
+                this.isDisabled=false;
+                this.clean(prama);
+            },
+            dateChange(val) {
+                this.form.deadline=val;
+            },
+            onSubmit:function(formName) {
+                var _this=this;
+                var _json={ "1":{
+                    command:"trainingplan/addtrainingplan",
+                    sessionid:getCookie('sid'),
+                    loginid:getCookie('uid'),
+                    trainingname:_this.form.trainingname,//计划名称
+                    content:_this.form.content,//计划内容
+                    expectedcount:_this.form.expectedcount,//预计举办期数
+                    trainingcycles:_this.form.trainingcycles,//培训周期
+                    trainingcost:_this.form.trainingcost,//培训费用
+                    runtime:_this.form.runtime,//举办时间
+                    deadline:_this.form.deadline+' 23:59:59',//报名截止时间
+                    limitedcount:_this.form.limitedcount,//限定人数
+                    remarks:_this.form.remarks//备注
+                }};
+                var json=JSON.stringify(_json);
+                _this.$refs[formName].validate(function(valid){
+                    if (valid) {
+                        $.ajax({
+                            url: "/trainingplan/addtrainingplan",
+                            type: "POST",
+                            data:json,
+                            success: function (data) {
+                                data = data["1"];
+                                if (data.errcode == 0) {
+                                    _this.$refs[formName].resetFields();
+                                    _this.planBox=false;
+                                    if(_this.search==1){
+                                        _this.init(1);
+                                    }
+                                    _this.clean(formName);
+                                    layer.msg("已成功添加。");
+                                }else if(data.errcode==9904){
+                                    layer.msg("登录信息已失效，请重新登录");
+                                }else if (data.errcode==1901){
+                                    layer.msg("培训计划名称不允许重复");
+                                    return
+                                }
+                            },
+                            error:function() {
+                                errfn();
+                            }
+                        })
+                    } else {
+                       layer.msg('请填写必填项');
+                        return false;
+                    }
+                });
+            },
+            look:function(prama){
+                var _this=this;
+                var _json={ "1":{
+                    command:"trainingplan/querytrainingplaninfo",
+                    sessionid:getCookie('sid'),
+                    loginid:getCookie('uid'),
+                    trainingplanid:prama
+                }};
+                var json=JSON.stringify(_json);
+                $.ajax({
+                    url: "/trainingplan/querytrainingplaninfo",
+                    type: "POST",
+                    data:json,
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            _this.courselist=data.list;
+                            _this.view=data;
+                            if(data.deadline&&typeof(data.deadline)==='string'){
+                                _this.view.deadline=_this.view.deadline.slice(0,10);
+                            }else {
+                                _this.view.deadline=""
+                            }
+                            if (data.trainingstatus==1){
+                                _this.status="编辑中"
+                            }else if(data.trainingstatus==2){
+                                _this.status="报名中"
+                            }else if(data.trainingstatus==3){
+                                _this.status="开课中"
+                            }else if(data.trainingstatus==4){
+                                _this.status="已结课"
+                            }
+                            _this.detail=true;
+                        }else if(data.errcode==9904){
+                            layer.msg("登录信息已失效，请重新登录");
+                        }
+                    },
+                    error:function() {
+                        errfn();
+                    }
+                })
+            },
+            clean:function(formName){
+                for(var k in this.form) {
+                    this.form[k] = ""
+                }
+                this.$refs[formName].resetFields();
+            },
+            closeDetail:function(){
+                this.detail=false;
+                this.courselist=[];
+                this.view=[];
+            },
+            closeStudent:function(){
+                this.student=false;
+                this.studentList=[];
+            },
+            showUpdate:function(prama){
+                var _this=this;
+                _this.$refs["form"].resetFields();
+                if (prama.limitedcount=="无限制"){
+                    prama.limitedcount=''
+                }
+                prama.trainingcost=Number(prama.trainingcost);
+                var plan = $.extend({}, prama);
+                _this.form=plan;
+                _this.addView=false;
+                if (_this.tab=='enlist'&&_this.addView==false){
+                    this.isDisabled=true;
+                }
+                _this.planBox=true;
+            },
+            update:function(id,prama){
+                var _this=this;
+                var _json={ "1":{
+                    command:"trainingplan/updatetrainingplan",
+                    sessionid:getCookie('sid'),
+                    loginid:getCookie('uid'),
+                    trainingplanid:id,
+                    trainingname:_this.form.trainingname,//计划名称
+                    content:_this.form.content,//计划内容
+                    expectedcount:_this.form.expectedcount,//预计举办期数
+                    trainingcycles:_this.form.trainingcycles,//培训周期
+                    trainingcost:_this.form.trainingcost,//培训费用
+                    runtime:_this.form.runtime,//举办时间
+                    deadline:_this.form.deadline+' 23:59:59',//报名截止时间
+                    limitedcount:_this.form.limitedcount,//限定人数
+                    remarks:_this.form.remarks//备注
+                }};
+                var json=JSON.stringify(_json);
+                $.ajax({
+                    url: "/trainingplan/updatetrainingplan",
+                    type: "POST",
+                    data:json,
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            _this.$refs[prama].resetFields();
+                            _this.isDisabled=false;
+                            _this.planBox=false;
+                            _this.clean(prama);
+                            if (!_this.addView){
+                                _this.init(_this.search);
+                            }
+                            setTimeout(function(){layer.msg("已成功修改。")},1500);
+                        }else if(data.errcode==9904){
+                            layer.msg("登录信息已失效，请重新登录");
+                        }else if (data.errcode==1901){
+                            layer.msg("培训计划名称不允许重复");
+                            return
+                        }
+                    },
+                    error:function() {
+                        errfn();
+                    }
+                })
+            },
+            publish:function(prama,prama2,prama3,prama4){
+                var _this=this;
+                var _json={ "1":{
+                    command:"trainingplan/updatetrainingstatus",
+                    sessionid:getCookie('sid'),
+                    loginid:getCookie('uid'),
+                    trainingplanid:prama,
+                    trainingstatus:prama2,
+                    sclassstatus:prama4
+                }};
+                var json=JSON.stringify(_json);
+                var msg='';
+                var result='';
+                var status = '';
+                if (prama2=='2'){
+                    this.msg='是否确认将此培训计划开放报名？';
+                    this.result='已成功开放报名';
+                    this.status=1
+                }else if (prama2=='1'){
+                    this.msg='是否确认取消此培训计划开放报名？';
+                    this.result='已取消此开放报名';
+                    this.status=2
+                }else if (prama2=='3'){
+                    this.msg='是否确认结束此培训计划开放报名？';
+                    this.result='已结束此开放报名';
+                    this.status=2
+                }else if (prama2=='4'){
+                    this.msg='是否确认结课？';
+                    this.result='已结课';
+                    this.status=3
+                }
+                layer.confirm(this.msg, {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    $.ajax({
+                        url: "/trainingplan/updatetrainingstatus",
+                        type: "POST",
+                        data:json,
+                        success: function (data) {
+                            data = data["1"];
+                            if (data.errcode == 0) {
+                                _this.init(_this.status);
+                                layer.msg(_this.result);
+                                if (prama2=='3'){
+                                    _this.newClass(prama,1,prama3);
+                                }
+                            }else if(data.errcode==9904){
+                                layer.msg("登录信息已失效，请重新登录");
+                            }else if(data.errcode==1901) {
+                                layer.msg("当前计划报名截止时间已过期，如需发布请修改截止时间。");
+                            }
+                        },
+                        error:function() {
+                            errfn();
+                        }
+                    })
+                });
+            },
+            deletePlan:function(id){
+                var _this=this;
+                var _json={ "1":{
+                    command:"trainingplan/deletetrainingplan",
+                    sessionid:getCookie('sid'),
+                    loginid:getCookie('uid'),
+                    trainingplanid:id
+                }};
+                var json=JSON.stringify(_json);
+                layer.confirm('是否确认删除此培训计划？', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    $.ajax({
+                        url: "/trainingplan/deletetrainingplan",
+                        type: "POST",
+                        data:json,
+                        success: function (data) {
+                            data = data["1"];
+                            if (data.errcode == 0) {
+                                _this.init(1);
+                                layer.msg("已成功删除。");
+                            }else if(data.errcode==9904){
+                                layer.msg("登录信息已失效，请重新登录");
+                            }
+                        },
+                        error:function() {
+                            errfn();
+                        }
+                    })
+                });
+            },
+            searchPlan:function(){
+                var _this=this;
+                var _json={ "1":{
+                    command:"trainingplan/querytrainingplanlist",
+                    sessionid:getCookie('sid'),
+                    loginid:getCookie('uid'),
+                    trainingname:_this.searchName,
+                    trainingstatus:_this.search
+                }};
+                var json=JSON.stringify(_json);
+                $.ajax({
+                    url: "/trainingplan/querytrainingplanlist",
+                    type: "POST",
+                    data:json,
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            _this.list=data.list;
+                        }else if(data.errcode==9904){
+                            layer.msg("登录信息已失效，请重新登录");
+                        }
+                    },
+                    error:function() {
+                        errfn();
+                    }
+                })
+            },
+            studentinfo:function(id,prama,prama2){
+                var _this=this;
+                _this.planname='';
+                _this.planname=prama2;
+                var _json={ "1":{
+                    command:"trainingplan/querystudentlist",
+                    sessionid:getCookie('sid'),
+                    loginid:getCookie('uid'),
+                    trainingplanid:id,
+                    signupstatus:prama
+                }};
+                var json=JSON.stringify(_json);
+                $.ajax({
+                    url: "/trainingplan/querystudentlist",
+                    type: "POST",
+                    data:json,
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            _this.studentList=data.list;
+                            _this.student=true;
+                        }else if(data.errcode==9904){
+                            layer.msg("登录信息已失效，请重新登录");
+                        }
+                    },
+                    error:function() {
+                        errfn();
+                    }
+                })
+            },
+            newClass(prama,prama2,prama3){
+                var _this=this;
+                var _json={ "1":{
+                    command:"trainingplan/addsclass",
+                    sessionid:getCookie('sid'),
+                    loginid:getCookie('uid'),
+                    projectId:prama,
+                    type:1,
+                    status:prama2,
+                    name:prama3
+                }};
+                var json=JSON.stringify(_json);
+                $.ajax({
+                    url: "/trainingplan/addsclass",
+                    type: "POST",
+                    data:json,
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            layer.msg("已生成班级")
+                        }else if(data.errcode==9904){
+                            layer.msg("登录信息已失效，请重新登录");
+                        }
+                    },
+                    error:function() {
+                        errfn();
+                    }
+                })
+            }
+        }
+    });
+</script>
+</html>

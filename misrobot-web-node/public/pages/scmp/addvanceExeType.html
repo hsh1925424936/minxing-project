@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>训练位类型维护</title>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="../../js/scmp/jquery-ui.js"></script>
+    <link rel="stylesheet" href="../../css/assistant/style.css">
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/scmp/scmpcommon.css">
+    <style>
+        #title{
+            background-color: #E5E6E8;
+            height:40px;
+            line-height: 40px;
+            padding-left:20px;
+            margin-bottom:20px;
+        }
+        #shadow{
+            position:fixed;
+            top:0;
+            left:0;
+            background-color: rgba(0,0,0,0.7);
+            width:100%;
+            height:100%;
+        }
+        .shadowTitle{
+            background-color: #F7F7F7;
+            padding:8px 20px;
+            border-bottom:1px solid #EDEDED;
+        }
+        .shadowContent{
+            padding:20px 30px;
+        }
+        .topHandlers{
+            padding:20px 0;
+        }
+        #learntype{
+            padding:10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid" v-cloak>
+        <!-- 模态框（Modal）新增训练位类型 -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">新增训练位类型</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" placeholder="请输入训练位类型名称" class="form-control" id="learnname">
+                        <div id="learntype">
+                            <label class="checkbox-inline">
+                                <input type="radio" name="type" value="0" v-model="testType">在线训练
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="radio" name="type" value="1" v-model="testType">模型
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="radio" name="type" value="2" v-model="testType">智能设备
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="radio" name="type" value="3" v-model="testType">出科训练
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="addExeType()">保存</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+        <div class="topHandlers">
+            <button class="btn btn-primary" onclick="showModal()"><i class="glyphicon glyphicon-plus"></i>训练位类型</button>
+            <button class="btn btn-primary" onclick="getExeType()"><i class="glyphicon glyphicon-refresh"></i>刷新列表</button>
+        </div>
+        <div id="exeTypeList">
+            <table class="table table-bordered table-striped table-hover f12">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>训练位类型</th>
+                        <th>训练项</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(value,index) in learnArr">
+                        <td>{{ index+1 }}</td>
+                        <td>{{ value.traintypename }}</td>
+                        <td>
+                            <span v-for="value1 in learnArr[index].name">{{ value1.name }}--{{ value1.type | learntype }}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-info btn-xs" @click="openSetAddvanceExe(index,value.name)">设置训练项</button>
+                            <button class="btn btn-info btn-xs" @click="upDateExeName(index)">修改类型</button>
+                            <button class="btn btn-danger btn-xs" @click="deleteOneType(index)">
+                                删除
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        Vue.filter('learntype',function(value){//过滤训练项类型
+            if(value=="0"){
+                return "在线训练"
+            }else if(value=="1"){
+                return "模型"
+            }else if(value=="2"){
+                return "智能设备"
+            }else{
+            	return '出科训练'
+            }
+        });
+        var vm=new Vue({
+            el:'.container-fluid',
+            data:{
+                learnArr:[],
+                testType:'0',
+                nameList:''
+            },
+            methods:{
+                openSetAddvanceExe:function(index,item){
+                	
+                    var self=this;
+                    self.nameList=item;
+                    layer.open({
+                        type: 2,
+                        title: '设置训练项',
+                        shadeClose: true,
+                        shade: 0.7,
+                        area: ['90%', '90%'],
+                        content: 'setAddvanceExe.html?id='+self.learnArr[index].workstationtypeid
+                    });
+                },
+                upDateExeName:function(index){
+                    var self=this;
+                    var id=self.learnArr[index].workstationtypeid;
+                    var oldname=self.learnArr[index].traintypename;
+                    layer.prompt({title:'您想把 '+oldname+' 改成什么名字？'},function(val, a){
+                        var data={
+                            command:'learn/modifytraintypename',
+                            sessionid:getCookie('sid'),
+                            loginid:getCookie('uid'),
+                            workstationtypeid:id,
+                            traintypename:val
+                        };
+                        function callback(res){
+                            layer.msg('成功把 '+oldname+' 修改成 '+val,{icon:1});
+                            getExeType();
+                            setTimeout(function(){layer.close(a);},3000)
+                        };
+                        post('/learn/modifytraintypename',data,callback,errcodefn,errfn);
+                    });
+                },
+                deleteOneType:function(index){
+                    var self=this;
+                    var id=self.learnArr[index].workstationtypeid;
+                    var oldname=self.learnArr[index].traintypename;
+                    var data={
+                        command:'learn/deletelearnworkstationtype',
+                        sessionid:getCookie('sid'),
+                        loginid:getCookie('uid'),
+                        workstationtypeid:id
+                    };
+                    function callback(res){
+                        layer.msg('成功删除训练类型:'+oldname,{icon:1});
+                        getExeType()
+                    };
+                    post('/learn/deletelearnworkstationtype',data,callback,errcodefn,errfn);
+                }
+            }
+        });
+        getExeType();
+        function info(txt){//tips
+            (txt=="修改") && (layer.tips(txt,'.glyphicon-pencil',{tips:1}));
+            (txt=="删除") && (layer.tips(txt,'.glyphicon-remove',{tips:1}));
+            (txt=="课程详情") && (layer.tips(txt,'.glyphicon-list-alt',{tips:1}));
+        };
+        function addExeType(){//type:0模型人，1智能设备，2电脑，3其他
+            if(!$('#learnname').val()){
+                layer.msg('请输入训练位类型名称')
+                return
+            };
+            var data={
+                command:'learn/addlearnworkstationtype',
+                sessionid:getCookie('sid'),
+                loginid:getCookie('uid'),
+                traintypename:$('#learnname').val(),
+                type:vm.testType
+            };
+            
+            function callback(res){
+                layer.msg('成功添加训练位类型!' ,{icon:1});
+                getExeType();
+                
+                $("#myModal").modal('hide')
+            };
+            post('/learn/addlearnworkstationtype',data,callback,errcodefn,errfn)
+        };
+        function getExeType(){//查询训练类型名和训练项
+            var data={
+                command:'learn/querylearnandtrain',
+                sessionid:getCookie('sid'),
+                loginid:getCookie('uid')
+            };
+            function callback(res){
+                vm.learnArr=[];
+                var type=[];
+                res.learnandtrains.forEach(function(value){
+                    type.push(value.traintypename)
+                });
+                var noRepeatType=notRepeat(type);
+                noRepeatType.forEach(function(value,index){
+                    vm.learnArr.push({
+                        workstationtypeid:"",
+                        traintypename:value,
+                        name:[]
+                    });
+                });
+                for(var i=0;i<vm.learnArr.length;i++){
+                    for(var j=0;j<res.learnandtrains.length;j++){
+                        if(vm.learnArr[i].traintypename==res.learnandtrains[j].traintypename){
+                            vm.learnArr[i].workstationtypeid=res.learnandtrains[j].workstationtypeid;
+                            vm.learnArr[i].name.push({
+                                name:res.learnandtrains[j].name,
+                                type:res.learnandtrains[j].type
+                            })
+                        }
+                    }
+                }
+            };
+            post('/learn/querylearnandtrain',data,callback,errcodefn,errfn)
+        };
+        function showModal(){
+            $('#myModal').modal('show');
+            $('#learnname').val('');
+            vm.testType='0';
+        }
+    </script>
+</body>
+</html>

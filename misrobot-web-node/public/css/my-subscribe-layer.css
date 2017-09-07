@@ -1,0 +1,40 @@
+	.zhezhao{
+		background-color:rgba(0,0,0,0.3); top:0; left:0;
+		width:100%; height:100%; position:fixed; z-index:100;
+	}
+	.warmOuter{
+		width:480px; background-color:white; position:fixed;
+		box-shadow: 1px 1px 50px rgba(0, 0, 0, .3); z-index:101;
+		top:50%; left:50%; margin-left:-240px; margin-top:-130px;
+	}
+	.warmOuter>.warm-top{
+		width:100%; height:75px; font-size:16px;
+		text-align:center; line-height:75px;
+	}
+	.warmOuter>img{
+		display:block; width:48px; height:48px; margin:auto;
+	}
+	.warmOuter>h4{
+		width:100%; font-size:14px;
+		text-align:center; padding:20px;
+	}
+
+	.warmOuter>.warm-btn-con{
+		margin-top:20px; width:100%; margin-bottom:32px;
+	}
+	.warm-btn-con>button{
+		width:100px; height:30px; display:block; border-radius:3px;
+		font-size:14px; text-align:center; line-height:28px;
+	}
+	.warm-sure{
+		border:1px solid #D7D7D7; background-color:#F3F7F8;
+		float:left; margin-left:130px;
+	}
+	.warm-cancel{
+		border:1px solid #3399DB; background-color:#3399DB;
+		float:right; margin-right:130px; color:white;
+	}
+	.warmOuter>.cancel-icon{
+		width:24px; height:24px; display:block;
+		position:absolute; right:15px; top:15px; cursor:pointer;
+	}

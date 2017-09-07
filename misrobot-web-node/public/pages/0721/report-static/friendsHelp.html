@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>课上-学生-单次-基于模型的同伴互助训练报告</title>
+    <script type="text/javascript" src="../common/js/layout.js" ></script>
+    <script src="../../../js/echarts.min.js"></script>
+    <style>
+        html{
+            font-size: 14px;
+        }
+        .first{
+            position: relative;
+            width: 100vw;
+            height: 7vh;
+        }
+        .first span{
+            position: absolute;
+            display: inline-block;
+            width: 100vw;
+            height: 7vh;
+            line-height: 7vh;
+            top: 0;
+            font-size:1.8rem;
+            text-align: center;
+        }
+        .first img{
+            display: block;
+            width: 100vw;
+            height: 7vh;
+        }
+        .nav{
+            width: 100vw;
+            height: 7vh;
+            background: rgb(4,150,202);
+            color: white;
+            font-size: 1.8rem;
+            padding: 0 20vw;
+            position: relative;
+
+            /*position: fixed;*/
+            /*top: 0;*/
+            /*z-index: 100;*/
+        }
+        .nav span{
+            display: inline-block;
+            height: 7vh;
+            line-height: 7vh;
+        }
+        .nav span:nth-child(1){
+            position: absolute;
+            width: 100vw;
+            text-align: center;
+            top: 0;
+            left: 0;
+        }
+        .small{
+            font-size: 2vh;
+            float: right;
+        }
+        .flex{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header{
+            width: 100vw;
+            padding: 1.5vh 0;
+            background: rgb(239,242,245);
+            justify-content: space-around;
+            font-size: 1.4rem;
+            /*margin-top: 7vh;*/
+        }
+        .header p img{
+            width: 2.6rem;
+            border-radius: 50%;
+            margin-right: 0.5vw;
+        }
+        .echartsLeft,.echartsRight{
+            width: 50vw;
+        }
+        .echartsLeft{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /*padding: 2vh 0;*/
+            font-size: 1.28rem;
+            color: gray;
+        }
+        .score{
+            width: 100px;
+            height: 100px;
+            background: rgb(4,150,202);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 100px;
+            color: white;
+            font-size: 2rem;
+            margin: 4.5vh 0;
+
+        }
+        .opera{
+            width:90%;
+            text-align: center;
+            padding-bottom: 1.5vh;
+            border-bottom:solid 0.2vh lightgray
+        }
+        .title{
+            margin: 1.5vh 0;
+            width: 90%;
+        }
+        .title span{
+            display: inline-block;
+            width: 32%;
+            text-align: center;
+        }
+        .detail{
+            width: 90%;
+        }
+        .detail span{
+            display: inline-block;
+            width: 32%;
+            text-align: center;
+        }
+        .echarts{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .echartsRight{
+            width:50vw;
+            height: 270px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /*padding: 2vh 0;*/
+            font-size: 1.14rem;
+            color: gray;
+            padding: 0;
+        }
+        .echartsRight canvas{
+            width: 100%;
+            height: 270px!important;
+        }
+        .table{
+            width: 100vw;
+            margin-top: 2.4vh;
+            font-size: 1.7vh;
+        }
+        .thead{
+            display: flex;
+            background: rgb(211,211,211);
+            height: 4.5vh;
+            line-height: 4.5vh;
+        }
+        .thead li{
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.28rem;
+        }
+        .thead li:nth-child(1){
+            width: 60%; 
+        }
+        .thead li:nth-child(2){
+            width: 10%;
+        }
+        .thead li:nth-child(3){
+            width: 30%;
+        }
+        .tbody{
+            width: 100vw;
+        }
+        .tbody>p{
+            width: 100%;
+            height: 4.5vh;
+            line-height: 4.5vh;
+            background: rgb(239,242,245);
+            font-weight: 600;
+            padding-left: 1.5vw;
+        }
+        .tbodyUl li{
+            width: 100%;
+            display: flex;
+        }
+        .tbodyUl li p{
+            /*padding: 2vh 0;*/
+            /*border: solid 1px lightgray;*/
+        }
+        .tbodyUl li p:nth-child(1){
+            width: 10%;
+            justify-content: center;
+        }
+        .tbodyUl li p:nth-child(2){
+            width: 50%;
+        }
+        .tbodyUl li p:nth-child(3){
+            width: 10%;
+            justify-content: center;
+        }
+        .tbodyUl li p:nth-child(4){
+            width: 30%;
+        }
+        .cont{
+            padding: 2vh 1vw;
+            border: solid 1px rgb(240,240,240);
+            display: flex;
+            align-items: center;
+            border-left:none;
+            border-top: none;
+            font-size: 1.28rem;
+        }
+        .cont img{
+            width: 1.42rem;
+            margin-right: 2vw;
+        }
+        .tbodyTitle{
+            font-size: 1.28rem;
+        }
+        @media screen and (max-width: 700px) {
+            html{
+                font-size: 10px;
+            }
+            .echarts{
+                flex-direction: column;
+            }
+            .echartsLeft{
+                width: 100vw;
+            }
+            .echartsRight{
+                width: 100vw;
+            }
+            
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!--<div class="first">-->
+            <!--&lt;!&ndash;<img src="../common/images/report_header.jpg" alt="">&ndash;&gt;-->
+            <!--<span>同伴互助训练报告</span>-->
+        <!--</div>-->
+        <nav class="nav">
+            <span>课上-学生-单次-基于模型的同伴互助训练报告（胸腔穿刺评估）</span>
+            <!--<span class="small">查看历史</span>-->
+        </nav>
+        <header class="header flex">
+            <p class="flex">
+                <img src="../../../images/ostp/feifei.png" alt="">
+                <span>王芳（训练者）</span>
+            </p>
+            <p class="flex">
+                <img src="../../../images/ostp/feifei.png" alt="">
+                <span>陈姗姗（同伴）</span>
+            </p>
+        </header>
+        <main class="main">
+            <div class="echarts">
+                <div class="echartsLeft">
+                    <p class="score">
+                        96分
+                    </p>
+                    <p class="opera">
+                        操作时间&#x3000;2017-06-01 10:42
+                    </p>
+                    <p class="title">
+                        <span>次数</span>
+                        <span>总用时长</span>
+                        <span>击败同学</span>
+                    </p>
+                    <p class="detail">
+                        <span>40次</span>
+                        <span>11分钟</span>
+                        <span>44.19%</span>
+                    </p>
+                </div>
+                <div class="echartsRight"></div>
+            </div>
+            <div class="table">
+                <ul class="thead">
+                    <li>操作内容</li>
+                    <li>得分</li>
+                    <li>能力变化</li>
+                </ul>
+                <div v-for="item in list" class="tbody">
+                    <p class="tbodyTitle">{{item.title}}</p>
+                    <ul class="tbodyUl">
+                        <li v-for="(v,index) in item.content">
+                            <p class="cont">{{index+1}}</p>
+                            <p class="cont">{{v.cont}}</p>
+                            <p class="cont">{{v.score}}</p>
+                            <p class="cont">
+                                <img v-for="n in v.num" src="../common/images/fishOn.png" alt="">
+                                <img v-for="n in v.Num" src="../common/images/fish.png" alt="">
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        console.error = function(a){alert(a);}
+        window.onerror = function(a,b,c){
+            alert(a+b+c)
+            
+        }
+        var vm = new Vue({
+            el:'.container',
+            data:{
+               list:[
+                   {title:'着装要求',content:[{cont:'着装整洁、规范',score:'2.0',num:0,Num:5}]},
+                   {title:'准备',content:[
+                       {cont:'介绍自己；核对患者姓名、性别、年龄、床号等；询问有无药物过敏史',score:'4.0',num:4,Num:1},
+                       {cont:'核对手术同意书，向患者交代胸腔穿刺注意事项（是否排尿）',score:'2.0',num:0,Num:5},
+                       {cont:'核对X线胸片或胸部B超',score:'0.0',num:0,Num:5},
+                       {cont:'核对凝血功能和血常规检查',score:'1.0',num:0,Num:5},
+                       {cont:'测量血压、脉搏（口述即可）',score:'1.0',num:0,Num:5},
+                       {cont:'对精神紧张者术前镇静（口述即可）',score:'2.0',num:0,Num:5}
+                       ]
+                    },
+                     {title:'个人准备',content:[
+                       {cont:'洗手、戴口罩、帽子',score:'1.0',num:0,Num:5},
+                       ]
+                    },
+                    {title:'用物准备',content:[
+                       {cont:'用物准备',score:'4.0',num:4,Num:1},
+                       ]
+                    },
+                    {title:'环境准备',content:[
+                       {cont:'调节体温，保持温度适宜',score:'1.0',num:0,Num:5},
+                       ]
+                    },
+                     {title:'选择合适体位',content:[
+                       {cont:'患者常规取坐位，面向椅背，双杀前臂平放于椅背，前额扶于前臂上（不能坐立者取半卧位）',score:'5.0',num:0,Num:5},
+                       ]
+                    },
+                     {title:'穿刺点定位',content:[
+                       {cont:'胸部叩诊，选择实音明显的部位进行穿刺',score:'3.0',num:0,Num:5},
+                       {cont:'选患者锁骨中线第2肋间或腋下线第4-5肋间鼓音最明显处',score:'5.0',num:5,Num:0},
+                       {cont:'标记穿刺点',score:'2.0',num:0,Num:5},
+                       ]
+                    },
+                    {title:'消毒',content:[
+                       {cont:'以穿刺点为中心，由内向外环形消毒皮肤，直径15cm',score:'3.0',num:0,Num:5},
+                       {cont:'碘伏消毒2~3次',score:'2.0',num:0,Num:5},
+                       {cont:'消毒勿留空隙；棉球不要返回已消毒区域',score:'3.0',num:0,Num:5},
+                       {cont:'打开无菌包，戴无菌手套',score:'2.0',num:0,Num:5},
+                       {cont:'检查消毒指示卡',score:'1.0',num:1,Num:4},
+                       {cont:'核对包内器械',score:'1.0',num:0,Num:5},
+                       {cont:'检查穿刺针是否通畅',score:'1.0',num:0,Num:5},
+                       ]
+                    },
+                    {title:'铺巾',content:[
+                       {cont:'一次性完成铺巾动作，不可移动铺巾',score:'2.0',num:0,Num:5},
+                       ]
+                    },
+                     {title:'局麻',content:[
+                       {cont:'核对麻醉药（2%利多卡因）并抽吸2ml',score:'1.0',num:0,Num:5},
+                       {cont:'与皮肤呈0~15度夹角打皮丘',score:'1.0',num:0,Num:5},
+                       {cont:'左手撑开皮肤，垂直进针逐层麻醉',score:'1.0',num:1,Num:4},
+                       {cont:'每次推注麻醉药前回抽',score:'2.0',num:0,Num:5},
+                       ]
+                    },
+                     {title:'穿刺',content:[
+                       {cont:'止血钳夹住穿刺针的橡皮管',score:'2.0',num:0,Num:5},
+                       {cont:'穿刺针经肋骨上缘垂直胸壁缓慢刺入',score:'2.0',num:2,Num:3},
+                       {cont:'穿刺针刺入胸膜壁层后停止进针',score:'2.0',num:0,Num:5},
+                       {cont:'助手协助固定穿刺针，抽液后，助手夹紧胶管',score:'2.0',num:0,Num:5},
+                       {cont:'连接50ml注射器，松开止血钳',score:'2.0',num:0,Num:5},
+                       {cont:'抽吸直到见针筒内有液体流出（抽不出不得分）',score:'5.0',num:0,Num:5},
+                       {cont:'抽吸时询问并观察患者的反应',score:'5.0',num:0,Num:5},
+                       {cont:'抽液量：首次不超过600ml，以后每次不超过1000ml',score:'3.0',num:0,Num:5},
+                       ]
+                    },
+                    {title:'拔针',content:[
+                       {cont:'拔针后按压',score:'2.0',num:0,Num:5},
+                       {cont:'消毒穿刺点',score:'2.0',num:2,Num:3},
+                       {cont:'覆盖纱布、胶布固定',score:'2.0',num:0,Num:5},
+                       ]
+                    },
+                      {title:'标本收集',content:[
+                       {cont:'标记标本管',score:'0.0',num:0,Num:5},
+                       {cont:'标本送检（病原体检查、常规，生化，其他：TB-ab、CEA、细胞学等（只要有一种即可））顺序：第一管送病原体检查、其余不定',score:'6.0',num:5,Num:0},
+                       ]
+                    },
+                    {title:'术后处理',content:[
+                       {cont:'交代术后注意事项',score:'3.0',num:0,Num:5},
+                       {cont:'术后测血压、脉搏并观察反应（口述）',score:'3.0',num:0,Num:5},
+                       {cont:'整理用物，舒适体位，让患者静卧休息',score:'2.0',num:0,Num:5},
+                       ]
+                    },
+               ] 
+            },
+            mounted:function(){
+			    this.pieChart()
+            },
+            methods:{
+                pieChart:function(){
+					this.draw_pie({
+						element:$('.echartsRight')[0],
+						data:[
+                            {value:12.5,name:'人文关怀'},
+                            {value:12.5,name:'职业素养'},
+                            {value:12.5,name:'专业知识'},
+                            {value:12.5,name:'临床思维'},
+                            {value:12.5,name:'病人安全'},
+                            {value:12.5,name:'专业技能'},
+                            {value:12.5,name:'医患沟通'},
+                            {value:12.5,name:'无菌观念'}
+                        ]
+					});
+				},
+                draw_pie:function(opt){//绘制饼图
+					var my_chart = echarts.init(opt.element);
+					var option = {
+						textStyle: {
+							color:'white',
+				            fontWeight: 'normal',
+				            fontSize:'10px'
+				        },
+				        title :{
+				            show:true,
+                            text:'测评能力',
+                            x:'center',
+                            y:'center'
+				        },
+				        tooltip:{show:false},
+				        color: ['rgb(4,150,202)'],//扇形的颜色
+				        legend: {
+					        data:opt.legend_data,
+					        textStyle:{
+					        	color:'rgb(0,0,0)'
+					        },
+					        left:'center',
+					        bottom:10,
+					        itemWidth:10,
+					        itemHeight:10,
+					        show:false
+					    },
+					    itemStyle:{normal:{borderWidth:2,borderColor: '#fff'}},
+					    series : [
+					        {
+					            type: 'pie',
+					            legendHoverLink: false,
+		            			hoverAnimation: false,
+		            			selectedMode: false,
+		            			avoidLabelOverlap: false,
+		            			label:{normal:{position:'inner',
+		            			// formatter:function(a){
+				                //     return a.data.name +'：'+(a.data.value)+'%';
+				                // },
+				                textStyle:{fontSize:'16px'}
+				            	}},
+					            radius : ['30%','80%'],
+					            center: ['50%', '50%'],
+					            data:opt.data
+					        }
+					    ]
+					}
+					my_chart.setOption(option);
+					// $(window).resize(function(){
+					// 	my_chart.resize();
+					// });
+					return my_chart;
+				},
+            }
+        })
+    </script>
+</body>
+</html>

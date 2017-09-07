@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>应用</title>
+    <link rel="stylesheet" href="../../css/futuredoctorapp/common.css">
+    <link rel="stylesheet" href="../../css/futuredoctorapp/vueComponent.css">
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <style>
+        body{
+            background-color: #F2F2F2;
+        }
+        .container{ padding-left:0;padding-right:0}
+        .application{
+            background-color: white;
+
+        }
+        .applicationTitle{
+            font-color:#5F5F5F;
+            padding:8px 16px 0 16px;
+        }
+        .ftitle{
+            font-size:14px;
+            color:#676767;
+            font-weight: normal;
+        }
+        .fsub{
+            font-size:10px;
+            color:#A7A7A7;
+        }
+        .applicationList{
+            overflow:hidden;
+            padding:0 14px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .applicationList>li{
+            width:25%;
+            text-align: center;
+            padding-bottom:8px;
+        }
+        .applicationList>li>a{
+            display:block;
+            width:80%;
+            margin:0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .applicationList>li>a:hover{
+            text-decoration: none;
+        }
+        .headerdropdown{
+        	height: 100%;
+        	width: 100%;
+        	min-width: 100%;
+        	min-height: 100%;
+        	background-color: rgba(0,0,0,0.2);
+        	position: absolute;
+        	top: 0;
+        	left: 0;
+        	z-index: 99999;
+        }
+        .headerdropdown li:nth-child(1){
+        	position: absolute;
+        	top: 60px;
+        	right: 10px;
+        }
+         .headerdropdown li:nth-child(1) img:nth-child(1){
+         	position: absolute;
+         	top: -9px;
+         	right: 0;
+         	width: 150px;
+         }
+         .headerdropdown li:nth-child(1) img:nth-child(2){
+         	position: absolute;
+         	top: 10px;
+         	left: -126px;
+         	width: 20px;
+         }
+         .headerdropdown li:nth-child(1) span:nth-child(3){
+         	position: absolute;
+         	top: 11px;
+         	left: -85px;
+         }
+         .app-btm{
+            padding-bottom: 40px;
+         }
+    </style>
+</head>
+<body>
+    <div class="container" v-cloak id="container">
+    	<ul v-show='showaddlist' class='headerdropdown' @click="closeList">
+            <li v-for='(value,index) in listitem' @click='value.itemfn'>
+            	<img src="../../images/futuredoctorapp/xialatanchuang.png" alt="" />
+                <img :src='value.imgsrc'/>
+                <span>{{ value.itemtext }}</span>
+            </li>
+        </ul>
+        <headerbox :thistitle="headerTitle" :titlenum="titlenum" id="header" :showadd="true" :listitem="listitem"></headerbox>
+        <div class="application">
+            <p class="applicationTitle">常用应用</p>
+            <ul class="applicationList">
+                <li v-for="value in menu">
+                    <a :href="value.url">
+                        <img :src="value.ico" alt="" class="img-responsive">
+                        <span class="fsub">{{value.name}}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="application mt15 app-btm">
+            <p class="applicationTitle">即将到来</p>
+            <ul class="applicationList">
+                <li>
+                    <a href="#">
+                        <img src="../../images/futuredoctorapp/icon-yy-tuandui.png" alt="" class="img-responsive">
+                        <span class="fsub">团队管理</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <img src="../../images/futuredoctorapp/icon-yy-shenpi.png" alt="" class="img-responsive">
+                        <span class="fsub">考勤审批</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <img src="../../images/futuredoctorapp/icon-yy-laoshi.png" alt="" class="img-responsive">
+                        <span class="fsub">评价老师</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <img src="../../images/futuredoctorapp/icon-yy-xuesheng.png" alt="" class="img-responsive">
+                        <span class="fsub">评价学生</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <confirmlogout></confirmlogout>
+        <footertab :todoNum="todonum" :msgNum="msgnum" :isactive="isactive" :navimgsrc="navimgsrc"></footertab>
+    </div>
+
+    <script src="../../js/vue-2.1.6.min.js"></script>
+    <script src="../../js/jquery-3.1.1.min.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/futuredoctorapp/common.js"></script>
+    <script src="../../js/futuredoctorapp/vueComponent.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="../../vue-src/futuredoctorapp-src/src/methods.js"></script>
+    <script>
+
+        registerToNative('goBack', function (data) {
+            $('#confirmlogout').removeClass('hide');
+        });
+        var vm=new Vue({
+            el:"#container",
+            data:{
+                headerTitle:'应用',
+                todonum:0,
+                msgnum:0,
+                titlenum:0,
+                isactive:[false,false,true,false],
+                navimgsrc:['../../images/futuredoctorapp/nav-renwu.png','../../images/futuredoctorapp/nav-xiaoxi.png','../../images/futuredoctorapp/nav-yinyong-h.png','../../images/futuredoctorapp/nav-touxiang.png'],
+                //以上是头部和底部的配置
+                menu:'',
+                showaddlist:false,
+                  listitem:[
+                      {
+                          imgsrc:'../../images/futuredoctorapp/saoyisao.png',
+                          itemtext:'扫一扫',
+                          itemfn:function(){
+							  invokeNative('scanQRCode', {},function (data) {
+							  	var arr=JSON.parse(data);
+			           	          var data={
+			           	          	command:'course/studentsignbycode',
+					                loginid:getCookie('uid'),
+					                sessionid:getCookie('sid'),
+					                type:JSON.parse(arr.result).type,
+					                content:JSON.parse(arr.result).content,
+					                studentid:getCookie('uid')
+			           	          }
+			           	          function  callback(res){
+			           	          	window.location.href="interaction.html?from=saoyisao&&scheduleid="+res.scheduleid
+			           	          }
+                                  function errcodefn1(res){
+                                      if(res.errcode==300010){
+                                          window.location.href="interaction.html?from=saoyisao&&scheduleid="+res.scheduleid
+                                      }else{
+                                          layer.msg(res.errdesc)
+                                      }
+                                  }
+			           	          post('/course/studentsignbycode',data,callback,errcodefn1,errfn)
+			                 });
+                          }
+                      },
+                  ]
+            },
+            mounted:function(){
+                this.msgnum=queryMsgNum();
+                this.todonum=queryTodoNum();
+                jump_msxxq();
+            },
+            methods:{
+                closeList:function(){
+                	this.showaddlist=false;
+                }
+            }
+        });
+        getList();
+        function getList(){
+            var data={
+                command:'menus/querymenusbyrole',
+                loginid:getCookie('uid'),
+                sessionid:getCookie('sid'),
+                moduleid:'futuredoctorapp'
+            };
+            function callback(res){
+                console.log(JSON.stringify(res));
+                vm.menu=res.resultlist;
+            };
+            post('/menus/querymenusbyrole',data,callback,errcodefn,errfn)
+        }
+        function openaddlist(){
+        	vm.showaddlist=!vm.showaddlist;
+        }
+    </script>
+</body>
+</html>

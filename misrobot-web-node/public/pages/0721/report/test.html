@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../common/js/layout.js" ></script>
+		<!-- <script type="text/javascript" src="../common/js/babel.js" ></script> -->
+		<meta charset="UTF-8">
+		<title>老师班级报告</title>
+		<style>
+			
+		</style>	
+	</head>
+	<body>
+        
+	</body>
+	<script type="text/javascript">
+	// 调用jquery ajax的两种方法
+
+		// $.ajax({
+		// 	url: '../report-static/afterclass.json',
+		// 	type: 'GET',
+		// })
+		// .done(function(base) {
+		// 	console.log(base);
+		// })
+		// .fail(function() {
+		// 	console.log("error");
+		// })
+		// $.ajax({
+		// 	url: 'test.txt',
+		// 	type: 'GET',
+		// })
+		// .done(function(base) {
+		// 	console.log(base);
+		// 	$('body').html(base);
+		// })
+		// .fail(function() {
+		// 	console.log("error");
+		// })
+
+		// $.ajax({
+		// 	url: '../report-static/afterclass.json',
+		// 	type: 'GET',
+		// })
+		// .then(function(base){
+		// 	console.log(base);
+		// 	return $.ajax({
+		// 		url: 'test.txt',
+		// 		type: 'GET',
+		// 	})
+		// },function(){
+		// 	console.log('error');
+		// })
+		// .then(function(base){
+		// 	console.log(base);
+		// 	$('body').html(base);
+		// },function(){
+		// 	console.log('error');
+		// });
+
+		$.when(
+			$.ajax({
+				url: '../report-static/afterclass.json',
+				type: 'GET',
+			}),
+			$.ajax({
+				url: 'test.txt',
+				type: 'GET',
+			})
+		)
+		.then(function(data1, data2){
+			console.log(data1[0],data2[0]);
+			$('body').html(data2[0]);
+			var test = data2[0];
+		},function(){
+			console.log('err');
+		});
+
+		function AB(){
+			AB.prototype.show = 1;
+		}
+		var a = new AB();
+
+		// var result = babel.transform("let [a,b,c] = [1,2,3]; console.log(a,b,c)");
+		// console.log(result);
+		
+	</script>
+</html>

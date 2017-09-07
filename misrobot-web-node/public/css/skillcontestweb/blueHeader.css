@@ -1,0 +1,85 @@
+*{
+    margin:0;
+    padding:0;
+    font-family: microsoft yahei;
+    font-size:20px;
+}
+#header{
+    background-color:#0099CC;
+    color:white;
+    text-align: center;
+}
+#header>p{
+    padding-top:50px;
+}
+#header>h1{
+    padding:30px 0;
+    font-size:30px;
+}
+#groupNum{
+    position: absolute;
+    top:74px;
+    right:5%;
+}
+#submitSuccess{
+    padding-top:100px;
+    text-align: center;
+}
+#submitSuccess>img{
+    width:100px;
+    height:100px;
+}
+#submitSuccess>p{
+    margin-top:10px;
+    color:#aaa;
+}
+.show{
+    display:block;
+}
+.hide{
+    display:none;
+}
+p.btnBlue{
+    margin:0 auto;
+    width:166px;
+    height:40px;
+    background-color:#3C9CCF;
+    border-radius:5px;
+    color:white;
+    line-height:40px;
+    text-align:center;
+    cursor:pointer;
+}
+.btnGray{
+    margin:0 auto;
+    width:166px;
+    height:40px;
+    border-radius:5px;
+    line-height:40px;
+    text-align:center;
+    background-color:#E4E4E4;
+    color:#666;
+    cursor:default
+}
+.btnTrans{
+    opacity:0;
+}
+p.btnBlue:hover{
+    background-color:#0378a2;
+}
+#confirmGroup{
+    text-align: center;
+    padding-top:100px;
+}
+#confirmGroup>h1{
+    font-size:24px;
+    color:#444;
+}
+#confirmGroup>h1>span{
+    font-size:24px;
+}
+#confirmGroup>span{
+    color:#444;
+    margin:10px 0 20px 0;
+    display:block;
+}

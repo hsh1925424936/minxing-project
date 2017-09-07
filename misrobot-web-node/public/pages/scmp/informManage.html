@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>通知管理</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+    	<script src="../../js/ajaxfileupload.js"></script>
+		<script src="../../js/UE/ueditor.config.js"></script>
+		<script src="../../js/UE/ueditor.all.min.js"></script>
+		<script src="../../js/UE/lang/zh-cn/zh-cn.js"></script>
+		<script src="../../js/UE/ueditor.parse.min.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/scmp/elecommon.css">
+		<style>
+			.edui-default .edui-editor-bottomContainer{display: none;}
+		</style>
+	</head>
+
+	<body>
+	<div id="inform" v-cloak>
+        <div class="title">通知管理</div>
+        <div class="content">
+	        <template><el-button type="primary" @click="sendinform">发送通知</el-button></template>
+	        <template><el-tabs v-model="activeName"  @tab-click="typehandleClick">
+			    <el-tab-pane label="已发送" name="first">
+			    	<!--************************************************头部按钮**************************************-->
+			    	<div class="top">
+			    		<div class="topcell">
+			    			<label>发布日期</label>
+			    			<template><el-date-picker
+							    v-model="date"
+							    type="daterange"
+							    placeholder="选择日期范围"
+							    @change="datechange()">
+						    </el-date-picker></template> 
+			    		</div>
+			    		<div class="topcell">
+			    			<template><el-input
+							  placeholder="请输入通知标题关键字搜索"
+							  icon="search"
+							  v-model="keyword"
+							  :on-icon-click="searchkeyword">
+							</el-input></template> 
+			    		</div>
+			    	</div>
+			    	<!--************************************************通知列表**************************************-->
+			    	<div class="bottom">
+						<template><el-table :data="list" border class="list">
+						    <el-table-column type="index" width="100" label="序号">
+						    </el-table-column>
+						    <el-table-column label="通知标题">
+						    	<template scope="scope">
+						    		<span v-if="scope.row.level==1" class="markicon">!</span>
+						    		<span @click="checkinfodet(scope.row.id,scope.row.createTime)" style="cursor: pointer;color: #20a0ff;">{{scope.row.title}}</span>
+						    	</template>
+						    </el-table-column>
+						    <el-table-column label="状态">
+						    	<template scope="scope">
+						    		<span @click="checkperson(scope.row.id,scope.row.type,scope.row.reads,scope.row.unreads)" style="cursor: pointer;color: #20a0ff;">{{scope.row.status}}</span>
+						    	</template>
+						    </el-table-column>
+						    <el-table-column prop="author" label="发布人">
+						    </el-table-column>
+						    <el-table-column prop="createTime" label="发布时间">
+						    </el-table-column>
+						    <el-table-column label="操作">
+						    	<template scope="scope">
+									<el-button size="small" type="primary" @click="recall(scope.row.id)">撤回</el-button>
+								</template>
+						    </el-table-column>
+						</el-table></template>
+			    	</div>
+			    </el-tab-pane>
+			    <el-tab-pane label="草稿" name="second">
+			    	<!--************************************************头部按钮**************************************-->
+			    	<div class="top">
+			    		<div class="topcell">
+			    			<label>发布日期</label>
+			    			<template><el-date-picker
+							    v-model="date"
+							    type="daterange"
+							    placeholder="选择日期范围"
+							    @change="datechange">
+						    </el-date-picker></template> 
+			    		</div>
+			    		<div class="topcell">
+			    			<template><el-input
+							  placeholder="请输入通知标题关键字搜索"
+							  icon="search"
+							  v-model="keyword"
+							  :on-icon-click="searchkeyword">
+							</el-input></template> 
+			    		</div>
+			    	</div>
+			    	<!--************************************************通知列表**************************************-->
+			    	<div class="bottom">
+						<template><el-table :data="list" border class="list">
+						    <el-table-column type="index" width="100" label="序号">
+						    </el-table-column>
+						    <el-table-column prop="title" label="通知标题">
+						    </el-table-column>
+						    <el-table-column prop="createTime" label="创建时间">
+						    </el-table-column>
+						    <el-table-column label="操作">
+						    	<template scope="scope">
+									<el-button size="small" type="primary" @click="edit(scope.row.id)">编辑</el-button>
+									<el-button size="small" type="danger" @click="deleteinfoshow(scope.row.id)">删除</el-button>
+								</template>
+						    </el-table-column>
+						</el-table></template>
+			    	</div>
+			    </el-tab-pane>
+			    
+		    </el-tabs></template>
+			    	<!--************************************************分页**************************************-->
+		    <el-pagination
+		      @size-change="handleSizeChange"
+		      @current-change="handleCurrentChange"
+		      :current-page="currentPage"
+		      :page-sizes="[10, 20, 30, 50]"
+		      :page-size="pagesize"
+		      layout="total, sizes, prev, pager, next, jumper"
+		      :total="totalnum">
+		    </el-pagination>
+			    	<!--************************************************发布通知弹框**************************************-->
+		    <!--<el-dialog  title="发布通知" :visible.sync="informshow">-->
+			<div class="pop" v-show="informshow">
+		    	<div class="poptitle"> 发布通知 <i class="el-icon-close popclose" @click="closeinformshow"></i></div>
+		    	<div class="popcontent contentleft">
+		    		<div class="popcell">
+		    			<p class="celltitle">通知级别</p>
+		    			<div class="cellcontent">
+		    				<el-radio v-model="rank" label="1">紧急</el-radio>
+    						<el-radio v-model="rank" label="2">普通</el-radio>
+		    			</div>
+		    		</div>
+		    		<div class="popcell">
+		    			<p class="celltitle">通知标题</p>
+		    			<div class="cellcontent">
+		    				<el-input :maxlength="50" v-model="poptitle"></el-input>	
+		    			</div>
+		    		</div>
+		    		<div class="popcell">
+		    			<p class="celltitle">通知正文</p>
+		    			<div class="cellcontent">
+		    				<script id="editor" type="text/plain" style="width: 100%;"></script>
+		    			</div>
+		    		</div>
+		    		<!--<div class="popcell">
+		    			<p class="celltitle">封面图片<span class="smalltext">（推荐尺寸640*380；支持.jpg, .jpeg, .bmp, .gif, .png类型文件，5M以内）</span> </p>
+		    			<div class="cellcontent">
+		    				<el-button type="primary" v-if='imageUrl' @click="deleteimage">删除</el-button>
+		    			</div>
+						<div class="cellcontent">
+							<el-upload
+							  class="avatar-uploader"
+							  action="/file/upload"
+							  :show-file-list="false"
+							  :on-success="handleAvatarSuccess"
+							  :before-upload="beforeAvatarUpload">
+							  <img v-if="imageUrl" :src="imageUrl" class="avatar">
+							  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+							</el-upload>
+		    			</div>
+		    		</div>-->
+		    		<div class="popcell">
+		    			<p class="celltitle">附件<span class="smalltext">（支持.doc,.docx,.pdf,.xls,.xlsx,.ppt,.pptx,.类型文件，20M以内）</span> </p>
+		    			<div class="cellcontent">
+		    				<el-upload
+							  class="upload-demo"
+							  action="/file/upload"
+							  :on-change="handleChange"
+							  :file-list="fileList">
+							  <el-button size="small" type="primary">上传</el-button>
+							</el-upload>
+		    			</div>
+		    		</div>
+		    		<div class="popcell">
+		    			<p class="celltitle">发布人</p>
+		    			<div class="cellcontent">
+		    				<el-input v-model="popauthor"></el-input>	
+		    			</div>
+		    		</div>
+		    		<div class="popcell">
+		    			<p class="celltitle">发布对象</p>
+		    			<div class="cellcontent">
+		    				<div class="publishobj" @click="openindexpop">
+		    					<p class="littlecell" v-for="item in selectedobjlist">{{item.name}}</p>
+		    				</div>
+		    			</div>
+		    		</div>
+		    		<div class="popcell">
+		    			<div class="cellcontent bottomBtn">
+		    				<el-button type="primary" :disabled="sendtrue" @click="publishobj(0)">发布</el-button>
+		    				<el-button type="primary" @click="publishobj(1)">存为草稿</el-button>
+		    				<el-button type="primary" @click="preview">预览</el-button>
+		    			</div>
+		    		</div>
+		    		<!--发布对象-->
+			    	<div class="indexpop" v-show="indexpopshow">
+			    		<div class="poptitle"> 选择发布对象 <i class="el-icon-close popclose" @click="indexpopshow=false"></i></div>
+			    		<div class="popcontent indexpopleft">
+			    			<div class="poptitle"> 用户列表 </div>
+			    			<!--<div class="poptitle" style="padding: 5px 0;border-bottom: none;"> 
+			    				<el-input
+								  placeholder="请输入姓名或手机号查找"
+								  icon="search"
+								  v-model="namenumber"
+								  :on-icon-click="searchbynamenumber">
+								</el-input>
+			    			</div>-->
+			    			<div class="popcell" style="overflow: auto;height: 362px;">
+			    				<p class="celltitle">
+			    					<template> <el-button type="text" v-for="(item,index) in boxtitle" @click="toptier(item)">
+			    						<i class="el-icon-arrow-right"></i>
+			    						{{item.name}}
+			    					</el-button></template>
+			    				</p>
+			    				<div class="indexcellcontent">
+									<div class="contentline" v-for="item in boxlist">
+										<el-checkbox v-model="item.selected" @change="checkedobj(item)">{{item.name}}</el-checkbox>
+										<span class="el-icon-d-arrow-right spread" @click="boxbtn(item)" v-if="!(item.selected==true||item.type==6||item.type==4)"></span>
+									</div>
+			    				</div>
+			    			</div>
+			    		</div>
+			    		<div class="popcontent indexpopright">
+			    			<div class="poptitle"> 已选用户 </div>
+			    			<div class="popcell" style="overflow: auto;">
+			    				<p class="indexcellcontent" v-for="item in checkedlist">{{item.name}}</p>
+			    			</div>
+			    		</div>
+			    		<el-button type="primary" style="position: absolute;bottom: 20px;" @click="closeindexpop">确认</el-button>
+			    	</div>
+			    	<!---->
+		    	</div>
+		    	<div class="popcontent contentright">
+		    		<div class="poptitle"> 预览 </div>
+		    		<div class="popcontent" style="width: 100%;overflow-y: auto;height: 615px;">
+		    			<p class="pretitle">{{pretitle}}</p>
+		    			<p class="pretime">{{pretime}}</p>
+		    			<!--<p class="preline">{{preman}}</p>-->
+		    			<img class="preimg" :src="preimg"/>
+		    			<p class="preline precontent">  {{precontent}}</p>
+         				<p class="preline" v-if="prefile.length!=0">附件</p>
+         				<p class="preline" v-for="item in prefile">{{item.name}}</p>
+		    		</div>
+		    	</div>
+		    </div>
+		    		<!--************************************************已读未读弹框**************************************-->
+		    <el-dialog  title="已读未读详情" :visible.sync="personshow">
+		    	<div class="poptitle"> 未读({{unreads}}人)</div>
+		    	<div class="personcontent">
+		    		<span v-for="(item,index) in unreadinfo">{{item.name}} <span v-if="unreads>50&index==49">......</span> </span>
+		    	</div>
+		    	<div class="poptitle"> 已读({{reads}}人)</div>
+		    	<div class="personcontent">
+		    		<span v-for="(item,index) in readinfo">{{item.name}} <span v-if="reads>50&index==49">......</span> </span>
+		    	</div>
+		    	<div style="padding: 10px 0;border: none;height: 20px;">
+		    		<div style="display: inline-block;float: right;">
+		    			<el-button type="primary" @click="downunreads()">下载未读列表</el-button>
+		    			<el-button type="primary" @click="downreads()">下载已读列表</el-button>
+		    			<el-button @click="personshow=false">关闭</el-button>
+		    		</div>
+		    	</div>
+		    </el-dialog >
+		    		<!--************************************************通知详情弹框**************************************-->
+		    <el-dialog  title="通知详情" :visible.sync="infodetshow">
+		    	<div class="popcontent" style="width: 100%;overflow-y: auto;height: 300px;">
+	    			<p class="pretitle">{{infodettitle}}</p>
+	    			<p class="pretime">{{infodettime}}</p>
+	    			<!--<img class="preimg" :src="infodetimg"/>-->
+	    			<p class="preline precontent">  {{infodetcontent}}</p>
+     				<p class="preline" v-if="infodetfile.length!=0">附件</p>
+     				<p class="preline" v-for="item in infodetfile">{{item.file_name}}</p>
+	    		</div>
+		    </el-dialog>		
+		    		<!--************************************************删除通知弹框**************************************-->
+		    <el-dialog title="删除通知" :visible.sync="deleteshow">
+		      <el-form>
+		      	<el-form-item label="确定要删除此通知吗？"></el-form-item>
+		      </el-form>
+		      <div slot="footer" class="dialog-footer">
+		        <el-button @click="deleteshow = false">取 消</el-button>
+		        <el-button type="primary" @click="deleteBtn(infoid)">确 定</el-button>
+		      </div>
+		    </el-dialog>		
+		</div>
+	</div>
+	</body>
+	
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '#inform',
+			data: {
+				informshow:false,
+				indexpopshow:false,
+				personshow:false,
+				infodetshow:false,
+				activeName:'first',
+			    currentPage: 1,
+			    pagesize:10,
+			    totalnum:0,
+			    type:0,
+				date:'',//发布日期
+				searchword: '',//关键字
+			    starttime:'',//开始时间
+			    endtime:'',//结束时间
+			    keyword:'',//关键字
+			    list:[],//列表
+				rank: '1',//通知级别
+			    poptitle:'',//通知标题
+			    popauthor:'',//发布人
+			    editor:'',//文本编辑对象
+			    ue:'',
+			    namenumber:'',//查询对象名字或电话
+			    publishobjlist:[],//发布对象列表
+				boxlist:[],//发布对象渲染列表
+				boxtitle:[],//tab列表
+				checkedlist:[],//已选列表
+				selectedobjlist:[],//已选对象
+				imageUrl:'',//图片
+				fileList:[],//文件列表
+				uploadimg:'',//上传图片
+				showimage:'',//展示图片
+				uploadfilelist:[],//上传文件
+				pretitle:'',//预览名称
+				pretime:'',//预览时间
+				preman:'',//预览发布对象
+				preimg:'',//预览图片
+				precontent:'',//预览内容
+				prefile:[],//预览文件
+				readinfo:[],//已读信息
+				unreadinfo:[],//未读信息
+				reads:'',//已读人数
+				unreads:'',//未读人数
+				infodettitle:'',//通知详情题目
+				infodettime:'',//通知详情时间
+				infodetimg:'',//通知详情图片
+				infodetcontent:'',//通知详情内容
+				infodetfile:'',//通知详情文件
+				savestatu:0,//0：新增发布通知;1：草稿发布通知
+				editannouncementid:'',//编辑发布通知通知id
+				sendtrue:false,//发布通知状态限制
+			    deleteshow:false,//删除通知确认弹框
+			    infoid:'',//通知详情id
+			    checkpersonid:'',//查看已读未读通知id
+			    checkpersontype:''//查看已读未读通知type
+			},
+			name:'UE',
+			props: {
+		        defaultMsg: {
+		        	type: String
+		    	},
+			    config: {
+			        type: Object
+			    }
+		    },
+			mounted: function() {
+                this.queryannoucement(this.currentPage,this.pagesize,this.type,this.keyword,this.starttime,this.endtime);
+				this.editor = UE.getEditor('editor',{
+					toolbars: [
+						['fontfamily','fontsize','bold','italic','underline','strikethrough','forecolor','backcolor','insertorderedlist','insertunorderedlist','link','simpleupload','removeformat',]
+				    ],
+				    initialFrameHeight: 250
+				});
+			},
+			methods:{
+				handleChange(file, fileList) {
+					if(file.percentage==100){
+						this.fileList = fileList.slice(-3);
+						for(var i=0;i<this.fileList.length;i++){
+				        	this.uploadfilelist.push({
+				        		url:this.fileList[i].response.data.uri,
+				        		file_name:this.fileList[i].name,
+				        		file_size:this.fileList[i].size,
+				        	})	
+			        	}
+					}
+			    },
+				handleAvatarSuccess(res, file) {
+			        this.imageUrl = URL.createObjectURL(file.raw);
+			        this.uploadimg=res.data.uri;
+			        this.showimage=res.data.url;
+			    },
+			    beforeAvatarUpload(file) {
+			        const isJPG = file.type === 'image/jpeg'||'image/png'||'image/gif'||'image/jpg'||'image/bmp';
+			        const isLt5M = file.size / 1024 / 1024  < 5;
+			
+			        if (!isJPG) {
+			          this.$message.error('上传头像图片只能是预定格式!');
+			        }
+			        if (!isLt5M) {
+			          this.$message.error('上传头像图片大小不能超过 5MB!');
+			        }
+			        return isJPG && isLt5M;
+			    },
+			    deleteimage(){
+			    	this.imageUrl='';
+			    },
+				typehandleClick(tab,event) {//切换页面
+			        console.log(tab,event);
+			    },
+			    handleSizeChange(val) {
+			    	console.log(`每页 ${val} 条`);
+			    	this.pagesize=val;
+			    	this.queryannoucement(this.currentPage,this.pagesize,this.type,this.keyword,this.starttime,this.endtime)
+			  	},
+				handleCurrentChange(val) {
+			    	console.log(`当前页: ${val}`);
+			    	this.currentPage=val;
+			    	this.queryannoucement(this.currentPage,this.pagesize,this.type,this.keyword,this.starttime,this.endtime)
+			 	},
+			 	searchkeyword(event){//关键字搜索
+			 		this.date='';
+			 		this.starttime='';
+			 		this.endtime='';
+			 		this.queryannoucement(this.currentPage,this.pagesize,this.type,this.keyword,this.starttime,this.endtime)
+			 	},
+			    datechange(val){//日期搜索
+		    		this.starttime=val.slice(0,10)+' '+'00:00:00';
+		    		this.endtime=val.slice(13,25)+' '+'24:00:00';
+		    		if(val){
+			    		this.keyword='';
+						this.queryannoucement(this.currentPage,this.pagesize,this.type,this.keyword,this.starttime,this.endtime)
+					}
+			    },
+			 	queryannoucement(requestpage,sizeperpage,type,keyword,starttime,endtime){//查询列表
+			 		let self=this;
+			 		self.list=[];
+			 		data={
+			 			command:"announce/getAllannouncement",
+			 			sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+			 			keyWord:keyword,
+			 			startTime:starttime,
+			 			endTime:endtime,
+			 			type:type,
+			 			requestpage:requestpage,
+			 			sizeperpage:sizeperpage
+			 		}
+			 		function callback(res){
+			 			self.totalnum=res.counts;
+			 			self.list=res.list
+			 		}
+			 		post('/announce/getAllannouncement',data,callback,errcodefn,errfn)
+			 	},
+			 	recall(id) {//撤回
+			        let self=this;
+			 		data={
+			 			command:"announce/deletannouncement",
+			 			sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						id:id
+			 		}
+			 		function callback(res){
+			 			if(res.errcode==0){
+			 				self.queryannoucement(self.currentPage,self.pagesize,self.type,self.keyword,self.starttime,self.endtime)
+			 				layer.msg('撤回成功！')
+			 				return false
+			 			}
+			 		}
+			 		post('/announce/deletannouncement',data,callback,errcodefn,errfn)
+			   },
+				deleteinfoshow(id){
+					this.deleteshow=true;
+					this.infoid=id;
+				},
+			    deleteBtn(id){//删除
+			    	let self=this;
+			 		data={
+			 			command:"announce/deleteannouncementbyid",
+			 			sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						id:id
+			 		}
+			 		function callback(res){
+			 			if(res.errcode==0){
+							self.deleteshow=false;
+			 				self.queryannoucement(self.currentPage,self.pagesize,self.type,self.keyword,self.starttime,self.endtime)
+			 				layer.msg('删除成功！')
+			 				return false
+			 			}
+			 		}
+			 		post('/announce/deleteannouncementbyid',data,callback,errcodefn,errfn)
+			    },
+			    edit(id){//编辑通知
+			    	var self=this;
+			    	self.sendtrue=false;
+			 		data={
+			 			command:"announce/getannouncementinfo",
+			 			sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						id:id
+			 		}
+			 		function callback(res){
+			 			self.rank=res.level.toString();
+				    	self.poptitle=res.title;
+				    	self.popauthor=res.author;
+				    	UE.getEditor('editor').setContent(res.content);
+				    	if(res.readCountsinfos){
+				    		self.selectedobjlist=res.readCountsinfos;
+				    	}
+				    	if(res.img_url){
+				    		self.imageUrl=res.fdfsurl+res.img_url;
+				    	}
+				    	self.savestatu=1;
+				    	self.editannouncementid=id;
+				    	self.uploadimg=res.img_url;
+				    	self.uploadfilelist=[];
+				    	if(res.list){
+					    	for(var i=0;i<res.list.length;i++){
+					    		self.uploadfilelist.push({
+					    			url:res.list[i].url,
+					    			file_name:res.list[i].file_name,
+					    			file_size:res.list[i].file_size
+					    		})
+					    	}
+				    		self.fileList=self.uploadfilelist;
+				    	}else{
+				    		self.uploadfilelist=[];
+				    		self.fileList=[]
+				    	}
+				    	self.informshow=true;
+			 		}
+			 		post('/announce/getannouncementinfo',data,callback,errcodefn,errfn)
+			    },
+			    checkperson(id,type,reads,unreads){//查看已读未读详情
+			    	var self=this;
+			    	data={
+			 			command:"announce/getreadannouncementInfo",
+			 			sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						id:id,
+						type:type
+			 		}
+			 		function callback(res){
+			 			if(res.errcode==0){
+			 				self.personshow=true;
+			 				self.readinfo=res.readinfo;
+			 				self.unreadinfo=res.unreadinfo;
+			 				self.reads=reads;
+			 				self.unreads=unreads;
+			 				self.checkpersonid=id;
+			 				self.checkpersontype=type
+			 			}
+			 		}
+			 		post('/announce/getreadannouncementInfo',data,callback,errcodefn,errfn)
+			    },
+			    downreads(){//下载已读列表
+			    	var self=this;
+			    	var data={
+			 			command:"announce/getallreadinfo",
+			 			sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						id:self.checkpersonid,
+						type:self.checkpersontype
+			 		}
+			 		exportExcel(data);
+			    },
+			    downunreads(){//下载未读列表
+			    	var self=this;
+			    	var data={
+			 			command:"announce/getallunreadinfo",
+			 			sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						id:self.checkpersonid,
+						type:self.checkpersontype
+			 		}
+			 		exportExcel(data);
+			    },
+			    closepersonhow(){//关闭已读未读详情
+			    	this.personshow=false;
+			    },
+			    checkinfodet(id,time){//查看通知详情
+			    	var self=this;
+			    	self.infodettitle='';
+			    	self.infodettime='';
+			    	self.infodetimg='';
+			    	self.infodetcontent='';
+			    	self.infodetfile=[];
+			    	data={
+			 			command:"announce/getannouncementinfo",
+			 			sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						id:id
+			 		}
+			 		function callback(res){
+				    	self.infodettitle=res.title;
+				    	self.infodettime=res.author+'   '+time;
+				    	if(res.img_url){
+				    		self.infodetimg=res.fdfsurl+res.img_url;
+				    	}
+				    	self.infodetcontent=res.content;
+						if(res.list!=null){
+							self.infodetfile=res.list;
+						}
+				    	self.infodetshow=true;
+			 		}
+			 		post('/announce/getannouncementinfo',data,callback,errcodefn,errfn)
+			    },
+			    closeinfodet(){//关闭通知详情
+			    	this.infodetshow=false;
+			    },
+			    sendinform(){//新增通知
+			    	this.savestatu=0;
+			    	this.sendtrue=false;
+			    	this.rank='1';
+			    	this.poptitle='';
+			    	this.popauthor='';
+			    	UE.getEditor('editor').setContent('');
+			    	this.fileList=[];
+			    	this.imageUrl='';
+			    	this.selectedobjlist=[];
+			    	this.uploadimg='';
+			    	this.uploadfilelist=[];
+			    	this.pretitle='',
+			    	this.pretime='',
+			    	this.name='',
+			    	this.precontent='',
+			    	this.prefile=[],
+			    	this.preimg='',
+			    	this.checkedlist=[];
+			    	this.informshow=true;
+			    },
+			    closeinformshow(){//关闭新增通知
+			    	this.informshow=false;
+			    },
+			    getPlainTxt() {//获得带格式的纯文本内容
+					console.log(UE.getEditor('editor').getPlainTxt())
+			    },
+			    searchbynamenumber(){//根据名字或手机号码查询对象
+			    	
+			    },
+			    querypublishobj(){//获取发布对象
+			    	let self=this;
+			    	self.box1show=true;
+			    	self.boxtitle=[];
+			    	self.boxlist=[{
+						name:'教师',
+						type:'t',
+						id:'t',
+						selected:false
+					},{
+						name:'学生',
+						type:'s',
+						id:'s',
+						selected:false
+					}]
+			    	for(var j=0;j<self.checkedlist.length;j++){
+		    			for(var i=0;i<self.boxlist.length;i++){
+		    				if(self.checkedlist[j].type==self.boxlist[i].type&&self.checkedlist[j].id==self.boxlist[i].id&&self.boxlist[i].selected==false){
+		    					self.boxlist[i].selected=true
+		    				}
+		    			}
+	    			}
+			    },
+			    queryteaobj(type,id){//查询老师
+			    	var self=this;
+			    	data={
+			    		command:"teachingstaff/findteacreceiverinfo",
+			    		sessionid:getCookie('sid'),
+			    		loginid:getCookie('uid'),
+			    		type:type,
+			    		id:id
+			    	}
+			    	function callback(res){
+			    		if(res.errcode==0){
+			    			self.boxlist=res.resultlist;
+			    			for(var i=0;i<self.boxlist.length;i++){
+				    			self.boxlist[i].selected=false
+				    		}
+			    			for(var j=0;j<self.checkedlist.length;j++){
+				    			for(var i=0;i<self.boxlist.length;i++){
+				    				if(self.checkedlist[j].type==self.boxlist[i].type&&self.checkedlist[j].id==self.boxlist[i].id&&self.boxlist[i].selected==false){
+				    					self.boxlist[i].selected=true
+				    				}
+				    			}
+			    			}
+			    		}
+			    	}
+			    	post('/teachingstaff/queryTeacherDeptList',data,callback,errcodefn,errfn)
+			    },
+			    querystuobj(type,id){//查询学生
+			    	var self=this;
+			    	data={
+			    		command:"studentstaff/findstdreceiverinfo",
+			    		sessionid:getCookie('sid'),
+			    		loginid:getCookie('uid'),
+			    		type:type,
+			    		id:id
+			    	}
+			    	function callback(res){
+			    		if(res.errcode==0){
+			    			self.boxlist=res.resultlist;
+			    			for(var i=0;i<self.boxlist.length;i++){
+			    				self.boxlist[i].selected=false
+			    			}
+			    			for(var j=0;j<self.checkedlist.length;j++){
+				    			for(var i=0;i<self.boxlist.length;i++){
+				    				if(self.checkedlist[j].type==self.boxlist[i].type&&self.checkedlist[j].id==self.boxlist[i].id&&self.boxlist[i].selected==false){
+				    					self.boxlist[i].selected=true
+				    				}
+				    			}
+			    			}
+			    		}
+			    	}	
+			    	post('/studentstaff/findstdreceiverinfo',data,callback,errcodefn,errfn)
+			    },
+			    openindexpop(){//查询对象窗口
+			    	this.querypublishobj();
+			    	this.indexpopshow=true;
+			    },
+			    closeindexpop(){//关闭查询对象窗口
+			    	this.indexpopshow=false;
+			    	this.selectedobjlist=this.checkedlist;
+			    },
+			    boxbtn(item){//查询下一级
+					if(item.type=='t'){
+						this.boxtitle.push({
+				    		name:'全部',
+				    		list:this.boxlist,
+				    		index:0
+				    	})
+						this.queryteaobj('','')
+					}else if(item.type=='5'){
+						this.boxtitle.push({
+				    		name:'部门',
+				    		list:this.boxlist,
+				    		index:1
+				    	})
+						this.queryteaobj(item.type,item.id)
+					}else if(item.type=='s'){
+						this.boxtitle.push({
+				    		name:'全部',
+				    		list:this.boxlist,
+				    		index:0
+				    	})
+						this.boxlist=[{
+							name:'行政班级',
+							type:'xc',
+							id:2,
+							selected:false
+						},{
+							name:'上课班级',
+							type:'sc',
+							id:3,
+							selected:false
+						}]
+					}else if(item.type=='sc'){
+						this.boxtitle.push({
+				    		name:'班级类别',
+				    		list:this.boxlist,
+				    		index:1
+				    	})
+						this.querystuobj('4','')
+					}else if(item.type=='3'){
+						this.boxtitle.push({
+				    		name:'班级',
+				    		list:this.boxlist,
+				    		index:2
+					    })
+						this.querystuobj(item.type,item.id)
+				    }else if(item.type=='xc'){
+						this.boxtitle.push({
+				    		name:'班级类别',
+				    		list:this.boxlist,
+				    		index:1
+				    	})
+						this.querystuobj('','')
+					}else if(item.type=='1'){
+						this.boxtitle.push({
+				    		name:'年级',
+				    		list:this.boxlist,
+				    		index:2
+				    	})
+						this.querystuobj(item.type,item.id)
+					}else if(item.type=='2'){
+							this.boxtitle.push({
+					    		name:'班级',
+					    		list:this.boxlist,
+					    		index:3
+				  			})	
+							this.querystuobj(item.type,item.id)
+						}
+				    },
+			    toptier(item){//返回上一级
+			    	this.boxlist=this.boxtitle[item.index].list;
+			    	this.boxtitle=this.boxtitle.slice(0,item.index)
+			    },
+			    checkedobj(item){//选择对象
+					if(item.selected==false){
+						var list=[];
+						for(var i=0;i<this.checkedlist.length;i++){
+							if(!(item.id==this.checkedlist[i].id&&item.name==this.checkedlist[i].name&&item.type==this.checkedlist[i].type)){
+								list.push(this.checkedlist[i])
+							}
+						}
+						this.checkedlist=list;
+					}else{
+						if(item.type=='t'){
+							var list=[];
+							for(var i=0;i<this.checkedlist.length;i++){
+								if(this.checkedlist[i].type!="5"&&this.checkedlist[i].type!="6"){
+									list.push(this.checkedlist[i]);
+								}
+							}
+							this.checkedlist=list;
+						}
+						if(item.type=='s'){
+							var list=[];
+							for(var i=0;i<this.checkedlist.length;i++){
+								if(this.checkedlist[i].type!="1"&&this.checkedlist[i].type!="2"&&this.checkedlist[i].type!="3"&&this.checkedlist[i].type!="4"&&this.checkedlist[i].type!="xc"&&this.checkedlist[i].type!="sc"){
+									list.push(this.checkedlist[i]);
+								}
+							}
+							this.checkedlist=list;
+						}
+						
+						this.checkedlist.push(item)
+					}
+					this.checkedlist.reverse();
+			   },
+			    publishobj(status){//发布通知
+			   		var authorid='';
+			   		if(this.popauthor){
+			   			authorid=-1;
+			   		}else{
+			   			authorid=getCookie('uid');
+			   		}
+			   		if (!this.poptitle) {
+						layer.msg('请输入标题');
+						return false
+					}
+			   		if (!UE.getEditor('editor').getContentTxt()) {
+						layer.msg('请填写正文');
+						return false
+					}
+			   		if (this.selectedobjlist.length==0) {
+						layer.msg('请选择发布对象');
+						return false
+					}
+			   		var newsAttachment=[{
+			   			url:'url',
+			   			file_name:'file_name',
+			   			file_size:'2',
+			   			file_type:0
+			   		}]
+			   		var content=UE.getEditor('editor').getPlainTxt();
+			   		var list=this.selectedobjlist;
+			   		var type='';
+			   		var typeid='';
+			   		var yearid=[];
+			   		var classid=[];
+			   		var sclassid=[];
+			   		var deptid=[];
+			   		var uids=[];
+			   		
+			   		var value=0;
+			   		for(var i=0;i<this.checkedlist.length;i++){
+			   			if(this.checkedlist[i].type=='t'||this.checkedlist[i].type=='s'){
+			   				value++;
+			   			}
+			   		}
+			   		
+			   		if(value==2){
+			   			typeid=0
+			   		}else if(value==1){
+			   			for(var i=0;i<this.checkedlist.length;i++){
+				   			if(this.checkedlist[i].type=='t'){
+				   				typeid=1;
+				   			}else if(this.checkedlist[i].type=='s'){
+				   				typeid=2;
+				   			}
+				   		}
+			   		}else if(value==0){
+			   			typeid=3
+			   		}
+			   		console.log('--typeid----',typeid,'----value----',value)
+			   		
+			   		if(typeid==0){
+			   			yearid=[],
+			   			classid=[],
+			   			sclassid=[],
+			   			deptid=[],
+			   			uids=[]
+			   		}
+			   		
+			   		else if(typeid==1){
+			   			deptid=[];
+			   			yearid=[];
+			   			classid=[];
+			   			sclassid=[];
+			   			uids=[]
+			   		}else if(typeid==2){
+//			   			deptid=[],
+			   			yearid=[];
+			   			classid=[];
+			   			sclassid=[];
+//			   			uids=[],
+			   			for(var i=0;i<this.checkedlist.length;i++){
+				   			if(this.checkedlist[i].type=='5'){
+				   				deptid.push(this.checkedlist[i].id)
+				   			}
+				   			if(this.checkedlist[i].type=='6'){
+				   				uids.push(this.checkedlist[i].id)
+				   			}
+				   		}	
+			   		}else{
+				   		for(var i=0;i<this.checkedlist.length;i++){
+				   			if(this.checkedlist[i].type=='5'){//部门
+				   				deptid.push(this.checkedlist[i].id)
+				   			}
+				   			if(this.checkedlist[i].type=='2'){//行政班
+				   				classid.push(this.checkedlist[i].id)
+				   			}
+				   			if(this.checkedlist[i].type=='1'){//年级
+				   				yearid.push(this.checkedlist[i].id)
+				   			}
+				   			if(this.checkedlist[i].type=='3'){//上课班
+				   				sclassid.push(this.checkedlist[i].id)
+				   			}
+				   			if(this.checkedlist[i].type=='6'||this.checkedlist[i].type=='4'){//人员
+				   				uids.push(this.checkedlist[i].id)
+				   			}
+				   		}	
+			   		}
+			   		console.log(type,typeid,deptid,classid,uids)
+			    	this.sendtrue=true;
+			   		if(this.savestatu==0){
+				   		data={
+				 			command:"announce/saveannouncement",
+				 			sessionid: getCookie('sid'),
+							loginid: getCookie('uid'),
+							title:this.poptitle,
+							author:this.popauthor,
+							authorid:authorid,
+							content:content,
+							status:status,
+							level:this.rank,
+							img_url:this.uploadimg,
+							type:typeid,
+							typeid:typeid,
+							yearid:yearid,
+							classid:classid,
+							sclassid:sclassid,
+							deptid:deptid,
+							uids:uids,
+							newsAttachment:this.uploadfilelist
+				 		}
+				 		function callback(res){
+				 			if(res.errcode==0){
+				 				vm.informshow=false;
+				 				vm.queryannoucement(vm.currentPage,vm.pagesize,vm.type,vm.keyword,vm.starttime,vm.endtime);
+				 				layer.msg('新增成功！')
+				 				return false
+				 			}else{
+				 				layer.msg('新增失败！')
+				 				vm.sendtrue=false;
+				 				return false
+				 			}
+				 		}
+				 		post('/announce/saveannouncement',data,callback,errcodefn,errfn)
+			 		}else{
+			 			data={
+				 			command:"announce/updateannouncement",
+				 			sessionid: getCookie('sid'),
+							loginid: getCookie('uid'),
+							id:this.editannouncementid,
+							title:this.poptitle,
+							author:this.popauthor,
+							authorid:authorid,
+							content:content,
+							status:status,
+							level:this.rank,
+							img_url:this.uploadimg,
+							type:typeid,
+							typeid:typeid,
+							yearid:yearid,
+							classid:classid,
+							sclassid:sclassid,
+							deptid:deptid,
+							uids:uids,
+							newsAttachment:this.uploadfilelist
+				 		}
+				 		function callback(res){
+				 			if(res.errcode==0){
+				 				vm.informshow=false;
+				 				vm.queryannoucement(vm.currentPage,vm.pagesize,vm.type,vm.keyword,vm.starttime,vm.endtime);
+				 				layer.msg('发布成功！')
+				 				return false
+				 			}else{
+				 				layer.msg(res.errdesc)
+				 				return false
+				 			}
+				 		}
+				 		post('/announce/updateannouncement',data,callback,errcodefn,errfn)
+			 		}
+			    },
+				preview(){//预览
+					var objarr=[];
+					for(var i=0;i<this.selectedobjlist.length;i++){
+						objarr.push(this.selectedobjlist[i].name)
+					}
+					this.pretitle=this.poptitle;
+					this.pretime=this.popauthor+'   '+new Date().toLocaleString();
+					this.preman=objarr.toString();
+					this.preimg=this.showimage;console.log(this.preimg)
+					this.precontent=UE.getEditor('editor').getContentTxt();
+					this.prefile=this.fileList;
+				}
+			},
+			watch:{
+				activeName:function(val){
+					if (val=='first') {
+						this.type=0;
+						this.currentPage=1;
+						this.date='';
+						this.keyword='';
+						this.queryannoucement(this.currentPage,this.pagesize,this.type,this.keyword,this.starttime,this.endtime)
+					} else{
+						this.type=1;
+						this.currentPage=1;
+						this.date='';
+						this.keyword='';
+						this.queryannoucement(this.currentPage,this.pagesize,this.type,this.keyword,this.starttime,this.endtime)
+					}
+				},
+				checkedlist:function(val){
+					console.log(JSON.stringify(this.checkedlist))
+				}
+			}
+		})
+	</script>
+
+</html>

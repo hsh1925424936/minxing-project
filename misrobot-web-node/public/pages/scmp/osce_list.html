@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OSCE|列表</title>
+    <link rel="stylesheet" href="../../css/scmp/scmpcommon.css">
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../font-awesome-4.6.3/css/font-awesome.min.css">
+    <style>
+        #title{
+            background-color: #f2f2f2;
+            height:40px;
+            line-height: 40px;
+            padding-left:20px;
+        }
+        #examlist{
+            padding: 0 5px 0;
+        }
+        #examlist table{
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
+        #examlist th,#examlist td{
+            text-align: center !important;
+        }
+        .pointer{
+            cursor: pointer;
+        }
+        .disabled{
+            text-decoration: none;
+            color:#b3b3b3;
+        }
+        .disabled:hover{
+            text-decoration: none;
+            color:#b3b3b3;
+        }
+        [v-cloak] {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+<div id="container" v-cloak>
+    <div id = "title">OSCE列表</div>
+    <div id = "onchange">
+        <div id = "examlist">
+            <table class="table table-bordered table-hover">
+                <tr class="active">
+                    <th>序号</th>
+                    <th>考试名称</th>
+                    <th>开始时间</th>
+                    <th>结束时间</th>
+                    <th>考试状态</th>
+                    <th>操作</th>
+                </tr>
+                <tbody>
+                <tr v-for="(value,index) in examlist">
+                    <td>{{index+1}}</td>
+                    <td>{{value.examname}}</td>
+                    <td>{{value.begintimestr}}</td>
+                    <td>{{value.endtimestr}}</td>
+                    <td>{{value.status | examStatus}}</td>
+                    <td>
+                        <a class="pointer" target=＂_blank＂ :href = "value.adminreporturl" v-if="value.status == 2">
+                            考试报告
+                        </a>
+                        <a v-else class="disabled">考试报告</a>
+
+                        <a class="pointer" @click="stuScore(index)" v-if="value.status == 2">
+                            学生成绩
+                        </a>
+                        <a v-else class="disabled">学生成绩</a>
+
+                        <a class="pointer" @click="examinerReport(index)" v-if="value.status == 2">
+                            考官报告
+                        </a>
+                        <a v-else class="disabled">考官报告</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--分页-->
+        <page_component :pageconf="pageconf" :pages="pages"></page_component>
+    </div>
+</div>
+</body>
+<script src="../../js/jquery-3.1.1.min.js"></script>
+<script src="../../js/jquery.cookie.js"></script>
+<script src="../../js/scmp/common.js"></script>
+<script src="../../layer/xie/layer1.js"></script>
+<script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/vue.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/scmp/pageComponent.js"></script>
+<script src="../../js/base.js" type="text/javascript" charset="utf-8"></script>
+<script>
+  Vue.filter('examStatus',function (value){
+    switch (value){
+      case 0: return "未开始";
+        break;
+      case 1: return "考试中";
+        break;
+      case 2: return "结束";
+        break;
+    }
+  })
+  var vm = new Vue({
+    el:"#container",
+    data:{
+      showShadow: false,
+      showDetail:true,
+      examlist:[],
+      totalnum:'',
+      pageconf: {
+        itemsPerPage:10,
+        current: 1, //默认显示第一页
+        showItem: 10, //最多显示多少页，自己定义
+        allpage: '', //总共多少页，根据请求返回结果计算
+        totalnum: '', //总共条数，请求返回
+        onchange: function(index, itemsperpage) { //ajax,index表示查看第几页,itemsperpage表示每页多少条
+          changepage('page=' + index + '&number=' + itemsperpage);
+          var data = {
+            command: "report/listosceexam",
+            sessionid: getCookie('sid'),
+            loginid: getCookie('uid'),
+            page: index, //查询第几页
+            reqnum: itemsperpage //每页展示多少条,
+
+          };
+          function callback(res) {
+            vm.pageconf.totalnum = res.allcount;
+            vm.pageconf.allpage = Math.ceil(res.allcount / itemsperpage);
+            vm.examlist =[];
+            vm.examlist=res.examlist;
+
+          };
+          post("/report/listosceexam", data, callback, errcodefn, errfn)
+        }
+      },
+    },
+    mounted:function () {
+      this.pageconf.onchange(1,10);
+    },
+    computed:{
+      pages: function() {
+        var pag = [];
+        if(this.pageconf.current < this.pageconf.showItem) { //如果当前的激活的项 小于要显示的条数
+          //总页数和要显示的条数那个大就显示多少条
+          var i = Math.min(this.pageconf.showItem, this.pageconf.allpage);
+          while(i) {
+            pag.unshift(i--);
+          }
+        } else { //当前页数大于显示页数了
+          var middle = this.pageconf.current - Math.floor(this.pageconf.showItem / 2), //从哪里开始
+            i = this.pageconf.showItem;
+          if(middle > (this.pageconf.allpage - this.pageconf.showItem)) {
+            middle = (this.pageconf.allpage - this.pageconf.showItem) + 1
+          }
+          while(i--) {
+            pag.push(middle++);
+          }
+        }
+        return pag
+      }
+    },
+    methods:{
+      stuScore:function(index){
+        var examid=this.examlist[index].id;
+        $("#onchange").addClass('hide');
+        $("#title").addClass('hide');
+        $("#container").append("<iframe frameborder='0' width='100%' height='100%' scrolling='auto' id='test1' class='number'></iframe>");
+        $('.number').attr('src','osce_stulist.html?examid='+examid);
+      },
+      examinerReport:function (index){
+        var examid=this.examlist[index].id;
+        $("#onchange").addClass('hide');
+        $("#title").addClass('hide');
+        $("#container").append("<iframe frameborder='0' width='100%' height='100%' scrolling='auto' id='test1' class='number'></iframe>");
+        $('.number').attr('src','osce_examinerlist.html?examid='+examid);
+      }
+    }
+  });
+</script>
+</html>

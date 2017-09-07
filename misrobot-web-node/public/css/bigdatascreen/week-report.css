@@ -1,0 +1,179 @@
+/*管理者周报标题*/
+.top_tit_outer{
+	height:calc(115vh * 100 / 1050); padding-top:calc(40vh * 100 / 1050);
+	box-shadow:0px -10px 9px 1px #333;
+}
+.top_tit{
+	height:calc(60vh * 100 / 1050); background-color:#1C2638;
+	position:relative;
+}
+.top_tit .btn_return,.top_tit .btn_enter{
+	width:calc(30vh * 100 / 1050); height:calc(30vh * 100 / 1050);
+	margin-top:calc(15vh * 100 / 1050);
+	display:block;
+}
+.top_tit .btn_return{
+	margin-left:calc(20vh * 100 / 1050); float:left;
+}
+.top_tit .btn_enter{
+	margin-right:calc(20vh * 100 / 1050); float:right; transform:rotate(180deg);
+}
+.top_tit_inner{
+	position:absolute; left:50%; margin-left:-15vh;
+}
+.top_tit p{
+	display:block; float:left; height:100%;
+}
+.top_tit_p1{
+	color:white; font-size:calc(22vh * 100 / 1050); line-height:calc(20vh * 100 / 1050);
+	padding-top:calc(15vh * 100 / 1050)
+}
+.top_tit_p1 span{
+	font-size:calc(10vh * 100 / 1050);
+}
+.top_tit_p2{
+	font-size:calc(15vh * 100 / 1050); color:#1AC388; margin-left:calc(30vh * 100 / 1050);
+	line-height:calc(60vh * 100 / 1050);
+}
+/*适配手机端*/
+@media screen and (max-width: 800px) {
+	.top_tit_span1{
+		font-size:calc(22vh * 100 / 1050);
+	}
+}
+
+
+.reportcontrol{/*报告最外层*/
+	width:100%; height:100%;
+}
+/*在首页中显示的报告的样式*/
+.reportcontrol .report_outer{
+	background-color:#181C29;
+}
+.reportcontrol{
+	color:white;
+}
+.reportcontrol .chartcontrol{
+	
+}
+.report_tit{
+	line-height:calc(55vh * 100 / 1050); font-size:calc(20vh * 100 / 1050);
+	padding-left:calc(18vh * 100 / 1050);
+}
+.report_outer{
+	width:98%; margin:auto; box-shadow:0px 3px 5px -2px #333;
+	background-color:#F3F9FE; height:82vh;
+	padding-left:calc(12vh * 100 / 1050); padding-right:calc(12vh * 100 / 1050);
+	overflow:hidden;
+}
+
+/*报告小项的标题*/
+.report_item_con{
+	overflow:hidden;
+}
+.report_item_con1{
+	height:36vh;
+}
+.report_item_con2{
+	margin-top:0.6vh;
+}
+.report_item_tit{
+	margin-bottom:calc(10vh * 100 / 1050); margin-top:calc(20vh * 100 / 1050);
+}
+.report_item_tit_blue{
+	color:#116FCB;
+}
+/*老师的第三个小标题样式*/
+.report_item_tit3{
+	margin-top:calc(26vh * 100 / 1050);
+}
+/*教学环境第一个标题*/
+.environment_report_item_tit1{
+	color:#116FCB;
+}
+/*教学环境第二个标题*/
+.environment_report_item_tit2{
+	color:#116FCB; margin-top:calc(69vh * 100 / 1050);
+}
+
+/*报告第一块内容*/
+.report_item1>div{
+	float:left;
+}
+.report_item1_left{
+	width:64%;
+}
+.chart1{
+	height:calc(290vh * 100 / 1050);
+}
+.report_item1_right{
+	width:36%;
+}
+
+.top3item{
+	margin:auto;
+	margin-top:calc(12vh * 100 / 1050); border:1px solid #464954;
+	border-radius:calc(8vh * 100 / 1050);
+	padding-left:calc(10vh * 100 / 1050); padding-right:calc(10vh * 100 / 1050);
+	width:90%; height:calc(73vh * 100 / 1050);
+	background-color:rgba(255, 255, 255, 0.05);
+}
+.top3item h3{
+	font-size:calc(22vh * 100 / 1050);
+	margin-top:calc(2vh * 100 / 1050); margin-bottom:calc(12vh * 100 / 1050);
+}
+.top3item h3>span{
+	margin-left:calc(15vh * 100 / 1050);
+}
+.top3item>div span{
+	display:block;
+}
+.top3item>div span:nth-child(1){
+	float:left;
+}
+.top3item>div span:nth-child(2){
+	margin-right:0; float:right;
+	background-size:100% 100%; background-repeat:no-repeat;
+	height:calc(15vh * 100 / 1050);
+	
+}
+/* .top3item>div span:nth-child(3){
+	margin-right:0; float:right;
+	background-size:100% 100%; background-repeat:no-repeat;
+	height:calc(20vh * 100 / 1050);
+	cursor:pointer;
+} */
+.up_icon,.down_icon{
+	width:calc(15vh * 100 / 1050);
+}
+.up_icon{
+	background-image:url(../../images/bigdatascreen/icon_rising-.png);
+}
+.down_icon{
+	background-image:url(../../images/bigdatascreen/icon_falling-.png);
+}
+.teacher_chart2{
+	height:calc(230vh * 100 / 1050 / 0.88);
+}
+.student_chart2{
+	height:calc(210vh * 100 / 1050);
+}
+
+/*学生缺勤表格*/
+.absenttable{
+	width:100%; border:1px solid #464954; text-align:center; font-size:calc(12vh * 100 / 1050);
+	background-color:rgba(255, 255, 255, 0.05);
+}
+.absenttable tr{
+	border-bottom:1px solid #464954;
+}
+.absenttable td,.absenttable th{
+	border:1px solid #464954; font-weight:normal;
+	height:calc(43vh * 100 / 1050);
+}
+/*最勤奋老师样式*/
+.top3item2{
+	float:left; margin:0 0.5vh;
+	width:calc((100% - 3vh) / 3);
+}
+

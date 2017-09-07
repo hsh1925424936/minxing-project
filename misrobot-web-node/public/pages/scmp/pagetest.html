@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/scmp/scmpcommon.css">
+</head>
+<body>
+    <div class="container">
+        <ul>
+            <li v-for="(value,index) in showList">{{ value.name }}</li>
+        </ul>
+        <page_component :pageconf="pageconf" :pages="pages"></page_component>
+        <button @click="goback()">复位</button>
+        <button @click="getcurrent()">取当前值</button>
+    </div>
+    <script src="../../js/scmp/pageComponent.js"></script>
+    <script>
+        //所有你需要改的，只有onchange里的ajax请求
+        var vm=new Vue({
+            el:'.container',
+            data:{
+                pageconf: {
+                    current:1,//默认显示第一页
+                    showItem:10,//最多显示多少页，自己定义
+                    allpage:'',//总共多少页，根据请求返回结果计算
+                    totalnum:'',//总共条数，请求返回
+                    itemsPerPage: 10,
+                    onchange: function(index,itemsperpage){//ajax,index表示查看第几页,itemsperpage表示每页多少条
+                        console.log('goto'+index+'页')
+                        console.log('每页'+itemsperpage+'条')
+                        var data={
+                            command:"dooraccesscontrol/finddooruser",
+                            sessionid:getCookie('sid'),
+                            loginid:getCookie('uid'),
+                            door_id:104,
+                            pagenum:index,//查询第几页
+                            perpagenum:itemsperpage//每页展示多少条
+                        };
+                        function callback(res){
+                            vm.pageconf.totalnum=res.totalnum;
+                            vm.pageconf.allpage=Math.ceil(res.totalnum/itemsperpage);
+                            vm.showList=[];
+                            vm.showList=res.resultlist;
+                            console.log(vm.pageconf.totalnum)
+                            console.log(vm.pageconf.allpage)
+                        };
+                        post("/dooraccesscontrol/finddooruser",data,callback,errcodefn,errfn)
+                    }
+                },
+                showList:[]//后台请求过来需要展示到页面的数组
+            },
+            mounted: function(){
+                this.pageconf.onchange(1,10)
+            },
+            computed:{
+                pages:function(){
+                    var pag = [];
+                    if( this.pageconf.current < this.pageconf.showItem ){ //如果当前的激活的项 小于要显示的条数
+                        //总页数和要显示的条数那个大就显示多少条
+                        var i = Math.min(this.pageconf.showItem,this.pageconf.allpage);
+                        while(i){
+                            pag.unshift(i--);
+                        }
+                    }else{ //当前页数大于显示页数了
+                        var middle = this.pageconf.current - Math.floor(this.pageconf.showItem / 2 ),//从哪里开始
+                                i = this.pageconf.showItem;
+                        if( middle >  (this.pageconf.allpage - this.pageconf.showItem)  ){
+                            middle = (this.pageconf.allpage - this.pageconf.showItem) + 1
+                        }
+                        while(i--){
+                            pag.push( middle++ );
+                        }
+                    }
+                    return pag
+                }
+            },
+            methods:{
+                goback:function(){
+                    this.pageconf.itemsPerPage=10
+                    //alert(this.itemsPerPage)
+                    this.pageconf.current=1
+                    this.pageconf.onchange(1,10)
+                },
+                getcurrent:function(){
+                    alert('当前每页显示'+this.pageconf.itemsPerPage+'条')
+                    alert('当前在第'+this.pageconf.current+'页')
+                }
+            }
+        })
+    </script>
+</body>
+</html>

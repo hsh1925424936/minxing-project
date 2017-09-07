@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>训练位类型维护</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style type="text/css" >
+			.setTraining .btnList {
+				margin: 20px;
+			}
+			html,body{
+				width: 100%;
+				height: 100%;
+			}
+			.setTraining{
+				height: 100%;
+				margin: 0 20px;
+			}
+			.setTraining .smallMask {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, 0.3);
+				top: 0;
+				left: 0;
+			}
+			
+			.setTraining .teachSelect {
+				width: 70%;
+				position: absolute;
+				
+				left: 15%;
+				top: 70px;
+				background-color: white;
+				overflow: hidden;
+			}
+			
+			.setTraining .teachSelect .maskLeft {
+				width: 42%;
+				float: left;
+				margin: 20px 0 0 20px;
+			}
+			
+			.setTraining .maskRight {
+				width: 42%;
+				float: left;
+				margin: 20px 0 0 20px;
+			}
+			
+			.setTraining .teachSelect h3 {
+				margin: 20px 0 0 20px;
+			}
+			
+			.setTraining .maskCenter {
+				width: 7%;
+				height: 300px;
+				float: left;
+				margin: 20px 0 0 20px;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+			
+			.setTraining .teacherlist,.teacherListRight {
+				border: 1px solid #F2F2F2;
+				height: 300px;
+				overflow: auto;
+				margin-top: 20px;
+			}
+			
+			.setTraining .teacherlist>li {
+				width: 100%;
+				padding: 10px;
+				border-bottom: 1px solid #f2f2f2;
+			}
+			
+			.setTraining .teacherListRight>li {
+				padding: 10px;
+			}
+			
+			.setTraining .maskBottom {
+				text-align: center;
+				margin-bottom: 20px;
+			}
+			
+			.setTraining .maskBtn {
+				margin-right: 20px;
+				margin-top: 20px;
+			}
+			.setTraining .maskSure {
+				margin: 0 1px !important;
+				width: 60px;
+				padding: 9px;
+				margin-bottom: 20px !important;
+			}
+			.setTraining .el-table::after,.el-table::before {
+				z-index: -1;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="setTraining">
+			<div class="btnList" style="margin: 20px 20px 20px 0;">
+				<el-button type="primary" @click="dialogFormVisible = true" style="margin-right: 20px;">新增训练位类型</el-button>
+				<el-dialog title="新增训练位类型" :visible.sync="dialogFormVisible">
+					<el-form :model="form">
+						<el-form-item>
+							<el-input v-model="form.name" auto-complete="off" placeholder="请输入训练位类型名称"></el-input>
+						</el-form-item>
+						<el-form-item :label-width="formLabelWidth">
+							<el-radio class="radio" v-model="form.radio" label="0">在线训练</el-radio>
+							<el-radio class="radio" v-model="form.radio" label="1">模型</el-radio>
+							<el-radio class="radio" v-model="form.radio" label="2">智能设备</el-radio>
+							<el-radio class="radio" v-model="form.radio" label="3">出科训练</el-radio>
+						</el-form-item>
+					</el-form>
+					<div slot="footer" class="dialog-footer">
+						<el-button @click="dialogFormVisible = false">关闭</el-button>
+						<el-button type="primary" @click="addExeType">保存</el-button>
+					</div>
+				</el-dialog>
+				<el-button type="primary" @click="getExeType">刷新列表</el-button>
+			</div>
+			<template>
+				<el-table :data="learnArr" border style="width: 100%">
+					<el-table-column type="index" label="序号" width="80">
+					</el-table-column>
+					<el-table-column prop="traintypename" label="训练位类型" width="150">
+					</el-table-column>
+					<el-table-column label="训练项">
+						<template scope="scope">
+							<span v-for="value in learnArr[scope.$index].name">{{ value.name }}--{{ value.type | learntype }}&nbsp;&nbsp;&nbsp;</span>
+						</template>
+					</el-table-column>
+					<el-table-column label="操作">
+						<template scope="scope">
+							<el-button size="small" type="primary" @click="setItem(scope.$index, scope.row)">设置训练项</el-button>
+							<el-button size="small" type="success" @click="setType(scope.$index, scope.row)">修改类型</el-button>
+							<el-button size="small" type="danger" @click="deleteType(scope.$index, scope.row)">删除</el-button>
+						</template>
+					</el-table-column>
+				</el-table>
+			</template>
+			<div class="smallMask" v-show="smallMask">
+				<div class="teachSelect">
+					<h3>设置训练项</h3>
+					<div class="maskLeft">
+						<div>
+							<el-input placeholder="请输入训练项名称" v-model="trainName">
+								<el-button slot="append" icon="search" @click="searchTrain"></el-button>
+							</el-input>
+						</div>
+						<ul class="teacherlist">
+							<li v-for="item in cloneTrainList">
+								<input type="checkbox" :value="item" v-model="checkList" /> {{item.name}}-{{item.type | learntype}}
+							</li>
+
+						</ul>
+					</div>
+					<div class="maskCenter">
+						<el-button size="small" @click="add" style="margin-bottom: 30px;" class="maskSure">增加&gt;&gt;</el-button>
+						<el-button size="small" @click="cutOut" class="maskSure">&lt;&lt;删除</el-button>
+					</div>
+					<div class="maskRight">
+						<h5 style="height: 36px;line-height: 36px;">已选训练项</h5>
+						<ul class="teacherListRight">
+							<li v-for="item in addCheckList">
+								<input type="checkbox" :value="item" v-model="checkListAdd" /> {{item.name}}-{{item.type | learntype}}
+							</li>
+						</ul>
+					</div>
+					<div class="maskBottom" style="clear: both;">
+						<el-button type="primary" @click="sureBtn" class="maskBtn">确定</el-button>
+						<el-button class="maskBtn" @click="deleteMaskBtn">关闭</el-button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		Vue.filter('learntype', function(value) { //过滤训练项类型
+			if(value == "0") {
+				return "在线训练"
+			} else if(value == "1") {
+				return "模型"
+			} else if(value == "2") {
+				return "智能设备"
+			} else {
+				return '出科训练'
+			}
+		});
+		var vm = new Vue({
+			el: '.setTraining',
+			data: {
+				learnArr: [], //训练位类型数组
+				dialogFormVisible: false, //模态框的显示/隐藏
+				form: {
+					name: '',
+					radio: '0'
+				},
+				smallMask: false, //弹出框的显示。/隐藏
+				trainName: '', //训练项输入框的值
+				checkList: [], //左侧选中的数组
+				checkListAdd: [], //右侧选中的数组
+				addCheckList: [], //增加后右侧显示的数组
+				trainList: [], //所有训练项列表
+				cloneTrainList: [], //克隆所有训练项列表
+				id: '', //中间变量，接收设置训练项传过来的值
+				nameList:[],//中间变量，接收对应一条数据的值
+				userSearched:[],
+			},
+			mounted() {
+				this.getExeType();
+			},
+			watch: {
+				'trainName': function(curVal, oldVal) {
+					let self = this;
+					self.cloneTrainList = [];
+					for(var i = 0; i < self.trainList.length; i++) {
+						if(self.trainList[i].name.indexOf(curVal) != -1) {
+							self.cloneTrainList.push(self.trainList[i])
+						}
+					}
+				}
+			},
+			methods: {
+				getExeType: function() { //查询训练类型名和训练项
+					let self = this;
+					var data = {
+						command: 'learn/querylearnandtrain',
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid')
+					};
+
+					function callback(res) {
+						self.learnArr = [];
+						var type = [];
+						res.learnandtrains.forEach(function(value) {
+							type.push(value.traintypename)
+						});
+						var noRepeatType = notRepeat(type);
+						noRepeatType.forEach(function(value, index) {
+							self.learnArr.push({
+								workstationtypeid: "",
+								traintypename: value,
+								name: []
+							});
+						});
+						for(var i = 0; i < self.learnArr.length; i++) {
+							for(var j = 0; j < res.learnandtrains.length; j++) {
+								if(self.learnArr[i].traintypename == res.learnandtrains[j].traintypename) {
+									self.learnArr[i].workstationtypeid = res.learnandtrains[j].workstationtypeid;
+									self.learnArr[i].name.push({
+										name: res.learnandtrains[j].name,
+										type: res.learnandtrains[j].type
+									})
+								}
+							}
+						}
+					};
+					post('/learn/querylearnandtrain', data, callback, errcodefn, errfn)
+				},
+				addExeType: function() {
+					let self = this;
+					if(self.form.name == '') {
+						layer.msg('请输入训练位类型名称')
+						return
+					}
+					var flag=true;
+					for(var i=0;i<self.learnArr.length;i++){
+						if(self.learnArr[i].traintypename==self.form.name){
+							layer.msg('训练位类型不能相同')
+							flag=false;
+							break;
+						}
+					}
+					if(!flag){
+						return
+					}
+					var data = {
+						command: 'learn/addlearnworkstationtype',
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						traintypename: self.form.name,
+						type: self.form.radio
+					};
+
+					function callback(res) {
+						layer.msg('成功添加训练位类型!', { icon: 1 });
+						self.getExeType();
+						self.dialogFormVisible = false;
+					};
+					post('/learn/addlearnworkstationtype', data, callback, errcodefn, errfn)
+				},
+				setType: function(indexs, row) {
+					let self = this;
+					layer.prompt({ title: '修改训练位类型', formType: 0 }, function(type, index) {
+						var data = {
+							command: 'learn/modifytraintypename',
+							sessionid: getCookie('sid'),
+							loginid: getCookie('uid'),
+							workstationtypeid: row.workstationtypeid,
+							traintypename: type
+						};
+
+						function callback(res) {
+							layer.msg('修改成功', { icon: 1 });
+							self.getExeType();
+							layer.close(index)
+						};
+						post('/learn/modifytraintypename', data, callback, errcodefn, errfn);
+					});
+				},
+				deleteType: function(index, row) {
+					let self = this;
+					layer.confirm('您确定要删除该训练项吗？', {
+						title: '删除',
+						btn: ['确定', '取消'] //按钮
+					}, function() {
+						var data = {
+							command: 'learn/deletelearnworkstationtype',
+							sessionid: getCookie('sid'),
+							loginid: getCookie('uid'),
+							workstationtypeid: row.workstationtypeid
+						};
+
+						function callback(res) {
+							layer.msg('删除成功', { icon: 1 });
+							self.getExeType()
+						};
+						post('/learn/deletelearnworkstationtype', data, callback, errcodefn, errfn);
+					}, function() {
+
+					});
+				},
+				setItem: function(index, row) { //设置训练项按钮
+					let self = this;
+					self.smallMask = true;
+					self.userSearched=[];
+					self.trainList=[];
+					self.cloneTrainList=[];
+					self.getPlaceList();
+					self.id = row.workstationtypeid;
+					self.nameList=row.name;
+					self.addCheckList=[]
+					for (var i=0;i<row.name.length;i++) {
+						if(row.name[i].name!=null){
+							self.addCheckList.push(row.name[i]);
+						}
+					}
+				},
+				searchTrain: function() { //按训练项名字进行搜索  按钮
+					let self = this;
+					self.cloneTrainList = [];
+					if(self.trainName == '') {
+						self.cloneTrainList = self.trainList;
+					}
+					for(var i = 0; i < self.trainList.length; i++) {
+						if(self.trainList[i].name.indexOf(self.trainName) != -1) {
+							self.cloneTrainList.push(self.trainList[i])
+						}
+					}
+					console.log(self.cloneTrainList)
+				},
+				add: function() { //增加按钮
+					let self = this;
+					for(var i = 0; i < self.checkList.length; i++) {
+						self.addCheckList.push(self.checkList[i]);
+					}
+					for(var i = 0; i < self.cloneTrainList.length; i++) {
+						for(var j = 0; j < self.checkList.length; j++) {
+							if(self.cloneTrainList[i] == self.checkList[j]) {
+								self.cloneTrainList.splice(i, 1)
+							}
+						}
+					}
+					self.checkList = [];
+					self.checkListAdd = [];
+				},
+				cutOut: function() { //删除按钮
+					let self = this;
+					for(var i = 0; i < self.addCheckList.length; i++) {
+						for(var j = 0; j < self.checkListAdd.length; j++) {
+							if(self.addCheckList[i] == self.checkListAdd[j]) {
+								self.addCheckList.splice(i, 1)
+							}
+						}
+					}
+					for(var i = 0; i < self.checkListAdd.length; i++) {
+						self.cloneTrainList.push(self.checkListAdd[i])
+					}
+					self.checkListAdd = [];
+					for(var i = 0; i < self.cloneTrainList.length - 1; i++) {
+						for(var j = 0; j < self.cloneTrainList.length - 1 - i; j++) {
+							if(self.cloneTrainList[j].learnid > self.cloneTrainList[j + 1].learnid) {
+								var temp;
+								temp = self.cloneTrainList[j];
+								self.cloneTrainList[j] = self.cloneTrainList[j + 1];
+								self.cloneTrainList[j + 1] = temp;
+							}
+						}
+					}
+				},
+				deleteMaskBtn: function() { //关闭按钮
+					this.checkList = [];
+					this.checkListAdd = [];
+					this.addCheckList = [];
+					this.cloneTrainList = this.trainList;
+					this.smallMask = false;
+				},
+				sureBtn: function() { //确定按钮
+					var learnids = [];
+					let self = this;
+					for(index in self.addCheckList) {
+						learnids.push({
+							learnid: self.addCheckList[index].learnid,
+							workstationtypeid: self.id,
+							type: self.addCheckList[index].type,
+						})
+					};
+					var data = {
+						command: 'learn/modifylearntotrain',
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						learnids: learnids,
+					};
+
+					function callback(res) {
+						layer.msg('设置训练项成功！', { icon: 1 }, function() {
+							self.getExeType();
+
+						});
+						self.deleteMaskBtn();
+					};
+					post('/learn/modifylearntotrain', data, callback, errcodefn, errfn)
+				},
+				getPlaceList: function() { //获取授课地点的函数
+					var self = this;
+					var json = {
+						command: "learn/querylearninfo",
+						loginid: getCookie('uid'),
+						sessionid: getCookie('sid')
+					};
+
+					function callback(response) {
+						self.userSearched=[];
+						self.userSearched=response.learnids;
+						for(var i = 0; i < self.userSearched.length; i++) {
+							if(self.nameList[0].type == self.userSearched[i].type) {
+								self.trainList.push(self.userSearched[i]);
+								self.cloneTrainList.push(self.userSearched[i]);
+							}
+						}
+
+						var newArr = [];
+						for(var i = 0; i < self.nameList.length; i++) {
+							for(var j = 0; j < self.userSearched.length; j++) {
+								if(self.userSearched[j].name == self.nameList[i].name && self.userSearched[j].type == self.nameList[i].type) {
+									self.nameList[i].learnid = self.userSearched[j].learnid
+								}
+							}
+						}
+					};
+					post("/learn/querylearninfo", json, callback, errcodefn, errfn)
+				}
+			}
+		})
+
+		vm.$mount('.setTraining')
+	</script>
+
+</html>

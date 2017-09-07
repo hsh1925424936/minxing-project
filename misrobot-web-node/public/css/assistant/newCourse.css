@@ -1,0 +1,655 @@
+*{
+    margin:0;
+    padding:0;
+    font-family:"microsoft yahei";
+}
+[v-cloak]{display:none}
+body{
+    background-color: rgba(0,0,0,0.3);
+    position:relative;
+    overflow:hidden;
+    height:100%;
+}
+html{
+    height:100%;
+}
+#content{
+    width:860px;
+    height:720px;
+    background-color: white;
+    border-radius: 5px;
+    margin:0 auto;
+    position:relative;
+}
+#shadow{
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0.3);
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:99;
+}
+div.header{
+    overflow:hidden;
+    padding:20px 30px;
+}
+div.header>p{
+    float:left;
+    font-size:22px;
+    color:#333333;
+}
+div.header>span{
+    float:right;
+    color:#CCCCCC;
+}
+div.must{
+    padding:18px 30px 16px 30px;
+    height:86px;
+}
+div.mustInput{
+    height:33px;
+    width:50%;
+    float:left;
+    font-size:14px;
+    margin-bottom:10px;
+}
+.inputTitle{
+    float:left;
+    color:#515151;
+    width:83px;
+    text-align: right;
+}
+.dropdown,.choosedTeacher,.choosedTimeRange,.choosedTeacher2{
+    float:left;
+    border-radius: 5px;
+    padding:5px 10px;
+    border:1px solid #CCCCCC;
+    color:#4b4b4b;
+    position:relative;
+}
+.choosedTeacher,.choosedTimeRange,.choosedTeacher2{
+    width:188px;
+    text-align: center;
+    padding:5px 0;
+    height:21px;
+    overflow:auto;
+}
+.match{
+    cursor:pointer;
+    position:relative;
+}
+.find{
+    position:absolute;
+    left:4px;
+    top:0;
+    width:16px;
+    height:16px;
+    color:#ccc;
+    display:none;
+}
+.dropdown>ul{
+    position:absolute;
+    left:-1px;
+    top:38px;
+    background-color:white;
+    border:1px solid #ccc;
+    border-radius:5px;
+    z-index:99;
+    max-height:105px;
+    min-height:42px;
+    width:100%;
+    overflow:auto;
+}
+.dropdown>ul li{
+    text-align: center;
+    cursor: pointer;
+}
+.dropdown>ul li:hover{
+    background-color:#eee;
+}
+.btnWhite{
+    float:left;
+    border:1px solid #CCCCCC;
+    padding:5px 24px;
+    border-radius: 5px;
+    margin-left:10px;
+    cursor:pointer;
+    background-color: white;
+}
+.disabled{
+    border:1px solid #CFCFCF;
+    color:#CFCFCF;
+    border-radius: 5px;
+    text-align: center;
+    padding:8px 0;
+}
+.able{
+    color:#9E9E9E;
+    border-color:#9E9E9E;
+    cursor:pointer;
+}
+.btnWhite16:hover,.btnWhite:hover,.able:hover{
+    background-color:#F2F2F2;
+    border-color:#9e9e9e;
+}
+.btnBlue16:hover{
+    background-color:#0487B5;
+}
+.icon5{
+    font-weight:normal;
+    color:#FE0000;
+    font-size: 18px;
+    position:relative;
+    top:4px;
+}
+.dropdown>input{
+    border:none;
+    outline: none;
+    width:155px;
+}
+#choice div.choiceHead{
+    border-bottom:1px solid #CCCCCC;
+    padding:10px 30px 0 30px;
+    height:27px;
+    font-size:16px;
+    color:#515151;
+    position: relative;
+}
+.delete{
+    cursor:pointer;
+}
+#choice div.choiceHead>span{
+    float:left;
+}
+#choice div.choiceHead>p{
+    float: right;
+    color:#2D9DCD;
+}
+div.choiceBox{
+    padding:0 30px 0 30px;
+    position:absolute;
+    top:48px;
+    left:0;
+}
+div.exercise{
+    width:100%;
+    font-size:14px;
+    overflow:hidden;
+    margin-bottom:10px;
+}
+#exercise{
+    padding:6px 10px;
+    border-radius:5px;
+    font-size:14px;
+    font-family: "Microsoft yahei";
+    float:left;
+    width:604px;
+    border:1px solid #ddd;
+}
+#stuMsg{
+    border-top:1px solid #DDDDDD;
+    border-left:1px solid #DDDDDD;
+    border-radius:5px;
+    width:626px;
+    float:left;
+    text-align: center;
+    border-collapse: separate;
+}
+div.stu{
+    overflow: hidden;
+    font-size:14px;
+    color:#4B4B4B;
+    position:relative;
+}
+#teacherList li{
+    padding-left:50px;
+}
+#teacher2List li{
+    padding-left:50px;
+}
+#stuMsg td{
+    border-bottom:1px solid #DDD;
+    border-right:1px solid #DDD;
+    padding:6px 0;
+}
+#moreStu{
+    cursor:pointer;
+}
+div.stu>ul{
+    position:absolute;
+    bottom:0;
+    right:0;
+    padding-right:26px;
+    color:#999;
+}
+div.stu>ul>li{
+    margin-bottom:10px;
+    cursor:pointer;
+}
+div.stu>ul>li:hover span{
+    color:#666;
+}
+.btnWhite16{
+    float:right;
+    border:1px solid #CCCCCC;
+    padding:6px 37px;
+    border-radius: 5px;
+    margin-left:18px;
+    font-size:16px;
+    color:#444;
+    cursor:pointer;
+}
+.btnBlue16{
+    float:right;
+    padding:7px 38px;
+    border-radius: 5px;
+    font-size:16px;
+    color:white;
+    background-color: #0495CA;
+    cursor:pointer;
+}
+.btns{
+    overflow:hidden;
+    padding:30px 30px;
+    position:absolute;
+    bottom:0;
+    right:0;
+}
+.hide{
+    display:none;
+}
+.show{
+    display:block;
+}
+#toggleIcon{
+    float:left;
+    width:11px;
+    height:6px;
+    background-image:url("../../images/assistant/td.png");
+    background-position:0 0;
+    margin:8px 0 0 10px;
+}
+#toggleOpen{
+    float:left;
+}
+i.block{
+    position:absolute;
+    top:10px;
+    width:30px;
+    height:30px;
+    background-color:white;
+}
+i.leftBlock{
+    left:0;
+}
+i.rightBlock{
+    right:0;
+}
+.noUse{
+    height:10px;
+    width:100%;
+}
+#newCourseBox{
+    width:433px;
+    height:330px;
+    margin:0 auto;
+    background-color: white;
+    border-radius: 5px;
+    position:relative;
+}
+#newCourseBox>p:first-child{
+    padding:15px 30px 0 0;
+    text-align: right;
+    color:#ccc;
+}
+.rightTop{
+    cursor: pointer;
+    color:#CCCCCC;
+    float:right;
+    border-radius: 50%;
+    width:24px;
+    height:24px;
+    text-align: center;
+}
+.rightTop:hover{
+    background-color: #E7E7E7;
+    color:#ACACAC;
+}
+#newCourseBox>p:nth-child(2){
+    margin-top:30px;
+    text-align: center;
+    color:#333;
+    font-size:21px;
+}
+#newCourseBox input{
+    width:360px;
+    height:40px;
+    margin:0 auto;
+    display:block;
+    margin-top:24px;
+    border-radius: 5px;
+    text-align: center;
+    border:1px solid #C3C3C3;
+}
+#newCourseBox>div{
+    position: absolute;
+    bottom:15px;
+    right:30px;
+}
+#setTeacher,#setStu,#setTeacher2,#setExercise{
+    width:700px;
+    height:490px;
+    background-color: white;
+    margin:0 auto;
+    border-radius: 5px;
+    overflow: hidden;
+    font-size: 14px;
+}
+p.title{
+    padding:18px 30px 0 30px;
+    overflow: hidden;
+}
+p.title>b{
+    color:#333333;
+    font-size: 19px;
+    float:left;
+    font-weight: normal;
+}
+.setTLeft{
+    float:left;
+    width:292px;
+    margin:24px 0 0 30px;
+}
+.setTCenter{
+    float:left;
+}
+.setTRight{
+    float:left;
+}
+.searchTeacher{
+    border-radius: 5px;
+    overflow: hidden;
+    border:1px solid #e1e1e1;
+    height:34px;
+    line-height:34px;
+}
+.searchTeacher>input{
+    border:none;
+    outline: none;
+    float:left;
+    width:203px;
+    padding-left:10px;
+    height:34px;
+    line-height:34px;
+}
+.searchTeacher>span{
+    float:left;
+    background-color: #EDEDED;
+    border-left:1px solid #e1e1e1;
+    width:76px;
+    text-align: center;
+    color:#474747;
+}
+#teacherList,#studentList,#teacher2List,#exerciseList{
+    color:#7C7C7C;
+    border:1px solid #DBDBDB;
+    margin-top:10px;
+    height:290px;
+    overflow: auto;
+}
+#teacherList li,#studentList li,#teacher2List li,#exerciseList li{
+    height:28px;
+    border-bottom: 1px solid #DBDBDB;
+    line-height: 29px;
+    position: relative;
+    cursor: pointer;
+}
+#exerciseList li{
+    padding-left:50px;
+}
+#exerciseList li:hover{
+    background-color:#efefef;
+}
+.notChoosed{
+    position: absolute;
+    left:20px;
+    top:6px;
+    width:18px;
+    height:18px;
+    background-image: url("../../images/assistant/gouxuan.png");
+}
+.isChoosed{
+    position: absolute;
+    left:20px;
+    top:6px;
+    width:18px;
+    height:18px;
+    background-image: url("../../images/assistant/gouxuan-h.png");
+}
+#teacherList li:hover,#studentList li:hover{
+    background-color: #f5f5f5;
+}
+.setTCenter{
+    margin-top:24px;
+    width:122px;
+    height:338px;
+}
+.setTCenter>div{
+    width:84px;
+    margin:0 auto;
+}
+.setTRight{
+    margin-top:24px;
+    height:338px;
+    width:226px;
+}
+.setTRight>p{
+    font-size:16px;
+    color:#333333;
+    padding:6px 0;
+}
+.setTRight>ul{
+    border:1px solid #ccc;
+    height:300px;
+    color:#7c7c7c;
+    overflow:auto;
+}
+.setTRight>ul li{
+    padding:10px;
+    cursor: pointer;
+}
+.setTRight>ul li:hover{
+    background-color: #f5f5f5;
+}
+.gray{
+    background-color: #EEEEEE;
+}
+.grayone{
+    background-color: #EEEEEE;
+}
+#newCourseTime{
+    width:900px;
+    height:490px;
+    background-color: white;
+    border-radius: 5px;
+    margin:0 auto;
+}
+.timeRightBox{
+    width:486px;
+    float:right;
+   height: 300px;
+    overflow: auto;
+    
+}
+.timeBoxInner{
+    margin:10px auto;
+    height:34px;
+}
+.timeBoxInner>span{
+    color:#323431;
+    font-size: 16px;
+    float:left;
+    padding:4px 20px;
+}
+.timeDrop{
+    float:left;
+    border:1px solid #ccc;
+    font-size:16px;
+    color:#333;
+    border-radius: 5px;
+    padding:4px 10px;
+    position:relative;
+    cursor: pointer;
+}
+.timeBoxInner>b{
+    float:left;
+    padding:4px 10px;
+    font-size: 16px;
+    color:#6E6E6E;
+    font-weight:normal;
+}
+.timeDrop>i{
+    float:right;
+    width:10px;
+    height:7px;
+    background-image: url("../../images/assistant/down.png");
+    margin:8px 0 0 5px;
+}
+.saveCourseTime{
+    clear:both;
+    overflow:hidden;
+    padding:50px 30px 0 0;
+}
+.timeList,#gradeList{
+    position:absolute;
+    top:38px;
+    left:-1px;
+    width:100%;
+    overflow:auto;
+    height:120px;
+    z-index:99;
+    background-color: white;
+    border:1px solid #ccc;
+}
+.timeList li,#gradeList li{
+    font-size:14px;
+    text-align: center;
+    padding:2px 0;
+    cursor: pointer;
+}
+.timeList li:hover,#gradeList li:hover{
+    background-color: #eee;
+}
+#studentList li span{
+    float:left;
+}
+#studentList li span.stuName{
+    text-align: center;
+    width:60%;
+}
+#studentList li span.stuId{
+    text-align: left;
+    width:40%;
+}
+.stuIdTitle{
+    padding-left:10%;
+}
+.vLine{
+    position:absolute;
+    left:50%;
+    top:7px;
+    border-left:1px solid #ccc;
+    height:14px;
+}
+.dropsChooseGrade{
+    height:34px;
+}
+#chooseGrade,#chooseClass{
+    font-size:14px;
+    color:#555;
+}
+.choosedStuList li{
+    text-align: center;
+    font-size:14px;
+}
+.choosedClassHead{
+    overflow: hidden;
+}
+.choosedClassHead>img{
+    float:left;
+    margin-top:8px;
+}
+.choosedClassHead>span{
+    float:left;
+    font-size:16px;
+    margin-left:5px;
+}
+.choosedClassHead>ul{
+    clear:both;
+    height:126px;
+    overflow:auto;
+}
+.choosedClassHead>ul>li{
+    padding:0;
+}
+#stuMsg thead{
+    background-color:#F3F3F4;
+}
+#stuMsg tbody tr td:nth-child(3){
+    color:#90D9F9;
+}
+.sgradelist>li{
+    width:100px;
+    cursor:pointer;
+    padding:4px 14px;
+    border-bottom:1px solid #EEEEEE;
+    overflow: hidden;
+}
+.sgradelist{
+    float:left;
+    border:1px solid #ddd;
+    border-radius: 5px;
+    background-color: white;
+}
+.sclasslist{
+    float:left;
+    border:1px solid #ddd;
+    border-radius: 5px;
+    background-color: white;
+    margin-left:10px;
+    max-height:200px;
+    overflow-y:auto;
+}
+.sclasslist>li{
+    width:200px;
+    cursor:pointer;
+    padding:4px 14px;
+    border-bottom:1px solid #EEEEEE;
+}
+.sclasslist>li:hover{
+    background-color: #EEEEEE;
+}
+.choosegradecontent{
+    overflow:hidden;
+}
+#choosegradebox{
+    position:absolute;
+    top:68px;
+    left:30px;
+    z-index:100;
+}
+#setStu{
+    position: relative;
+}
+.righticon{
+    float:right;
+}
+#studentList{
+    position: relative;
+    top:34px;
+}
+.poi{
+    cursor:pointer;
+}
+

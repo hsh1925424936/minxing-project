@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>新增资产</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<script src="../../js/scmp/"></script>
+		<script src="../../js/moment.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style type="text/css">
+			.newAsset .oInput {
+				width: 200px;
+				margin-right: 30px;
+			}
+			
+			.newAsset .op {
+				height: 40px;
+				line-height: 40px;
+				padding-left: 20px;
+				border-top: 1px solid #F2F2F2;
+				border-bottom: 1px solid #F2F2F2;
+			}
+			
+			.newAsset .red {
+				color: red;
+			}
+			
+			.newAsset .manage li {
+				width: 80%;
+				margin: 30px auto;
+			}
+			
+			.newAsset .oSpan {
+				display: inline-block;
+				width: 100px !important;
+				text-align: left;
+			}
+			
+			.newAsset .hiden {
+				visibility: hidden;
+			}
+			
+			.newAsset .tt {
+				width: 638px;
+				margin-left: 120px;
+			}
+			
+			.newAsset .oDiv {
+				height: 100px;
+				line-height: 100px;
+			}
+			
+			.newAsset .oLabel {
+				margin-right: 20px;
+				width: 70px;
+				text-align: right;
+				display: inline-block;
+				margin-left: 20px;
+			}
+			
+			.newAsset .oBtn {
+				margin-top: 30px;
+				text-align: right;
+				margin-right: 30px;
+				margin-bottom: 30px;
+			}
+			
+			.newAsset .tree {
+				width:201px;
+				margin-left:116px;
+				position:absolute;
+				z-index:100;
+				height: 200px;
+				overflow: auto;
+			}
+			.newAsset  #oSelect {
+				width: 180px;
+				height: 200px;
+				overflow: auto;
+				border: 1px solid lightgray;
+				position: absolute;
+				left: 125px;
+				top: 67px;
+				background-color: white;
+			}
+			
+			.newAsset #oSelect li {
+				margin-bottom: 5px;
+				margin-top: 5px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="newAsset">
+			<p class="op">基本信息</p>
+			<ul class="manage">
+				<li>
+					<el-row class="tac" :gutter="24">
+						<el-col :span="12">
+							<span class="red">*</span>
+							<span class="oSpan">资产编码</span>
+							<el-input class="oInput" v-model="code"></el-input>
+						</el-col>
+						<el-col :span="12">
+							<span class="red">*</span>
+							<span class="oSpan">资产名称</span>
+							<el-input class="oInput" v-model="name"></el-input>
+						</el-col>
+					</el-row>
+				</li>
+				<li>
+					<el-row class="tac" :gutter="24">
+						<el-col :span="12">
+							<span class="red">*</span>
+							<span class="oSpan">物品类别</span>
+							<el-input v-model="cateName" class="oInput" @focus="goodsType"></el-input>
+							<div class="tree" v-show="treeShow">
+								<el-tree :data="treeList" @node-click="handleNodeClick"></el-tree>
+							</div>
+						</el-col>
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">设备号</span>
+							<el-input class="oInput" v-model="equipment"></el-input>
+						</el-col>
+					</el-row>
+				</li>
+				<li>
+					<el-row class="tac" :gutter="24">
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">品牌</span>
+							<el-input class="oInput" v-model="brand"></el-input>
+						</el-col>
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">规格/型号</span>
+							<el-input class="oInput" v-model="model"></el-input>
+						</el-col>
+					</el-row>
+				</li>
+				<li>
+					<el-row class="tac" :gutter="24">
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">厂家</span>
+							<el-input class="oInput" v-model="factory"></el-input>
+						</el-col>
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">厂家电话</span>
+							<el-input class="oInput" v-model="factory_tel"></el-input>
+						</el-col>
+					</el-row>
+				</li>
+				<li>
+					<el-row class="tac" :gutter="24">
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">采购人</span>
+							<el-input class="oInput" v-model="purchase_name"></el-input>
+						</el-col>
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">采购时间</span>
+							<el-date-picker v-model="purchase_time" type="date" placeholder="选择日期">
+							</el-date-picker>
+							<!--<el-input class="oInput" v-model="purchase_time"></el-input>-->
+						</el-col>
+					</el-row>
+				</li>
+				<li>
+					<el-row class="tac" :gutter="24">
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">采购单价</span>
+							<el-input class="oInput" v-model="price"></el-input>
+						</el-col>
+					</el-row>
+				</li>
+				<li>
+					<p>功能说明</p>
+					<el-input type="textarea" :rows='5' :cols='5' class="tt" v-model="remarks"></el-input>
+				</li>
+			</ul>
+			<p class="op">关联场地信息</p>
+			<div class="oDiv">
+				<label class="oLabel">楼栋</label>
+				<el-select v-model="build">
+					<el-option v-for="item in buildList" :key="item.build" :label="item.build" :value="item.build">
+				</el-select>
+				<label class="oLabel">楼层</label>
+				<el-select v-model="floor">
+					<el-option v-for="item in floorList" :key="item.floor" :label="item.floor" :value="item.floor">
+				</el-select>
+				<label class="oLabel">房间号</label>
+				<el-select v-model="roomNum">
+					<el-option v-for="item in roomNumList" :key="item" :label="item" :value="item">
+				</el-select>
+			</div>
+			<p class="op">关联人员信息</p>
+			<div style="padding: 20px 0;position: relative;">
+				<label class="oLabel">责任人</label>
+				<el-select
+					class="oSelect"
+					v-model="person"	
+					filterable
+					remote
+					clearable
+					placeholder="请输入关键词"
+					:remote-method="remoteMethod"
+					:loading="loading">
+				<el-option
+					v-for="item in personList"
+					:key="item.value"
+					:label="item.label"
+					:value="item.value">
+				</el-option>
+			</el-select>
+			</div>
+			<p class="op">备注信息</p>
+			<el-input type="textarea" :rows='8' :cols='9' style="margin: 30px;width: 1000px;" v-model="comments"></el-input>
+			<div class="oBtn">
+				<!-- <el-button type="primary" @click="addSave" v-if="pram == 0">保存并新增</el-button> -->
+				<el-button type="primary" @click="save">保存</el-button>
+				<el-button type="primary" @click="cancel">取消</el-button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '.newAsset',
+			data: {
+				treeList: [], //物品类别
+				code: '', //资产编码
+				name: '', //资产名称
+				cateName: '', //物品类别
+				build: '', //楼栋
+				floor: '', //楼层
+				roomNum: '', //房间号
+				factory: '', //厂家
+				model: '', //型号
+				equipment: '', //设备
+				brand: '', //品牌
+				factory_tel: '', //厂家电话
+				remarks: '', //说明
+				purchase_name: '', //采购人姓名
+				purchase_time: '', //采购时间
+				price: '', //价格
+				otherid: '', //责任人
+				personId:'',
+				userName:'',
+				comments: '', //备注
+				buildList: [], //楼栋数组
+				floorList: [], //楼层数组
+				roomNumList: [], //房间号数组
+				treeShow: false, //树状图显示隐藏
+				treeid: '', //绑定的id
+				personList: [], //责任人列表
+				teachers:[],
+				oSelect:false,
+				loading: false,
+				person:'',//责任人名字
+				pram: window.location.href.split('=')[1],
+				id: window.parent.vm.id,
+				pickerOptions0: {
+					disabledDate(time) {
+						return time.getTime() < Date.now() - 8.64e7;
+					}
+				},
+				pickerOptions1: {
+					shortcuts: [{
+						text: '今天',
+						onClick(picker) {
+							picker.$emit('pick', new Date());
+						}
+					}, {
+						text: '昨天',
+						onClick(picker) {
+							const date = new Date();
+							date.setTime(date.getTime() - 3600 * 1000 * 24);
+							picker.$emit('pick', date);
+						}
+					}, {
+						text: '一周前',
+						onClick(picker) {
+							const date = new Date();
+							date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+							picker.$emit('pick', date);
+						}
+					}]
+				},
+			},
+			mounted() {
+				var self = this;
+				self.getList();
+				self.getTree();
+				self.getPersonList();
+				if(self.pram == 1) {
+					var data = {
+						command: 'assetsmanage/getassetinfo',
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						id: self.id
+					}
+					function callback(res) {
+						if(res && res.errcode == 0) {
+							console.log(res)
+							self.name = res.name;
+							self.cateName = res.cateName;
+							self.factory = res.factory;
+							self.model = res.model;
+							self.equipment = res.equipment;
+							self.brand = res.brand;
+							self.factory_tel = res.factory_tel;
+							self.code = res.code;
+							self.remarks = res.remarks;
+							self.purchase_name = res.purchase_name;
+							self.purchase_time = res.purchase_time;
+							self.price = res.price;
+							self.build = res.build;
+							self.floor = res.floor;
+							self.roomNum = res.roomNum;
+							self.otherid = res.otherId;
+							self.personId = res.otherId;
+							self.comments = res.comments;
+							self.treeid = res.cateId;
+							self.person = res.userName;	
+							self.userName = res.userName
+						} else {
+							layer.msg(res.errdesc)
+						}
+					}
+					post('/assetsmanage/getassetinfo', data, callback, errcodefn, errfn)
+				}
+			},
+			watch: {
+				'build': function(curVal) {
+					// this.floor = '';
+					for(var i = 0; i < this.buildList.length; i++) {
+						if(this.buildList[i].build == curVal) {
+							this.floorList = this.buildList[i].floorRooms;
+							// console.log(this.floorList)
+						}
+					}
+				},
+				'floor': function(cur) {
+					// this.roomNum = '';
+					for(var j = 0; j < this.floorList.length; j++) {
+						if(this.floorList[j].floor == cur) {
+							this.roomNumList = this.floorList[j].rommNums;
+						}
+					}
+				},
+				'person':function(val,oldval){
+					if(val == this.userName){
+						return
+					}else{
+						this.personId = val
+					}
+					// alert(this.personId)
+				}
+				// 'person': function(val) {
+				// 	let self = this;
+				// 	self.personList = [];
+				// 	if(self.oSelect&&val!='') {
+				// 		var data = {
+				// 			command: 'assetsmanage/teacherlistbyname',
+				// 			sessionid: getCookie('sid'),
+				// 			loginid: getCookie('uid'),
+				// 			userName: val
+				// 		}
+
+				// 		function callback(res) {
+				// 			console.log(res)
+				// 			if(res && res.errcode == 0) {
+				// 				for(var i = 0; i < res.studentlist.length; i++) {
+				// 					self.personList.push({
+				// 						value: res.studentlist[i].studentid,
+				// 						label: res.studentlist[i].allName
+				// 					})
+				// 				}
+				// 				for(var i = 0; i < res.teachers.length; i++) {
+				// 					self.personList.push({
+				// 						value: res.teachers[i].id,
+				// 						label: res.teachers[i].allName
+				// 					})
+				// 				}
+				// 				for(var i = 0; i < res.wxStudent.length; i++) {
+				// 					self.personList.push({
+				// 						value: res.wxStudent[i].wxstid,
+				// 						label: res.wxStudent[i].alllName
+				// 					})
+				// 				}
+				// 				console.log(self.personList)
+				// 			} else {
+				// 				layer.msg(res.errdesc)
+				// 			}
+				// 		}
+				// 		post('/assetsmanage/teacherlistbyname', data, callback, errcodefn, errfn)
+				// 	}
+
+				// }
+			},
+			methods: {
+				remoteMethod(query){
+					if (query !== '') {
+						this.loading = true;
+						setTimeout(() => {
+							this.loading = false;
+							this.personList = this.teachers.filter(item => {
+								return item.label.toLowerCase().indexOf(query.toLowerCase()) > -1;
+							});
+							}, 200);
+						} else {
+							this.personList = [];
+					}
+				},	
+				getPersonList(){
+					let self = this
+					var data = {
+							command: 'assetsmanage/teacherlistbyname',
+							sessionid: getCookie('sid'),
+							loginid: getCookie('uid'),
+							userName: ''
+						}
+						function callback(res) {
+							if(res && res.errcode == 0) {
+								// for(var i = 0; i < res.studentlist.length; i++) {
+								// 	self.personList.push({
+								// 		value: res.studentlist[i].studentid,
+								// 		label: res.studentlist[i].allName
+								// 	})
+								// }
+								for(var i = 0; i < res.teachers.length; i++) {
+									self.teachers.push({
+										value: res.teachers[i].id,
+										label: res.teachers[i].allName
+									})
+								}
+								// for(var i = 0; i < res.wxStudent.length; i++) {
+								// 	self.personList.push({
+								// 		value: res.wxStudent[i].wxstid,
+								// 		label: res.wxStudent[i].alllName
+								// 	})
+								// }
+								console.log(self.personList)
+							} else {
+								layer.msg(res.errdesc)
+							}
+						}
+						post('/assetsmanage/teacherlistbyname', data, callback, errcodefn, errfn)
+				},
+				formatTen: function(num) {
+					return num > 9 ? (num + "") : ("0" + num);
+				},
+				formatDate: function(date) { //标准时间转为时间格式
+					var year = date.getFullYear();
+					var month = date.getMonth() + 1;
+					var day = date.getDate();
+					var hour = date.getHours();
+					var minute = date.getMinutes();
+					var second = date.getSeconds();
+					return year + "-" + this.formatTen(month) + "-" + this.formatTen(day);
+				},
+				parserDate: function(date) { //普通日期转化为标准日期
+					var t = Date.parse(date);
+					if(!isNaN(t)) {
+						return new Date(Date.parse(date.replace(/-/g, "/")));
+					} else {
+						return new Date();
+					}
+				},
+				handleNodeClick(data) {
+					this.cateName = data.label;
+					this.treeShow = false;
+					this.treeid = data.id;
+				},
+				goodsType() {
+					this.treeShow = true;
+				},
+				getList() {
+					var self = this;
+					var data = {
+						command: 'site/getbuildfloor',
+						sessionid:getCookie('sid'),
+     	 				loginid:getCookie('uid')
+					}
+
+					function callback(res) {
+						if(res && res.errcode == 0) {
+							self.buildList = res.buildFloorInfo;
+						} else {
+							layer.msg(res.errdesc)
+						}
+					}
+					post('/site/getbuildfloor', data, callback, errcodefn, errfn)
+				},
+				getTree() {
+					var self = this;
+					var data = {
+						command: 'assetcate/getallassetcates',
+						sessionid:getCookie('sid'),
+     	 				loginid:getCookie('uid')
+					}
+
+					function callback(res) {
+						if(res && res.errcode == 0) {
+							self.treeList = res.children[0].children;
+						} else {
+							layer.msg(res.errdesc)
+						}
+					}
+					post('/assetcate/getallassetcates', data, callback, errcodefn, errfn)
+				},
+				save() { //保存
+					if(this.pram == 0) { //新增
+						var self = this;
+						if(self.code == '') {
+							layer.msg('资产编码不能为空')
+							return
+						}
+						if(self.name == '') {
+							layer.msg('资产名称不能为空')
+							return
+						}
+						if(self.cateName == '') {
+							layer.msg('物品类别不能为空')
+							return
+						}
+						var reg = /^[0-9]*$/;
+						if(self.price != '' && !reg.test(self.price)) {
+							layer.msg('价格必须为数字')
+							return
+						}
+						// var re = /[^\u4e00-\u9fa5]/;
+						// if(self.purchase_name != '' && re.test(self.purchase_name) == true) {
+						// 	layer.msg('采购人必须为中文')
+						// 	return
+						// }
+						if(self.code && self.code.length>30){
+							layer.msg('资产编码限制30个字符！')
+							return
+						}
+						if(self.name && self.name.length > 30){
+							layer.msg('资产名称限制30个字符！')
+							return
+						}
+						if(self.equipment && self.equipment.length > 50){
+							layer.msg('设备号限制50个字符！')
+							return
+						}
+						if(self.brand && self.brand.length > 30){
+							layer.msg('品牌限制30个字符！')
+							return
+						}
+						if(self.model && self.model.length > 30){
+							layer.msg('规格/型号限制30个字符！')
+							return
+						}
+						if(self.factory && self.factory.length > 30){
+							layer.msg('厂家限制30个字符！')
+							return
+						}
+						if(self.factory_tel && self.factory_tel.length > 30){
+							layer.msg('厂家电话限制30个字符！')
+							return
+						}
+						if(self.price && self.price.length > 30){
+							layer.msg('采购单价限制30个字符！')
+							return
+						}
+						if(self.comments && self.comments.length > 5000){
+							layer.msg('备注信息限制5000个字符！')
+							return
+						}
+						if(self.purchase_time != '') {
+							self.purchase_time = moment(self.purchase_time).format('YYYY-MM-DD');
+						}
+						var data = {
+							command: 'assetsmanage/addassets',
+							sessionid: getCookie('sid'),
+							loginid: getCookie('uid'),
+							name: self.name,
+							cate_id: self.treeid,
+							factory: self.factory,
+							model: self.model,
+							equipment: self.equipment,
+							brand: self.brand,
+							factory_tel: self.factory_tel,
+							code: self.code,
+							remarks: self.remarks,
+							purchase_name: self.purchase_name,
+							purchase_time: self.purchase_time,
+							price: self.price,
+							build: self.build,
+							floor: self.floor,
+							roomNum: self.roomNum,
+							otherId: self.personId,
+							comments: self.comments
+						}
+
+						function callback(res) {
+							if(res && res.errcode == 0) {
+								layer.msg('新增成功');
+								setTimeout(function() {
+									closeAll();
+									window.parent.vm.getList('', '', '', '', '')
+								}, 300)
+							} else {
+								layer.msg(res.errdesc)
+							}
+						}
+						post('/assetsmanage/addassets', data, callback, errcodefn, errfn)
+					}
+					if(this.pram == 1) { //编辑
+
+						var self = this;
+						if(self.code == '') {
+							layer.msg('资产编码不能为空')
+							return
+						}
+						if(self.name == '') {
+							layer.msg('资产名称不能为空')
+							return
+						}
+						if(self.cateName == '') {
+							layer.msg('物品类别不能为空')
+							return
+						}
+						var reg = /^[0-9]*$/;
+						if(self.price != '' && !reg.test(self.price)) {
+							layer.msg('价格必须为数字')
+							return
+						}
+						if(self.code && self.code.length>30){
+							layer.msg('资产编码限制30个字符！')
+							return
+						}
+						if(self.name && self.name.length > 30){
+							layer.msg('资产名称限制30个字符！')
+							return
+						}
+						if(self.equipment && self.equipment.length > 50){
+							layer.msg('设备号限制50个字符！')
+							return
+						}
+						if(self.brand && self.brand.length > 30){
+							layer.msg('品牌限制30个字符！')
+							return
+						}
+						if(self.model && self.model.length > 30){
+							layer.msg('规格/型号限制30个字符！')
+							return
+						}
+						if(self.factory && self.factory.length > 30){
+							layer.msg('厂家限制30个字符！')
+							return
+						}
+						if(self.factory_tel && self.factory_tel.length > 30){
+							layer.msg('厂家电话限制30个字符！')
+							return
+						}
+						if(self.price && self.price.length > 30){
+							layer.msg('采购单价限制30个字符！')
+							return
+						}
+						if(self.comments && self.comments.length > 5000){
+							layer.msg('备注信息限制5000个字符！')
+							return
+						}
+						// var re = /[^\u4e00-\u9fa5]/;
+						// if(self.purchase_name != '' && re.test(self.purchase_name) == true) {
+						// 	layer.msg('采购人必须为中文')
+						// 	return
+						// }
+						if(self.purchase_time != '') {
+							self.purchase_time = moment(self.purchase_time).format('YYYY-MM-DD');
+						}
+						var data = {
+							command: 'assetsmanage/updateasset',
+							sessionid: getCookie('sid'),
+							loginid: getCookie('uid'),
+							name: self.name,
+							cate_id: self.treeid,
+							factory: self.factory,
+							model: self.model,
+							equipment: self.equipment,
+							brand: self.brand,
+							factory_tel: self.factory_tel,
+							code: self.code,
+							remarks: self.remarks,
+							purchase_name: self.purchase_name,
+							purchase_time: self.purchase_time,
+							price: self.price,
+							build: self.build,
+							floor: self.floor,
+							roomNum: self.roomNum,
+							otherId: self.personId,
+							comments: self.comments,
+							id: self.id
+						}
+
+						function callback(res) {
+							if(res && res.errcode == 0) {
+								layer.msg('修改成功');
+								setTimeout(function() {
+									closeAll();
+									window.parent.vm.getList('', '', '', '', '')
+								}, 300)
+							} else {
+								layer.msg(res.errdesc)
+							}
+						}
+						post('/assetsmanage/updateasset', data, callback, errcodefn, errfn)
+					}
+				},
+				// addSave() { //保存并新增
+				// 	var self = this;
+				// 	if(self.pram == 0) { //保存并新增
+				// 		if(self.code == '') {
+				// 			layer.msg('资产编码不能为空')
+				// 			return
+				// 		}
+				// 		if(self.name == '') {
+				// 			layer.msg('资产名称不能为空')
+				// 			return
+				// 		}
+				// 		if(self.cateName == '') {
+				// 			layer.msg('物品类别不能为空')
+				// 			return
+				// 		}
+				// 		var reg = /^[0-9]*$/;
+				// 		if(self.price != '' && !reg.test(self.price)) {
+				// 			layer.msg('价格必须为数字')
+				// 			return
+				// 		}
+				// 		var re = /[^\u4e00-\u9fa5]/;
+				// 		if(self.purchase_name != '' && re.test(self.purchase_name) == true) {
+				// 			layer.msg('采购人名字必须为中文')
+				// 			return
+				// 		}
+				// 		if(self.purchase_time != '') {
+				// 			self.purchase_time = self.formatDate(self.purchase_time);
+				// 		}
+				// 		var data = {
+				// 			command: 'assetsmanage/addassets',
+				// 			sessionid: getCookie('sid'),
+				// 			loginid: getCookie('uid'),
+				// 			name: self.name,
+				// 			cate_id: self.treeid,
+				// 			factory: self.factory,
+				// 			model: self.model,
+				// 			equipment: self.equipment,
+				// 			brand: self.brand,
+				// 			factory_tel: self.factory_tel,
+				// 			code: self.code,
+				// 			remarks: self.remarks,
+				// 			purchase_name: self.purchase_name,
+				// 			purchase_time: self.purchase_time,
+				// 			price: self.price,
+				// 			build: self.build,
+				// 			floor: self.floor,
+				// 			roomNum: self.roomNum,
+				// 			otherId: self.otherid,
+				// 			comments: self.comments
+				// 		}
+
+				// 		function callback(res) {
+				// 			if(res && res.errcode == 0) {
+				// 				layer.msg('新增成功');
+				// 				window.parent.vm.getList('', '', '', '', '');
+				// 				self.name = '';
+				// 				self.treeid = '';
+				// 				self.cateName = '';
+				// 				self.factory = '';
+				// 				self.model = '';
+				// 				self.equipment = '';
+				// 				self.brand = '';
+				// 				self.factory_tel = '';
+				// 				self.code = '';
+				// 				self.remarks = '';
+				// 				self.purchase_name = '';
+				// 				self.purchase_time = '';
+				// 				self.price = '';
+				// 				self.build = '';
+				// 				self.floor = '';
+				// 				self.roomNum = '';
+				// 				self.otherid = '';
+				// 				self.comments = '';
+				// 				self.person='';
+				// 			} else {
+				// 				layer.msg(res.errdesc)
+				// 			}
+				// 		}
+				// 		post('/assetsmanage/addassets', data, callback, errcodefn, errfn)
+				// 	}
+				// 	// if(self.pram == 1 ) { //编辑并新增
+				// 	// 	if(self.code == '') {
+				// 	// 		layer.msg('资产编码不能为空')
+				// 	// 		return
+				// 	// 	}
+				// 	// 	if(self.name == '') {
+				// 	// 		layer.msg('资产名称不能为空')
+				// 	// 		return
+				// 	// 	}
+				// 	// 	if(self.cateName == '') {
+				// 	// 		layer.msg('物品类别不能为空')
+				// 	// 		return
+				// 	// 	}
+				// 	// 	var reg = /^[0-9]*$/;
+				// 	// 	if(self.price != '' && !reg.test(self.price)) {
+				// 	// 		layer.msg('价格必须为数字')
+				// 	// 		return
+				// 	// 	}
+				// 	// 	var re = /[^\u4e00-\u9fa5]/;
+				// 	// 	if(self.purchase_name != '' && re.test(self.purchase_name) == true) {
+				// 	// 		layer.msg('采购人必须为中文')
+				// 	// 		return
+				// 	// 	}
+				// 	// 	var len = self.purchase_time;
+				// 	// 	console.log(len.length)
+				// 	// 	if(self.purchase_time != '' && len.length != 10) {
+				// 	// 		self.purchase_time = self.formatDate(self.purchase_time);
+				// 	// 	}
+				// 	// 	var data = {
+				// 	// 		command: 'assetsmanage/updateasset',
+				// 	// 		sessionid: getCookie('sid'),
+				// 	// 		loginid: getCookie('uid'),
+				// 	// 		name: self.name,
+				// 	// 		cate_id: self.treeid,
+				// 	// 		factory: self.factory,
+				// 	// 		model: self.model,
+				// 	// 		equipment: self.equipment,
+				// 	// 		brand: self.brand,
+				// 	// 		factory_tel: self.factory_tel,
+				// 	// 		code: self.code,
+				// 	// 		remarks: self.remarks,
+				// 	// 		purchase_name: self.purchase_name,
+				// 	// 		purchase_time: self.purchase_time,
+				// 	// 		price: self.price,
+				// 	// 		build: self.build,
+				// 	// 		floor: self.floor,
+				// 	// 		roomNum: self.roomNum,
+				// 	// 		otherId: self.otherid,
+				// 	// 		comments: self.comments,
+				// 	// 		id: self.id
+				// 	// 	}
+
+				// 	// 	function callback(res) {
+				// 	// 		if(res && res.errcode == 0) {
+				// 	// 			layer.msg('修改成功');
+				// 	// 			self.pram=0;
+				// 	// 			window.parent.vm.getList('', '', '', '', '');
+				// 	// 			self.name = '';
+				// 	// 			self.treeid = '';
+				// 	// 			self.cateName = '';
+				// 	// 			self.factory = '';
+				// 	// 			self.model = '';
+				// 	// 			self.equipment = '';
+				// 	// 			self.brand = '';
+				// 	// 			self.factory_tel = '';
+				// 	// 			self.code = '';
+				// 	// 			self.remarks = '';
+				// 	// 			self.purchase_name = '';
+				// 	// 			self.purchase_time = '';
+				// 	// 			self.price = '';
+				// 	// 			self.build = '';
+				// 	// 			self.floor = '';
+				// 	// 			self.roomNum = '';
+				// 	// 			self.otherid = '';
+				// 	// 			self.comments = '';
+				// 	// 			self.person='';
+				// 	// 		} else {
+				// 	// 			layer.msg(res.errdesc)
+				// 	// 		}
+				// 	// 	}
+				// 	// 	post('/assetsmanage/updateasset', data, callback, errcodefn, errfn)
+				// 	// }
+				// },
+				cancel() {
+					closeAll()
+				},
+				choosePerson(index) {
+					this.person = this.personList[index].label;
+					this.otherid = this.personList[index].value;
+					this.oSelect = false;
+				},
+				focusInput(){
+					this.oSelect = true;
+				}
+			}
+		})
+	</script>
+
+</html>

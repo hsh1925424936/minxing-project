@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/assistant/layout.js" ></script>
+		<script type="text/javascript" src="../../js/echarts.min.js" ></script>
+		<script type="text/javascript" src="../../js/assistant/overTexts.js" ></script>
+		<meta charset="UTF-8">
+		<title>抢答器</title>
+		<style type="text/css">
+			body{
+				background-color:#ECECEC;
+			}
+			
+			.topBar {
+				width:100%; height:60px; background-color:#f5f5f5; border-top:1px solid #dcdcdc;
+				border-bottom:1px solid #dcdcdc; font-size:14px;
+			}
+			.topBarInner{
+				width:1024px; height:100%; margin:auto;
+			}
+			.topBar button {
+			    display:block; float:right; position:relative;
+			    top:50%; margin-top:-18px; height:38px; text-align:center; line-height:36px;
+			    border:1px solid #0496C9; box-sizing:border-box; border-radius:3px;
+			    
+			}
+
+			.mainCon{
+				width:1024px; height:620px; margin:auto; margin-top:20px;
+			}
+			.mainCon>div{
+				background-color:white;
+			}
+			.leftOuter{
+				width:49.5%; height:100%; float:left; padding-left:15px; padding-right:15px;
+			}
+
+			.timeOuter{
+				width:100%; height:45%;
+			}
+			.count_dowmOuter{
+				display:none;
+			}
+			.timeCon{
+				width:242px; height:108px; margin:auto; margin-top:10px;
+				text-align:center; line-height:108px; margin-bottom:25px;
+				font-size:60px; letter-spacing:20px; position:relative;
+			}
+			.timeBox{
+				width:100%; height:100%; position:absolute; z-index:3;
+				left:0; top:0;
+			}
+			.timebg_con{
+				width:100%; height:100%; position:absolute; z-index:1;
+				left:0; top:0;
+			}
+			.timebg_con>h4{
+				width:48px; height:100%; float:left; background-color:#cccccc;
+			}
+			.timebg_con>h4:nth-child(1){
+				margin-left:-6px;
+			}
+			.timebg_con>h4:nth-child(2){
+				margin-left:7px;
+			}
+			.timebg_con>h4:nth-child(3){
+				margin-left:40px;
+			}
+			.timebg_con>h4:nth-child(4){
+				margin-left:8px;
+			}
+			.status_txt{
+				text-align:center; font-size:16px; color:rgb(4,150,202);
+			}
+			.delayOuter2{
+				display:none;
+			}
+			.delayOuter1 button{
+				margin:auto;
+				display:block; font-size:18px; margin-top:5px;
+			    height:126px; text-align:center; line-height:126px;
+			    box-sizing:border-box; border-radius:100px;
+			    width:126px; background-color:#FF5641; color:white; margin-bottom:25px;
+			}
+			.delayOuter1 p{
+				text-align:center; font-size:16px;
+			}
+			.sub_tit{
+				margin-bottom:260px; margin-top:20px;
+			}
+			.delay_btn_con{
+				width:100%; height:30px; margin-top:10px;
+			}
+			.delay_btn_con button{
+				display:block; font-size:16px; height:100%; text-align:center; line-height:28px;
+				box-sizing:border-box; border-radius:3px; width:70px; float:right;
+				margin-left:10px;
+			}
+			.sureBtn{
+			    background-color:#0496ca; color:white;
+			}
+			.sureBtn:hover{
+				background-color:#0487b5;
+			}
+			.cancelBtn{
+				background-color:white; border:1px solid #ccc;
+			}
+
+			.timeOuter2{
+				width: 100%; margin-top: -5px; border: 1px solid #ccc;
+			    padding-top: 5px; padding-bottom: 10px; border-radius: 5px;
+			    -moz-user-select:none; -webkit-user-select:none; 
+  				-ms-user-select:none; -khtml-user-select:none; 
+			}
+			.timeCon2{
+				width:240px; margin:auto;
+			}
+			.timeCon2>h4{
+				width:100%; font-size:15px; color:#676767; text-align:center;
+				margin-bottom:10px;
+			}
+			
+			.timeBox2{
+				width:100%; height:135px; text-align:center; line-height:135px;
+			}
+			.timeBox2>div{
+				height:100%; float:left; text-align:center;
+			}
+			.minOuter,.secondOuter{
+				width:95px; border:1px solid #ccc; cursor:pointer;
+			}
+			.minOuter:hover,.secondOuter:hover{
+				background-color:#CBCBCB;
+			}
+
+			.middle{
+				width:45px; font-size:56px;
+			}
+			.timeBox2>div>p{
+				width:100%; height:65px; font-size:56px; line-height:65px;
+			}
+			.timeBox2>div>span{
+				width:100%; height:33px; font-size:40px; line-height:25px;
+				display:block; color:white;
+			}
+
+			.rightOuter{
+				width:49.5%; height:100%; float:right; padding-left:15px; padding-right:15px;
+			}
+			.rightOuter>div{
+				width:100%; height:100%;
+			}
+			.status1{
+				line-height:620px; text-align:center; font-size:30px; display:none;
+			}
+			.status2{
+				line-height:620px; text-align:center; font-size:30px;
+				color:#0495CA; display:none;
+			}
+
+			.switch_h5{
+				width:25%; color:#0495CA; text-align:right; font-size:14px;
+				cursor:pointer; margin-left:75%;
+			}
+			.chartOuter{
+				display:block;
+			}
+			.chartCon{
+				width:100%; height:530px;
+			}
+
+			.tableOuter{
+				display:none;
+			}
+			.tableTxt{
+				width:100%; font-size:14px; margin-bottom:10px;
+			}
+			.tableTxt span{
+				display:block;
+			}
+			.tableTxt span:nth-child(1){
+				float:left;
+			}
+			.tableTxt span:nth-child(2){
+				float:right; color:#0495CA; cursor:pointer;
+			}
+			.table1{
+				width:100%; height:490px; border:1px solid #ccc;
+				font-size:14px;
+			}
+			.th,.tr{
+				width:100%; border-bottom:1px solid #ccc;
+			}
+			.th{
+				height:36px; background-color:#F2F2F2; text-align:center; line-height:36px;
+			}
+			.tr_con{
+				width:100%; height:450px; overflow-y:auto;
+			}
+			.tr{
+				line-height:20px;
+			}
+			.tr:hover{
+				background-color:#EEEEEE;
+			}
+			.td{
+				float:left;
+			}
+			.td>a{
+				text-decoration:underline; color:black;
+			}
+			.td>a:link{color:black;}
+			.td>a:visited{color:black;}
+			.td>a:hover{color:#3AA3D2;}
+			.td>a:active{color:black;}
+
+			.tr .td{
+				padding-top:5px; padding-bottom:5px; text-align:center; position:relative;
+			}
+			.td:nth-child(1){
+				width:50%;
+			}
+			.td:nth-child(2){
+				width:50%;
+			}
+			.td:nth-child(3){
+				width:20%;
+			}
+			.td select{
+				position:absolute; width:100%; border-radius:3px;
+				z-index:1; border:1px solid #c3c3c3; font-size:14px;
+				display:none; text-align:center; left:0; top:35px;
+			}
+			.td select option{
+				padding-top:3px; padding-bottom:3px;
+			}
+			.td select option:hover{
+				background-color:#dcdcdc;
+			}
+			#td_essay{
+				text-align:left; width:68%;
+			}
+			#td_essay_th{
+				width:68%;
+			}
+			.myselect span{
+				background-image:url(../../images/assistant/sanjiao-xiala.png);
+				background-repeat:no-repeat; background-size:100% 100%;
+				width:16px; height:11px; display:none; position:absolute;
+				top:25px; left:50px; z-index:2;
+			}
+		</style>
+
+
+	</head>
+	<body>
+		<div class="topBar">
+			<div class="topBarInner">
+			</div>
+		</div>
+
+		<div class="mainCon">
+			<div class="leftOuter">
+
+				<div class="timeOuter">
+					<!-- 倒计时时钟 -->
+					<div class="count_dowmOuter">
+						<h3 class="sub_tit">倒计时</h3>
+						<div class="timeCon">
+							<div class="timeBox">
+								<span class="minute">00</span><span>:</span><span class="second">00</span>
+							</div>
+							<div class="timebg_con">
+								<h4></h4>
+								<h4></h4>
+								<h4></h4>
+								<h4></h4>
+							</div>
+						</div>
+
+						<h3 class="status_txt">抢答中...</h3>
+					</div>
+
+					<!--倒计时按钮-->
+					<div class="delayOuter1">
+						<h3 class="sub_tit">抢答器</h3>
+						<button>抢答</button>
+					</div>
+
+					<!--设置倒计时时间-->
+					<div class="delayOuter2">
+						<h3 class="sub_tit">抢答器</h3>
+						<div class="timeOuter2">
+							<div class="timeCon2">
+								<h4>请设置时间</h4>
+								<div class="timeBox2">
+									<div class="minOuter">
+										<span class="minute_min">-</span>
+										<p class="minute2">01</p>
+										<span class="minute_add">+</span>
+									</div>
+									<div class="middle">
+										:
+									</div>
+									<div class="secondOuter">
+										<span class="second_min">-</span>
+										<p class="second2">00</p>
+										<span class="second_add">+</span>
+									</div>
+								</div>
+
+							</div>
+						</div>
+						<div class="delay_btn_con">
+							<button class="cancelBtn">取消</button>
+							<button class="sureBtn">确定</button>
+						</div>
+					</div>
+
+				</div>
+					
+			</div>
+			<div class="rightOuter">
+				<div class="status1">
+					抢答中......
+				</div>
+				<div class="status2">
+					
+				</div>
+			</div>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+
+		var t;//倒计时的定时器
+
+		//设置倒计时时间
+		$('.minute_min').click(function() {
+			var minute = parseInt($('.minute2').html());
+			if( minute < 1 ){
+				minute = 5;
+			}else{
+				minute--;
+			}
+			$('.minute2').html(addzero(minute));
+		});
+
+		$('.second_min').click(function() {
+			var second = parseInt($('.second2').html());
+			if( second < 1 ){
+				second = 59;
+			}else{
+				second--;
+			}
+			$('.second2').html(addzero(second));
+		});
+		$('.minute_add').click(function() {
+			var minute = parseInt($('.minute2').html());
+			if( minute > 4 ){
+				minute = 0;
+			}else{
+				minute++;
+			}
+			$('.minute2').html(addzero(minute));
+		});
+		$('.second_add').click(function() {
+			var second = parseInt($('.second2').html());
+			if( second > 58 ){
+				second = 0;
+			}else{
+				second++;
+			}
+			$('.second2').html(addzero(second));
+		});
+
+		//滑动设置倒计时时间
+		$('.minOuter')[0].addEventListener("DOMMouseScroll", function(e) {
+			console.log(e);
+		    if ( e.detail < 0 ){//增加数值
+				var minute = parseInt($('.minute2').html());
+				if( minute > 4 ){
+					minute = 0;
+				}else{
+					minute++;
+				}
+				$('.minute2').html(addzero(minute));
+			}else{
+				var minute = parseInt($('.minute2').html());
+				if( minute < 1 ){
+					minute = 5;
+				}else{
+					minute--;
+				}
+				$('.minute2').html(addzero(minute));
+			}
+		});
+
+		$('.secondOuter')[0].addEventListener("DOMMouseScroll", function(e) {
+			if ( e.detail < 0 ){//增加数值
+				var minute = parseInt($('.second2').html());
+				if( minute > 58 ){
+					minute = 0;
+				}else{
+					minute++;
+				}
+				$('.second2').html(addzero(minute));
+			}else{
+				var minute = parseInt($('.second2').html());
+				if( minute < 1 ){
+					minute = 59;
+				}else{
+					minute--;
+				}
+				$('.second2').html(addzero(minute));
+			}
+		});
+
+		$('.minOuter')[0].onmouseover = function(){
+			$('body')[0].addEventListener("DOMMouseScroll", function(e) {
+				return false;
+			});
+		}
+
+		$('.minOuter')[0].onmouseout = function(){
+			$('body')[0].removeEventListener('DOMMouseScroll',function(){},false);
+		}
+
+		$('.secondOuter')[0].onmouseover = function(){
+			$('body')[0].addEventListener("DOMMouseScroll", function(e) {
+				return false;
+			});
+		}
+
+		$('.secondOuter')[0].onmouseout = function(){
+			$('body')[0].removeEventListener('DOMMouseScroll',function(){},false);
+		}
+
+		//倒计时的方法
+		function count_dowon(){
+			var minute = $('.minute').html();
+			var second = $('.second').html();
+			second--;
+			if(second < 0 && minute > 0){
+				second = 59;
+				minute--;
+			}else if(second < 0 && minute == 0){
+				clearInterval(t);
+				$('.count_dowmOuter').css('display', 'none');
+				$('.delayOuter1').css('display', 'block');
+				return false;
+			}
+			minute = addzero(parseInt(minute));
+			second = addzero(parseInt(second));
+			$('.minute').html(minute);
+			$('.second').html(second);
+		}
+		
+		$('.delayOuter1 button').click(function() {//延时按钮点击
+			$('.delayOuter1').css('display', 'none');
+			$('.delayOuter2').css('display', 'block');
+			$('.status1').css('display', 'none');
+			$('.status2').css('display', 'none');
+		});
+
+		$('.cancelBtn').click(function() {//取消设置延时答题
+			$('.delayOuter1').css('display', 'block');
+			$('.delayOuter2').css('display', 'none');
+			$('.minute2').html('01');
+			$('.second2').html('00');
+		});
+
+		gotC.init({
+            fn:function(){
+                start_qiangda();//点击确定按钮开始倒计时
+            },
+            current_course_info:true//是否需要获取课程信息
+        });
+   		function start_qiangda(){//抢答器的倒计时
+			$('.sureBtn').click(function() {//确定开始抢答
+
+				$('.status1').css('display', 'none');
+				$('.status2').css('display', 'none');
+
+				var minute = parseInt($('.minute2').html());
+				var second = parseInt($('.second2').html());
+				if( minute == 0 && second < 10 ){
+					uselayer(1,'倒计时时间不能小于10秒！');
+				}else if( minute > 4 ){
+					uselayer(1,'倒计时时间不能超过5分钟！');
+				}else{
+					openProject();//打开投影
+					//走发送试题的接口
+
+					minute = parseInt(minute);
+					second = parseInt(second);
+					var deadline = minute*60+second;
+
+					var json = {
+						'1':{
+							command:'question/questionsend', //接口地址
+							scheduleid:getCookie('scheduleid'),
+							qid:-1,
+							type:1,
+							deadline:deadline,
+							sessionid:getCookie('sid'),
+							loginid:getCookie('loginid')
+						}
+					};
+
+					Api.dataToJava({
+						json:{
+							url:'/question/questionsend', //一次性走几个接口
+							data:JSON.stringify(json)
+						},
+						fn:function (base) {
+							base = base[1]; //取接口的第一个返回值
+							console.log(base);
+							
+							//判断接口是否走成功， errcode为0是成功
+							if (base.errcode!=0) {
+								uselayer(3,base.errdesc);
+								return false;
+							}
+							//成功了就执行倒计时
+							$('.delayOuter2').css('display', 'none');
+							$('.count_dowmOuter').css('display', 'block');
+							$('.status1').css('display', 'block');
+							$('.status1').html('抢答中......');
+							$('.status2').html('');
+
+							$('.minute').html(addzero(minute));
+							$('.second').html(addzero(second));
+							t = setInterval(function(){count_dowon();},1000);
+							query_qiangda();//轮询是否有抢答
+						}
+					});
+				
+				}
+				
+			});
+		}
+
+		function query_qiangda(){//查询是否有抢答
+			if( $('.minute').html() == 0 && $('.second').html() == 0 ){
+				$('.status1').html('对不起，倒计时结束！');
+				$('.status2').html('对不起，倒计时结束！');
+				return false;
+			}
+			setTimeout(function(){
+				var json = {
+					'1':{
+						command:'question/queryraceinfo', //接口地址
+						qid:-1,
+						scheduleid:getCookie('scheduleid'),
+						sessionid:getCookie('sid'),
+						loginid:getCookie('loginid')
+					}
+				};
+
+				Api.dataToJava({
+					json:{
+						url:'/question/queryraceinfo', //一次性走几个接口
+						data:JSON.stringify(json)
+					},
+					fn:function (base) {
+						base = base[1]; //取接口的第一个返回值
+						console.log(base);
+						
+						//判断接口是否走成功， errcode为0是成功
+						if (base.errcode!=0) {
+							
+						}
+
+						if( !base.sgindex && !base.stdid ){//还没有抢到
+							query_qiangda();//再次查询
+							return false;
+						}
+						
+						//抢到之后改变页面显示
+						if( base.sgindex ){//小组抢到
+							$('.status2').html('第'+base.sgindex+'组抢到答题权<br/>请答题');
+							
+						}else if( base.stdid ){//学生抢到
+							$('.status2').html(base.name+'抢到答题权<br/>请答题');
+						}
+						$('.status1').css('display', 'none');
+						$('.status2').css('display', 'block');
+
+						$('.count_dowmOuter').css('display', 'none');
+						$('.delayOuter1').css('display', 'block');
+
+						clearInterval(t);
+
+					}
+				});
+			},3000);
+		}
+	</script>
+
+</html>

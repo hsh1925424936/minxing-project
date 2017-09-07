@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>学生数据</title>
+    <script src="../../js/jquery-3.1.1.min.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/echarts.min.js"></script>
+    <script src="../../js/bigdatascreen/swiper.min.js"></script>
+    <script src="../../js/bigdatascreen/swiper.animate1.0.2.min.js"></script>
+    <script src="../../js/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="../../css/bigdatascreen/xstuandteacher.css">
+    <link rel="stylesheet" href="../../css/bigdatascreen/swiper.min.css">
+    <link rel="stylesheet" href="../../css/bigdatascreen/animate.min.css">
+    <link rel="stylesheet" href="../../css/bigdatascreen/animate_text.css">
+</head>
+<body>
+<div id="container" v-cloak>
+    <div id="charts">
+        <div class="title">
+            贵州医科大学学生胜任力分析（2017年5月）
+        </div>
+        <div class="xcontent">
+            <div class="xline">
+                <div class="xsubitem lightback2 pingjunbox backimg backimg_stu">
+                    <div id="chart1"></div>
+                    <ul class="f16white chart1text">
+                        <li v-for="value in chart1text">
+                            <span>{{ value.name }}：</span>
+                            <span :class="{f16yellow:value.name=='平均分',f16blue:value.name!='平均分'}">{{ value.count }}</span>
+                            <span>{{ value.danwei }}</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="xsubitem lightback2" id="chart2">
+                    <p class="charttitle">学生胜任力模型雷达图</p>
+                    <div id="chart2content"></div>
+                </div>
+            </div>
+            <div class="xline">
+                <div class="xsubitem" id="chart3">
+                    <p class="charttitle tagline" id="animatetitle" data-letterfx="custom[3]">无菌观念月度趋势图</p>
+                    <div class="swiper-container roundimg" id="barswiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide taidu"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="xsubitem" id="chart4">
+                    <p class="charttitle">学生胜任力分析TOP5</p>
+                    <ul>
+                        <li v-for="(value,index) in top5" :class="{lightback:index%2!=0,lightback2:index%2==0}">
+                            <span :class="{fred:index==0,fgreen:index!=0}">NO.{{ index+1 }}</span>
+                            <span>{{ value.name }}</span>
+                            <span>{{ value.count }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../../js/bigdatascreen/jquery-letterfx.js"></script>
+<script src="../../js/bigdatascreen/script.js"></script>
+<script>
+    var vm=new Vue({
+        el:"#container",
+        data:{
+            top5:[
+                {name:'卢定益', count:'88分'},
+                {name:'张力', count:'85分'},
+                {name:'王珍', count:'82分'},
+                {name:'莫治颖', count:'79分'},
+                {name:'郭加串', count:'78分'}],
+            chart1text:[
+                {name:'平均分',count:76,danwei:'分'},
+                {name:'参与评价老师',count:276,danwei:'人次'},
+                {name:'参与评价学生',count:8280,danwei:'人次'},
+                {name:'统计学时',count:3098,danwei:'学时'},
+            ],
+            chart1value:76,//平均分配置
+            roundimgele:['#taidu','#jishu','#neirong','#fangfa','#xiaoguo'],
+            barchartdata:[
+                {chartname:'无菌观念', datax:['2016年10月', '2016年11月', '2016年12月', '2017年1月', '2017年12月', '2017年3月', '2017年4月', '2017年5月'], datay:[73, 75, 74, 74, 75, 76, 75,78]},
+                {chartname:'人文关怀', datax:['2016年10月', '2016年11月', '2016年12月', '2017年1月', '2017年12月', '2017年3月', '2017年4月', '2017年5月'], datay:[68, 69, 71, 66, 68, 72, 76,78]},
+                {chartname:'临床思维', datax:['2016年10月', '2016年11月', '2016年12月', '2017年1月', '2017年12月', '2017年3月', '2017年4月', '2017年5月'], datay:[68, 73, 69, 71, 74, 72, 75,79]},
+                {chartname:'专业知识', datax:['2016年10月', '2016年11月', '2016年12月', '2017年1月', '2017年12月', '2017年3月', '2017年4月', '2017年5月'], datay:[70, 69, 69, 67, 70, 73, 75,76]},
+                {chartname:'专业技能', datax:['2016年10月', '2016年11月', '2016年12月', '2017年1月', '2017年12月', '2017年3月', '2017年4月', '2017年5月'], datay:[67, 69, 73, 72, 75, 73, 78,77]},
+                {chartname:'职业素养', datax:['2016年10月', '2016年11月', '2016年12月', '2017年1月', '2017年12月', '2017年3月', '2017年4月', '2017年5月'], datay:[72, 70, 69, 65, 73, 71, 73,75]},
+                {chartname:'医患沟通', datax:['2016年10月', '2016年11月', '2016年12月', '2017年1月', '2017年12月', '2017年3月', '2017年4月', '2017年5月'], datay:[70, 72, 73, 73, 72, 75, 76,80]},
+                {chartname:'病人安全', datax:['2016年10月', '2016年11月', '2016年12月', '2017年1月', '2017年12月', '2017年3月', '2017年4月', '2017年5月'], datay:[65, 66, 67, 68, 75, 77, 79,82]}
+            ],
+            barcharttitle:'无菌观念'
+        },
+        mounted:function(){
+            this.drawchart1()
+            this.drawchart2()
+
+            this.drawchart3(this.barchartdata[0],'.taidu')
+            this.changetitletimer()//定时切换图标标题
+        },
+        methods:{
+            drawchart1:function(){
+                var self=this
+                var myChart1 = echarts.init($('#chart1')[0])
+                var option = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b}: {c} ({d}%)"
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        x: 'left',
+                        data:[],
+                        show:false
+                    },
+                    series: [
+                        {
+                            type:'pie',
+                            name:'平均分',
+                            radius: ['70%', '87%'],
+                            avoidLabelOverlap: false,
+                            legendHoverLink: false,
+                            hoverAnimation: false,
+                            selectedMode: false,
+                            label: {
+                                normal: {
+                                    show: true,
+                                    position: 'center',
+                                    textStyle: {
+                                        color: 'white',
+                                        fontSize: 36,
+                                    },
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data:[
+                                {
+                                    value:self.chart1value,
+                                    name:self.chart1value+'分',
+                                    itemStyle:{
+                                        normal:{
+                                            color: {
+                                                type: 'linear',
+                                                x: 0,
+                                                y: 0,
+                                                x2: 0,
+                                                y2: 0.7,
+                                                colorStops: [{
+                                                    offset: 0,
+                                                    color: '#8756CB' // 0% 处的颜色
+                                                }, {
+                                                    offset: 0.5,
+                                                    color: '#8756CB' // 0% 处的颜色
+                                                }, {
+                                                    offset: 1,
+                                                    color: '#E4356C' // 100% 处的颜色
+                                                }],
+                                                globalCoord: false // 缺省为 false
+                                            }
+                                        }
+                                    }},
+                                {
+                                    value:100-self.chart1value,
+                                    itemStyle:{
+                                        normal:{
+                                            color: '#41295B'
+                                        }
+                                    }
+                                },
+                            ]
+                        }
+                    ]
+                }
+                myChart1.setOption(option)
+            },
+            drawchart2:function(){
+                var self=this
+                var myChart2 = echarts.init(document.getElementById('chart2content'))
+                var option = {
+                    tooltip: {},
+                    radar: {
+                        center: ['40%', '48%'],
+                        name: {
+                            show: true,
+                            textStyle: {
+                                color: 'white',
+                                fontFamily: 'sans-serif',
+                                fontSize: 50,
+                            }
+                        },
+                        nameGap:40,
+                        axisLabel: {
+                            show: true,
+                            inside: true,
+                            rotate: 0,
+                            margin: -8,
+                            showMinLabel: null,
+                            showMaxLabel: null,
+                            textStyle: {
+                                color: 'white',
+                                fontFamily: 'sans-serif',
+                                fontSize: 36,
+                                fontWeight:'normal'
+                            }
+                        },
+                        indicator: [
+                            { name: '无菌观念', max: 100},
+                            { name: '人文关怀', max: 100},
+                            { name: '临床思维', max: 100},
+                            { name: '专业知识', max: 100},
+                            { name: '专业技能', max: 100},
+                            { name: '职业素养', max: 100},
+                            { name: '医患沟通', max: 100},
+                            { name: '病人安全', max: 100}
+                        ],
+                        splitArea: {
+                            areaStyle: {
+                                color:'#201D30',
+                            }
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#3F3C4C',
+                                type:'doted'
+                            }
+                        },
+                        splitLine: {
+                            lineStyle: {
+                                color: ['#3F3C4C','#3F3C4C','#3F3C4C','#3F3C4C','3F3C4C','#5F6068']
+                            }
+                        }
+                    },
+                    series: [{
+                        name: '学生胜任力',
+                        type: 'radar',
+                        data : [
+                            {
+                                value : [78, 78, 79, 76, 77,75,80,82],
+                                name : '学生胜任力',
+                                itemStyle: {
+                                    normal: {
+                                        borderColor: '#000',//里面的形状的圆点颜色
+                                        borderWidth: 0,
+                                        borderType: 'solid',
+                                        opacity:0,
+                                    },
+                                },
+                                lineStyle:{//里面的形状的外边框
+                                    normal: {
+                                        width: 0,
+                                        type: 'solid',
+                                    },
+                                },
+                                areaStyle:{
+                                    normal:{
+                                        color: '#8D4DE9',
+                                        opacity:1
+                                    }
+                                }
+                            }
+                        ]
+                    }]
+                }
+                myChart2.setOption(option)
+            },
+            drawchart3:function(data,elem){
+                var self=this
+                var option = {
+                    color: ['#3398DB'],
+                    tooltip : {
+                        trigger: 'axis',
+                        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    legend:{
+                        backgroundColor:'#1B1B27',
+                        itemGap: 100,
+                    },
+                    grid: {
+                        left: '6%',
+                        right: '6%',
+                        bottom: '3%',
+                        containLabel: true,
+                        show:true,
+                        backgroundColor:'rgba(27,27,39,0.8)',
+                        borderColor:'transparent'
+                    },
+                    xAxis : [
+                        {
+                            type : 'category',
+                            name:'时间',
+                            nameTextStyle: {
+                                color: '#37696A',
+                                fontFamily: 'sans-serif',
+                                fontSize: 12,
+                            },
+                            data : data.datax,
+                            axisTick: {
+                                show:false
+                            },
+                            axisLabel: {
+                                axisLine: {
+                                    show: false
+                                },
+                                textStyle: {
+                                    color: 'white',
+                                    fontSize:10
+                                }
+                            },
+                            axisLine: {
+                                show: true,
+                                lineStyle: {
+                                    color: '#5F5F6B',
+                                    width: 1,
+                                    type: 'solid'
+                                }
+                            },
+                        }
+                    ],
+                    yAxis : [
+                        {
+                            type : 'value',
+                            axisLabel: {
+                                axisLine: {
+                                    show: false
+                                },
+                                textStyle: {
+                                    color: 'white'
+                                }
+                            },
+                            axisTick: {
+                                show: false
+                            },
+                            min: 30,
+                            max: 100,
+                            interval: 10,
+                            name:'分数',
+                            nameTextStyle: {
+                                color: '#94426A',
+                                fontFamily: 'sans-serif',
+                                fontSize: 12,
+                            },
+                            axisLine: {
+                                show: true,
+                                lineStyle: {
+                                    color: '#5F5F6B',
+                                    width: 1,
+                                    type: 'solid'
+                                }
+                            }
+                        }
+                    ],
+                    series : [
+                        {
+                            name:'直接访问',
+                            type:'bar',
+                            barWidth: '30%',
+                            data:data.datay,
+                            barGap:'20%',
+                            barCategoryGap:'20%',
+                            legendHoverLink: false,
+                            itemStyle: {
+                                normal: {
+                                    color: new echarts.graphic.LinearGradient(
+                                            0, 0, 0, 1,
+                                            [
+                                                {offset: 0, color: '#FED928'},
+                                                {offset: 1, color: '#FED928'}
+                                            ]
+                                    )
+                                }
+                            },
+                            animationDuration: 2500,
+                            animationEasing: 'quarticOut'
+                        }
+                    ]
+                }
+                $(elem).each(function(){
+                    var myChart3= echarts.init($(this)[0])
+                    myChart3.setOption(option)
+                })
+            },
+            roundimg:function(){//轮播方法
+                var self=this
+                var i=0
+                self.drawchart3(self.barchartdata[0],'chart3content')
+                var timer=setInterval(function(){
+                    i++
+                    if(i>4){
+                        i=0
+                    }
+                    self.barcharttitle=self.barchartdata[i].chartname
+                    self.drawchart3(self.barchartdata[i],'chart3content')
+                },5000)
+            },
+            changetitletimer:function(){
+                var self=this
+                var i=0
+                var timer1=setInterval(function(){
+                    i++
+                    if(i>4){
+                        i=0
+                    }
+                    self.barcharttitle=self.barchartdata[i].chartname
+                    self.drawchart3(self.barchartdata[i],'.taidu')
+                    $('#animatetitle').text(self.barcharttitle+'月度趋势图')
+                    $('#animatetitle').click()
+                },10000)
+            }
+        }
+    })
+</script>
+</body>
+</html>

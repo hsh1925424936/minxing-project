@@ -1,0 +1,322 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+.clearfix:after { content: ''; display: block; clear: both;}
+.clearfix { zoom: 1;}
+[v-cloak]{
+	display:none;
+}
+a {
+	text-decoration: none;
+}
+
+section {
+	position: relative;
+}
+
+section>p {
+	width: 100%;
+	background-color: lightgray;
+	padding-left: 20px;
+	clear: right;
+	height: 30px;
+	line-height: 30px;
+	margin-bottom: 20px;
+}
+/****************************************************中间按钮部分******************************************/
+section>.center {
+	margin: 0 20px 20px 20px;
+	
+}
+
+section>.center>#myButton {
+	float: left;
+	margin-right: 20px;
+	width: 120px;
+}
+
+section>.center .load-in,.handle {
+	float: left;
+}
+
+section>.center .load-in {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+section>.center>.row>input {
+	height: 30px;
+}
+
+section>.center>.form-inline,.search {
+	float: right;
+}
+
+section #input-search {
+	margin-right: 20px;
+}
+/*******************************************表格信息*********************************************/
+section .table-responsive {
+	clear: both;
+	margin:20px;
+	padding-top: 21px;
+}
+section .table-responsive .message-btn button{
+	float: left;
+	margin-right: 5px;
+	margin-left: 5px;
+}
+section .table-responsive th{
+	font-size: 14px; text-align:center;
+}
+section .table-responsive .th_active{
+	background-color:#ccc;
+}
+section .table-responsive td{
+	font-size: 12px; text-align:center;
+}
+section .table-responsive td button{
+	font-size: 12px;
+	padding: 1px 6px;
+	width:38px; height:21px; display:block; float:left;
+}
+.btnCon{
+	width:200px; display: inline-block;
+}
+div.pageInfo {
+	float: left
+}
+div.pageNumBox {
+	float: right;
+}
+#doorUserFooter {
+	overflow: hidden;
+	padding: 10px 20px 20px 20px;
+}
+div.pageInfo>p {
+	margin-left: 10px;
+}
+#doorUserFooter .left{
+	float: left;
+	font-size: 12px;
+}
+/**************************************************新增班级管理***********************************************/
+.add-student{
+	width: 500px;
+	height: 250px;
+	border: 1px solid;
+	position: fixed;
+	left: 170px;
+	top: 80px;
+	background-color: white;
+}
+.add-class{
+	width: 600px;
+	height: 500px;
+}
+.c_studentTop{
+	height: 40px;
+	border-bottom: 1px solid;
+}
+.c_studentTop>p:nth-child(1){
+	position: absolute;
+	left: 10px;
+	top: 10px;
+}
+.c_studentTop>p:nth-child(2){
+	height: 50px;
+	line-height: 50px;
+	position: absolute;
+	right: 10px;
+	font-size: 20px;
+	cursor: pointer;
+}
+.message-left{
+	margin:15px  auto;
+	text-align: right;
+	height: 30px;
+}
+.c_classMessage button{
+	position: absolute;
+	bottom: 20px;
+}
+.c_classMessage .btn-primary{
+	left: 170px;
+	margin-left: 20px;
+}
+.c_classMessage .btn-default{
+	left: 250px;
+}
+.c_classMessage .col-sm-4{
+	width: 20%;
+}
+.c_classMessage .col-sm-8{
+	width: 80%;
+	text-align: center;
+}
+.c_classMessage .col-sm-8 thead th{
+	text-align: center;
+}
+.c_classMessage .col-sm-8 input{
+	width: 90%;
+}
+.c_classMessage .col-sm-8 select{
+	width: 90%;
+}
+.c_classMessage .col-sm-8 .classSelect{
+	height: 68px;
+}
+.c_classMessage .classType{
+	bottom: 33px;
+	right: 15px;
+	color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+}
+.poi{
+	cursor: pointer;
+}
+.c_classMessage .addcourse{
+	cursor: pointer;
+	position: relative;
+	top: 10px;
+	padding: 5px;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+}
+.c_classMessage .overflowbox{
+	overflow: auto;
+	height: 250px;
+}
+/***********************************学生*************************************/
+.add-student-width{
+	width: 800px;
+	height: 500px;
+}
+.message-left .table{
+	width: 90%;
+}
+.add-student-width .table{
+	margin: auto;
+	text-align: center;
+}
+.add-student-width .table th{
+	text-align: center;
+}
+/***********************************编辑页面*************************************/
+
+.add-edit{
+	width: 600px;
+	height: 500px;
+}
+/***********************************删除确认页面*************************************/
+.delete_sure{
+	width: 400px;
+	height: 300px;
+	border: 1px solid;
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	background-color: white;
+}
+.delete{
+	height: 40px;
+	border-bottom: 1px solid;
+}
+
+.isSure p:nth-child(1){
+	font-size: 30px;
+	color: red;
+	position: absolute;
+	left: 100px;
+	top: 100px;
+	z-index: 100;
+}
+.isSure p:nth-child(2){
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	background-color: lemonchiffon;
+	position: absolute;
+	top: 95px;
+	left: 80px;
+}
+.isSure p:nth-child(3){
+	left: 150px;
+	top: 113px;
+	position: absolute;
+}
+.student-message,.delete_sure .btn-primary{
+	width: 100px;
+	height: 30px;
+	position: absolute;
+	right: 180px;
+	bottom: 30px;
+}
+.student-message,.delete_sure .btn-default{
+	width: 100px;
+	height: 30px;
+	position: absolute;
+	right: 55px;
+	bottom: 30px;
+}
+
+#message-student .manage-addstudent{
+	position:relative;
+}
+#message-student .uploadfile{
+	position:absolute;
+	width:100%;
+	height:100%;
+	left:0;
+	top:0;
+	opacity:0;
+	
+	filter:alpha(opacity=0);
+	-moz-opacity:0;
+	-khtml-opacity:0;
+	opacity: 0;
+}
+
+/*upimage*/
+.c_classMessage .imgbox{
+	display: inline-block;
+	position: relative;	
+	margin-right: 20px;
+}
+.c_classMessage .imgtext{
+	font-size: 15px;
+	position: absolute;
+    top: 60px;
+    left: 70px;
+    z-index: -1;
+}
+.c_classMessage .image{
+	width: 200px;
+	height: 160px;
+}
+
+.c_classMessage .upimg{
+	position: absolute;
+	width: 200px;
+    height: 160px;
+    cursor: pointer;
+    top: 0;
+    background-color: wheat;
+    opacity: 0;
+}
+
+.c_classMessage .detailBtn{
+	border: none;
+	position: relative;
+    bottom: 60px;
+    background-color: transparent;
+    font-size: 60px;
+    line-height: 40px;
+    cursor: pointer;
+}

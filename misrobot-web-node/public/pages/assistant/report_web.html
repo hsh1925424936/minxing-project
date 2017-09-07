@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript" src="../../js/assistant/layout.js" ></script>
+    <script type="text/javascript" src="../../js/echarts.min.js"></script>
+    <meta charset="UTF-8">
+    <title>报告 - 课前</title>
+    <style type="text/css">
+        body{
+            background-color:#ECECEC;
+            font-family: "微软雅黑";
+        }
+
+        .topBar {
+            width:100%; height:60px; background-color:#f5f5f5; border-top:1px solid #DEDEDE;
+            border-bottom:1px solid #D4D4D4; font-size:14px;
+        }
+        .topBar button {
+            display:block; float:right; position:relative;
+            top:50%; margin-top:-18px; height:38px; text-align:center; line-height:36px;
+            border:1px solid #0496C9; box-sizing:border-box; border-radius:3px;
+
+        }
+        .chooseBtn{
+            width:118px; margin-right:12px; background-color:#0496ca; color:white;
+        }
+        .chooseBtn:hover{
+            background-color:#0487b5;
+        }
+
+        .mainCon{
+            width:1024px; height:688px; margin:auto; margin-top:20px;
+        }
+        h3{font-size: 18px; font-weight: 300; padding-left: 20px; padding-top: 16px;}
+        .frm{width: 1024px;float: left;}
+        .class_report{width: 1024px; height: 100%; position: relative; top: 17px; margin: 0 auto;}
+        .content_box{width: 1024px; background-color: #FFFFFF; float: left;}
+        .content_box h2{font-size: 18px; font-weight: 300; text-align: center; padding-top: 18px;}
+        .date_box{text-align: center; font-size: 12px;}
+        .content_box p{margin: 0; padding-left: 16px; font-size: 14px; line-height: 24px;}
+        .class_style{padding-left: 30px;}
+        .carry_people{width: 507px; background-color: #FFFFFF; float: left; margin-top: 13px;}
+        .serious_error{width: 516px; background-color: #FFFFFF; float: left; margin-top: 13px; padding-top: 35px;}
+        .finish_people,.mrgL{
+            height:445px;
+        }
+        .mrgL{margin-left: 10px;}
+        .list_name{width: 460px; position: relative; top: -30px; float: left; margin-left: 32px;}
+        .list_name p{
+            margin: 0; line-height:20px; font-size: 13px;
+            color: #6F6F6F; height:80px;
+            overflow-y:auto; 
+        }
+        .list_name h2{font-size: 15px; font-weight: 300; }
+        .error_rate{width: 1024px; background-color: #FFFFFF; float: left;}
+        .error_rate>h4{
+            text-align: center; padding: 0; margin-bottom: -35px; font-size: 18px;
+            font-weight: 300; margin-top:25px;
+        }
+        .tablebox{width: 980px; float: left; margin: 20px 0 80px 20px; border-left: 1px solid #CCCCCC; border-right: 1px solid #CCCCCC;}
+        table{color: #464646; border-top:1pt solid #CCCCCC;}
+        #infoTd{
+            font-size:14px;
+        }
+        #infoTd tr:nth-child(1),#infoTd tr:nth-child(2),#infoTd tr:nth-child(3){
+            color:#0396CA;
+        }
+        td{padding:5px 10px; text-align:center;border-bottom:1pt solid #CCCCCC;}
+        .fontcolor{color: #2BA0CF;}
+        .x_txt{width: 30px; line-height: 18px; position: relative; float: right; right: 12px; top: -26px; font-size: 11px;}
+        .x_txt2{width: 38px; line-height: 18px; position: relative; font-size: 8px; font-family: "Adobe 黑体 Std R"; float: right; right: 0px; top: -23px;color: #C1C1C1;}
+        .fraction{line-height: 22px; text-align: center; position: relative; top: -20px; left: -110px; float: right;}
+        .classInfo{width: 100%; float: left; font-size: 14px;}
+        li {
+
+            display: inline-block;
+            padding: 20px 15px 0 15px;
+            text-align: center;
+            cursor:pointer;
+            float: left; border-bottom: 2px solid transparent;
+        }
+        .li-active {
+            border-bottom: 2px solid #0495CA;
+            color: #0495CA;
+        }
+    </style>
+</head>
+<body>
+<div class="topBar">
+    <!-- <button type="button" id="closeAll" class="chooseBtn">返回</button> -->
+</div>
+<div class="class_report">
+    <div class="content_box">
+        <h2><span id="beforereport"></span> 课前训练报告</h2>
+        <p class="date_box" id="reportdate">2016年12月10日</p>
+        <p >课程名：<span id="course_name">系统整合临床课程</span></p>
+        <div class="classInfo">
+            <div style="float:left; margin-left: 16px; padding-right: 18px;">班级：<span id="classnameID"></span></div>
+            <div style="float:left; padding-right: 18px;">上课总人数：<span id="attendClassNum">222</span></div>
+            <div style="float:left;">上课时间：<span id="attendClassTime">2017</span></div>
+        </div>
+        <!--菜单-->
+        <div id="menuFrm">
+            <div id="sbny" style="padding-top: 20px; padding-left: 16px; float:left;"> 训练项：</div>
+            <div id="navigation">
+                <ul id='menu'>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="frm">
+        <div class="frm">
+            <!--完成情况统计-->
+            <div class="carry_people finish_people">
+                <h3>完成情况统计</h3>
+                <div id="main7" style="width:100%; height: 308px;float:left;"></div>
+                <div class="list_name">
+                    <h2>未完成训练名单：</h2>
+                    <p id="undone_student">
+                        暂无
+                    </p>
+                </div>
+            </div>
+            <!--成绩统计-->
+            <div class="carry_people mrgL">
+                <h3>成绩统计</h3>
+                <div class="fraction">平均分<span id="average"></span> &nbsp; 最高分<span id="the_tallest"></span> &nbsp; 最低分<span id="minimum"></span></div>
+                <div id="main6" style="width:100%; height: 350px;float:left;"></div>
+            </div>
+        </div>
+
+        <div class="frm">
+            <!--典型错误-->
+            <div class="carry_people">
+                <h3>典型错误</h3>
+                <div id="main2" style="width:100%; height: 280px;float:left;"></div>
+                <div class="x_txt2">知识点</div>
+            </div>
+            <!--严重错误-->
+            <div class="serious_error">
+                <div id="main3" style="width:100%; height: 280px;float:left;"></div>
+                <div class="x_txt2">知识点</div>
+            </div>
+        </div>
+        <!--错误率-->
+        <div class="error_rate">
+            <h4>top 10 错误率</h4>
+            <div id="main4" style="width:100%; height: 280px;float:left;"></div>
+            <div class="x_txt2">知识点</div>
+        </div>
+        <!--操作错误详情-->
+        <div class="error_rate" style="margin-top: 10px;">
+            <h3>操作错误详情</h3>
+            <div class="tablebox">
+                <table id="tbitem" width="100%" border="0" cellspacing="0" cellpadding="0" align='center'>
+                    <thead >
+                    <tr>
+                        <td style="background: #EEEEEE;">步骤</td>
+                        <td style="background: #EEEEEE;">错误点</td>
+                        <td style="background: #EEEEEE;">错误人数</td>
+                    </tr>
+                    </thead>
+                    <tbody id="infoTd">
+                        <!-- <tr><td>术后处理</td><td>术后没有吸收</td><td>5</td></tr> -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<script type="text/javascript" src="../../js/assistant/report_chart.js"></script>
+</body>
+<script type="text/javascript">
+
+    set_default_report();//页面加载显示报告的默认值
+
+    var json = {
+        '1':{
+            command:'report/queryprereport',
+            accountname:GetQueryString('accountname'),
+            reportid:GetQueryString('reportid')
+        }
+    };
+    Api.dataToJava({
+        json:{
+            url:'/report/queryprereport', //课前报告接口
+            data:JSON.stringify(json)
+        },
+        fn:function (base) {
+            base = base[1]; //取接口的第一个返回值
+            console.log(base);
+            
+            //判断接口是否走成功， errcode为0是成功
+            if (base.errcode!=0) {
+                uselayer(3,base.errdesc);
+                return false;
+            }
+            
+            show_report(base);//显示报告的所有内容
+            
+
+        }
+    });
+</script>
+</html>

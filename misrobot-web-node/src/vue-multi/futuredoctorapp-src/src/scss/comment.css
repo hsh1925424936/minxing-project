@@ -1,0 +1,170 @@
+.comment{
+    
+}
+.comment-reply-btn{
+    position: absolute;
+    /*right: .24rem;*/
+    right: 0;
+    bottom: 0;
+    font-size: .18rem;
+    color: #4389fe;
+}
+.comemnt-cnt{
+    position: relative;
+}
+.comment-reply-btn .iconfont{
+    font-size: .36rem;
+    position: relative;
+    top: .03rem;
+    color:#4389fe;
+}
+.comment-hd{
+    border-left: .06rem solid #FE434C;
+    padding-left: .08rem;
+}
+.comment .item-avatar{
+    padding-left: 0.88rem;
+    position: relative;
+}
+.comment .item-avatar p{
+    color: #333;
+    line-height: 1.3;
+    margin-bottom: 0;
+}
+.comment .item-avatar img{
+    width: .48rem;
+    height: .48rem;
+    left: .24rem;
+    top: .18rem;
+}
+.comment .item-avatar h2{
+    color: #999;
+    font-size: .22rem;
+    margin-top: .1rem;
+    margin-bottom: .25rem;
+}
+.comment .item-avatar .star-level{
+    margin-bottom: .2rem;
+}
+.comment .item-avatar .star-level .iconfont{
+    font-size: .26rem;
+    color: #FE434C;
+}
+.comment .item-has-list{
+    padding-right: 0;
+}
+.comment .item-has-list .comemnt-cnt{
+    margin-bottom: .24rem;
+}
+.comment .item-has-list .comment-reply-btn{
+    right: .24rem;
+}
+.comment  .pub-time{
+    position: absolute;
+    top: .34rem;
+    right: .24rem;
+    font-size: .20rem;
+    color: #999;
+    word-wrap:normal;
+}
+.comment .comment{
+    border-bottom:0;
+}
+.comment .comment .item{
+    padding-left: .64rem;
+}
+.comment .comment .item-avatar img{
+    left: 0;
+}
+.comment .comment .item:last-child{
+    padding-bottom: 0;
+    margin-bottom: -.24rem;
+}
+
+.my-comment{
+
+}
+.my-comment .item-avatar{
+    padding-left: 1.04rem;
+    position: relative;
+}
+.my-comment .item-avatar p{
+    color: #333;
+    line-height: 1.3;
+}
+.my-comment .item-avatar img{
+    width: .64rem;
+    height: .64rem;
+}
+.my-comment .item-avatar h2{
+    color: #999;
+    font-size: .22rem;
+    margin-top: .1rem;
+    margin-bottom: .05rem;
+}
+.my-comment .item-avatar .star-level{
+    margin-bottom: .2rem;
+}
+.my-comment .item-avatar .star-level .iconfont{
+    font-size: .26rem;
+    color: #FE434C;
+    margin-right: -0.1rem;
+}
+.my-comment .item-avatar .star-level .tag{
+    float: right;
+    top: 0;
+}
+.my-comment  .pub-time{
+    position: absolute;
+    top: .34rem;
+    right: .24rem;
+    font-size: .22rem;
+    color: #999;
+    word-wrap:normal;
+}
+
+/** star begin **/
+.score-wrap{
+    padding: 0.24rem;
+    background: #FFF;
+}
+.score-total{
+    text-align: center;
+    right: -.11rem;
+    position: relative;
+}
+.score-total .num{
+    font-size: .36rem;
+    font-weight: bold;
+    color: #FE434C;
+    margin-bottom: .1rem;
+}
+.score-total .desc{
+    font-size: .22rem;
+    color: #666;
+}
+.score-detail{
+    border-right:1px solid #C9CACA;
+}
+.score-one{
+    font-size: .22rem;
+    color: #999;
+    line-height: .34rem;
+    margin-bottom: .16rem;
+}
+.score-one label{
+    color: #666;
+    margin-right: .2rem;
+}
+.score-one .iconfont{
+    font-size: .3rem;
+    line-height: .34rem;
+}
+.score-one:last-child{
+    margin-bottom: 0;
+}
+.score-one .num{
+    margin-left: .2rem;
+    color: #999;
+}
+/** star end **/

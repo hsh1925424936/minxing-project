@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<meta name="renderer" content="webkit">
+		<link rel="stylesheet" href="../../../css/bigdatascreen/swiper.min.css" type="text/css" />
+		<link rel="stylesheet" href="../../../css/bigdatascreen/common.css" type="text/css" />
+		<script src="../../../js/bigdatascreen/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../js/bigdatascreen/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../js/bigdatascreen/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../js/bigdatascreen/swiper.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../js/echarts.min.js" type="text/javascript"></script>
+		<script src="../../../js/bigdatascreen/common.js" type="text/javascript" charset="utf-8"></script>
+		
+		<link rel="stylesheet" href="../../../css/bigdatascreen/week-report.css" type="text/css" />
+		<script src="../../../js/bigdatascreen/week-report.js" type="text/javascript" charset="utf-8"></script>
+		<title>课后-管理者-教学情况周报</title>
+		<style>
+			.all_outer{
+				width:100%; height:100%; background-color:#161823;
+			}
+			/*右侧轮播显示*/
+			.swiperouter{
+				height:88vh;
+			}
+			.swiper-container{
+				width:100%;
+			}
+			.swiper-container,.swiper-wrapper,.swiper-slide{
+				height:100%;
+			}
+		</style>	
+	</head>
+	<body>
+		<div class="all_outer" id="vue_control" v-cloak>
+			<!-- 右侧标题 -->
+			<div class="top_tit_outer">
+				<div class="top_tit">
+					<div class="top_tit_inner">
+						<p class="top_tit_p1">管理者周报<br/><span>（{{timefromto}}）<span></p>
+						<p class="top_tit_p2">本周教学工作开展良好</p>
+					</div>
+				</div>
+			</div>
+			<div class="swiperouter">
+				<div class="swiper-container">
+			        <div class="swiper-wrapper">
+			            <div class="swiper-slide">
+			            	<c-teacher-week :teacherscorereport="teacherscorereport" :teacherclassreport="teacherclassreport" :swiper_ready="swiper_ready"></c-teacher-week>
+			            </div>
+			            <div class="swiper-slide">
+			            	<c-student-week :studentscorereport="studentscorereport" :studentclassreport="studentclassreport" :swiper_ready="swiper_ready"></c-student-week>
+			            </div>
+			            <div class="swiper-slide">
+			            	<c-environment-week :teacherclasstimes="teacherclasstimes" :studentclasstimes="studentclasstimes" :swiper_ready="swiper_ready"></c-environment-week>
+			            </div>
+			        </div>
+					<!-- Add Pagination -->
+					<div class="swiper-pagination"></div>
+			    </div>
+			</div>
+		</div>
+		
+	</body>
+
+	<script type="text/javascript">
+		var vm;
+		var base = 
+		    {
+		        "errcode": "0",
+		        "errdesc": "success",
+		        "lastmonday": "2017-05-29",
+		        "studentclasstimes": ["150",
+		        "225",
+		        "200",
+		        "250",
+		        "225",
+		        "175",
+		        "125",
+		        "1350"],
+		        "teacherscorereport": {
+		            "weekvecotr": ["74.00",
+		            "77.00",
+		            "80.00",
+		            "78.00",
+		            "76.00",
+		            "81.00",
+		            "79.00",
+		            "80.00",
+		            "78.00",
+		            "83.00"],
+		            "order": [{
+		                "data": "90.00",
+		                "name": "宋玲玲",
+		                "id": "132",
+		                "up":"1"
+		            },
+		            {
+		                "data": "88.00",
+		                "name": "马海燕",
+		                "id": "2",
+		                "up":"-1"
+		            },
+		            {
+		                "data": "87.00",
+		                "name": "张燕翎",
+		                "id": "116",
+		                "up":"1"
+		            }]
+		        },
+		        "studentclassreport": {
+		            "classweekvecotr": [{
+		                "planhour": "767",
+		                "realhour": "760"
+		            },
+		            {
+		                "planhour": "757",
+		                "realhour": "757"
+		            },
+		            {
+		                "planhour": "760",
+		                "realhour": "760"
+		            },
+		            {
+		                "planhour": "753",
+		                "realhour": "753"
+		            },
+		            {
+		                "planhour": "756",
+		                "realhour": "756"
+		            },
+		            {
+		                "planhour": "756",
+		                "realhour": "756"
+		            },
+		            {
+		                "planhour": "758",
+		                "realhour": "762"
+		            },
+		            {
+		                "planhour": "752",
+		                "realhour": "760"
+		            },
+		            {
+		                "planhour": "756",
+		                "realhour": "753"
+		            },
+		            {
+		                "planhour": "765",
+		                "realhour": "765"
+		            }],
+		            "order": [{
+		                "data": "3",
+		                "name": "刘大伟",
+		                "id": "149518"
+		            },
+		            {
+		                "data": "3",
+		                "name": "邓小艾",
+		                "id": "149516"
+		            },
+		            {
+		                "data": "3",
+		                "name": "林家乐",
+		                "id": "149519"
+		            },
+		            {
+		                "data": "3",
+		                "name": "顾小北",
+		                "id": "159267"
+		            },
+		            {
+		                "data": "2",
+		                "name": "金自如",
+		                "id": "149520"
+		            },
+		            {
+		                "data": "2",
+		                "name": "韦冬华",
+		                "id": "149514"
+		            },
+		            {
+		                "data": "2",
+		                "name": "隋武义",
+		                "id": "149515"
+		            },
+		            {
+		                "data": "2",
+		                "name": "孙正亚",
+		                "id": "149513"
+		            },
+		            {
+		                "data": "2",
+		                "name": "何平",
+		                "id": "159274"
+		            },
+		            {
+		                "data": "2",
+		                "name": "徐威",
+		                "id": "159266"
+		            }]
+		        },
+		        "teacherclassreport": {
+		            "classweekvecotr": [{
+		                "planhour": "755",
+		                "realhour": "755"
+		            },
+		            {
+		                "planhour": "757",
+		                "realhour": "757"
+		            },
+		            {
+		                "planhour": "760",
+		                "realhour": "760"
+		            },
+		            {
+		                "planhour": "760",
+		                "realhour": "762"
+		            },
+		            {
+		                "planhour": "759",
+		                "realhour": "762"
+		            },
+		            {
+		                "planhour": "758",
+		                "realhour": "758"
+		            },
+		            {
+		                "planhour": "760",
+		                "realhour": "760"
+		            },
+		            {
+		                "planhour": "759",
+		                "realhour": "759"
+		            },
+		            {
+		                "planhour": "752",
+		                "realhour": "752"
+		            },
+		            {
+		                "planhour": "767",
+		                "realhour": "763"
+		            }],
+		            "order": [{
+		                "data": "412",
+		                "name": "宋玲玲",
+		                "id": "132",
+		                "up":1
+		            },
+		            {
+		                "data": "394",
+		                "name": "曾宪春",
+		                "id": "116",
+		                "up":-1
+		            },
+		            {
+		                "data": "389",
+		                "name": "张燕翎",
+		                "id": "149511",
+		                "up":1
+		            }]
+		        },
+		        "teacherclasstimes": [
+		            "8",
+		            "6",
+		            "9",
+		            "7",
+		            "8",
+		            "6",
+		            "2",
+		            "46"
+		        ],
+		        "lastfriday": "2017-06-02",
+		        "command": "bigdata/reportweek/queryreportweek",
+		        "studentscorereport": {
+		            "weekvecotr": ["74.00",
+		            "77.00",
+		            "80.00",
+		            "78.00",
+		            "76.00",
+		            "81.00",
+		            "79.00",
+		            "80.00",
+		            "81.00",
+		            "83.00"],
+		            "order": [{
+		                "data": "96.00",
+		                "name": "刘绍文",
+		                "id": "149097",
+		                "up":1,
+
+		            },
+		            {
+		                "data": "92.00",
+		                "name": "梁忠丽",
+		                "id": "69334",
+		                "up":1
+		            },
+		            {
+		                "data": "90.00",
+		                "name": "左君祥",
+		                "id": "69311",
+		                "up":1
+		            }]
+		        }
+		    
+		};
+		onload = function(){
+			vm=new Vue({
+				el:"#vue_control",
+				data:{
+					teacherscorereport:[],//老师得分周报
+					teacherclassreport:[],//老师学时完成周报
+					studentscorereport:[],//学生得分周报
+					studentclassreport:[],//学生学时完成周报
+					teacherclasstimes:[],//老师上课人次数组
+					studentclasstimes:[],//学生上课人次数组
+					lastmonday:'',//本周开始时间
+					lastfriday:'',//本周结束时间
+
+					swiper_ready:false,//用来标记swiper是否完成
+					updated_time:0
+				},
+				methods:{
+					
+				},
+
+				created:function(){
+					
+				},
+				mounted:function(){
+					var self = this;
+					self.teacherscorereport = base.teacherscorereport;
+					self.teacherclassreport = base.teacherclassreport;
+					self.studentscorereport = base.studentscorereport;
+					self.studentclassreport = base.studentclassreport;
+					self.teacherclasstimes = base.teacherclasstimes;
+					self.studentclasstimes = base.studentclasstimes;
+					self.lastmonday = base.lastmonday;
+					self.lastfriday = base.lastfriday;
+
+				   /* my_require.R({
+						isShade:1,
+						url:'/bigdata/reportweek/queryreportweek',
+						data:{
+							command:"bigdata/reportweek/queryreportweek"
+						},
+						callback:function(base){
+							self.teacherscorereport = base.teacherscorereport;
+							self.teacherclassreport = base.teacherclassreport;
+							self.studentscorereport = base.studentscorereport;
+							self.studentclassreport = base.studentclassreport;
+							self.teacherclasstimes = base.teacherclasstimes;
+							self.studentclasstimes = base.studentclasstimes;
+							self.lastmonday = base.lastmonday;
+							self.lastfriday = base.lastfriday;
+						}
+					});*/
+				},
+				updated:function(){
+					this.updated_time++;
+					if( this.updated_time == 1 ){
+						var swiper = new Swiper('.swiper-container', {
+					        pagination: '.swiper-pagination',
+					        paginationClickable: true,
+					        spaceBetween: 0,
+					        centeredSlides: true,
+					        speed:500,
+					        autoplayDisableOnInteraction: false,
+					        paginationType:'progress',
+					        loop:true
+					    });
+
+						this.swiper_ready = true;
+					}
+				},
+				watch:{
+
+				},
+				computed:{
+					timefromto:function(){
+						var str = '';
+						if(this.lastmonday && this.lastfriday){
+							var startdate = this.lastmonday.split('-');
+							var enddate = this.lastfriday.split('-');
+							str = startdate[0]+'.'+startdate[1]+'.'+startdate[2]+'-'+enddate[1]+'.'+enddate[2];
+							if ( startdate[0] != enddate[0] ){//如果跨年了
+								str = startdate[0]+'.'+startdate[1]+'.'+startdate[2]+'-'+enddate[0]+enddate[1]+'.'+enddate[2];
+							}
+						}
+						
+						return str;
+					}
+				},
+				components:{
+					'c-teacher-week':c_teacher_week,
+					'c-student-week':c_student_week,
+					'c-environment-week':c_environment_week
+				}
+			})
+		}
+
+	</script>
+</html>

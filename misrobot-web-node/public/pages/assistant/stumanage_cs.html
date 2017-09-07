@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Title</title>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+    <script src="../../js/assistant/common.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script type="text/javascript" src="../../js/assistant/c_common.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="../../js/jquery.qrcode.min.js"></script>
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <style>
+        /*通用样式*/
+        body,html{  background-color: #EAF1F9;  }
+        p,ul,li,dl,dd,dt{  margin:0;  padding:0;  }
+        ul,li{  list-style-type: none;  }
+        .poi{  cursor:pointer;  }
+        .flex_center{  display:flex;  justify-content: center;  align-items: center;  }
+        .myshow{display:flex!important;}
+        .myhide{display:none!important;}
+        b{font-weight:normal}
+        .normalh{line-height: normal}
+        [v-cloak]{display:none}
+        #header{
+            display:flex;
+            align-items: center;
+            height:70px;
+        }
+        #header>div{
+            width:120px;
+            height:40px;
+            border-radius: 5px;
+            cursor:pointer;
+            margin-right:20px;
+        }
+        .xdropdown{
+            border:2px solid #00A0EA;
+            color:#00A0EA;
+            background-color: white;
+            position:relative;
+            display:flex;
+            align-items: center;
+        }
+        .xdropdown>span{
+            width:80%;
+            text-align: center;
+            border-right:2px solid #00A0EA;
+        }
+        .xdropdown>i{
+            width:20%;
+            display:flex;
+            justify-content: center;
+        }
+        .addstubtn{
+            background-color: #6AD969;
+            color:white;
+            display:flex ;
+            justify-content: center;
+            align-items: center;
+        }
+        .addstubtn>span{
+            padding-left:5px;
+        }
+        #container{
+            padding:0 20px 20px 20px;
+            display:flex;
+            flex-direction: column;
+        }
+        #content{
+            display: flex;
+            min-height:calc(100vh - 90px);
+        }
+        #content>div{
+            display:flex;
+            flex-direction: column;
+        }
+        .contentleft{
+            padding:20px;
+            background-color: #E5E8ED;
+        }
+        .contentright{
+            background-color: white;
+            border-left:20px solid #EAF1F9;
+            padding:20px;
+            flex-grow: 1;
+        }
+        .contenttitle{
+            color:#383838;
+            margin-bottom: 20px;
+        }
+        .headdropbox{
+            position:absolute;
+            top:20px;
+            right:20px;
+        }
+        .stuname{
+            color:#383838;
+            height:30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .itemdropdown{
+            display:flex;
+            justify-content: center;
+            background-color: #EAF1F9;
+            border-radius: 5px;
+            box-shadow: 3px 3px 3px #A0AAB4;
+            color:#707378;
+            height:30px;
+            align-items: center;
+            margin-top:10px;
+            position: relative;
+            cursor:pointer;
+            width:80px;
+        }
+        .contentbox{
+            display:flex;
+            flex-wrap: wrap;
+        }
+        .contentitem{
+            padding:12px;
+            position: relative;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .stuactive{
+            border-radius: 10px 0 0 0;
+            background-image: url('../../images/assistant/biaotie.png');
+            width:40px;
+            height:40px;
+            background-size:100%;
+            background-repeat: no-repeat;
+            position:absolute;
+            top:12px;
+            left:12px;
+            color:white;
+            font-weight: bold;
+        }
+        .stuactive>span{
+            position:relative;
+            top:4px;
+            left:4px;
+        }
+        .stuhandlerlist{
+            border:1px solid #00A0EA;
+            color:#00A0EA;
+            background-color: white;
+            cursor: pointer;
+            position:absolute;
+            top:16px;
+            left:0;
+            width:82px;
+            z-index:10;
+        }
+        .stuhandlerlist>li{
+            height:26px;
+            position: relative;
+            display:flex;
+            align-items: center;
+        }
+        .stuhandlerlist>li>span{
+            width:80%;
+            padding-left:4px;
+        }
+        .stuhandlerlist>li>b{
+            width:20%;
+        }
+        .stuhandlerlist>li:hover{
+            background-color: #00A0EA;
+            color:white;
+        }
+        /*分组下拉*/
+        .groupingselect{
+            border:2px solid #009FEC;
+            border-radius: 5px;
+            position:absolute;
+            top:-2px;
+            left:-2px;
+            z-index: 99;
+            width:120px;
+        }
+        .groupingselecthead{
+            background-color: white;
+            border-radius: 5px 5px 0 0;
+            height:38px;
+            display:flex;
+            align-items: center;
+        }
+        .groupingselecthead>span{
+            width:80%;
+            text-align: center;
+        }
+        .groupingselecthead>i{
+            width:20%;
+            display:flex;
+            justify-content: center;
+        }
+        .groupingselect>div{
+            display:flex
+        }
+        .groupingselect>div ul{
+            width:120px;
+            color:#A1A4A9;
+            background-color: #EAF1F9;
+        }
+        .groupingselect>div>ul>li{
+            height:36px;
+        }
+        .grouporderlist>li{
+            display:flex;
+            position:relative;
+            align-items: center;
+        }
+        .grouporderlist>li:hover{
+            background-color: #00A0EA;
+            color:white;
+        }
+        .grouporderlist>li>span{
+            width:80%;
+            padding-left:8px;
+        }
+        .grouporderlist>li>b{
+            width:20%;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .grouporderlist{
+            border-radius: 0 0 5px 5px;
+        }
+        .groupnumlist{
+            text-align: center;
+            border-radius: 5px;
+            border:2px solid #1A97C9;
+            position:absolute;
+            top:0;
+            left:125px;
+        }
+        .groupnumlist>li{
+            height:36px;
+            line-height: 36px;;
+        }
+        .groupnumlist>li:hover{
+            background-color: #00A0EA;
+            color:white;
+        }
+        .blueback{
+            background-color: #00A0EA;
+            color:white;
+        }
+        #randomselect>li:hover{
+            background-color: #00A0EA;
+            color:white;
+        }
+        #randomselect{
+            border-radius: 0 0 5px 5px;
+            text-align: center;
+            border:none;
+            background-color: #EAF1F9;
+        }
+        #shadow{
+            width:100%;
+            height:100%;
+            position:fixed;
+            top:0;
+            left:0;
+            background-color: rgba(0,0,0,0.3);
+            z-index:500;
+            margin-left:-20px;
+            display:flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .signeddrop{
+            position:absolute;
+            top:0;
+            left:0;
+            z-index:99;
+            background-color: #EAF1F9;
+            color:#707378;
+            border-radius: 5px;
+            box-shadow: 3px 3px 3px #A0AAB4;
+            padding-bottom: 5px;
+            display: none;
+        }
+        .itemdropdown:hover>.signeddrop{
+            display:block;
+        }
+        .showjudgelist:hover>.judgestarlist{
+            display:block!important;
+        }
+        .showjudgelist:hover .righticon{
+            background-position: 0 0!important;
+        }
+        .judgestarlist{
+            position:absolute;
+            top:-5.8px;
+            left:75px;
+            border:1px solid #00A0EA;
+            color:#00A0EA;
+            background-color: white;
+            cursor: pointer;
+            z-index:10;
+            display:none;
+            margin:5px;
+        }
+        .judgestarlist>li:hover{
+            background-color: #00A0EA;
+            color:white;
+        }
+        .judgestarlist>li{
+            height:26px;
+            display:flex;
+            width:76px;
+            align-items: center;
+            padding-left:4px;
+        }
+        .judgestarlist>li>img{
+            width:20px;
+            height:20px;
+        }
+        .havestarnum>img{
+            width:20px;
+            height:20px;
+        }
+        .havestarnum{
+            position: absolute;
+            bottom:-3px;
+            left:0;
+            width:100%;
+            display:flex;
+            justify-content: center;
+            height:24px;
+        }
+        .havestarnum>span{
+            align-self:flex-end;
+        }
+        .havestarnum>b{
+            align-self:flex-end;
+            font-size:16px;
+        }
+        .groupitem{
+            background-color: white;
+            padding:10px;
+            margin:10px;
+            border:2px solid #D6D6D6;
+        }
+        .groupitemtitle{
+            color:#383838;
+            text-align: center;
+            height:40px;
+            line-height:40px;
+            font-size:16px;
+        }
+        .groupitemtitle>div{
+            position:relative;
+        }
+        .groupitemtitle>div>div{
+            position:absolute;
+            bottom:0;
+            left:120%;
+        }
+        .groupstubox{
+            display:flex;
+            flex-wrap: wrap;
+            max-width:356px;
+        }
+        .unsignedonlyone{
+            width:120px;
+        }
+        .unsignedmorethanone{
+            width:236px;
+        }
+        .groupactive{
+            border:2px solid #2093CE;
+            box-shadow:3px 3px 3px #A0AAB4 ;
+        }
+        .orderedbox{
+            display:flex;
+        }
+        .firstletter{
+            position:relative;
+        }
+        .firstletter>span{
+            position:absolute;
+            top:10px;
+            left:-3px;
+            font-size:16px;
+            font-weight:300;
+        }
+        .grouprole{
+            border:1px solid #383838;
+            border-radius: 50%;
+            font-size: 14px;
+            width:20px;
+            height:20px;
+            line-height: 20px;
+            text-align: center;
+        }
+        /*二维码样式*/
+        #codebox{
+            background-color: white;
+            border-radius: 10px;
+            width:70%;
+            height:80%;
+        }
+        #d1{
+            padding:20px;
+            border-radius: 10px;
+            border:5px solid #009EE8;
+            margin:0 auto;
+            width:306px;
+            height:306px;
+        }
+        .codetitle{
+            text-align: center;
+            color:#6D6D6D;
+            font-size:30px;
+            padding:0 0 20px 0;
+        }
+        .stunumber{
+            font-size: 46px;
+            color:#343434;
+        }
+        .closehandler{
+            overflow: hidden;
+            padding:20px;
+        }
+        .closehandler>b{
+            float:right;
+            cursor: pointer;
+        }
+        .closehandler>b>img{
+            width:40px;
+            height:40px;
+        }
+        /*箭头样式*/
+        .blueshixintop,.blueshixindown{
+            width:10px;
+            height:10px;
+            background-image: url('../../images/assistant/blueshixin.png');
+        }
+        .blueshixintop{
+            background-position: 0 -10px;
+        }
+        .blueshixindown{
+            background-position: 0 0;
+        }
+        .righticon{
+            width:10px;
+            height:10px;
+            background-image: url('../../images/assistant/youjiantou.png');
+            display:block;
+        }
+        .iconblue{
+            background-position: 0 -10px;
+        }
+        .iconwhite{
+            background-position: 0 0;
+        }
+        /*头像样式*/
+        .headbox{
+            width:94px;
+            height:94px;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+        }
+        .grayheadbox{
+            background-color:#CCCCCC;
+        }
+        .blueheadbox{
+            background-color:white;
+            border: 2px solid #00A0EA;
+        }
+        .randomheadbox{
+            background-color: #00A0EA;
+        }
+        .headimg{
+            width:40px;
+            height:54px;
+            background-image: url('../../images/assistant/touxiang.png');
+        }
+        .grayheadimg{
+            background-position: 0 -54px;
+        }
+        .blueheadimg{
+            background-position: 0 0;
+        }
+        .randomheadimg{
+            background-position: 0 -108px;
+        }
+        .blueheadtop{
+            background-position: 0 -14px;
+        }
+        .blueheaddown{
+            background-position: 0 -42px;
+        }
+        .grayheadtop{
+            background-position: 0 0;
+        }
+        .grayheaddown{
+            background-position: 0 -28px;
+        }
+        .headdropicon{
+            width:14px;
+            height:14px;
+            background-image: url('../../images/assistant/icondropdown.png');
+            display:block;
+        }
+        #loading{
+            width:100%;
+            height:100%;
+            position:fixed;
+            top:0;
+            left:0;
+            z-index:999;
+            background-color: white;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #loadingrandom{
+            position:fixed;
+            top:40vh;
+            left:45vw;
+            z-index:100;
+            border-radius: 10px;
+            width:10vw;
+            height:10vw;
+            overflow:hidden;
+        }
+        #loadingrandom>img{
+            width:20vw;
+            height:20vw;
+            position:relative;
+            left:-5vw;
+            top:-5vw;
+            -moz-animation: imgrotate 2s;
+        }
+        @-moz-keyframes imgrotate {
+            from {transform:rotate(0deg)}
+            to {transform:rotate(360deg)}
+        }
+    </style>
+</head>
+<body>
+<div id="container" v-cloak>
+    <div id="loading">
+        <img src="../../images/assistant/loading1.gif" alt="">
+    </div>
+    <div id="loadingrandom" v-show="randomgif">
+        <img src="../../images/assistant/loading2.gif" alt="">
+    </div>
+    <div id="header">
+        <!--<div id="scheduleidreceive"></div>-->
+        <div class="xdropdown" @click.stop="showselectgroup()" v-show="signedstunum>=2">
+            <span>分组</span>
+            <i><b class="blueshixindown"></b></i>
+            <div class="groupingselect" v-show="showgroupdropdown">
+                <div class="groupingselecthead">
+                    <span>分组</span>
+                    <i><b class="blueshixintop"></b></i>
+                </div>
+                <div>
+                    <ul class="grouporderlist">
+                        <li @click.stop="grouping(1,1)" @mouseover.stop="(activegrouporder=-1)"><span>不分组</span></li>
+                        <li v-for="(value,index) in grouporder" @mouseover.stop="selectgrouporder(value,index)" :class="{blueback:index==activegrouporder}" v-show="signedstunum!=0">
+                            <span>{{ value.name }}</span>
+                            <b><i class='righticon iconblue' :class="{'iconwhite':index==activegrouporder}"></i></b>
+                            <ul v-show="index==activegrouporder" class="groupnumlist">
+                                <li v-for="(value2,index2) in groupnum" @click="grouping(value2,selectedgrouporder)" v-show="signedstunum>=value2">分{{ value2 }}组</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="xdropdown" @click.stop="showselectrandom()" v-show="signedstunum>=2">
+            <span>随机点名</span>
+            <i><b class="blueshixindown"></b></i>
+            <div class="groupingselect" v-show="showrandomdropdown">
+                <div class="groupingselecthead">
+                    <span>随机点名</span>
+                    <i><b class="blueshixintop"></b></i>
+                </div>
+                <div>
+                    <ul id="randomselect">
+                        <li @click="randomstu()" class="flex_center">
+                            <span>随机选人</span>
+                        </li>
+                        <li @click="randomgroup()" v-show="isgrouped" class="flex_center">
+                            <span>随机选组</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="addstubtn" @click="scan()">
+            <img src="../../images/assistant/btn_jia.png" alt="">
+            <span>扫码签到</span>
+        </div>
+    </div>
+    <div id="content">
+        <div class="contentleft" v-show="unsignedlist.length!=0">
+            <p class="contenttitle">未签到</p>
+            <div class="contentbox" :class="{unsignedonlyone:unsignedlist.length==1,unsignedmorethanone:(unsignedlist.length>1)&&(signedstunum!=0)}">
+                <div class="contentitem" v-for="(value,index) in unsignedlist" onmouseover="stu_h(this)" onmouseout="stu_leave(this)" onclick="showstuhandler(this,event)">
+                    <p class="grayheadbox headbox">
+                        <span class="headimg randomheadimg"></span>
+                    </p>
+                    <p class="stuname">{{ value.stuname }}</p>
+                    <div class="headdropbox">
+                        <span class="grayheaddown headdropicon"></span>
+                        <ul class="stuhandlerlist myhide">
+                            <li @click.stop="stusign(value)" class="flex_center">
+                                <span>手动签到</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="contentright" :class="{groupstyleright:isgrouped}" v-show="signedstunum!=0">
+            <p class="contenttitle">已签到</p>
+            <div class="contentbox">
+                <div class="firstletter" v-for="(value1,index1) in signedlist" v-show="!isgrouped">
+                    <span>{{ value1.firletter }}</span>
+                    <div class="orderedbox">
+                        <div class="contentitem" v-for="(value2,index2) in signedlist[index1].stulist" onmouseover="stu_h(this)" onmouseout="groupedstu_leave(this)" onclick="showstuhandler(this,event)">
+                            <p class="stuactive" v-show="index2==ungrouprandomstu && index1==ungrouprandomletter"><span></span></p>
+                            <p class="grayheadbox headbox">
+                                <span class="headimg grayheadimg"></span>
+                            </p>
+                            <p class="stuname">
+                                <span>{{ value2.name }}</span>
+                            </p>
+                            <div class="headdropbox">
+                                <span class="grayheaddown headdropicon"></span>
+                                <ul class="stuhandlerlist myhide">
+                                    <li class="showjudgelist">
+                                        <span>打分</span>
+                                        <b><i class='righticon iconblue'></i></b>
+                                        <ul class='judgestarlist'>
+                                            <li v-for="(v1,i1) in judgestar" @click.stop="tojudge(v1.num,value2)">
+                                                <img src="../../images/assistant/star.png" alt="" v-for="(v2,i2) in judgestar[i1].arr">
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li @click.stop="cancelsigned(value2)">
+                                        <span>取消签到</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="havestarnum" v-show="value2.redflower!=0">
+                                <img src="../../images/assistant/star.png" alt="">
+                                <span>x</span>
+                                <b>{{ value2.redflower }}</b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="groupitem" v-for="(value1,index1) in groupinfo" v-show="isgrouped" :class="{groupactive:index1==groupedrandomgroup}">
+                    <div class="groupitemtitle flex_center">
+                        <div>
+                            <span>第{{ value1.sgindex }}组</span>
+                            <div class="havestarnum" v-show="(value1.groupstulist.length>=2)&&(value1.groupflowernum>=1)">
+                                <img src="../../images/assistant/star.png" alt="">
+                                <span class="normalh">x</span>
+                                <b class="normalh">{{ value1.groupflowernum }}</b>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="groupstubox">
+                        <div class="contentitem" v-for="(value2,index2) in groupinfo[index1].groupstulist" onmouseover="stu_h(this)" onmouseout="groupedstu_leave(this)" onclick="showstuhandler(this,event)">
+                            <p class="stuactive" v-show="index1==groupedrandomstu_grandom && index2==groupedrandomstu_sturandom">
+                                <span></span>
+                            </p>
+                            <p class="grayheadbox headbox">
+                                <span class="headimg grayheadimg"></span>
+                            </p>
+                            <p class="stuname">
+                                <span class="grouprole" v-if="value2.role==1">组</span>
+                                <span class="grouprole" v-if="value2.role==2">记</span>
+                                <span>{{ value2.name }}</span>
+                            </p>
+                            <div class="headdropbox">
+                                <span class="grayheaddown headdropicon"></span>
+                                <ul class="stuhandlerlist myhide">
+                                    <li class="showjudgelist">
+                                        <span>打分</span>
+                                        <b><i class='righticon iconblue'></i></b>
+                                        <ul class='judgestarlist'>
+                                            <li v-for="(v1,i1) in judgestar" @click.stop="tojudge(v1.num,value2)">
+                                                <img src="../../images/assistant/star.png" alt="" v-for="(v2,i2) in judgestar[i1].arr">
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="showjudgelist">
+                                        <span>调整分组</span>
+                                        <b><i class='righticon iconblue'></i></b>
+                                        <ul class='judgestarlist'>
+                                            <li v-for="(v2,i2) in groupinfo" @click.stop="changegroup((i2+1),value2)" v-show="(i2+1)!=value2.sgindex">
+                                                到第{{ i2+1 }}组
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li @click.stop="cancelsigned(value2)">
+                                        <span>取消签到</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="havestarnum flex_center" v-show="value2.redflower!=0">
+                                <img src="../../images/assistant/star.png" alt="">
+                                <span class="normalh">x</span>
+                                <b class="normalh">{{ value2.redflower }}</b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--下面这个div里面放测试接口数据-->
+        <!--<div>入参：{{enter}}分组情况：{{isgrouped}}出参：{{groupresultres}}</div>-->
+    </div>
+    <div id="shadow" v-show="showcode">
+        <div id="codebox">
+            <p class="closehandler">
+                <b @click="closecodebox()"><img src="../../images/assistant/btn_guanbi.png" alt=""></b>
+            </p>
+            <p class="codetitle">扫一扫二维码加入课堂</p>
+            <div id="d1"></div>
+            <p class="codetitle">当前课堂人数：<span class="stunumber">{{ signedstunum }}</span></p>
+        </div>
+    </div>
+</div>
+<script>
+    gotC.init({
+        fn:function(){
+            setTimeout(function(){
+                $('#loading').css({
+                    display:'none'
+                })
+            }, 1000)
+            window.vm=new Vue({
+                el:'#container',
+                data:{
+                    randomgif:false,//随机选人
+                    showcode:false,//扫码框的显示或隐藏
+                    sid:'',
+                    uid:'',
+                    scheduleid:'',//课程id
+                    isgrouped:false,//是否已分组
+                    signedstunum:0,//已签到学生数
+                    unsignedstunum:0,//未签到学生数
+                    unsignedlist:[],
+                    signedlist:[],
+                    ungrouprandomletter:-1,//未分组先随机选一个姓名首字母
+                    ungrouprandomstu:-1,//未分组随机选人
+                    groupedrandomstu_grandom:-1,//已分组随机选人,先随机选组
+                    groupedrandomstu_sturandom:-1,//已分组随机选人,选组后随机选人
+                    groupedrandomgroup:-1,//已分组随机选组
+                    grouporder:[{name:'随机分组',sub:true,grouptype:2},{name:'按学号分组',sub:true,grouptype:1}],
+                    groupnum:[2,3,4,5,6,7],
+                    selectedgrouporder:'',
+                    selectedgroupnum:'',
+                    activegrouporder:-1,
+                    activegroupnum:0,
+                    showgroupdropdown:false,//显示选择分组方式下拉
+                    showrandomdropdown:false,//显示随机选人下拉
+                    timer:null,
+                    judgestar:[{num:1,arr:[1]},{num:2,arr:[2,2]},{num:3,arr:[3,3,3]}],
+                    groupinfo:[],
+                    totalgroup:0,//用户选择分几组
+                    groupinforesult:'',
+                    groupresultres:'',//页面测试接口返回
+                    enter:'',//页面测试接口入参
+                },
+                created:function(){
+                    sendonload();
+                },
+                mounted:function(){
+                    var self=this
+                    //c#里面跑
+                    self.sid=getCookie('sid')
+                    self.uid=getCookie('uid')
+                    self.scheduleid=getCookie('scheduleid')
+                    self.querygroupinfo()
+                    setInterval(function(){self.querygroupinfo()},10000)//10秒更新一次课堂学生表
+                    //浏览器直接跑
+//                self.sid=getCookie('sid')
+//                self.uid=getCookie('uid')
+//                self.scheduleid=1370
+//                self.querygroupinfo()
+                },
+                methods:{
+                    showselectgroup:function(){//显示分组下拉菜单
+                        this.showgroupdropdown=!this.showgroupdropdown
+                        this.showrandomdropdown=false
+                        $('.contentitem .stuhandlerlist').each(function(){
+                            if(!$(this).hasClass('myhide')){
+                                $(this).addClass('myhide')
+                            }
+                            $(this).parent().find('span.headdropicon').attr('class','headdropicon grayheaddown')
+                        })
+                    },
+                    showselectrandom:function(){//显示随机点名下拉菜单
+                        this.showrandomdropdown=!this.showrandomdropdown
+                        this.showgroupdropdown=false
+                        $('.contentitem .stuhandlerlist').each(function(){
+                            if(!$(this).hasClass('myhide')){
+                                $(this).addClass('myhide')
+                            }
+                            $(this).parent().find('span.headdropicon').attr('class','headdropicon grayheaddown')
+                        })
+                    },
+                    getcode:function(){//获取二维码接口
+                        var data={
+                            command:'course/getcodecontent',
+                            scheduleid:this.scheduleid,
+                            sessionid:this.sid,
+                            loginid:this.uid
+                        }
+                        function callback(res){
+                            var str=JSON.stringify({
+                                content:res.content,
+                                type:res.type
+                            })
+                            $('#d1').qrcode(str);
+                        }
+                        post('/course/getcodecontent',data,callback,c_errorfn,errfn)
+                    },
+                    scan:function(){//获取二维码点击事件
+                        this.showcode=true;
+                        this.getcode();
+                        var self=this;
+                        this.timer=setInterval(function(){
+                            $('#d1').html('');
+                            self.getcode();
+                        },15000)
+                    },
+                    closecodebox:function(){//关闭二维码
+                        this.showcode=false;
+                        clearInterval(this.timer)
+                        this.timer=null
+                        $('#d1').html('')
+                    },
+                    selectgrouporder:function(value,index){//选择分组方式
+                        this.activegrouporder=index
+                        this.selectedgrouporder=''
+                        this.selectedgrouporder=value.grouptype
+                    },
+                    grouping:function(groupnum,grouptype){//进行分组接口
+                        var self=this
+                        var data={
+                            command:'group/group', //接口地址
+                            scheduleid:this.scheduleid,
+                            groups:groupnum,//分几组
+                            grouptype:grouptype,//分组方式,1:按学号分，2：随机分组
+                            sessionid:this.sid,
+                            loginid:this.uid
+                        }
+                        function callback(res){
+                            self.showgroupdropdown=false
+                            self.ungrouprandomstu=-1//重新分组后，之前随机点名的结果都清除
+                            self.ungrouprandomletter=-1
+                            self.groupedrandomstu_grandom=-1
+                            self.groupedrandomstu_sturandom=-1
+                            self.groupedrandomgroup=-1
+                            self.querygroupinfo()//进行分组成功后，查询分组信息
+                        }
+                        post('/group/group',data,callback,c_errorfn,errfn)
+                    },
+                    randomstu:function(){//随机选人
+                        var self=this
+                        //先清空随机选组的结果
+                        self.groupedrandomgroup=-1
+                        self.randomgif=true
+                        setTimeout(function(){
+                            if(self.signedstunum==0){
+                                layer.msg('当前还没有学生签到~')
+                                return
+                            }
+                            if(self.isgrouped){//如果已分组
+                                //先随机选组
+                                var grange=parseInt(Math.random()*self.totalgroup)
+                                self.groupedrandomstu_grandom=grange
+                                //再在组里随机选人
+                                var sturange=parseInt(Math.random()*self.groupinfo[grange].groupstulist.length)
+                                self.groupedrandomstu_sturandom=sturange
+                            }else{//如果没分组
+                                //先随机选一个姓名首字母
+                                var letterrange=parseInt(Math.random()*self.signedlist.length)
+                                //再在这个首字母里选一个学生
+                                var sturange=parseInt(Math.random()*self.signedlist[letterrange].stulist.length)
+                                self.ungrouprandomletter=letterrange
+                                self.ungrouprandomstu=sturange
+                            }
+                            self.randomgif=false
+                        }, 2000)
+                    },
+                    randomgroup:function(){//随机选组
+                        var self=this
+                        //先清空随机随机选人的结果
+                        self.groupedrandomstu_grandom=-1
+                        self.groupedrandomstu_sturandom=-1
+                        self.ungrouprandomletter=-1
+                        self.ungrouprandomstu=-1
+                        self.randomgif=true
+                        setTimeout(function(){
+                            if(self.isgrouped){//如果已分组
+                                var range=parseInt(Math.random()*self.totalgroup)
+                                self.groupedrandomgroup=range
+                            }else{//如果没分组
+                                layer.msg('请先进行分组')
+                            }
+                            self.randomgif=false
+                        }, 2000)
+                    },
+                    stusign:function(value){//手动签到接口
+                        $('.contentitem .stuhandlerlist').each(function(){
+                            if(!$(this).hasClass('myhide')){
+                                $(this).addClass('myhide')
+                            }
+                        })
+                        $('.headdropicon ').attr('class','headdropicon grayheaddown')
+                        var self=this
+                        var data={
+                            command:'sign/signin',
+                            uid:value.stuid,//学生id
+                            signid:this.uid,
+                            scheduleid:this.scheduleid,
+                            sessionid:this.sid,
+                            loginid:this.uid,
+                            role:1
+                        }
+                        function callback(res){
+                            layer.msg('成功给'+value.stuname+'签到')
+                            self.querygroupinfo()
+                        }
+                        post('/sign/signin',data,callback,c_errorfn,errfn)
+                    },
+                    tojudge:function(num,stuinfo){//打小红花接口
+                        $('.contentitem .stuhandlerlist').each(function(){
+                            if(!$(this).hasClass('myhide')){
+                                $(this).addClass('myhide')
+                            }
+                        })
+                        $('.headdropicon ').attr('class','headdropicon grayheaddown')
+                        var self=this
+                        var data={
+                            command:'question/addredflower', //接口地址
+                            scheduleid:this.scheduleid,
+                            stdid:stuinfo.stdid,
+                            count:num,
+                            sessionid:this.sid,
+                            loginid:this.uid
+                        }
+                        function callback(res){
+                            $('.judgestarlist').each(function(){
+                                if(!$(this).hasClass('myhide')){
+                                    $(this).addClass('myhide')
+                                }
+                            })
+                            self.querygroupinfo()//加小红花成功后刷新页面
+                        }
+                        post('/question/addredflower',data,callback,c_errorfn,errfn)
+                    },
+                    cancelsigned:function(value){//取消签到接口
+                        $('.contentitem .stuhandlerlist').each(function(){
+                            if(!$(this).hasClass('myhide')){
+                                $(this).addClass('myhide')
+                            }
+                        })
+                        $('.headdropicon ').attr('class','headdropicon grayheaddown')
+                        var self=this
+                        var data={
+                            command:'sign/signcancel', //接口地址
+                            uid:value.stdid,//学生id
+                            signid:this.uid,
+                            scheduleid:this.scheduleid,
+                            sessionid:this.sid,
+                            loginid:this.uid,
+                            sgid:'',
+                            sgindex:''
+                        }
+                        if(this.isgrouped){//如果已分组
+                            data.sgid=value.sgid
+                            data.sgindex=value.sgindex
+                        }
+                        function callback(res){
+                            layer.msg('已取消'+value.name+'的签到')
+                            self.querygroupinfo()
+                        }
+                        post('/sign/signcancel',data,callback,c_errorfn,errfn)
+                    },
+                    querystuinfo:function(){//查询学生列表接口
+//                    this.unsignedlist=[]
+                        var self=this
+                        var data1={
+                            command:'sign/signquery', //接口地址
+                            scheduleid:this.scheduleid,
+                            sessionid:this.sid,
+                            loginid:this.uid
+                        }
+                        function callback(res1){
+                            self.unsignedlist=res1.unsignedlist
+                            self.unsignedstunum=res1.unsignedlist.length
+                        }
+                        post('/sign/signquery',data1,callback,c_errorfn,errfn)
+                    },
+                    querygroupinfo:function(){//查询分组信息接口
+                        var self=this
+                        var data2={
+                            command:'group/querygroupinfo',
+                            scheduleid:this.scheduleid,
+                            sessionid:this.sid,
+                            loginid:this.uid
+                        }
+                        self.enter=data2//测试参数
+                        function callback(res2){
+                            self.groupresultres=res2//测试参数
+                            self.querystuinfo()
+                            if(res2.groupresult!=null && res2.groupresult!='null'){//已分组
+                                self.isgrouped=true
+                                self.groupinfo=[]
+                                self.totalgroup=res2.groups
+                                self.signedstunum=res2.groupresult.length
+                                for(var i=0;i<res2.groups;i++){
+                                    self.groupinfo.push({
+                                        sgindex:(i+1),
+                                        groupstulist:[],
+                                        groupflowernum:0,
+                                    })
+                                    for(var j=0;j<res2.groupresult.length;j++){
+                                        if(self.groupinfo[i].sgindex==res2.groupresult[j].sgindex){
+                                            if(res2.groupresult[j].redflower){
+                                                self.groupinfo[i].groupflowernum+=res2.groupresult[j].redflower
+                                            }
+                                            self.groupinfo[i].groupstulist.push(
+                                                    res2.groupresult[j]
+                                            )
+                                        }
+                                    }
+                                }
+                            }else{//未分组
+                                self.isgrouped=false
+                                if(res2.lelist!=null && res2.lelist!='null'){
+                                    self.signedlist=res2.lelist
+                                    var stunumtemp=0
+                                    for(var i=0;i<res2.lelist.length;i++){
+                                        for(var j=0;j<res2.lelist[i].stulist.length;j++){
+                                            stunumtemp++
+                                        }
+                                    }
+                                    self.signedstunum=stunumtemp
+                                }else{
+                                    self.signedlist=[]
+                                    self.signedstunum=0
+                                }
+                            }
+                        }
+                        post('/group/querygroupinfo',data2,callback,c_errorfn,errfn)
+                    },
+                    changegroup:function(target,now){//param1是调整分组的目标组，param2是当前组
+                        $('.contentitem .stuhandlerlist').each(function(){
+                            if(!$(this).hasClass('myhide')){
+                                $(this).addClass('myhide')
+                            }
+                        })
+                        $('.headdropicon ').attr('class','headdropicon grayheaddown')
+                        var self=this
+                        var data={
+                            command:"group/alterschedulegroupindex",
+                            scheduleid: self.scheduleid,
+                            stdid: now.stdid,
+                            sgid: now.sgid,
+                            index: now.sgindex,
+                            targetindex: target,
+                            sessionid: self.sid,
+                            loginid: self.uid
+                        }
+                        function callback(res){
+                            $('.judgestarlist').each(function(){
+                                if(!$(this).hasClass('myhide')){
+                                    $(this).addClass('myhide')
+                                }
+                            })
+                            self.querygroupinfo()
+                        }
+                        post("/group/alterschedulegroupindex",data,callback,c_errorfn,errfn)
+                    }
+                }
+            })
+        },
+        current_course_info:true//是否需要获取课程信息
+    });
+    function showstuhandler(elem,e){
+        e.stopPropagation()
+        vm.showgroupdropdown=false
+        vm.showrandomdropdown=false
+        $('.contentitem .stuhandlerlist').each(function(index,el){
+            $(el).data('elindex',index)
+            if($(elem).find('.stuhandlerlist').data('elindex')==$(el).data('elindex')) {//如果循环到的这个元素就是鼠标点的这个
+                $(elem).find('.stuhandlerlist').toggleClass('myhide')
+                if($(elem).find('span.headdropicon').hasClass('blueheadtop')){
+                    $(elem).find('span.headdropicon').attr('class','headdropicon blueheaddown')
+                }else{
+                    $(elem).find('span.headdropicon').attr('class','headdropicon blueheadtop')
+                }
+            }else{//对于不是鼠标点的这个，全部隐藏
+                if (!$(el).hasClass('myhide')) {
+                    $(el).addClass('myhide')
+                    $('.headdropicon ').attr('class','headdropicon grayheaddown')
+                }
+            }
+        })
+    }
+    function stu_h(elem){
+        $(elem).children('p.headbox').attr('class','headbox blueheadbox')
+        $(elem).find('span.headimg').attr('class','headimg blueheadimg')
+        if(!$(elem).find('span.headdropicon').hasClass('blueheadtop')){
+            $(elem).find('span.headdropicon').attr('class','headdropicon blueheaddown')
+        }
+    }
+    function stu_leave(elem){
+        $(elem).children('p.headbox').attr('class','headbox grayheadbox')
+        $(elem).find('span.headimg').attr('class','headimg randomheadimg')
+        if(!$(elem).find('span.headdropicon').hasClass('blueheadtop')){
+            $(elem).find('span.headdropicon').attr('class','headdropicon grayheaddown')
+        }
+    }
+    function groupedstu_leave(elem){
+        $(elem).children('p.headbox').attr('class','headbox grayheadbox')
+        $(elem).find('span.headimg').attr('class','headimg grayheadimg')
+        if(!$(elem).find('span.headdropicon').hasClass('blueheadtop')){
+            $(elem).find('span.headdropicon').attr('class','headdropicon grayheaddown')
+        }
+    }
+    function c_errorfn(response){//通用的错误描述函数
+        if(response.errcode==9904){
+            layer.msg("登录信息失效，请重新登录！")
+            setTimeout(function() {
+                gotC.logout_cs()
+            }, 3000)
+        }else{
+            layer.msg(response.errdesc)
+        }
+    }
+    $(document).bind('click',function(){
+        $('.contentitem .stuhandlerlist').each(function(){
+            if(!$(this).hasClass('myhide')){
+                $(this).addClass('myhide')
+            }
+        })
+        $('.headdropicon ').attr('class','headdropicon grayheaddown')
+        vm.showgroupdropdown=false
+        vm.showrandomdropdown=false
+    })
+</script>
+</body>
+</html>

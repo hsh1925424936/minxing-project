@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/futuredoctorapp/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>报告列表</title>
+		<style>
+			body{
+			    padding-top:50px;
+			}
+
+			#header{
+	            width:100%;
+	            position:fixed;
+	            top:0;
+	            left:0;
+	            z-index:99
+	        }
+
+			.topBar{
+				width:100%; height:40px; margin-bottom:8px;
+				background-color:white; position:relative;
+			}
+			.topBar span{
+				display:block; float:left; font-size:18px;
+				color:#3499DB; margin-left:18px; line-height:40px;
+			}
+			.topBar img{
+				display:block; float:right; width:26px; height:26px;
+				margin-top:6px; margin-right:20px;
+			}
+			.topBar select{
+				position:absolute; width:26px; height:26px;
+				top:6px; right:20px; opacity:0;
+			}
+
+			.listOuter{
+				width:100%;
+			}
+			.listBox{
+				width:100%; background-color:white;
+				padding-left:18px; padding-right:18px;
+				padding-top:10px; padding-bottom:10px;
+				margin-bottom:8px;
+			}
+			.listBox p{
+				font-size:16px; line-height:30px;
+			}
+		</style>	
+	</head>
+	<body>
+		<div id="header">
+			<p>报告</p>
+			<span onclick="window.location.href='application.html';">
+				<img src="../../images/futuredoctorapp/btn-zuo-jiantou.png" alt="">
+			</span>
+		</div>
+
+		<div class="topBar">
+			<span>全部</span>
+			<img src="../../images/futuredoctorapp/rili.png" />
+			<select class="dateSelect">
+				<option>全部</option>
+				<option>2017-3</option>
+				<option>2017-2</option>
+				<option>2017-1</option>
+			</select>
+		</div>
+
+		<div class="listOuter">
+			<div class="listBox" href="">
+				<p>课程名称：<span id="course_name">儿童保健学</span></p>
+				<p>上课时间：<span id="attendClassTime">2017-03-04 20:50~22:00</span></p>
+				<p>班级：<span id="classnameID">敏行测试班A, 敏行测试班B</span></p>
+			</div>
+
+			<div class="listBox" href="">
+				<p>课程名称：<span id="course_name">儿童保健学</span></p>
+				<p>上课时间：<span id="attendClassTime">2017-03-04 20:50~22:00</span></p>
+				<p>班级：<span id="classnameID">敏行测试班A, 敏行测试班B</span></p>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			registerToNative('goBack', function (data) {
+				window.location.href='application.html'
+			});
+			$(function() {
+				$('.listOuter').html('');
+
+				$('.topBar select').change(function() {
+					$('.topBar span').html( $(this).val() );
+				});
+
+				Api.R({
+					url: "/report/queryreportlist",
+					isShade:1,
+					istoken:1,
+					json:{
+						'1':{
+							command:'report/queryreportlist',
+							accountname:getCookie('uid'),
+	                        sessionid:getCookie('sid'),
+	                        loginid:getCookie('uid')
+						}
+					},
+					fn:function (base) {
+						var base = base[1];
+						console.log(base);
+						if (base.errcode!=0) {
+							uselayer(3,base.errdesc);
+							return false;
+						}
+						
+						(function(){
+							var str = '';
+							var jsonTemp = {};//去重用的
+							str+= '<option>全部</option>';
+							for( var i = 0; i < base.queryresult.length; i++ ){
+								var date1 = timetodate(datetotime(base.queryresult[i].coursebegintime),9);//xxxx年xx月
+								var date2 = timetodate(datetotime(base.queryresult[i].coursebegintime),10);//xxxx-xx
+								if ( !jsonTemp[date2] ){
+									jsonTemp[date2] = date1;//去掉重复的月份
+									str+='<option value="'+date2+'">'+date1+'</option>';
+								}
+								
+							}
+							$('.dateSelect').html(str);
+						})();
+						
+
+						$('.dateSelect').change(function() {
+							//reportid coursebegintime
+							$('.listOuter').html('');
+							var str = '';
+							var jsonTemp ={};//去重用的
+							
+							for ( var i = 0; i < base.queryresult.length; i++ ){
+								var queryresult = base.queryresult[i];
+
+								function makelist(){//生成一个列表项
+									str+=
+										'<div class="listBox" href="report.html?reportid='+queryresult.reportid+'">'+
+											'<p>课程名称：<span id="course_name">'+queryresult.coursename+'</span></p>'+
+											'<p>'+
+												'上课时间：'+
+												'<span id="attendClassTime">'+
+													timetodate( datetotime(queryresult.coursebegintime) )
+	                								+"~"+timetodate( datetotime(queryresult.courseendtime) ,2)+
+	                							'</span>'+
+	                						'</p>'+
+											'<p>班级：<span id="classnameID">'+queryresult.classname+'</span></p>'+
+										'</div>';
+								}
+
+								if( $('.dateSelect').val() == '全部' ){
+									if ( !jsonTemp[queryresult.reportid] ){
+										jsonTemp[queryresult.reportid] = queryresult.reportid;
+										makelist();
+									}
+								}else if( $('.dateSelect').val() == timetodate(datetotime(queryresult.coursebegintime),10) ){
+									if ( !jsonTemp[queryresult.reportid] ){
+										jsonTemp[queryresult.reportid] = queryresult.reportid;
+										makelist();
+									}
+								}
+							}
+
+							$('.listOuter').html(str);
+							$('.listBox').click(function() {
+								window.location.href = $(this).attr('href');
+							});
+						});
+						$('.dateSelect').change();
+						 
+					}
+				});
+			});
+
+			
+
+		</script>
+	</body>
+</html>
+
+
+

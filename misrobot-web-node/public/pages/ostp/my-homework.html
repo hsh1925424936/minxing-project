@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<script type="text/javascript" src="../../js/jqPaginator.js"></script>
+		<meta charset="UTF-8">
+		<title>完成作业</title>
+		<link rel="stylesheet" type="text/css" href="../../css/ostp/person-center.css"/>
+		<style type="text/css">
+			.rightOuter{
+				min-height:750px; position:relative;
+			}
+	
+			.rightCon{
+				width:100%; border-bottom:1px solid #E3E3E3;
+				padding:25px; position:relative;
+			}
+			.rightFileCon{
+				padding-top:8px; padding-bottom:8px;
+			}
+			.rightTit{
+				font-size:16px; float:left; height:37px;
+				line-height:37px;
+			}
+			.selectOuter{
+				float:right; width:120px; height:37px;
+			}
+			.selectOuter select{
+				height:100%;
+			}
+			.conTit{
+				font-size:14px; float:left; height:20px; overflow:hidden;
+				width:50%; margin-bottom:25px; color:rgb(51,51,51);
+			}
+			.time{
+				font-size:14px; float:left; margin-bottom:25px;
+				text-align:right; width:50%; color:#D2D2D2;
+			}
+			.stepOuter{
+				width:300px; min-height:40px; float:left; font-size:18px;
+
+			}
+			.circle{
+				width:40px; height:40px; float:left; border-radius:30px;
+				border:1px solid #CCCCCC; color:#CCCCCC; font-size: 14px;
+				text-align:center; line-height:40px; overflow: hidden;
+			}
+			.line{
+				width:84px; height:2px; float:left; margin-top:19px;
+				background-color:#ccc;
+			}
+			.circleOn{
+				background-color:#EAB943; color:white; border:0px;
+			}
+			.lineOn{
+				background-color:#EAB943;
+			}
+			.scoreOuter{
+				height:40px; font-size:14px; line-height:40px;
+				float:left; margin-left:50px;
+			}
+			.scoreSpan{
+				display:block; float:left; height:40px;
+				padding-right:30px; color:rgb(102,102,102);
+			}
+			.scoreSpanOn{
+				color:#F9A856;
+			}
+
+			.seeReport,.seeReport:hover{
+				width:96px; height:24px; display:block; font-size:14px;
+				color:white; line-height:24px; text-align:center;
+				float:right; border-radius:20px; margin-right:10px;
+				margin-top:8px; background: #ccc;
+			}
+			.rightFileCon img{
+				width:120px; height:85px; display:block; float:left;
+			}
+			.selfLearnTxt{
+				float:left; color:#707070; font-size:14px;
+				margin-top:20px; margin-left:230px;
+			}
+			.fileType{
+				width:26px; height:26px;
+				float:left; margin-left:35px;
+				margin-top:15px; background-size:100% 100%; background-repeat:no-repeat;
+			}
+			.video { background-image: url(../../images/ostp/online-read-video.png);}
+			.word { background-image: url(../../images/ostp/online-read-word.png);}
+			.ppt { background-image: url(../../images/ostp/online-read-ppt.png);}
+			.excel { background-image: url(../../images/ostp/online-read-excel.png);}
+			.pdf { background-image: url(../../images/ostp/online-read-pdf.png);}
+
+			.learnTime{
+				float:right; font-size:14px;
+				margin-top:20px; color:#838383;
+			}
+
+			.fenyeCon{
+				width:700px; padding-bottom:50px; margin:auto; position:absolute;
+				left:120px; bottom:-60px;
+			}
+
+		</style>
+		<script>
+			//$('.bootstrap').remove();
+		</script>
+	</head>
+	<body>
+		<div class="topOuter">
+			<div class="topCon clearfix">
+				<a href="index.html" class="top2Con-index">
+					<img src="../../images/ostp/logo.png" class="logoPng" />
+					<div class="top2Tit">
+						在线自主技能训练平台
+					</div>					
+				</a>
+				<div class="top1Tit-right">
+					<img src="../../images/ostp/bell.png" class="bell" />
+					<img src="../../images/ostp/redCircle.png" class="redCircle" />
+					<img src="../../images/ostp/feifei.png" class="headImg" />
+					<div class="nameAndYear clearfix">
+						<div class="nameAndYearInner clearfix">
+							<div class="userName"></div>
+							<div class="year"></div>
+							<span class="arrow"></span>
+						</div>
+						<ul class="selectUl"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="main clearfix">
+			<div class="leftOuter">
+
+			</div>
+
+			<div class="rightOuter clearfix">
+				<div class="rightCon clearfix">
+					<div class="rightTit">
+						完成作业
+					</div>
+					<div class="selectOuter">
+						<select class="form-control ordertype">
+							<option value="0">全部</option>
+							<option value="1">任务</option>
+							<option value="2">自主训练</option>
+							<option value="3">在线资源阅读</option>
+						</select>
+					</div>
+				</div>
+				
+				<div class="homework-list">
+	
+					
+				</div>
+				
+				<div class="fenyeCon" show="true">
+					<ul class="pagination" id="pagination1"></ul>
+				</div>
+
+			</div>
+
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		function getList(type,page){//生成列表
+			var pagecount = 4;
+
+			if( findurltype('num') != '' && findurltype('type') != '' && $('.fenyeCon').attr('show') == 'true' ){
+				page = findurltype('num');
+				type = findurltype('type');
+				$('.ordertype').find('option[value='+type+']').attr('selected','selected');
+			}
+			$('.fenyeCon').attr('show','false');
+
+			
+
+			Api.completeHomework({
+				isShade:1,
+				json:{
+					type:type,
+					page:page,
+					pagecount:pagecount
+				},
+				fn:function (array) {
+					console.log(array);					
+					
+					$('.fenyeCon').css('display', 'block');
+					var arr = array['data'];
+					if (arr.length==0) {
+						$('.homework-list').html('<p class="no-data">暂无相关数据</p>');
+						$('.fenyeCon').css('display', 'none');
+						return false;
+					}
+					$('.homework-list').html('');
+					for (var i = 0 ; i < arr.length; i++) {
+						if (arr[i].learntype==3) {
+							var _type = 'video';
+							switch (arr[i].type){
+								case 0:_type = 'word';
+									break;
+								case 1:_type = 'ppt';
+									break;
+								case 2:_type = 'excel';
+									break;
+								case 3:_type = 'pdf';
+									break;
+								case 4:_type = 'video';
+									break;
+							}
+
+							var str = 
+								'<div class="rightCon clearfix rightFileCon">'
+									+'<div class="conTit">'+arr[i].resource_name+'</div>'
+									+'<div class="time">完成时间'+timetodate(arr[i].updated_at)+'</div>'
+									+'<img src="'+(arr[i].pictureurl?Api.url+'/'+arr[i].pictureurl:'../../images/ostp/feifei.png')+'" />'
+									+'<div class="selfLearnTxt">自主学习</div>'
+									+'<div class="fileType '+_type+'"></div>'
+									+'<div class="learnTime">阅读'+isnull(arr[i].count)+'次</div>'
+								+'</div>';
+								
+						} else {
+							var _str = '<span class="circle '+(arr[i].score==undefined?'':'circleOn')+'">练</span>'
+//										+(j==_arr.length-1?'':'<span class="line '+(_arr[j].score==undefined?'':'lineOn')+'"></span>');
+
+
+							var contentBtn = '';
+
+							var timeconetent='&nbsp';
+
+							if(arr[i].count!=0){
+								timeconetent = '完成时间'+timetodate(arr[i].updated_at);
+								contentBtn='<a href="train-record-detail.html?detail='+arr[i].scoreid+'" class="seeReport">查看报告</a>';
+							}else{
+								timeconetent = '最迟完成时间'+timetodate(arr[i].last_time);
+								if(arr[i].last_time<array['nowtime']){
+
+									contentBtn='<span  class="seeReport">未完成</span>';
+
+								}else{
+									contentBtn='<a href="my-work-detail.html?train='+arr[i].learn_id+'&tasklog='+arr[i].learnlog_id+'" class="seeReport">开始训练</a>';
+
+								}
+
+							}
+
+							
+							var str = 
+								'<div class="rightCon clearfix">'
+									+'<div class="conTit">'+arr[i].skillname+'</div>'
+									+'<div class="time">'+timeconetent+'</div>'
+									+'<div class="stepOuter">'
+										+_str
+									+'</div>'
+									+'<div class="scoreOuter clearfix">'
+										+'<span class="scoreSpan">'+(arr[i].learntype==1?'训练任务':'自主训练')+'</span>'
+										+'<span class="scoreSpan scoreSpanOn">最高'+isnull(arr[i].score)+'分</span>'
+										+'<span class="scoreSpan scoreSpanOn">训练'+isnull(arr[i].count)+'次</span>'
+									+'</div>'+
+									contentBtn
+								+'</div>';
+					
+						}
+						
+						$('.homework-list').append(str);	
+						
+						
+					}
+					
+					
+					var allcount = array['allcount'];
+					fenye(allcount,page);//生成分页
+					
+				}
+				
+			});
+
+		}
+
+		/*function gotoPgae(page){//刚加载的时候走到url对应的页
+			if( $('.fenyeCon').attr('show') == 'true' ){//通过一个属性判断是否第一次加载调用这个函数
+				if ( findurltype(page) == '' ) {
+					$('.fenyeCon').attr('show', 'false');
+					return page;
+				} else {
+					var page1 = findurltype(page);
+					$('.fenyeCon').attr('show', 'false');
+					return page1;
+				}
+			}else{
+				return page;
+			}
+			
+		}*/
+
+
+		window.onload = function () {
+			'use strict';
+			common();			
+			showpersoncenter('已学内容');
+			
+			getList(0,1);
+
+			$('.ordertype').change(function() {
+				var type = $('.ordertype').val();
+				getList(type,1);
+				var str = 'type='+type+'&num=1';
+				changepage(str);//url加上当前页数和作业的类型
+			});
+
+
+			
+			
+			
+		}
+
+		function fenye(allcount,page){//分页的方法
+			var totalPages =  Math.ceil(allcount/4);
+			var type2 = $('.ordertype').val();
+			$.jqPaginator('#pagination1', {//分页
+		        totalPages:totalPages,
+	            visiblePages: 10,
+	            currentPage: page,
+	            first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+	            prev: '<li class="prev"><a href="javascript:void(0);"><i class="_arrow arrow2"></i>上一页</a></li>',
+	            next: '<li class="next"><a href="javascript:void(0);">下一页<i class="_arrow arrow3"></i></a></li>',
+	            last: '<li class="last"><a href="javascript:void(0);">末页</a></li>',
+	            page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
+		        onPageChange: function (num, type) {
+		        	if(type == 'change'){
+		        		getList(type2,num);//type2为下拉列表的类型
+		        		var str = 'type='+type2+'&num='+num;
+		        		changepage(str);//url加上当前页数和作业的类型
+		        	}
+		            
+		        }
+		    });
+		}
+
+		
+
+	</script>
+
+</html>

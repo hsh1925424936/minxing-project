@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>查看开放时间详情</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style type="text/css">
+			[v-cloak] { display: none }
+			.handLook{
+				margin: 20px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="handLook" v-cloak>
+			<template>
+				<el-table :data="timeDetail" border style="width: 100%">
+					<el-table-column type="index" label="序号" width="80">
+					</el-table-column>
+					<el-table-column label="开放日" prop="week">
+					</el-table-column>
+					<el-table-column label="开放时间">
+						<template scope="scope">
+							<span v-for="item in timeDetail[scope.$index].times">{{item.openstarttime | filterFn}}-{{item.openendtime | filterFn}}&nbsp;&nbsp;</span>
+						</template>
+					</el-table-column>
+					<el-table-column label="开始-结束日期" prop="dates">
+					</el-table-column>
+				</el-table>
+			</template>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '.handLook',
+			data: {
+				placeid: window.location.href.split('=')[1], //上一个页面传过来的参数
+				timeDetail: [], //时间列表
+			},
+			filters:{
+				filterFn:function(val){
+					return val.substring(0,5)
+				}
+			},
+			mounted() {
+				this.getTimeDetail();
+			},
+			methods: {
+				getTimeDetail() { //获取开放时间详情  
+					let self = this;
+					var data = {
+						command: 'open/queryopentimelist',
+						placeid: self.placeid,
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid')
+					};
+
+					function callback(res) {
+						self.timeDetail = [];
+						var weekArr = [];
+						for(var i = 0; i < res.opentimelist.length; i++) {
+							weekArr.push({
+								newArr: res.opentimelist[i].date.split(',')
+							});
+						}
+
+						for(var i = 0; i < weekArr.length; i++) {
+							for(var j = 0; j < weekArr[i].newArr.length; j++) {
+								if(weekArr[i].newArr[j] == 1) {
+									weekArr[i].newArr[j] = '周一';
+								} else if(weekArr[i].newArr[j] == 2) {
+									weekArr[i].newArr[j] = '周二';
+								} else if(weekArr[i].newArr[j] == 3) {
+									weekArr[i].newArr[j] = '周三';
+								} else if(weekArr[i].newArr[j] == 4) {
+									weekArr[i].newArr[j] = '周四';
+								} else if(weekArr[i].newArr[j] == 5) {
+									weekArr[i].newArr[j] = '周五';
+								} else if(weekArr[i].newArr[j] == 6) {
+									weekArr[i].newArr[j] = '周六';
+								} else if(weekArr[i].newArr[j] == 7){
+									weekArr[i].newArr[j] = '周日';
+								}
+							}
+						}
+						console.log(res.opentimelist)
+						for(var i = 0; i < res.opentimelist.length; i++) {
+							self.timeDetail.push({
+								times: res.opentimelist[i].timelist,
+								dates: res.opentimelist[i].starttime + '~' + res.opentimelist[i].endtime
+							})
+						}
+						for(var i=0;i<weekArr.length;i++){
+							self.$set(self.timeDetail[i],'week',weekArr[i].newArr.join(','))
+						}
+					};
+					post('/open/queryopentimelist', data, callback, errcodefn, errfn)
+				}
+			}
+		})
+	</script>
+
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" href="../../../css/bigdatascreen/swiper.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../css/bigdatascreen/common.css" type="text/css" />
+    <script src="../../../js/bigdatascreen/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <!--<script src="../../../js/bigdatascreen/layer/layer.js" type="text/javascript" charset="utf-8"></script>-->
+    <script src="../../../js/bigdatascreen/vue.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../../js/bigdatascreen/swiper.min.js" type="text/javascript" charset="utf-8"></script>
+    <!--<script src="../../../js/echarts.min.js" type="text/javascript"></script>-->
+    <!--<script src="../../../js/bigdatascreen/common.js" type="text/javascript" charset="utf-8"></script>-->
+    <title>华西临床技能实验教学中心</title>
+    <style>
+        html{
+            font-size: 16px;
+        }
+        body{
+            background: rgb(240,240,240);
+        }
+        .head{
+            width:100%;
+            background: rgb(255,255,255);
+            /*margin-top: 0.8rem;*/
+            font-size: 1rem;
+            line-height: 1.8;   
+        }
+        .head p{
+            width: 100%;
+            padding:0.5rem 1rem;
+        }
+        .title{
+            width:100%;
+            height:2.4rem;
+            line-height: 2.4rem;
+            background: rgb(221,221,221);
+            padding-left: 1rem;
+            font-size: 1.1rem;
+
+        }
+        .main{
+            width: 100%;
+            background:rgb(255,255,255);
+            margin-top: 0.8rem;
+            /*padding:1rem;*/
+        }
+        .main p{
+            width:100%;
+            border-top:solid 1px rgb(230,230,230);
+            padding:0.8rem 1rem;
+            font-size: 1rem;
+            display:flex;
+            justify-content:flex-start;
+            align-items: center;
+        }
+        .main p img{
+            width:6rem;
+            height:4rem;
+            margin-right: 1rem;
+            border-radius: 0.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="head">
+            <h2 class="title">简介</h2>
+            <p>
+                <span>
+                    四川大学华西临床医学院/华西医院是国家教育部、卫生部共同建设的区域
+                    性教学、医疗、科研中心；中心拥有教学空间11000平方米，已经
+                    建设成为开放式的临床技能训练服务平台、国家级的临床医学医学综合考试基地；
+                </span>
+                <strong>先后被评为国家级实验示范中心、国家级虚拟仿真实验教学中心</strong>
+            </p>
+        </div>
+        <div class="main">
+            <h2 class="title">案列展示</h2>
+             <p @click="fzzx">
+                <img src="../common/images/03国家级虚拟仿真实验教学中心.png" alt="">
+                <span class="margin" style="margin-bottom:0;">国家级虚拟仿真实验教学中心</span>
+            </p>
+            <p @click="laboratory">
+                <img src="../common/images/01开放实验室.png" alt="">
+                <span class="margin">开放实验室</span>
+            </p>
+            <p @click='exam'>
+                <img src="../common/images/02osce考试.png" alt="">
+                <span class="margin">OSCE考试</span>
+            </p>
+           
+        </div>
+        </div>
+    <script>
+        var vm = new Vue({
+            el:'.container',
+            data:{
+                name:'hello'
+            },
+            mounted(){
+
+            },
+            methods:{
+                laboratory(){
+                    window.location.href = './laboratory.html'
+                },
+                exam(){
+                    window.location.href = '../20170718_hx_osce.mp4'
+                },
+                fzzx(){
+                    window.location.href = '../20170718_hx_fzzx.mp4'
+                }
+            }
+        })
+    </script>
+</body>
+</html>

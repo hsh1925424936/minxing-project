@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<link rel="stylesheet" type="text/css" href="../../css/my-subscribe-layer.css" class="commonCss"/>
+		<meta charset="UTF-8">
+		<title>提示框</title>
+		
+		<script>
+			
+		</script>
+	</head>
+	<body>
+		<!--<div class="zhezhao">
+			<div class="warmOuter">
+				<img src="../../images/ostp/closeLayer.png" class="cancel-icon" />
+				<h3 class="warm-top">
+					温馨提示
+				</h3>
+				<img src="../../images/ostp/cancelLayer.png"/>
+				<h4>
+					确定取消预约训练吗？
+				</h4>
+				<div class="warm-btn-con clearfix">
+					<button class="warm-sure">后悔了</button>
+					<button class="warm-cancel">确定</button>
+				</div>
+			</div>
+		</div>-->
+	</body>
+	<script type="text/javascript">
+		function subscribeLayer(txt,func){//弹出提示框
+			$('body').append(
+				'<div class="zhezhao">'+
+					'<div class="warmOuter">'+
+						'<img src="../../images/ostp/closeLayer.png" class="cancel-icon" />'+
+						'<h3 class="warm-top">'+
+							'温馨提示'+
+						'</h3>'+
+						'<img src="../../images/ostp/cancelLayer.png"/>'+
+						'<h4>'+
+							txt+
+						'</h4>'+
+						'<div class="warm-btn-con clearfix">'+
+							'<button class="warm-sure">后悔了</button>'+
+							'<button class="warm-cancel">确定</button>'+
+						'</div>'+
+					'</div>'+
+				'</div>'
+			);
+			$('.warmOuter>.cancel-icon').click(function() {
+				$('.zhezhao').css('display', 'none');
+			});
+
+			$('.warm-btn-con>.warm-sure').click(function(event) {
+				$('.zhezhao').css('display', 'none');
+			});
+
+			$('.warm-btn-con>.warm-cancel').click(function() {
+				func();
+				$('.zhezhao').css('display', 'none');
+			});
+
+		}
+	</script>
+</html>

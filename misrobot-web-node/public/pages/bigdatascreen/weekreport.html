@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/bigdatascreen/layout.js" ></script>
+		<link rel="stylesheet" href="../../css/bigdatascreen/week-report.css" type="text/css" />
+		<script src="../../js/bigdatascreen/week-report.js" type="text/javascript" charset="utf-8"></script>
+		<meta charset="UTF-8">
+		<title>管理者周报</title>
+		<style>
+			body{
+				background-color:#161823;
+			}
+			#vue_control{
+				padding-left:calc(20vh * 100 / 1050); padding-right:calc(20vh * 100 / 1050);
+				width:100%; height:100%;
+			}
+
+			/*报告*/
+			.all_report_outer{
+
+			}
+			.report_item{
+				float:left; width:33.3%; height:88vh;
+			}
+		</style>	
+	</head>
+	<body>
+		<div id="vue_control" v-cloak>
+			<div class="top_tit_outer">
+				<div class="top_tit">
+					<img class="btn_return" src="../../images/bigdatascreen/btn_return.png" @click="returnindex"/>
+					<div class="top_tit_inner">
+						<span class="top_tit_span1">管理者周报（{{timefromto}}）</span>
+						<span class="top_tit_span2">本周教学工作开展良好</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="all_report_outer clearfix">
+				<!-- 老师 -->
+				<div class="report_item">
+					<c-teacher-week :teacherscorereport="teacherscorereport" :teacherclassreport="teacherclassreport"></c-teacher-week>
+				</div>
+				<!-- 学生 -->
+				<div class="report_item">
+					<c-student-week :studentscorereport="studentscorereport" :studentclassreport="studentclassreport"></c-student-week>
+				</div>
+				<!-- 本周教学环境 -->
+				<div class="report_item">
+					<c-environment-week :teacherclasstimes="teacherclasstimes" :studentclasstimes="studentclasstimes"></c-environment-week>
+				</div>
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		var vm;
+		onload = function(){
+			vm=new Vue({
+				el:"#vue_control",
+				data:{
+					teacherscorereport:[],//老师得分周报
+					teacherclassreport:[],//老师学时完成周报
+					studentscorereport:[],//学生得分周报
+					studentclassreport:[],//学生学时完成周报
+					teacherclasstimes:[],//老师上课人次数组
+					studentclasstimes:[],//学生上课人次数组
+					lastmonday:'',//本周开始时间
+					lastfriday:''//本周结束时间
+
+				},
+				methods:{
+					returnindex:function(){
+						parent.vm.show_index();
+					}
+				},
+
+				created:function(){
+					
+				},
+				mounted:function(){
+					var self = this;
+					my_require.R({
+						isShade:1,
+						url:'/bigdata/reportweek/queryreportweek',
+						data:{
+							command:"bigdata/reportweek/queryreportweek"
+						},
+						callback:function(base){
+							self.teacherscorereport = base.teacherscorereport;
+							self.teacherclassreport = base.teacherclassreport;
+							self.studentscorereport = base.studentscorereport;
+							self.studentclassreport = base.studentclassreport;
+							self.teacherclasstimes = base.teacherclasstimes;
+							self.studentclasstimes = base.studentclasstimes;
+							self.lastmonday = base.lastmonday;
+							self.lastfriday = base.lastfriday;
+						}
+					});
+				},
+				updated:function(){
+				},
+				watch:{
+				},
+				computed:{
+					timefromto:function(){
+						var str = '';
+						if(this.lastmonday && this.lastfriday){
+							var startdate = this.lastmonday.split('-');
+							var enddate = this.lastfriday.split('-');
+							str = startdate[0]+'.'+startdate[1]+'.'+startdate[2]+'-'+enddate[1]+'.'+enddate[2];
+							if ( startdate[0] != enddate[0] ){//如果跨年了
+								str = startdate[0]+'.'+startdate[1]+'.'+startdate[2]+'-'+enddate[0]+enddate[1]+'.'+enddate[2];
+							}
+						}
+						
+						return str;
+					}
+				},
+				components:{
+					'c-teacher-week':c_teacher_week,
+					'c-student-week':c_student_week,
+					'c-environment-week':c_environment_week
+				}
+			})
+		}
+
+	</script>
+</html>

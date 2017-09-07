@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<script type="text/javascript" src="../../js/jqPaginator.js"></script>
+		<meta charset="UTF-8">
+		<title>查看通知</title>
+		<link rel="stylesheet" type="text/css" href="../../css/ostp/person-center.css"/>
+		<style type="text/css">
+			.rightOuter{
+				position:relative; min-height:750px; min-height:750px;
+			}
+			.infoTop{
+				width:100%; padding:20px; border-bottom:1px solid #E3E3E3;
+				position:relative;
+			}
+			.infoTop span{
+				display:block; float:left; font-size:18px;
+				font-weight:bold;
+			}
+			.allSelect{
+				position:absolute; left:17px; top:75px; width:34px; height:30px;
+				color:#CAD3DA; border:2px solid #CAD3DA; border-radius:2px;
+				text-align:center; line-height:26px; font-size:12px; font-weight:bold;
+				display:none; cursor:pointer;
+			}
+			.infoTopBtn{
+				display:block; float:right; margin-left:20px;
+				width:80px; height:25px; line-height:23px;
+				text-align:center;
+				border:1px solid #D8D8D8; background-color:white;
+			}
+			.infoCon{
+				width:100%; padding:25px;
+				border-bottom:1px solid #E3E3E3; padding-right:15px;
+			}
+			.infoTit{
+				float:left; font-size:18px; width:50%;
+				color:rgb(51,51,51);
+			}
+			.time{
+				float:left; font-size:10px; color:rgb(199,199,204); width:50%;
+				text-align:right;
+			}
+			.info{
+				width:100%; font-size:14px; color:rgb(199,199,204);
+				float:left; margin-top:22px;
+			}
+			.checkBoxSpan{
+				display:none; float:left; width:20px; height:20px;
+				margin-right:30px; margin-top:25px;
+				background-size:100% 100%; background-repeat:no-repeat;
+				cursor:pointer;
+			}
+			.checkBoxOn{
+				background-image:url('../../images/ostp/person-center-check-on.png');
+			}
+			.checkBoxNull{
+				background-image:url('../../images/ostp/person-center-check.png');
+			}
+			.infoBox{
+				display:block; float:right; width:100%;
+			}
+			.redCircle2{
+				width: 13px; height: 13px; float: left; display: block;
+				margin-top: 6px; margin-left: -20px;
+			}
+			.deleteBtn{
+				display:none;
+			}
+
+			.fenyeCon{
+				width:700px; padding-bottom:50px; margin:auto; position:absolute;
+				bottom:20px; left:120px; bottom:-60px;
+			}
+
+		</style>
+		<script>
+			//$('.bootstrap').remove();
+		</script>
+	</head>
+	<body>
+		<div class="topOuter">
+			<div class="topCon clearfix">
+				<a href="index.html" class="top2Con-index">
+					<img src="../../images/ostp/logo.png" class="logoPng" />
+					<div class="top2Tit">
+						在线自主技能训练平台
+					</div>					
+				</a>
+				<div class="top1Tit-right">
+					<img src="../../images/ostp/bell.png" class="bell" />
+					<img src="../../images/ostp/redCircle.png" class="redCircle" />
+					<img src="../../images/ostp/feifei.png" class="headImg" />
+					<div class="nameAndYear clearfix">
+						<div class="nameAndYearInner clearfix">
+							<div class="userName"></div>
+							<div class="year"></div>
+							<span class="arrow"></span>
+						</div>
+						<ul class="selectUl"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="main clearfix">
+			<div class="leftOuter">
+
+			</div>
+
+			<div class="rightOuter clearfix">
+				<div class="infoTop clearfix">
+					<span>查看通知</span>
+					<button class="infoTopBtn editBtn" isedit="0">编辑</button>
+					<button class="infoTopBtn deleteBtn">删除</button>
+					<div class="allSelect" isselect='0'>全选</div>
+				</div>
+				
+				<div class="infoList">
+					
+					
+				</div>
+
+				<div class="fenyeCon" show="true">
+					<ul class="pagination" id="pagination1"></ul>
+				</div>
+
+			</div>
+
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		function fenye(allcount,page){//分页的方法
+			var totalPages =  Math.ceil(allcount/5);
+			$.jqPaginator('#pagination1', {//分页
+		        totalPages:totalPages,
+	            visiblePages: 10,
+	            currentPage: page,
+	            first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+	            prev: '<li class="prev"><a href="javascript:void(0);"><i class="_arrow arrow2"></i>上一页</a></li>',
+	            next: '<li class="next"><a href="javascript:void(0);">下一页<i class="_arrow arrow3"></i></a></li>',
+	            last: '<li class="last"><a href="javascript:void(0);">末页</a></li>',
+	            page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
+		        onPageChange: function (num, type) {
+		        	if(type == 'change'){
+		        		getList(num);//type2为下拉列表的类型
+		        		changepage(num);//url加上当前页数
+		        	}
+		            
+		        }
+		    });
+		}
+		function replaceReg(reg,str){
+			return str.replace(reg,function(m){return '<a href="'+m+'">'+'点击进入</a>';})
+		}
+		function getList(page){
+			var pagecount = 5;
+			var page = gotoPgae(page);
+			Api.R({
+				url: "/note/notelist",
+				isShade:1,
+				json:{
+					"1": {
+						command: "note/notelist",
+						sessionid: getCookie('gy_t'),
+						uid: getCookie('gy_u'),
+						loginid: getCookie('gy_u'),
+						page:page,
+						reqnum:pagecount
+					}
+				},
+				fn:function (json) {
+					if(json["1"].errcode != 0) {
+						uselayer(3, json["1"].errdesc);
+						return;
+					}
+					if (json["1"].notelist.length==0) {
+						$('.infoList').html('<p class="no-data">暂无通知</p>');
+						$('.fenyeCon').css('display', 'none');
+						$('.editBtn').css('display', 'none');
+						return false;
+					}
+					$('.infoList').html('');
+					$('.fenyeCon').css('display', 'block');
+					$('.editBtn').css('display', 'block');
+					var arr = json["1"].notelist;
+					var reg = /http:\/\/[\w-\:\/?=&]*(\.[\w-\:\/?=&]*)+/ig;
+
+					for (var i = 0 ; i < arr.length; i++) {
+						var　newMsg = '<img src="../../images/ostp/redCircle.png" class="redCircle2">';
+						var divHtml = '<div class="infoCon clearfix">';
+						var content = replaceReg(reg,arr[i].notecontent);
+
+						if(arr[i].notestatus == 1){
+							newMsg = '<img src="../../images/ostp/rededCircle.png" class="redCircle2">';
+						}else{
+							divHtml = '<div onclick="updatePmStatus('+arr[i].noteid+')" class="infoCon clearfix">';
+						}
+						var str =
+								divHtml+'<div class="checkBoxSpan checkBoxNull" ischeck="0" _id="'+arr[i].noteid+'"></div>'
+								+'<div class="infoBox clearfix">'
+									+newMsg
+									+'<div class="infoTit">'+arr[i].notetitle+'</div>'
+									//+'<div class="time">'+timetodate(arr[i].viewed)+'</div>'
+									+'<div class="time">'+timetodate(datetotime(arr[i].notetime))+'</div>'
+								+'<div class="info">'+content+'</div>'
+								+'</div>'
+								+'</div>';
+							
+						$('.infoList').append(str);
+						
+					}
+					
+					$('.checkBoxSpan').click(function() {
+						if( $(this).attr('ischeck') == '0' ){
+							$(this).addClass('checkBoxOn');
+							$(this).removeClass('checkBoxNull');
+							$(this).attr('ischeck','1');
+						}else{
+							$(this).addClass('checkBoxNull');
+							$(this).removeClass('checkBoxOn');
+							$(this).attr('ischeck','0');
+						}
+						
+					});					
+					
+					
+					$('.deleteBtn').click(function () {
+						if ($('.checkBoxSpan.checkBoxOn').length==0) {
+							uselayer(3,'请选中要删除的消息');
+							return false;
+						}
+						var aId = [];
+						$('.checkBoxSpan.checkBoxOn').each(function () {
+							aId.push($(this).attr('_id'));
+						});
+						uselayer(2,'确定要删除选中的消息吗？',function () {
+							Api.R({
+								url: "/note/notesdel",
+								isShade: 1,
+								json:{
+									"1": {
+										command: "note/notesdel",
+										sessionid: getCookie('gy_t'),
+										uid: getCookie('gy_u'),
+										loginid: getCookie('gy_u'),
+										noteids: aId
+									}
+								},
+								fn:function (json) {
+									if(json["1"].errcode != 0){
+										uselayer(3, json["1"].errdesc);
+										return;
+									}
+									uselayer(3, "删除成功！",function () {
+										window.location.reload();
+									});
+								}
+							});
+						});						
+					});
+					var allcount = json[1].total;
+					fenye(allcount,page);//生成分页
+					
+					$('.editBtn').html('编辑');
+					$('.deleteBtn').css('display', 'none');
+					$('.editBtn').attr('isedit','0');
+					$('.infoBox').css('width', '100%');
+					$('.allSelect').css('display', 'none');
+				}
+			});
+		}
+		
+		function gotoPgae(page){//刚加载的时候走到url对应的页
+			if( $('.fenyeCon').attr('show') == 'true' ){
+				var _href = window.location.href;
+				if ( _href.indexOf('#')==-1 ) {
+					$('.fenyeCon').attr('show', 'false');
+					return page;
+				} else {
+					var page1 = _href.substring(_href.indexOf('#')+1,_href.length);
+					$('.fenyeCon').attr('show', 'false');
+					return page1;
+				}
+			}else{
+				return page;
+			}
+			
+		}
+
+		window.onload = function () {
+			'use strict';
+			common();			
+			showpersoncenter('查看通知');
+
+			$('.editBtn').click(function() {
+				if( $('.editBtn').attr('isedit') == 0 ){
+					$('.editBtn').html('退出编辑');
+					$('.deleteBtn').css('display', 'block');
+					$('.editBtn').attr('isedit','1');
+					$('.checkBoxSpan').css('display', 'block');
+					$('.infoBox').css('width', '700px');
+					$('.allSelect').css('display', 'block');
+				}else{
+					$('.editBtn').html('编辑');
+					$('.deleteBtn').css('display', 'none');
+					$('.editBtn').attr('isedit','0');
+					$('.checkBoxSpan').css('display', 'none');
+					$('.infoBox').css('width', '100%');
+					$('.allSelect').css('display', 'none');
+					//退出编辑后把勾清除掉
+					$('.checkBoxSpan').addClass('checkBoxNull');
+					$('.checkBoxSpan').removeClass('checkBoxOn');
+					$('.checkBoxSpan').attr('ischeck','0');
+				}
+			});
+
+			getList(1);
+			
+			
+
+		};
+		
+		$('.allSelect').click(function() {
+			if( $('.allSelect').attr('isselect') == 0 ){
+				$('.checkBoxNull').click();
+				$('.allSelect').attr('isselect','1');
+			}else{
+				$('.checkBoxOn').click();
+				$('.allSelect').attr('isselect','0');
+			}
+			
+		});
+
+	</script>
+
+</html>

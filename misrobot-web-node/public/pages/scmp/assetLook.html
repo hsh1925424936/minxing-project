@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>查看资产</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<script src="../../js/moment.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style type="text/css">
+			.assetLook .op {
+				height: 40px;
+				line-height: 40px;
+				padding-left: 20px;
+				border-top: 1px solid #F2F2F2;
+				border-bottom: 1px solid #F2F2F2;
+			}
+			
+			.assetLook .red {
+				color: red;
+			}
+			
+			.assetLook .manage li {
+				width: 80%;
+				margin: 30px auto;
+			}
+			
+			.assetLook .oSpan {
+				display: inline-block;
+				width: 100px !important;
+				text-align: left;
+			}
+			
+			.assetLook .hiden {
+				visibility: hidden;
+			}
+			
+			.assetLook .tt {
+				width: 638px;
+				margin-left: 120px;
+			}
+			
+			.assetLook .oDiv {
+				height: 100px;
+				line-height: 100px;
+			}
+			
+			.assetLook .oLabel {
+				margin-right: 20px;
+				width: 70px;
+				text-align: right;
+				display: inline-block;
+				margin-left: 20px;
+			}
+			
+			.assetLook .oBtn {
+				margin-top: 30px;
+				text-align: right;
+				margin-right: 30px;
+				margin-bottom: 30px;
+			}
+			.assetLook .oTexara{
+				display: inline-block;
+				margin-left: 110px;
+				margin-top: 30px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="assetLook">
+			<p class="op">基本信息</p>
+			<ul class="manage">
+				<li>
+					<el-row class="tac" :gutter="24">
+						<el-col :span="12">
+							<span class="red">*</span>
+							<span class="oSpan">资产编码</span>
+							<span>{{manage.code}}</span>
+						</el-col>
+						<el-col :span="12">
+							<span class="red">*</span>
+							<span class="oSpan">资产名称</span>
+							<span>{{manage.name}}</span>
+						</el-col>
+					</el-row>
+				</li>
+				<li>
+					<el-row class="tac" :gutter="24">
+						<el-col :span="12">
+							<span class="red">*</span>
+							<span class="oSpan">物品类别</span>
+							<span>{{manage.cateName}}</span>
+						</el-col>
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">设备号</span>
+							<span>{{manage.equipment}}</span>
+						</el-col>
+					</el-row>
+				</li>
+				<li>
+					<el-row class="tac" :gutter="24">
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">品牌</span>
+							<span>{{manage.brand}}</span>
+						</el-col>
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">规格/型号</span>
+							<span>{{manage.model}}</span>
+						</el-col>
+					</el-row>
+				</li>
+				<li>
+					<el-row class="tac" :gutter="24">
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">厂家</span>
+							<span>{{manage.factory}}</span>
+						</el-col>
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">厂家电话</span>
+							<span>{{manage.factory_tel}}</span>
+						</el-col>
+					</el-row>
+				</li>
+				<li>
+					<el-row class="tac" :gutter="24">
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">采购人</span>
+							<span>{{manage.purchase_name}}</span>
+						</el-col>
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">入库时间</span>
+							<span>{{manage.purchase_time}}</span>
+						</el-col>
+					</el-row>
+				</li>
+				<li>
+					<el-row class="tac" :gutter="24">
+						<el-col :span="12">
+							<span class="hiden">*</span>
+							<span class="oSpan">采购单价</span>
+							<span>{{manage.price}}</span>
+						</el-col>
+					</el-row>
+				</li>
+				<li>
+					<p>功能说明</p>
+					<span class="oTexara">{{manage.remarks}}</span>
+				</li>
+			</ul>
+			<p class="op">关联场地信息</p>
+			<div class="oDiv">
+				<label class="oLabel">楼栋</label>
+				<span>{{manage.build}}</span>
+				<label class="oLabel">楼层</label>
+				<span>{{manage.floor}}</span>
+				<label class="oLabel">房间号</label>
+				<span>{{manage.roomNum}}</span>
+			</div>
+			<p class="op">关联人员信息</p>
+			<div class="oDiv">
+				<label class="oLabel">责任人</label>
+				<span>{{manage.userName}}</span>
+			</div>
+			<p class="op">备注信息</p>
+			<span class="oTexara">{{manage.comments}}</span>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '.assetLook',
+			data: {
+				manage: '',
+				id: window.location.href.split('=')[1],
+			},
+			mounted() {
+				this.getManage();
+			},
+			methods: {
+				getManage() {
+					var self = this;
+					var data = {
+						command: 'assetsmanage/getassetinfo',
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+                        id:self.id
+					}
+
+					function callback(res) {
+						if(res && res.errcode == 0) {
+                            self.manage=res;   
+						} else {
+							layer.msg(res.errdesc)
+						}
+					}
+					post('/assetsmanage/getassetinfo', data, callback, errcodefn, errfn)
+				}
+			}
+		})
+	</script>
+
+</html>

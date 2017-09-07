@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新建单选题</title>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+    <script src="../../js/base.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/scmp/newq_compo.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/scmp/addqcommon.css">
+</head>
+<body>
+    <div class="container">
+        <cpagetitle :title="pagetitletext"></cpagetitle>
+        <cmain :maintitle="maintitle[0]">
+            <div class="maincontent">
+                <textarea name="" id="" cols="30" rows="10" class="form-control" placeholder="输入题目名称,300字以内" v-model="qname" maxlength="300"></textarea>
+            </div>
+        </cmain>
+        <cmain :maintitle="maintitle[1]">
+            <ul class="addoptions">
+                <li v-for="(value,index) in options">
+                    <span class="itemname">{{ index | numtoa }}</span>
+                    <input type="text" placeholder="输入选项内容，100字以内" class="form-control" v-model="value.inputtext" maxlength="100">
+                    <b @click="addoption()" v-if="value.handler=='add'" class="glyphicon glyphicon-plus-sign optionhandler"></b>
+                    <b v-else @click="deleteoption(index)" class="glyphicon glyphicon-minus-sign optionhandler"></b>
+                </li>
+            </ul>
+        </cmain>
+        <cmain :maintitle="maintitle[2]">
+            <div>
+                <label class="radio-inline" v-for="(value,index) in options">
+                    <input type="radio" :value="index | numtoa" name="danxuan" v-model="answer"> {{ index | numtoa }}
+                </label>
+            </div>
+        </cmain>
+        <cmain :maintitle="maintitle[3]">
+            <div class="flexcenter">
+                <span class="labeltitle">所属学科</span>
+                <select class="form-control labelcontent" v-model="seldiscipline">
+                    <option value="">请选择学科</option>
+                    <option v-for="(v,i) in disciplinelist" :value="v.id">{{ v.name }}</option>
+                </select>
+            </div>
+        </cmain>
+        <cupdate :submitnewq="submitnewq"></cupdate>
+    </div>
+    <script>
+        var vm=new Vue({
+            el:'.container',
+            data:{
+                list:'',
+                questionid:'',
+                options:[],
+                answer:'',
+                qname:'',
+                disciplinelist:[],//学科列表
+                seldiscipline:'',
+                pagetitletext:'修改题目-单选',//页面标题
+                maintitle:['题目名称','选项','正确答案','设置'],//页面主模块标题
+            },
+            filters:{
+                numtoa:function(val){
+                    switch (val){
+                        case 0:
+                            return 'A'
+                            break;
+                        case 1:
+                            return 'B'
+                            break;
+                        case 2:
+                            return 'C'
+                            break;
+                        case 3:
+                            return 'D'
+                            break;
+                        case 4:
+                            return 'E'
+                            break;
+                        case 5:
+                            return 'F'
+                            break;
+                        case 6:
+                            return 'G'
+                            break;
+                        case 7:
+                            return 'H'
+                            break;
+                    }
+                }
+            },
+            created:function(){
+                this.list=window.parent.vm.list;
+                this.questionid=window.parent.vm.questionid;
+                this.qname=this.list.name;
+                for(var i=0;i<this.list.questionitem.length;i++){
+                    this.options.push({
+                        inputtext:this.list.questionitem[i].content,
+                        handler:(i==0) ? 'add':'delete'
+                    });
+                }
+                this.answer=this.list.answer;
+                console.log(this.answer)
+                this.seldiscipline=this.list.courseid;
+            },
+            mounted:function(){
+                this.querydiscipline()
+            },
+            methods:{
+                addoption:function(){//增加选项
+                    if(this.options.length>=8){
+                        layer.msg('最多添加8个选项');
+                        return
+                    }
+                    this.options.push({
+                        inputtext:'',
+                        handler:'delete'
+                    })
+                },
+                deleteoption:function(index){//删除选项
+                    var self=this
+                    if(this.options.length<=1){
+                        layer.msg('最少要有1个选项')
+                        return
+                    }
+                    self.options=deleteItem(self.options,index)
+                },
+                querydiscipline:function(){//查询学科接口
+                    var self=this
+                    var data={
+                        command:"cls/selectCourses",
+                        sessionid:getCookie('sid'),
+                        loginid:getCookie('uid')
+                    }
+                    function callback(res){
+                        self.disciplinelist=res.courseslist
+                    }
+                    post("/cls/selectCourses",data,callback,errcodefn,errfn)
+                },
+                submitnewq:function(){//保存添加题目接口
+                    if(this.qname==''){
+                        layer.msg('请输入题干内容')
+                        return
+                    }
+                    for(index in this.options){
+                        if(this.options[index].inputtext==''){
+                            layer.msg('请完成选项内容输入')
+                            return
+                        }
+                    }
+                    if(this.answer==''){
+                        layer.msg('请设置正确答案')
+                        return
+                    }
+                    if(this.seldiscipline==''){
+                        layer.msg('请选择题目所属学科')
+                        return
+                    }
+                    var data={
+                        command:'question/updatetheoryquestion',
+                        sessionid:getCookie('sid'),
+                        loginid:getCookie('uid'),
+                        id:this.questionid,
+                        questionname:this.qname,
+                        questiontypeid:1,
+                        courseid:this.seldiscipline,
+                        answer:this.answer,
+                        selectoranswerlist:[]
+                    };
+                    for(var i=0;i<this.options.length;i++){
+                        data.selectoranswerlist.push({
+                            answernum:numtocase(i),
+                            content:this.options[i].inputtext
+                        })
+                    }
+                    function callback(res){
+                        layer.msg('已成功修改');
+                        window.parent.vm.pageconf.onchange(findurltype('page'),findurltype('number'));
+                        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                        setTimeout(function(){
+                            parent.layer.close(index)
+                        },1000)
+                    }
+                    post('/question/updatetheoryquestion',data,callback,errcodefn,errfn)
+                },
+            }
+        })
+    </script>
+</body>
+</html>

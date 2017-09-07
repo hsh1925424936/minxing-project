@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>设置开放时间</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style type="text/css">
+			.handTime{
+				margin: 0 20px;
+			}
+			.handTime .next {
+				text-align: center;
+			}
+			
+			.handTime .addBtn {
+				margin-right: 20px;
+				margin-top: 20px;
+			}
+			
+			.handTime .place {
+				height: 40px;
+				line-height: 40px;
+			}
+			
+			.handTime .addTimeBtn {
+				margin: 20px 0;
+			}
+			.handTime .op {
+				padding: 0 80px 0 20px;
+				height: 42px;
+				line-height: 42px;
+				border-bottom: 1px solid #eee;
+				font-size: 14px;
+				color: #333;
+				overflow: hidden;
+				background-color: #F8F8F8;
+				border-radius: 2px 2px 0 0;
+			}
+			.handTime .oa{
+				color: rgb(32, 136, 194);
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="handTime">
+			<p class="op">
+				<span class="oa" @click="back">开放日历设置</span>
+				<span>&gt;&gt;设置开放时间</span>
+			</p>
+			<p class="place">场地：{{getPlace}}</p>
+			<el-button type="primary" class="addTimeBtn" @click="addTimeBtn">新增开放时间</el-button>
+			<div>
+				<template>
+					<el-table :data="timeDetail" border style="width: 100%;">
+						<el-table-column label="开放日期" prop="open_day">
+						</el-table-column>
+						<el-table-column label="时间段">
+							<template scope="scope">
+								<span v-for="item in timeDetail[scope.$index].times">{{item.open_start_dt |filterFun }}-{{item.open_end_dt | filterFun }} &nbsp;&nbsp;</span>
+							</template>
+						</el-table-column>
+						<el-table-column label="有效期" prop="dates">
+						</el-table-column>
+						<el-table-column label="操作">
+							<template scope="scope">
+								<el-button size="small" type="primary" @click="editTime(scope.$index, scope.row)">修改</el-button>
+								<el-button size="small" type="danger" @click="deleteTime(scope.$index, scope.row)">删除</el-button>
+							</template>
+						</el-table-column>
+					</el-table>
+				</template>
+			</div>
+			<div class="next">
+				<el-button type="primary" class="addBtn" @click="saveAll">保存</el-button>
+				<el-button type="primary" class="addBtn" @click="cancelAll">取消</el-button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		Vue.filter('filterFun', function(val) {
+			return val.substring(0, 5)
+		});
+		var vm = new Vue({
+			el: '.handTime',
+			data: {
+				placeid: window.location.href.split('=')[1], //上个页面传过来的placeid
+				timeDetail: [], //已有开放时间数组
+				getPlace: '', //场地
+				placeOpenTime: [], //修改后传给后台的数组
+				dataObj:'',//修改时把数据传递给弹出框
+				indexs:'',//修改时记录下标
+				flag:true,
+			},
+			mounted() {
+				this.findPlace();
+				this.getTimeList();
+			},
+			methods: {
+				back(){
+					closeAll()
+				},
+				getTimeList: function() { //获取已有开放时间接口
+					let self = this;
+					var data = {
+						command: "learn/listplaceopentime",
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						placeid: self.placeid
+					}
+
+					function callback(res) {
+						if(res && res.errcode == 0) {
+							var weekArr = [];
+							for(var i = 0; i < res.placeopentime.length; i++) {
+								weekArr.push({
+									newArr: res.placeopentime[i].open_day.split(',')
+								});
+							}
+
+							for(var i = 0; i < weekArr.length; i++) {
+								for(var j = 0; j < weekArr[i].newArr.length; j++) {
+									if(weekArr[i].newArr[j] == 1) {
+										weekArr[i].newArr[j] = '周一';
+									} else if(weekArr[i].newArr[j] == 2) {
+										weekArr[i].newArr[j] = '周二';
+									} else if(weekArr[i].newArr[j] == 3) {
+										weekArr[i].newArr[j] = '周三';
+									} else if(weekArr[i].newArr[j] == 4) {
+										weekArr[i].newArr[j] = '周四';
+									} else if(weekArr[i].newArr[j] == 5) {
+										weekArr[i].newArr[j] = '周五';
+									} else if(weekArr[i].newArr[j] == 6) {
+										weekArr[i].newArr[j] = '周六';
+									} else if(weekArr[i].newArr[j] == 7) {
+										weekArr[i].newArr[j] = '周日';
+									}
+								}
+							}
+							for(var i = 0; i < res.placeopentime.length; i++) {
+								self.timeDetail.push({
+									times: res.placeopentime[i].opentimes,
+									dates: res.placeopentime[i].start_dt.substring(0, 10) + '-' + res.placeopentime[i].end_dt.substring(0, 10),
+									id: res.placeopentime[i].id,
+									place_id: res.placeopentime[i].place_id
+								})
+							}
+							for(var i = 0; i < weekArr.length; i++) {
+								self.$set(self.timeDetail[i], 'open_day', weekArr[i].newArr.join(','))
+							}
+						} else {
+							layer.msg(res.errdesc)
+						}
+					}
+					post('/learn/listplaceopentime', data, callback, errcodefn, errfn)
+				},
+				findPlace: function() { //获取场地接口
+					var self = this;
+					var data = {
+						command: "site/findplace",
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						id: self.placeid
+
+					}
+
+					function callback(res) {
+						self.getPlace = res.roomnum;
+					}
+					post('/site/findplace', data, callback, errcodefn, errfn)
+				},
+				addTimeBtn: function() { //新增开放时间按钮
+					if(this.a == 1) {
+						layer.open({
+							type: 2,
+							title: '新增开放时段',
+							shadeClose: false,
+							shade: 0.7,
+							area: ['80%', '80%'],
+							content: 'huaxi_addTime.html'
+						});
+					} else {
+						layer.open({
+							type: 2,
+							title: '新增开放时段',
+							shadeClose: false,
+							shade: 0.7,
+							area: ['80%', '80%'],
+							content: 'huaxi_addTimeOld.html?pram=0'
+						});
+					}
+				},
+				saveAll: function() { //保存按钮
+					let self = this;
+					if(self.timeDetail.length == 0) {
+						layer.msg('开放时间不能为空')
+						return
+					}
+					for(let i = 0; i < self.timeDetail.length; i++) {
+						let saveArr = self.timeDetail[i].open_day.split(',');
+						for(let j = 0; j < saveArr.length; j++) {
+							if(saveArr[j] == '周一') {
+								saveArr[j] = '1'
+							} else if(saveArr[j] == '周二') {
+								saveArr[j] = '2'
+							} else if(saveArr[j] == '周三') {
+								saveArr[j] = '3'
+							} else if(saveArr[j] == '周四') {
+								saveArr[j] = '4'
+							} else if(saveArr[j] == '周五') {
+								saveArr[j] = '5'
+							} else if(saveArr[j] == '周六') {
+								saveArr[j] = '6'
+							} else if(saveArr[j] == '周日') {
+								saveArr[j] = '7'
+							}
+						}
+						if(self.timeDetail[i].place_id) {
+							self.placeOpenTime.push({
+								id: self.timeDetail[i].id,
+								start_dt: self.timeDetail[i].dates.substring(0, 10) + " 00:00:00",
+								end_dt: self.timeDetail[i].dates.substring(11, 22) + " 00:00:00",
+								open_day: saveArr.join(','),
+								opentimes: self.timeDetail[i].times,
+								place_id: self.timeDetail[i].place_id
+
+							})
+						} else {
+							self.placeOpenTime.push({
+								id: self.timeDetail[i].id,
+								start_dt: self.timeDetail[i].dates.substring(0, 10) + " 00:00:00",
+								end_dt: self.timeDetail[i].dates.substring(11, 22) + " 00:00:00",
+								open_day: saveArr.join(','),
+								opentimes: self.timeDetail[i].times,
+								place_id: self.placeid
+
+							})
+						}
+					}
+					let data = {
+						command: "learn/updateplaceopentime",
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						addPlaceOpenTimeInfo: self.placeOpenTime
+					}
+
+					function callback(res) {
+						if(res && res.errcode == 0) {
+							layer.msg("保存成功！")
+							setTimeout(function() {
+								self.placeOpenTime = [];
+								window.parent.layer.closeAll();
+							}, 1000)
+							this.flag=true;
+						} else {
+							layer.msg(res.errdesc)
+							this.flag=true;
+						}
+					}
+					if(this.flag){
+						this.flag=false;
+						post('/learn/updateplaceopentime', data, callback, errcodefn, errfn)
+				    }
+				},
+				deleteTime: function(indexs, row) { //删除一条信息按钮
+					layer.confirm('确定删除此条开放时间吗？', {
+						title: '删除',
+						btn: ['确定', '取消']
+					}, function() {
+						vm.timeDetail.splice(indexs, 1);
+						var index = layer.index; //获取当前弹层的索引号
+						layer.close(index); //关闭当前弹层F
+					}, function() {
+
+					})
+				},
+				editTime:function(index,row){//老的修改按钮
+					this.dataObj=row;
+					this.indexs=index;
+					layer.open({
+							type: 2,
+							title: '新增开放时段',
+							shadeClose: false,
+							shade: 0.7,
+							area: ['80%', '80%'],
+							content: 'huaxi_addTimeOld.html?pram=1'
+					});
+				},
+				cancelAll:function(){//取消按钮
+					closeAll()
+				}
+			}
+		})
+	</script>
+
+</html>

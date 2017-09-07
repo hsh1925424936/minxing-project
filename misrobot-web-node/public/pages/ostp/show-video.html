@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<script type="text/javascript" src="../../js/jqPaginator.js"></script>
+		 <!-- 先引入 Vue -->
+		  <script src="../../js/vue.js"></script>
+		  <!-- 引入组件库 -->
+		  <script src="../../js/element.js"></script>
+		<meta charset="UTF-8">
+		<title>视频上传</title>
+		<link rel="stylesheet" type="text/css" href="../../css/ostp/person-center.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/ostp/my-subscribe-layer.css" class="commonCss"/>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link href="../../css/video-js.min.css" rel="stylesheet">
+		
+		<style type="text/css">
+			.rightOuter{
+				position:relative; min-height:750px;
+				width:100%;
+			}
+
+			.loginOuter{
+				width:400px; margin-top:40px; margin-left:45px;
+			}
+			.loginTitle{
+				width:100%; height:30px; font-size:20px; line-height:30px;
+				font-weight:bold; margin-bottom:70px;
+			}
+
+			.selectOuter{
+				padding-bottom:19px; border-bottom:1px solid #CCCCCC;
+				margin-top:45px; line-height:34px;
+			}
+			.selectTxt{
+				font-size:16px; font-weight:bold;
+			}
+			.subscribe-train{
+				width:130px; float:right; border-radius:3px; font-size:14px;
+				background-color:#169BD5; color:white; text-align:center;
+			}
+
+			.module{
+				width:100%; height:55px; line-height:55px; display:block;
+				text-align:center;
+			}
+			.moduleOn{
+				background-color:#ccc;
+			}
+			.subscribeOuter{
+				width:100%; border-bottom:1px solid #CCCCCC;
+			}
+			.subscribeOuter .row{
+				height:30px;
+			}
+			.subscribelistTit{
+				font-size:14px; font-weight:bold;
+			}
+			.subscribelistTime{
+				font-size:10px; color:#B9C4CA;
+			}
+			.blue{
+				color:#6699FF; padding-right:40px;
+			}
+			.clear{
+				width:88px; height:28px; color:white; cursor: pointer;
+				border-radius:15px; background-color:#B7C4CD;
+				float:right; line-height:28px; text-align:center;
+			}
+			.row1{
+				margin-bottom:30px; margin-top:20px;
+			}
+			.row2{
+				font-size:14px; color:rgb(102,102,102);
+				margin-bottom:10px;
+			}
+
+			.fenyeCon{
+				width:700px; margin:auto; position:absolute;
+				left:120px; bottom:-10px;
+			}
+			.to-my-exam{
+				color:#0497cb;
+				cursor:pointer;
+			}
+			.exam-info{
+				font-size:16px;
+				height:80px;
+				width:100%;
+				padding:10px;
+				line-height: 30px;
+				border:1px solid  #cccccc;
+				margin-top:20px;
+			}
+			.upload-form{
+				position: relative;
+				font-size:16px;
+				height:280px;
+				width:100%;
+				padding:10px;
+				line-height: 30px;
+				border:1px solid  #cccccc;
+				margin-top:20px;
+			}
+			input[type=file]{
+				display: none !important;
+			}
+			.upload-form-btn{
+				position: absolute;
+				bottom:10px;
+
+			}
+			.rating-table{
+				margin-top:20px;
+				border:1px solid #cccccc;
+			}
+			.rating-info-top{
+				display: flex;
+				justify-content: space-between;
+				border-bottom:1px solid #cccccc;
+				padding: 10px;
+				align-items: center;
+			}
+			.rating-info-detail{
+				min-height: 300px
+			}
+			.question-item{
+				margin:10px 0;
+				padding:0 10px;
+			}
+			.question-item-title{
+				font-size: 18px;
+				font-weight: bold;
+
+			}
+			.question-item-detail{
+				display: inline-block;
+				width:80%;
+				margin:5px 0;
+			}
+			.question-item-grade{
+				display: inline-block;
+
+				float:right;
+			}
+			.show-video{
+				height:450px;
+				width:900px;
+			}
+		</style>
+		<script>
+			//$('.bootstrap').remove();
+		</script>
+	</head>
+	<body>
+	<div id = "app">
+		<div class="topOuter">
+			<div class="topCon clearfix">
+				<a href="index.html" class="top2Con-index">
+					<img src="../../images/ostp/logo.png" class="logoPng" />
+					<div class="top2Tit">
+						在线自主技能训练平台
+					</div>					
+				</a>
+				<div class="top1Tit-right">
+					<img src="../../images/ostp/bell.png" class="bell" />
+					<img src="../../images/ostp/redCircle.png" class="redCircle" />
+					<img src="../../images/ostp/feifei.png" class="headImg" />
+					<div class="nameAndYear clearfix">
+						<div class="nameAndYearInner clearfix">
+							<div class="userName"></div>
+							<div class="year"></div>
+							<span class="arrow"></span>
+						</div>
+						<ul class="selectUl"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="main clearfix">
+
+			<div class="rightOuter clearfix">
+				
+				<div class="row selectOuter">
+					<div class="selectTxt col-xs-4">
+						<span class ="to-my-exam" @click = "toMyExam">
+						我的考试
+						</span>
+						<span style = "color:#e1eaf1">></span>
+						<span>操作题查看</span>
+					</div>
+					<div class="col-xs-6">
+						<!-- 点击跳转到预约训练页面 -->
+						<!-- <a href="subscribe-train.html">
+							<button class="subscribe-train">预约新训练</button>
+						</a> -->
+						
+					</div>
+					<div class="col-xs-2">
+						
+					</div>
+				</div>
+				<div class = "show-video" style="margin:20px 0 10px">
+					<video
+						style="width:100%;height:100%"
+					    id="my-player"
+					    class="video-js"
+					    controls
+					    preload="auto"
+					    poster=""
+					    data-setup='{}'>
+					  <source :src="videoUri" type="video/mp4"></source>
+					  <source src="http://vjs.zencdn.net/v/oceans.webm" type="video/webm"></source>
+					  <source src="http://vjs.zencdn.net/v/oceans.ogv" type="video/ogg"></source>
+					  <p class="vjs-no-js">
+					    To view this video please enable JavaScript, and consider upgrading to a
+					    web browser that
+					    <a href="http://videojs.com/html5-video-support/" target="_blank">
+					      supports HTML5 video
+					    </a>
+					  </p>
+					</video>
+				</div>
+				<div class = "tip">如果无法在线观看，您可以<span @click = "downloadVideo" style="color:#0497cb;cursor: pointer;">下载视频</span></div>
+				<div class = "rating-table">
+					<div class = "rating-info-top">
+						<span>学生姓名：{{username}}</span>
+						<span>学号：{{stuno}}</span>
+						<span>上传时间：{{createtime}}</span>
+						<span>评分值：{{score}}</span>
+						<!-- <el-button type = "primary">下载评分表</el-button> -->
+					</div>
+					<div class = "rating-info-detail">
+						<div class = "question-item" v-for="(item,index) in operationList">
+							<p class = "question-item-title">{{index+1+'.'+item.key}}</p>
+							<div v-for="(it,idx) in item.value">
+							<p class = "question-item-detail">{{it.rightoperation}}</p>
+							<p class = "question-item-grade">{{scoreList[index].score.substr(0,3)+'分'}}</p>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	</body>
+	
+	<script type="text/javascript">
+		new Vue({
+	      el: '#app',
+	      data: function() {
+	        return { 
+	        	visible: false,
+	        	videoUri:'',
+	        	username:'',
+	        	stuno:'',
+	        	createtime:'',
+	        	score:'',
+	        	operationList:[],
+	        	scoreList:[],
+	        }
+	      },
+	      mounted(){
+	      	this.videoUri = GetQueryString('path');
+	      	this.username = codetostr(getCookie('gy_n'));
+	      	this.questionid = GetQueryString('questionid')
+	      	this.stuno = getCookie('gy_un');
+	      	this.createtime = decodeURIComponent(GetQueryString('createtime'));
+	      	this.score = GetQueryString('score');
+	      	this.getRatingList();
+	      	this.getScoreList();
+	      },
+	      methods:{
+	      	toMyExam(){
+	      		window.location.href = './my-exam.html'
+	      	},
+	      	downloadVideo(){
+	      		window.open(this.videoUri)
+	      	},
+	      	getRatingList(){
+	      		var self = this;
+	      		var json = {
+					"1": {
+						"command": "question/queryoperationv2",
+						sessionid: getCookie('gy_t'),
+						loginid: getCookie('gy_u'),
+						questionid:this.questionid,
+					}
+				};
+		    	Api.R({
+					url: "/question/queryoperationv2",
+					isShade:1,
+					json:json,
+					fn:function (json) {
+						if(json["1"].errcode != 0){
+							uselayer(3, json["1"].errdesc);
+							return;
+						}
+						console.log(json)
+						self.operationList = json["1"].list;
+					}
+				});
+	      	},
+	      	getScoreList(){
+	      		var self = this;
+	      		var json = {
+					"1": {
+						"command": "grade/queryckscore",
+						sessionid: getCookie('gy_t'),
+						loginid: getCookie('gy_u'),
+						scoreid:GetQueryString('scoreid')
+					}
+				};
+		    	Api.R({
+					url: "/grade/queryckscore",
+					isShade:1,
+					json:json,
+					fn:function (json) {
+						if(json["1"].errcode != 0){
+							uselayer(3, json["1"].errdesc);
+							return;
+						}
+						console.log(json)
+						self.scoreList = json["1"].queryresult;
+					}
+				});
+	      	},
+		    submitVideo(){
+		    	var json = {
+					"1": {
+						"command": "unifyexam/answerquestion",
+						sessionid: getCookie('gy_t'),
+						loginid: getCookie('gy_u'),
+						"id":104,
+						"examid": 14,
+						"questionid":1165,
+						"stuid":getCookie('gy_u'),
+						"path":this.uri
+					}
+				};
+		    	Api.R({
+					url: "/unifyexam/answerquestion",
+					isShade:1,
+					json:json,
+					fn:function (json) {
+						if(json["1"].errcode != 0){
+							uselayer(3, json["1"].errdesc);
+							return;
+						}
+					}
+				});
+		    }
+	      }
+    	})
+			
+
+
+		window.onload = function () {
+			'use strict';
+			common();
+
+			
+		};
+		
+
+	</script>
+<script src="../../js/video.min.js"></script>
+</html>

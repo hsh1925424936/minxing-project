@@ -1,0 +1,53 @@
+
+.bottomHandlers{
+    width:80%;
+    margin:0 auto;
+    overflow: hidden;
+    margin-top:.3rem;
+}
+.left{
+    float:left;
+}
+.right{
+    float:right;
+}
+.contentBox{
+    padding:.4rem .3rem .3rem .3rem;
+    position: relative;
+    margin-bottom:.14rem;
+    background-color:white;
+}
+.boxTitle{
+    margin-bottom:.3rem;
+}
+.shadow{
+    width:100%;
+    height:100%;
+    background-color: rgba(0,0,0,0.5);
+    position:fixed;
+    top:0;
+    left:0;
+}
+.confirmBox{
+    width:80%;
+    margin:1rem auto;
+    background-color: white;
+    border-radius: .05rem;
+    padding-bottom:.2rem;
+}
+.confirmText{
+    padding:.2rem;
+    border-bottom:1px solid #eee;
+    margin:0;
+}
+.tgtp{
+	position: absolute;
+    right: 0;
+    top: 0;
+}
+.btgtp{
+	
+	position: absolute;
+    right: 0;
+    top: 0;
+}

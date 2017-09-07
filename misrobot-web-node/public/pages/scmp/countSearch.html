@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+		<title>考官认证</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/futuredoctorapp/common.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/scmp/cert.css">
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+			
+			#countSearch {
+				background-color: #F2F2F2;
+				height: 40px;
+				line-height: 40px;
+				padding-left: 20px;
+			}
+			#cret tr,th{
+				text-align: center;
+				vertical-align: middle;
+			}
+			#cret .middle{
+				line-height: 30px;
+				vertical-align: middle !important;
+				text-align: left;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<p id="countSearch">统计查询</p>
+		<div id="cret" v-cloak>
+
+			<!--TODO search-->
+			<template>
+				<el-tabs v-model="activeName" @tab-click="handleClick">
+					<!--按技能项分析页面-->
+					<el-tab-pane label="按技能项分析" name="first">
+						<div>
+							<p style="float: left; margin-top: 20px;height:38px;line-height: 38px;">实习计划 ：</p>
+							<div style="float: left;">
+								<template>
+										<el-select v-model="choosePlan" placeholder="请选择" style="margin: 20px 0;" @change="changePlan(choosePlan)">
+											<el-option v-for="item in planList" :label="item.name" :value="item.id">
+											</el-option>
+										</el-select>
+								
+								</template>
+							</div>
+							<div style="float: right;height: 40px;line-height: 40px;margin-top: 16px;">
+								<button type="button" class="btn btn-primary" @click="exportPlan()" >导出</button>
+							</div>
+						</div>
+						<div style="clear: both;">
+							<table class="table table-bordered table-hover">
+								<tr class="active">
+									<th rowspan="2" class="middle">序号</th>
+									<th rowspan="2" class="middle">技能项</th>
+									<th rowspan="2" class="middle">应考人数</th>
+									<th rowspan="2" class="middle">报名中</th>
+									<th colspan="5">应考</th>
+	
+									<th rowspan="2" class="middle">操作</th>
+								</tr>
+								<tr class="active">
+	
+									<th class="middle">考试次数</th>
+									<th class="middle">考试人数</th>
+									<th class="middle">平均成绩</th>
+									<th class="middle">最高分</th>
+									<th class="middle">最低分</th>
+	
+								</tr>
+								<tr v-for="(item,index) in tableData">
+									<td class="middle">{{index+1}}</td>
+									<td class="middle">{{item.learnname}}</td>
+									<td class="middle">{{item.neednum}}</td>
+									<td class="middle">{{item.dknum}}</td>
+									<td class="middle">{{item.examnum}}</td>
+									<td class="middle">{{item.alreadynum}}</td>
+									<td class="middle">{{item.averagescore}}</td>
+									<td class="middle">{{item.maxscore}}</td>
+									<td class="middle">{{item.minscore}}</td>
+									<td class="middle">
+										<button type="button" class="btn btn-primary btn-xs" @click="details(item.planid,item.learnid)">详情</button>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</el-tab-pane>
+					<!--按评分项分析页面-->
+					<el-tab-pane label="按评分项分析" name="second">
+						<div>
+							<p style="float: left; margin-top: 20px;height:38px;line-height: 38px;">实习计划 ：</p>
+							<div style="float: left;margin-right: 20px;">
+								<template>
+										<el-select v-model="choosePlanSecond" placeholder="请选择" style="margin: 20px 0;">
+											<el-option v-for="item in planList" :label="item.name" :value="item.id">
+											</el-option>
+										</el-select>
+								
+								</template>
+							</div>
+							
+							<p style="float: left; margin-top: 20px;height:38px;line-height: 38px;">技能项 ：</p>
+							<div style="float: left;margin-right: 20px;">
+								<template>
+										<el-select v-model="findSkill" placeholder="请选择" style="margin: 20px 0;">
+											<el-option v-for="item in skillList" :label="item.name" :value="item.learnid">
+											</el-option>
+										</el-select>
+								
+								</template>
+							</div>
+							<div style="float: left;height: 40px;line-height: 40px;margin-top: 16px;margin-right: 20px;">
+								<button type="button" class="btn btn-primary" @click="searchSkill">查询</button>
+							</div>
+							<div style="float: left;height: 40px;line-height: 40px;margin-top:16px;">
+								<button type="button" class="btn btn-default" @click="exportSkill()">导出</button>
+							</div>
+						</div>
+						<table class="table table-bordered table-hover">
+							<tr class="active">
+								<th style="width: 80px;" class="middle">序号</th>
+								<th class="middle">技能项</th>
+								<th style="width: 120px;" class="middle">考试人数</th>
+								<th style="width: 100px;" class="middle">正确率</th>
+								<th style="width: 100px;" class="middle">错误率</th>
+							</tr>
+
+							<tr v-for="(item,index) in scoreList">
+								<td class="middle">{{index+1}}</td>
+								<td class="middle">{{item.gradeitemcontent}}</td>
+								<td class="middle">{{item.alreadynum}}</td>
+								<td class="middle">{{item.correctrate | filterFn}}</td>
+								<td class="middle">{{item.errorrate | filterFn}}</td>
+
+							</tr>
+						</table>
+					</el-tab-pane>
+					<!--考官课时统计页面-->
+					<el-tab-pane label="考官课时统计" name="third">
+						<div>
+							<p style="float: left; margin-top: 20px;height:38px;line-height: 38px;">实习计划 ：</p>
+							<div style="float: left;">
+								<template>
+										<el-select v-model="examiner" placeholder="请选择" style="margin: 20px 0;" @change="changeExaminer">
+											<el-option v-for="item in planList" :label="item.name" :value="item.id">
+											</el-option>
+										</el-select>
+								
+								</template>
+							</div>
+							<div style="float: right;height: 40px;line-height: 40px;margin-top: 16px;">
+								<button type="button" class="btn btn-primary" @click="exportCourseDatas()">导出</button>
+							</div>
+						</div>
+						<table class="table table-bordered table-hover">
+							<tr class="active">
+								<th class="middle">序号</th>
+								<th class="middle">姓名</th>
+								<th class="middle">工号</th>
+								<th class="middle">技能项</th>
+								<th class="middle">考试时间</th>
+								<th class="middle">课时</th>
+								<th class="middle">参考人数</th>
+								<th class="middle">平均成绩</th>
+								<th class="middle">最高分</th>
+								<th class="middle">最低分</th>
+								<th class="middle">巡视评价</th>
+							</tr>
+
+							<tr v-for="(item,index) in bossList">
+								<td class="middle">{{index+1}}</td>
+								<td class="middle">{{item.techname}}</td>
+								<td class="middle">{{item.techcode}}</td>
+								<td class="middle">{{item.learnname}}</td>
+								<td class="middle">{{item.coursetime}}</td>
+								<td class="middle">{{item.coursehour}}</td>
+								<td class="middle">{{item.examnum}}</td>
+								<td class="middle">{{item.averagescore}}</td>
+								<td class="middle">{{item.maxscore}}</td>
+								<td class="middle">{{item.minscore}}</td>
+								<td class="middle">{{item.start}}</td>
+							</tr>
+						</table>
+
+					</el-tab-pane>
+				</el-tabs>
+			</template>
+
+		</div>
+
+		<script>
+			var vm = new Vue({
+				el: '#cret',
+				data: {
+					activeName: 'first',
+					tableData: [],
+					choosePlan: '',
+					choosePlanSecond: '',
+					planList: '',
+					value: '',
+					skillList: '',
+					findSkill: '',
+					bossList: [],
+					scoreList: [],
+					examiner:'',
+					searchLearnPlanId: '',		// 按技能项分析搜索栏的实习计划ID
+					searchScorePlanId: null,	// 按评分项分析搜索栏的实习计划ID
+					searchScoreLeanId: null,	// 按评分项分析搜索栏的技能项ID
+					searchTeachPlanId: null		// 按考试课时统计搜索栏的实习计划ID
+				},
+				watch:{
+					'choosePlanSecond':function(curVal,oldVal){
+						this.findPlan(curVal);
+						this.findSkill='';
+					}
+				},
+				mounted: function() {
+					var self = this;
+					$.ajax({
+						type: "post",
+						url: "/plan/listplan",
+						data: JSON.stringify({
+							'1': {
+								command: "plan/listplan",
+								sessionid: getCookie('sid'),
+								loginid: getCookie('uid')
+
+							}
+						}),
+						success: function(data) {
+							data=data[1];
+							self.planList = data.plans;
+							self.choosePlanSecond = self.planList[0].id;
+							self.choosePlan = self.planList[0].id;
+							self.examiner = self.planList[0].id;
+							$.ajax({
+								type: "post",
+								url: "/examapply/querystatistical",
+								data: JSON.stringify({
+									'1': {
+										command: "examapply/querystatistical",
+										sessionid: getCookie('sid'),
+										loginid: getCookie('uid'),
+										planid: self.choosePlan
+									}
+								}),
+								success: function(data) {
+									self.tableData = data['1'].learnsinfolist;
+								}
+							});
+							$.ajax({
+								type: "post",
+								url: "/plan/findplan",
+								data: JSON.stringify({
+									'1': {
+										command: "plan/findplan",
+										sessionid: getCookie('sid'),
+										loginid: getCookie('uid'),
+										id: self.choosePlanSecond
+									}
+								}),
+								success: function(data) {
+									self.skillList = data['1'].plan.learnitems;
+									console.log(self.skillList)
+									
+										self.findSkill = self.skillList[0].learnid;
+									
+									
+									$.ajax({
+										type: "post",
+										url: "/examapply/querystatisticaldetail",
+										data: JSON.stringify({
+											'1': {
+												command: "examapply/querystatisticaldetail",
+												sessionid: getCookie('sid'),
+												loginid: getCookie('uid'),
+												planid: self.choosePlanSecond,
+												learnid: self.findSkill
+											}
+										}),
+										success: function(data) {
+											self.scoreList = data['1'].gradeitemlist;
+										}
+									});
+								}
+							});
+						}
+					});
+					$.ajax({
+						type: "post",
+						url: "/examapply/querycoursestatistical",
+						contentType: 'application/json',
+						async: true,
+						data: JSON.stringify({
+							'1': {
+								command: "examapply/querycoursestatistical",
+								sessionid: getCookie('sid'),
+								loginid: getCookie('uid')
+							}
+						}),
+						success: function(data) {
+							self.bossList = data['1'].coursestatisticallist;
+						}
+					});
+				},
+				filters:{
+					filterFn:function(val){
+						return val*100+"%"
+					}
+				},
+				methods: {
+					handleClick(tab, event) {
+
+					},
+					changePlan: function(val) {
+						var self = this;
+						self.searchLearnPlanId = val;
+						$.ajax({
+							type: "post",
+							url: "/examapply/querystatistical",
+							contentType: 'application/json',
+							async: true,
+							data: JSON.stringify({
+								'1': {
+									command: "examapply/querystatistical",
+									sessionid: getCookie('sid'),
+									loginid: getCookie('uid'),
+									planid: val
+								}
+							}),
+							success: function(data) {
+								self.tableData = data['1'].learnsinfolist;
+							}
+						});
+					},
+					exportPlan() {
+
+						var data = {
+							command: "examapply/querystatistical",
+							sessionid: getCookie('sid'),
+							loginid: getCookie('uid'),
+							planid: this.searchLearnPlanId
+						};
+
+						exportExcel(data);
+					},
+					details: function(planVal, learnVal) {
+						
+						let self = this;
+						self.activeName = "second";
+						self.choosePlanSecond = planVal;
+						self.findSkill = learnVal;
+						
+						$.ajax({
+							type: "post",
+							url: "/examapply/querystatisticaldetail",
+							async: true,
+							data: JSON.stringify({
+								'1': {
+									command: "examapply/querystatisticaldetail",
+									sessionid: getCookie('sid'),
+									loginid: getCookie('uid'),
+									planid: self.choosePlanSecond,
+									learnid: self.findSkill
+								}
+							}),
+							success: function(data) {
+								self.scoreList = data['1'].gradeitemlist;
+								var score = 0;
+								for(var i = 0; i < self.scoreList.length; i++) {
+									score++;
+									self.scoreList[i].scoreNum = score;
+								}
+							}
+						});
+					},
+					findPlan: function(val) {
+
+						let self = this;
+						
+						$.ajax({
+							type: "post",
+							url: "/plan/findplan",
+							contentType: 'application/json',
+							async: true,
+							data: JSON.stringify({
+								'1': {
+									command: "plan/findplan",
+									sessionid: getCookie('sid'),
+									loginid: getCookie('uid'),
+									id: val
+								}
+							}),
+							success: function(data) {
+								self.skillList = data['1'].plan.learnitems;
+							}
+						});
+					},
+					searchSkill: function() {
+						let self = this;
+						if(self.choosePlanSecond != '' && self.findSkill != '') {
+							$.ajax({
+								type: "post",
+								url: "/examapply/querystatisticaldetail",
+								 contentType: 'application/json',
+								async: true,
+								data: JSON.stringify({
+									'1': {
+										command: "examapply/querystatisticaldetail",
+										sessionid: getCookie('sid'),
+										loginid: getCookie('uid'),
+										planid: self.choosePlanSecond,
+										learnid: self.findSkill
+									}
+								}),
+								success: function(data) {
+									self.scoreList = data['1'].gradeitemlist;
+									var score = 0;
+									for(var i = 0; i < self.scoreList.length; i++) {
+										score++;
+										self.scoreList[i].scoreNum = score;
+									}
+								}
+							});
+						} else {
+							layer.msg('请选择实习计划和技能项！')
+						}
+					},
+					exportSkill: function(){
+						var self = this;
+						var data = {
+							command: "examapply/querystatisticaldetail",
+							sessionid: getCookie('sid'),
+							loginid: getCookie('uid'),
+							planid: self.choosePlanSecond,
+							learnid: self.findSkill
+						};
+
+						exportExcel(data);
+					},
+					changeExaminer: function() {
+						let self = this;
+						$.ajax({
+							type: "post",
+							url: "/examapply/querycoursestatistical",
+							async: true,
+							data: JSON.stringify({
+								'1': {
+									command: "examapply/querycoursestatistical",
+									sessionid: getCookie('sid'),
+									loginid: getCookie('uid'),
+									learnid: self.examiner
+								}
+							}),
+							success: function(data) {
+								self.bossList = data['1'].coursestatisticallist;
+								var num = 0;
+								for(var i = 0; i < self.bossList.length; i++) {
+									num++;
+									self.bossList[i].detail = num;
+								}
+							}
+						});
+					},
+					exportCourseDatas: function(){
+						var self = this;
+						var data = {
+							command: "examapply/querycoursestatistical",
+							sessionid: getCookie('sid'),
+							loginid: getCookie('uid'),
+							learnid: self.examiner
+						};
+
+						exportExcel(data);
+					}
+				}
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/istudy/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>个人信息</title>
+		<style type="text/css">
+
+			.outer{
+				background: #F0EFF5;
+			}
+
+			.content {
+				width: 100%;
+				padding-top: 40px;
+				min-height: 240px;
+				background: #fff;
+			}
+
+			.content img {
+				width: 120px;
+				height: 100px;
+				margin: 10px auto;
+				display: block;
+			}
+
+			.content p {
+				width: 50%;
+				font-size: 14px;
+				margin: 15px auto;
+			}
+
+		</style>
+		<script>
+			window.onload = function () {
+				'use strict';
+
+				$('.return1').click(function(){
+					window.history.go(-1);
+				});
+				
+			};
+		</script>
+	</head>
+	<body>
+		
+		<div class="box clearfix">
+			<div class="outer clearfix">
+				<div class="topOuter">
+					<div class="return1">
+						
+					</div>
+					<div class="topTxt" style="font-size:22px">
+						二维码
+					</div>
+				</div>
+
+				<div class="content">
+					<img src="../../images/istudy/istudycode.jpg" class='qrcode'>
+					<p>请让你的同学扫描二维码下载</p>
+				</div>
+			</div>
+		</div>
+
+	</body>
+	
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>倒计时</title>
+    <script src="../../js/vue.js"></script>
+    <script type="text/javascript" src="../../js/assistant/layout.js"></script>
+    <link rel="stylesheet" href="../../css/reset.css">
+    <style>
+        .flex {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #countdown {
+            height: 100vh;
+        }
+
+        .box {
+            width: 300px;
+            height: 300px;
+            color: #000;
+            font-size: 30px;
+            flex-direction: column;
+        }
+
+        .box p {
+            margin: 25px;
+            font-size: 35px;
+        }
+
+        .content span {
+            padding: 10px;
+            font-size: 45px;
+            border-top: 1px solid #0C0C0C;
+            border-bottom: 1px solid #0C0C0C;
+        }
+
+        .btn {
+            margin: 12px;
+            display: inline-block;
+            border: 1px solid #0C0C0C;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            line-height: 58px;
+            font-size: 17px;
+        }
+
+        .btn i {
+            display: block;
+        }
+
+        .cent {
+            margin: inherit;
+        }
+
+        .active {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+<div id="countdown" class="flex">
+    <div class="box flex">
+        <div>
+            <p :class="{ active: isActive }">
+                <span class="cent">{{minute | add | convert}}</span>
+                <span class="cent">{{second | add | convert}}</span>
+            </p>
+            <p class="content" v-if="statu">
+                <span class="addm">{{minute | convert}}</span>
+                <span>:</span>
+                <span class="adds">{{second | convert}}</span>
+            </p>
+            <p class="content" v-else>
+                <span>{{minute | convert}}</span>
+                <span>:</span>
+                <span>{{second | convert}}</span>
+            </p>
+            <p :class="{ active: isActive }">
+                <span class="cent">{{minute | reduce | convert}}</span>
+                <span class="cent">{{second | reduce | convert}}</span>
+            </p>
+        </div>
+        <div>
+            <a class="btn"><i v-if='statu' @click="start">开始</i><i v-else @click="stop">暂停</i></a>
+            <a class="btn" @click="end">重置</a>
+        </div>
+    </div>
+</div>
+<script>
+    window.onerror = function (a, b, c) {
+        alert(a + b + c)
+    };
+    vm = new Vue({
+        el: '#countdown',
+        data: {
+            statu: true,
+            minute: 1,
+            second: 0,
+            t: '',
+            isActive: false,
+            isfirst:false
+        },
+        filters: {
+            add: function (value) {
+                return value == 59 ? 0 : value + 1;
+            },
+            reduce: function (value) {
+                return value == 0 ? 59 : value - 1;
+            },
+            convert: function (value) {
+                return value < 10 ? "0" + value : value;
+            }
+        },
+        mounted: function () {
+            var _this = this;
+            $('.addm')[0].addEventListener("DOMMouseScroll",function(e){_this.addminute(e)});
+            $('.adds')[0].addEventListener("DOMMouseScroll",function(e){_this.addsecond(e)});
+        },
+        methods: {
+            count_dowon: function () {
+                var _this = this;
+                _this.second--;
+                if (_this.second < 0 && _this.minute > 0) {
+                    _this.second = 59;
+                    _this.minute--;
+                } else if (_this.second <= 0 && _this.minute == 0) {
+                    clearInterval(_this.t);
+                    _this.minute = 1;
+                    _this.second = 0;
+                    _this.isActive = false;
+                    _this.isfirst = false;
+                    _this.statu = true;
+                    return false;
+                }
+            },
+            start: function () {
+                var _this = this;
+                if (_this.isfirst==false && _this.minute == 0 && this.second <= 59) {
+                    layer.msg('倒计时长最少一分钟，请重新设置');
+                } else {
+                    openProject();
+                    _this.isActive = true;
+                    _this.isfirst = true;
+                    _this.statu = false;
+                    _this.t = setInterval(function () {
+                        _this.count_dowon();
+                    }, 1000);
+                }
+            },
+            stop: function () {
+                var _this = this;
+                _this.statu = true;
+                clearInterval(_this.t);
+            },
+            end: function () {
+                var _this = this;
+                _this.isActive = false;
+                _this.isfirst = false;
+                _this.statu = true;
+                _this.minute = 1;
+                _this.second = 0;
+                clearInterval(_this.t);
+            },
+            addminute: function (e) {
+                var _this = this;
+                if (e.detail < 0) {//增加数值
+                    if (_this.minute > 58) {
+                        _this.minute = 0;
+                    } else {
+                        _this.minute++;
+                    }
+                } else {
+                    if (_this.minute < 1) {
+                        _this.minute = 59;
+                    } else {
+                        _this.minute--;
+                    }
+                }
+            },
+            addsecond: function (e) {
+                var _this = this;
+                if (e.detail < 0) {//增加数值
+                    if (_this.second > 58) {
+                        _this.second = 0;
+                    } else {
+                        _this.second++;
+                    }
+                } else {
+                    if (_this.second < 1) {
+                        _this.second = 59;
+                    } else {
+                        _this.second--;
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <!--<link rel="stylesheet" href="../../../css/bigdatascreen/swiper.min.css" type="text/css" />-->
+    <link rel="stylesheet" href="../../../css/bigdatascreen/common.css" type="text/css" />
+    <script src="../../../js/bigdatascreen/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <!--<script src="../../../js/bigdatascreen/layer/layer.js" type="text/javascript" charset="utf-8"></script>-->
+    <script src="../../../js/bigdatascreen/vue.js" type="text/javascript" charset="utf-8"></script>
+    <!--<script src="../../../js/bigdatascreen/swiper.min.js" type="text/javascript" charset="utf-8"></script>-->
+    <!--<script src="../../../js/echarts.min.js" type="text/javascript"></script>-->
+    <!--<script src="../../../js/bigdatascreen/common.js" type="text/javascript" charset="utf-8"></script>-->
+    <title></title>
+    <style>
+        .container div img{
+            width: 100vw;
+        }
+        .container div img:nth-child(1){
+            height: 15vh;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div>
+            <!--<img v-if='url.index == 1' v-for="item in images" :src="item.url" alt="">-->
+            <!--<img v-if='url.index == 2' v-for="item in images" :src="item.url" alt="">-->
+            <img v-for="item in images" :src="item.url" alt="">
+        </div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el:'.container',
+            data:{
+                url:{},
+                robots:[
+                    {title:'综合穿刺智能训练系统',
+                    imgs:[
+                        {url:'../common/images/mis-puncture-banner.jpg'},
+                        {url:'../common/images/mis-puncture-detail.jpg'},
+                    ]},
+                    {title:'情境化综合急救智能训练系统',
+                    imgs:[
+                        {url:'../common/images/mis-emergency-banner.jpg'},
+                        {url:'../common/images/mis-emergency-detail.jpg'},
+                    ]},
+                    {title:'腹腔镜手术智能训练系统（住院医师版）',
+                    imgs:[
+                        {url:'../common/images/mis-laparo-rst-banner.jpg'},
+                        {url:'../common/images/mis-laparo-rst-detail.jpg'},
+                    ]},
+                    {title:'腹腔镜手术智能训练系统（虚拟结合版）',
+                    imgs:[
+                        {url:'../common/images/mis-laparo-vt-banner.jpg'},
+                        {url:'../common/images/mis-laparo-vt-detail.jpg'},
+                    ]},
+                    {title:"中心静脉穿刺智能训练系统",
+                    imgs:[
+                        {url:'../common/images/mis-cvc-banner.jpg'},
+                        {url:'../common/images/mis-cvc-detail.jpg'},
+                    ]},
+                    {title:'气道管理智能训练系统',
+                    imgs:[
+                        {url:'../common/images/mis-airway-banner.jpg'},
+                        {url:'../common/images/mis-airway-detail.jpg'},
+                    ]},
+                    {title:'医学影像检查训练系统',
+                    imgs:[
+                        {url:'../common/images/mis-mit-banner.jpg'},
+                        {url:'../common/images/mis-mit-detail.jpg'},
+                    ]},
+                    {title:'医学影像诊断教学系统',
+                    imgs:[
+                        {url:'../common/images/mis-mid-banner.jpg'},
+                        {url:'../common/images/mis-mid-detail.jpg'},
+                    ]},
+                    {title:'导尿术智能训练系统',
+                    imgs:[
+                        {url:'../common/images/mis-uc-banner.jpg'},
+                        {url:'../common/images/mis-uc-detail.jpg'},
+                    ]},
+                    {title:"灌肠术智能训练系统",
+                    imgs:[
+                        {url:'../common/images/mis-clyster-banner.jpg'},
+                        {url:'../common/images/mis-clyster-detail.jpg'},
+                    ]},
+                    {title:'综合置管智能训练系统',
+                    imgs:[
+                        {url:'../common/images/mis-put-tube-banner.jpg'},
+                        {url:'../common/images/mis-put-tube-detail.jpg'},
+                    ]},
+                    {title:'鼻饲术、胃肠减压术智能训练系统',
+                    imgs:[
+                        {url:'../common/images/mis-nasal-feeding-banner.jpg'},
+                        {url:'../common/images/mis-nasal-feeding-detail.jpg'},
+                    ]},
+                    {title:'三腔二囊管止血术智能训练系统',
+                    imgs:[
+                        {url:'../common/images/mis-sengstaken-blakemore-tube-banner.jpg'},
+                        {url:'../common/images/mis-sengstaken-blakemore-tube-detail.jpg'},
+                    ]},
+                    {title:'洗胃术智能训练系统',
+                    imgs:[
+                        {url:'../common/images/mis-wash-stomach-banner.jpg'},
+                        {url:'../common/images/mis-wash-stomach-detail.jpg'},
+                    ]},
+                    {title:"吸痰术智能训练系统",
+                    imgs:[
+                        {url:'../common/images/mis-sputum-suction-banner.jpg'},
+                        {url:'../common/images/mis-sputum-suction-detail.jpg'},
+                    ]},
+                ],
+                message:[
+                    {title:'医学智能一体化课堂',
+                    imgs:[
+                        {url:'../common/images/integration-system.jpg'},
+                        {url:'../common/images/integration-detail.jpg'},
+                    ]},
+                    {title:'OSCE考试智能管理系统',
+                    imgs:[
+                        {url:'../common/images/osce-system-banner.jpg'},
+                        {url:'../common/images/osce-detail.jpg'}
+                    ]
+                    },
+                    {title:'医学在线学习系统',
+                    imgs:[
+                        {url:'../common/images/medical-online-study-system-banner.jpg'},
+                        {url:'../common/images/medical-online-study-system-detail.jpg'},
+                    ]},
+                    {title:'医学技能中心运营管理系统',
+                    imgs:[
+                        {url:'../common/images/skill-center-banner.jpg'},
+                        {url:'../common/images/skill-center-detail.jpg'},
+                    ]},
+                    {title:'技能训练智能分析系统',
+                    imgs:[
+                        {url:'../common/images/skill-train-analyze-system-banner.jpg'},
+                        {url:'../common/images/skill-train-analyze-system-detail.jpg'},
+                    ]},
+                    {title:'技能中心自主训练管理系统',
+                    imgs:[
+                        {url:'../common/images/skill-train-manage-system-banner.jpg'},
+                        {url:'../common/images/skill-train-manage-system-detail.jpg'},
+                    ]},
+                    {title:'临床技能大数据与形成性评价系统',
+                    imgs:[
+                        {url:'../common/images/bigdata-evaluate-system-banner.jpg'},
+                        {url:'../common/images/bigdata-evaluate-system-detail.jpg'},
+                    ]},
+                ],
+                images:[]
+            },
+            mounted(){
+                let self = this
+                this.url = this.getRequest()
+                console.log(this.url)
+                if(this.url.index == 1){
+                    $('title').html(self.robots[self.url.key].title)
+                    this.images = this.robots[self.url.key].imgs
+                }else if(this.url.index == 2){
+                    $('title').html(self.message[self.url.key].title)
+                    this.images = this.message[self.url.key].imgs
+                }
+            },
+            methods:{
+                 getRequest() {
+                    var url = location.search; //获取url中"?"符后的字串
+                    var theRequest = new Object();
+                    if (url.indexOf("?") != -1) {
+                        var str = url.substr(1);
+                        strs = str.split("&");
+                        for (var i = 0; i < strs.length; i++) {
+                            theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                        }
+                    }
+                    return theRequest;
+                }
+            }
+        })
+    </script>
+</body>
+</html>

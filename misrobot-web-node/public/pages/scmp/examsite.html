@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+		<title>OSCE考试>考站管理</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/futuredoctorapp/common.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<script src="../../js/scmp/pageComponent.js"></script>
+		<script src="../../js/base.js"></script>
+		<script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/scmp/cert.css">
+		<link rel="stylesheet" href="../../css/scmp/scmpcommon.css" />
+		<style scoped="scoped">
+			[v-cloak] {
+				display: none;
+			}
+			.left{
+				float: left;
+			}
+			.right{
+				float: right;
+				padding-top: 0;
+				margin-left: 20px;
+				
+			}
+			.directToPage{
+				padding-top: 0 !important;
+			}
+			.pagination {
+				margin: 0;
+			}
+			#countSearch {
+				background-color: #F2F2F2;
+				height: 40px;
+				line-height: 40px;
+				padding-left: 20px;
+			}
+			
+			#cret tr,
+			th {
+				text-align: center;
+				vertical-align: middle;
+			}
+			
+			#cret .middle {
+				line-height: 30px;
+				vertical-align: middle !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<p id="countSearch">OSCE考试>考站管理</p>
+		<div id="cret" v-cloak>
+			<template>
+				<section>
+					<div class="form-inline f12 sel-detail">
+						<button @click="add()" class="selDetail btn btn-primary" style=" width: 100px">
+                      	  增加
+                    </button>
+					</div>
+				</section>
+				<div style="clear: both;margin-top: 20px;">
+					<table class="table table-bordered table-hover">
+						<tr class="active">
+							<th>考站名称</th>
+							<th>考站时长</th>
+							<th>操作</th>
+						</tr>
+						<tr v-for="(value,index) in sitelist">
+							<td>{{value.name}}</td>
+							<td>{{value.duration}}</td>
+							<td>
+								<button type="button" class="btn btn-primary btn-xs" @click="edui(value)">编辑</button>
+								<button type="button" class="btn btn-primary btn-xs" @click="delete_ex(value)">删除</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</template>
+			<page_component :pageconf="pageconf" :pages="pages"></page_component>
+		</div>
+		<script>
+			var vm = new Vue({
+				el: '#cret',
+				data: {
+					sitelist: [], //考站列表
+					pageconf: {
+						itemsPerPage: 10,
+						current: 1, //默认显示第一页
+						showItem: 10, //最多显示多少页，自己定义
+						allpage: '', //总共多少页，根据请求返回结果计算
+						totalnum: '', //总共条数，请求返回
+						onchange: function(index, itemsperpage) { //ajax,index表示查看第几页,itemsperpage表示每页多少条
+							changepage('page=' + index + '&number=' + itemsperpage);
+
+							var data = {
+								command: "oscestation/listoscestation",
+								sessionid: getCookie('sid'),
+								loginid: getCookie('uid'),
+								pagenum: index, //查询第几页
+								perpagenum: itemsperpage //每页展示多少条,
+
+							};
+
+							function callback(res) {
+
+								vm.pageconf.totalnum = res.totalnum;
+								vm.pageconf.allpage = Math.ceil(res.totalnum / itemsperpage);
+								vm.sitelist = [];
+								vm.sitelist = res.listoscestation;
+
+							};
+							post("/osceroomexisting/listosceroomexisting", data, callback, errcodefn, errfn)
+						}
+					}
+				},
+				mounted: function() {
+					this.pageconf.onchange(1,10);
+				},
+				computed: {
+					pages: function() {
+						var pag = [];
+						if(this.pageconf.current < this.pageconf.showItem) { //如果当前的激活的项 小于要显示的条数
+							//总页数和要显示的条数那个大就显示多少条
+							var i = Math.min(this.pageconf.showItem, this.pageconf.allpage);
+							while(i) {
+								pag.unshift(i--);
+							}
+						} else { //当前页数大于显示页数了
+							var middle = this.pageconf.current - Math.floor(this.pageconf.showItem / 2), //从哪里开始
+								i = this.pageconf.showItem;
+							if(middle > (this.pageconf.allpage - this.pageconf.showItem)) {
+								middle = (this.pageconf.allpage - this.pageconf.showItem) + 1
+							}
+							while(i--) {
+								pag.push(middle++);
+							}
+						}
+						return pag
+					}
+				},
+				methods: {
+					add: function() {
+						
+						layer.open({
+							type: 2,
+							title: '增加考站',
+							shadeClose: true,
+							shade: 0.8,
+							area: ['800px', '400px'],
+							scrollbar: false,
+							content: 'newExamsite.html?page='+findurltype('page')+'&num='+findurltype('number')
+						});
+					},
+					edui: function(value) {
+						layer.open({
+							type: 2,
+							title: '编辑考站',
+							shadeClose: true,
+							shade: 0.8,
+							area: ['800px', '400px'],
+							content: 'examsiteedui.html?id=' + value.id+"&page="+findurltype('page')+"&num="+findurltype('number'),
+						});
+					},
+					delete_ex: function(value) {
+						var self = this
+						var L = layer.confirm('确定要删除此考站吗？', {
+							btn: ['确定', '取消'] //按钮
+						}, function() {
+							var data = {
+								command: 'oscestation/deleteoscestation', //接口地址
+								sessionid: getCookie('sid'),
+								loginid: getCookie('uid'),
+								id: value.id
+							};
+
+							function callback(res) {
+								layer.msg('成功删除');
+								self.pageconf.onchange(findurltype('page'),findurltype('number'));
+							};
+							post('/oscestation/deleteoscestation', data, callback, errcodefn, errfn)
+						})
+					},
+				}
+			});
+		</script>
+	</body>
+
+</html>

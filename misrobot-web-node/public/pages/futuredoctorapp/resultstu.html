@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/futuredoctorapp/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			.kt-write-head {height: 50%; color: rgb(127,127,127); font-weight: normal; padding: 0 5%;}
+			.kt-write-title { height: 18%; line-height: 200%;font-size: 20px; position: relative; }
+			.kt-write-head-con {padding-top: 1%; font-size: 18px; line-height: 200%; height:82%; width:100%; overflow:auto; word-break:break-all; word-wrap:break-word;   }
+			.kt-write-head-con p i { font-size: 14px;}
+			.kt-write-head-con li { display: block; font-size: 16px;}
+			.kt-write-head-con li strong { font-weight: normal}
+			.kt-write-head-con li.active { color: green}
+			.kt-write-con { height: 20%;}
+			.kt-write-con p { background: #F1F1F1;  text-indent: 1em; font-size: 18px;}
+			.kt-write-con textarea { height: 80%; width: 90%; margin: 3% auto; display: block; resize: none; border: none; border-radius: 6px;}
+			.kt-write-foot { height: 20%; padding: 6% 0 0%;}
+			.kt-write-foot div { height: 36%; line-height: 200%; text-align: center; width: 56%; display: block; margin: 0 auto; background: #687ead; border: none; border-radius: 4px; color: #fff; font-size: 18px;}
+			.kt-write-foot div img { height: 18px;}
+		</style>	
+	</head>
+	<body>
+		<div class="sign_bg"></div>
+		<div id="vmcontainer" v-cloak="">
+			<headerbox :thistitle="headerTitle" :showback="showback" :showreload="showreload" :titlenum="titlenum" id="header"></headerbox>
+		</div>
+		<h4 class="kt-write-head">
+			<div class="kt-write-title">查看问题</div>
+			<div class="kt-write-head-con">
+				<p></p>
+				<ul>
+				</ul>
+			</div>
+		</h4>
+		<div class="kt-write-con">
+			<p>
+				<span></span>
+				<b></b>
+			</p>
+		</div>
+		<div class="kt-write-foot">
+			<div class="subBtn">
+				<span>上传答案</span>
+			</div>
+		</div>
+		<script src="../../js/futuredoctorapp/vueComponent.js"></script>
+		<script type="text/javascript">
+			registerToNative('goBack', function (data) {
+				window.location.href='startstu.html'
+			});
+			var vm=new Vue({
+				el:'#vmcontainer',
+				data:{
+					headerTitle:'写答案',
+					showback:true,
+					showreload:false,
+					titlenum:0,
+					//以上是头部配置
+				}
+			});
+			function goBack(){
+				window.location.href="startstu.html";
+			};
+			window.onerror = function(msg, url, line){
+				alert(msg+url+line)
+			};
+			var cateid="";
+			window.onload = function() {
+				'use strict';
+				wxcommon(1);
+				(function(){
+					var data={
+						command: "question/queryclassquestioninfo",
+						scheduleid: getCookie("gy_istudy_scid"),
+						sessionid: getCookie("sid"),
+						loginid: getCookie('uid')
+					};
+					function callback(result){
+						if(!result.questionsresult) {
+							uselayer(3,'暂无题目！');
+							setTimeout(function(){
+								window.history.go(-1);
+							},2000);
+							return;
+						};
+						cateid=result.questionsresult[0].cateid;
+						$('.subBtn').attr('qid', result.questionsresult[0].qid);
+						$('.subBtn').attr('_type', result.questionsresult[0].cateid);
+						$('.kt-write-head-con p').html(result.questionsresult[0].name);
+						switch (result.questionsresult[0].cateid){
+							case 1:$('.kt-write-head-con p').append('<i>（请点击选项选择答案）</i>');
+								$('.kt-write-con p span').html('你的选择');
+								var arr = result.questionsresult[0].questionitem;
+								$('.kt-write-head-con ul').html('');
+								for (var i = 0 ; i < arr.length; i++) {
+									var str =
+											'<li><strong _value="'+arr[i].itemname+'">'+arr[i].itemname+'</strong>.'+arr[i].content+'</li>';
+									$('.kt-write-head-con ul').append(str);
+								}
+								break;
+							case 2:$('.kt-write-head-con p').append('<i>（请点击选项选择答案）</i>');
+								$('.kt-write-con p span').html('你的选择');
+								var arr = result.questionsresult[0].questionitem;
+								$('.kt-write-head-con ul').html('');
+								for (var i = 0 ; i < arr.length; i++) {
+									var str =
+											'<li><strong _value="'+arr[i].itemname+'">'+arr[i].itemname+'</strong>.'+arr[i].content+'</li>';
+									$('.kt-write-head-con ul').append(str);
+								}
+								break;
+							case 4:$('.kt-write-head-con p').append('<i>（请点击选项选择答案）</i>');
+								$('.kt-write-con p span').html('你的选择');
+								var str =
+										'<li><strong _value="1">对</strong></li>'
+										+'<li><strong _value="0">错</strong></li>'
+								$('.kt-write-head-con ul').html(str);
+								break;
+							case 5:$('.kt-write-head-con p').append('<i>（请在编辑答案处填写答案或使用拍照上传答案）</i>');
+								$('.kt-write-con p').html('编辑答案');
+								$('.kt-write-foot div').eq(1).css('display','block');
+								$('.kt-write').removeAttr('readonly');
+								break;
+						}
+						if ($('.subBtn').attr('_type')==2) {//多选题
+							$('.kt-write-head-con ul li').click(function () {
+								if($(this).hasClass('active')){
+									$(this).removeClass('active');
+								}else{
+									$(this).addClass('active');
+								}
+								var _answer = '';
+								$('.kt-write-head-con ul li').each(function(i, el) {
+									if($(el).hasClass('active')){
+										_answer+=$(el).children('strong').html();
+									}
+								});
+								$('.kt-write-con p b').html(_answer);
+							})
+						}else{
+							$('.kt-write-head-con ul li').click(function () {
+								$('.kt-write-head-con ul li').removeClass('active');
+								$(this).addClass('active');
+								$('.kt-write-con p b').html($(this).children('strong').html());
+							});
+						}
+						
+						$('.subBtn').click(function () {
+							uselayer(2,'确定要提交答案吗？',function () {
+								var con = $.trim($('.kt-write-con p b').html());
+								if (con=='') {
+									uselayer(3,'答案不能为空');
+									return false;
+								}
+
+								if ($('.subBtn').attr('_type')==4) {
+									if (con=='对') {
+										con = 1;
+									} else {
+										con = 0;
+									}
+								}
+								var json={
+									command: "question/submitanswer",
+									scheduleid: getCookie('gy_istudy_scid'),
+									sessionid: getCookie('sid'),
+									uid: getCookie('uid'),
+									qid: $('.subBtn').attr('qid'),
+									answer: con,
+									loginid: getCookie('uid'),
+									cateid:cateid
+								};
+								function submitcallback(res){
+									setTimeout(function(){
+										window.history.go(-1);
+									},1000);
+								};
+								post("/question/submitanswer",json,submitcallback,errcodefn,errfn);
+							});
+						});
+					};
+					post('/question/queryclassquestioninfo',data,callback,errcodefn,errfn)
+				})()
+			}
+		</script>
+	</body>
+</html>

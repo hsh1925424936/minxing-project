@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/istudy/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			.kt-score { }
+			.kt-list { border-bottom: 1px solid #ccc;padding:2% 0}
+			.kt-list-left { float: left; width: 20%; }
+			.kt-list-left img { width: 45%; display: block; margin: 3% auto;}
+			
+			.kt-list-right { float: left; width: 80%; }
+			.kt-list-right h3 { font-weight: normal; font-size: 16px;  color: #637dad;line-height: 300%; margin-bottom: 2%;}
+			.kt-list-right h3 div span {display:block; width:100%; line-height: 150%; overflow:hidden}
+			.kt-person div {width: 54px; height: 54px; float: left; border-radius: 50%;}
+			.kt-person img {  display: block; width: 100%; height:100%; border-radius: 50%; border: 1px solid #ccc; }
+			.kt-person span {float: left; text-indent: 1em;}
+			
+			.kt-group div { float: left; width: 60%;}			
+			/*.kt-group strong { float: left; width: 40%;}*/ 
+			
+			.kt-list-right p { -webkit-text-size-adjust:none;font-size: 14px;}
+			.kt-list-right p span { float: left; width: 50%;}
+		</style>	
+	</head>
+	<body>
+		<div class="sign_bg"></div>
+		<div id="header">
+			<headerbox thistitle="排行榜"></headerbox>
+		</div>
+		<div class="kt-score">
+
+		</div>
+		<script src="../../js/istudy/vueComponent.js"></script>
+		<script>
+			window.onload = function () {
+				'use strict';
+				wxcommon(1);
+				Api.R({
+					isShade: 1,
+					url: "/question/personalranking",
+					json: {
+						"1": {
+							command: "question/personalranking",
+							scheduleid: getCookie("gy_istudy_scid"),
+							sessionid: getCookie("gy_t"),
+							loginid: getCookie('gy_u')
+						}
+					},
+					fn: function(result) {
+						if(result["1"].errcode!=0){
+							uselayer(3, result["1"].errdesc);
+							return;
+						}
+						if(!result["1"].sortresult) {
+							$('.kt-score').html('<p class="no-data">暂无排行榜</p>');
+							return;
+						}
+						var arr = result["1"].sortresult;
+						arr.sort(function (a,b) {
+							return b.truecount - a.truecount; 
+						});
+						for (var i = 0 ; i < arr.length; i++) {
+							var str = 
+								'<div class="kt-list clearfix">'
+									+'<div class="kt-list-left">'
+										+'<img style="opacity:'+(i<3?'1':'0')+'" src="'+(i<3?'../../images/istudy/wx_kt-rank-'+(i+1)+'.png':'')+'" />'
+									+'</div>'
+									+'<div class="kt-list-right">'
+										+'<h3 class="kt-person clearfix">'
+											+'<div><img src=' + getCookie('gy_u_imgurl') +'/> </div>'
+											+'<span>&nbsp;'+arr[i].name+'</span>'
+										+'</h3>'
+										+'<p class="clearfix">'
+											+'<span>题目总数：'+arr[i].total+'</span>'
+											+'<span>回答正确：'+arr[i].truecount+'</span>'
+										+'</p>'
+										+'<p class="clearfix">'
+											+'<span>回答错误：'+(arr[i].total-arr[i].truecount)+'</span>'
+											+'<span>正确率：'+ Math.round(arr[i].truecount/arr[i].total*100)+'%</span>'
+										+'</p>'
+									+'</div>'
+								+'</div>';								
+							$('.kt-score').append(str);
+						}	
+					},
+					error: function(str){
+						uselayer(3, '获取排行榜失败！');
+					}
+				});
+			}
+		</script>	
+	</body>
+</html>

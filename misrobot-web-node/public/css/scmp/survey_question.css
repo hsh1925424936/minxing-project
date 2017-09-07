@@ -1,0 +1,182 @@
+        [v-cloak] {
+			display: none;
+		}
+		body{
+			background: rgb(255,255,255);
+		}
+		.container{
+			padding:0 10px;
+			box-sizing:border-box;
+		}
+		/*公用样式*/
+		.marginBottom{
+			margin-bottom:20px;
+		}
+		.marginTop{
+			margin-top: 20px;
+		}
+		.marginLeft{
+			margin-left: 20px;
+		}
+		.marginRight{
+			margin-right: 5px;
+		}
+		.paddingLeft{
+			padding-left:20px;
+		}
+		.paddingRight{
+			padding-right:20px;
+		}
+		.padding{
+			padding: 10px;
+		}
+		.input {
+			width: 200px;
+			margin-left: 10px;
+			margin-right: 10px;
+		}
+		.select {
+			width: 120px!important;
+			margin-left: 10px;
+			margin-right: 10px;
+		}
+		.textarea {
+			width: 100%;
+		}
+		.flex-end {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+		}
+		.flex-start {
+			justify-content: flex-start;
+		}
+		.flex-between {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		.flex {
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+		.middleFontSize{
+			font-size: 16px;
+			font-weight: normal;
+			margin-top: 0;
+		}
+		.border{
+			border:solid 1px lightgray;
+			border-radius: 5px;
+		}
+		table{
+			border-collapse: collapse;
+		}
+		/*调查记录的样式*/
+		.title {
+			background: rgb(229, 230, 232);
+			padding: 10px 20px;
+		}
+		/*调查模板样式*/
+
+		/*1.新增试卷*/
+		.editQuestionDialog {
+			border: solid 1px lightgray;
+			padding: 20px;
+			box-sizing: border-box;
+		}
+		.footerCenter {
+			display: inline-block;
+			width: 100%;
+			text-align: center;
+			margin-top: 20px;
+		}
+		.naireType{
+			display: inline-block;
+			width: 120px;
+		}
+		/*查看问卷详情*/
+		.detail h1 {
+			font-size: 24px;
+			text-align: center;
+		}
+		.instruction {
+			font-size: 18px;
+			padding: 36px 50px 5px;
+		}
+		.question {
+			padding: 0 50px;
+		}
+		.question h2 {
+			font-size: 16px;
+		}
+		.selectCont {
+			margin-left: 20px;
+		}
+		.selectCont textarea {
+			width: 100%;
+		}
+		/*调查结果样式*/
+		.list {
+			width: 80%;
+			height: 400px;
+			margin: 0 auto 10px;
+			padding: 0 30px;
+			border-color: black;
+		}
+		.list h2 {
+			font-size: 20px;
+		}
+		.tableProgress {
+			width: 100%;
+			margin-top: 30px;
+		}
+
+		.tableProgress thead th {
+			border: solid 1px gray;
+			height: 50px;
+			text-align: center;
+		}
+
+		.tableProgress thead th:nth-of-type(1) {
+			width: 40%;
+		}
+
+		.tableProgress th:nth-of-type(2) {
+			width: 10%;
+		}
+
+		.tableProgress tbody tr td {
+			border: solid 1px gray;
+			text-align: center;
+			height: 40px;
+		}
+
+		.tableProgress tbody tr td:nth-of-type(3) {
+			padding: 0 30px;
+			box-sizing: border-box;
+		}
+		.pieChart {
+			width: 880px;
+			height: 265px;
+			margin: 0 auto;
+		}
+		.singleBar {
+			width: 880px;
+			height: 265px;
+			margin: 0 auto;
+		}
+		#code canvas {
+			width: 100px;
+			position: absolute;
+			top: 50px;
+			right: 50px;
+		}
+		.transfer>div:nth-of-type(1),.transfer>div:nth-of-type(3){
+			width:320px;
+		}
+		.release>div{
+			width:60%!important;
+		}

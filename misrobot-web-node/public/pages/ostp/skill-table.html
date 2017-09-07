@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>技能课表</title>
+		<link rel="stylesheet" type="text/css" href="../../css/ostp/person-center.css"/>
+		<style type="text/css">
+			.selectOuter{
+				padding-bottom:19px; border-bottom:1px solid #CCCCCC;
+				margin-top:45px; line-height:34px;
+			}
+			.selectTxt{
+				 font-weight:bold;
+			}
+
+
+			.box{
+				width:100%; height:100%; padding-bottom:50px; position: relative; margin-top: 20px;
+			}
+
+			.dayOuter{
+				width:100%; padding-left:10px; padding-right:10px;
+				margin-top:20px;
+			}
+			.dayCon{
+				width:100%; margin-bottom:0; border-bottom: 1px solid #ccc;
+			}
+			.day{
+				width:14%; float:left;  text-align: center; margin-top: 20px;
+			}
+			
+			.lessonOuter{
+				width:86%;  float:left; margin-left:0;
+			}
+			.timePart { float: left; width: 6%; margin: 22px 1%; margin-top: 22px; border-radius: 50%; color: #fff; text-align: center;}
+			.timePart.time_1{
+				background: green;
+			}
+			.timePart.time_2{
+				background: orange;
+			}
+			.timePart.time_3{
+				background: #111111;
+			}
+			.timePart.pass{
+				background: #BBBBBB; color: #fff;
+			}
+			.lessonCon{
+				width:80%; float: left; padding:10px 20px; 
+			}
+			.lessonCon div{
+				width:50%; height:30px;
+				line-height:30px; float:left;
+			}
+			.address{
+				text-align:right;
+			}
+			.address1{
+				color:#BBBBBB;
+			}
+			.name{
+				color:#7F7F7F;
+			}
+			.txt{
+				text-align:right; color:#868686;
+			}
+			.pass,.grey,.pass .name,.pass .txt,.pass .time,.pass .address,.pass .lesson {color:#BBBBBB;}
+			
+			
+			.calendar { width:100%; padding: 0 10%; overflow:hidden; position:relative; display: none; }
+			.calendar .last,.calendar .next { cursor: pointer; position:absolute; top:6px; text-decoration:none; }
+			.last{ left:2em; color: #000;}
+			.next{ right:2em; color: #000;}
+			.calendar .calendarTitle { font-weight: normal; font-size: 18.64px; height:30px; text-align:center; cursor: pointer; line-height:30px;}
+			.calendar ol { overflow:hidden;}
+			.calendar-ul { overflow:hidden; height: 100px;  position: relative; }
+			.calendar ul { overflow:hidden;  }
+			.calendar li { float:left; width:14.28%; height:80px; line-height:80px; text-align:center; border-bottom: 1px solid #ccc;}
+			.calendar ul li { height: 95px; cursor: pointer; font-size:18px;}
+			.calendar ul li span { display: block; margin: 5px auto; width: 50%; text-align: center; border: 1px solid #fff;border-radius:50% ;}
+			.calendar ul li i { display: none; margin: 4px auto; width: 8px; height: 8px; background: #c5c5c5; border-radius: 50%;}
+			.calendar ul li.task i { display: block;}			
+			.week_end{ color:-red}
+			.past { color:#ccc}
+			.calendar .today span { background:#0496ca; color:#fff; }			
+			
+			.calendar li.selday span { border: 1px solid #0496ca; }
+			.calendar1 .today span {background:none; color: #0496ca;}
+			.calendar1 li { border-bottom: none;}
+			.calendar1 .calendar-ul { border-bottom: 1px solid #ccc;}
+			.calendar1 .last { left:0; padding: 1em;top: -8px;}
+			.calendar1 .next { right: 1em;}
+			
+			.calendar2 { position: absolute; left: 0; top: 0; z-index: 2; background: #fff; }
+			.calendar1 { display: none;}					
+			.schedule-list{
+				overflow: auto; display: none;
+			}
+			.scheduleOuter{
+				width:80%; margin: 0 auto; border-bottom:1px solid #F4F4F4;
+			}
+			.timeBucket{
+				width:18.2%; height:14px; line-height:14px; text-align:center;
+				float:left; margin-top:20px;
+			}
+			.scheduleCon{
+				width:81%; float:left;
+			}
+			.scheduleBox{
+				border-bottom:1px solid #F4F4F4; padding:10px;
+			}
+			.scheduleBox div{
+				width:50%; float:left; line-height:35px;
+			}
+			
+						
+			.week-schedule { display: block;}
+			.sel-schedule{
+				font-size:14px; color:rgb(102,102,102);
+			}
+			
+			.prev-date,.next-date{
+				width: 25px; height: 25px; position: absolute; top: 50%; margin-top: 24px;
+				cursor: pointer;
+			}
+			.prev-date { background: url(../../images/ostp/turnLeft.jpg) no-repeat; left: 20px;}
+			.next-date { background: url(../../images/ostp/turnRight.jpg) no-repeat; right: 20px;}
+			
+			
+		</style>
+		
+	</head>
+	<body>
+		<div class="topOuter">
+			<div class="topCon clearfix">
+				<a href="index.html" class="top2Con-index">
+					<img src="../../images/ostp/logo.png" class="logoPng" />
+					<div class="top2Tit">
+						在线自主技能训练平台
+					</div>					
+				</a>
+				<div class="top1Tit-right">
+					<img src="../../images/ostp/bell.png" class="bell" />
+					<img src="../../images/ostp/redCircle.png" class="redCircle" />
+					<img src="../../images/ostp/feifei.png" class="headImg" />
+					<div class="nameAndYear clearfix">
+						<div class="nameAndYearInner clearfix">
+							<div class="userName"></div>
+							<div class="year"></div>
+							<span class="arrow"></span>
+						</div>
+						<ul class="selectUl"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="main clearfix">
+			<div class="leftOuter">
+
+			</div>
+
+			<div class="rightOuter clearfix">
+				<div class="row selectOuter">
+					<div class="selectTxt col-xs-4">
+						技能课表
+					</div>
+					<div class="col-xs-6">
+					</div>
+					<div class="col-xs-2">
+						<select class="form-control sel-schedule">
+							<option value="1">周课表</option>
+							<option value="2">日课表</option>
+						</select>
+					</div>
+				</div>
+				
+				<div class="box clearfix">
+		
+					<div class="dayOuter week-schedule clearfix"></div>
+		
+		
+				<div class="calendar calendar1" id="div2">
+					<span class="prev-date"></span>
+					<span class="next-date"></span>
+					<span class="last"></span>
+					<span class="next" style="display: none;"></span>
+					<h3 class="calendarTitle"></h3>
+					<ol>
+						<li>一</li>
+						<li>二</li>
+						<li>三</li>
+						<li>四</li>
+						<li>五</li>
+						<li class="week_end">六</li>
+						<li class="week_end">日</li>
+					</ol>
+					<div class="calendar-ul clearfix">
+						<ul class="clearfix"></ul>
+					</div>
+				</div>
+				
+			    <div class="calendar calendar2" id="div1">
+			    	
+					<span class="last"></span>
+					<span class="next"></span>
+					<h3 class="calendarTitle"></h3>
+					<ol>
+						<li>一</li>
+						<li>二</li>
+						<li>三</li>
+						<li>四</li>
+						<li>五</li>
+						<li class="week_end">六</li>
+						<li class="week_end">日</li>
+					</ol>
+					<ul>
+					
+					</ul>    	
+			    	
+			    </div>						
+				<div class="schedule-list"></div>		
+		
+		
+		
+				</div>
+				
+				
+			</div>
+
+		</div>
+		<script src="../../js/jquery.touchSwipe.min.js"></script>
+		<script src="../../js/ostp/my-schedule.js"></script>
+	</body>
+
+
+</html>

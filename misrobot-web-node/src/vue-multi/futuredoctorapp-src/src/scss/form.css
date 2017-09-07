@@ -1,0 +1,47 @@
+.inner-form{
+    
+}
+.inner-form .input-wrap{
+	width: 100%;
+	border: 1px solid #C9CACA;
+	border-radius: 2px;
+	margin-bottom: .24rem;
+}
+.inner-form input,
+.inner-form select,
+.inner-form .select-mode{
+    font-size: .24rem;
+    width: 100%;
+    box-sizing: border-box;
+    padding:.20rem;
+    height: auto;
+    background: none;
+    line-height: normal;
+}
+.inner-form .select-mode{
+    padding-right: .24rem;
+    position: relative;
+}
+.inner-form .select-mode i.select-arrow{
+    position: absolute;
+    top: 50%;
+    right: .1rem;
+    margin-top: -0.12rem;
+    width: .24rem;
+    height: .24rem;
+    font-size: .24rem;
+}
+.inner-form .info{
+    padding-top: .24rem;
+}
+.inner-form .info a{
+    font-size: .22rem;
+    color: #666;
+}
+/* .tip-txt{
+    padding: .24rem;
+    font-size: .24rem;
+}
+.item-note .iconfont{
+    font-size: .24rem;
+} */

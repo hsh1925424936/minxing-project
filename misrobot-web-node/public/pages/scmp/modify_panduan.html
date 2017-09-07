@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新建判断题</title>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/base.js"></script>
+    <script src="../../js/scmp/newq_compo.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/scmp/addqcommon.css">
+</head>
+<body>
+<div class="container">
+    <cpagetitle :title="pagetitletext"></cpagetitle>
+    <cmain :maintitle="maintitle[0]">
+        <div class="maincontent">
+            <textarea name="" id="" cols="30" rows="10" class="form-control" placeholder="输入题目名称,300字以内" v-model="qname" maxlength="300"></textarea>
+        </div>
+    </cmain>
+    <cmain :maintitle="maintitle[1]">
+        <div>
+            <label class="radio-inline">
+                <input type="radio" :value="0" name="panduan" v-model="answer"> 正确
+            </label>
+            <label class="radio-inline">
+                <input type="radio" :value="1" name="panduan" v-model="answer"> 错误
+            </label>
+        </div>
+    </cmain>
+    <cmain :maintitle="maintitle[2]">
+        <div class="flexcenter">
+            <span class="labeltitle">所属学科</span>
+            <select class="form-control labelcontent" v-model="seldiscipline">
+                <option value="">请选择学科</option>
+                <option v-for="(v,i) in disciplinelist" :value="v.id">{{ v.name }}</option>
+            </select>
+        </div>
+    </cmain>
+    <cupdate :submitnewq="submitnewq"></cupdate>
+</div>
+<script>
+    var vm=new Vue({
+        el:'.container',
+        data:{
+            answer:'',
+            qname:'',
+            disciplinelist:[],//学科列表
+            seldiscipline:'',
+            pagetitletext:'修改题目-判断',//页面标题
+            maintitle:['题目名称','正确答案','设置']//页面主模块标题
+        },
+        created:function(){
+            this.list=window.parent.vm.list;
+            this.questionid=window.parent.vm.questionid;
+            this.qname=this.list.name;
+            this.answer=this.list.answer;
+            this.seldiscipline=this.list.courseid;
+        },
+        mounted:function(){
+            this.querydiscipline()
+        },
+        methods:{
+            querydiscipline:function(){//查询学科接口
+                var self=this;
+                var data={
+                    command:"cls/selectCourses",
+                    sessionid:getCookie('sid'),
+                    loginid:getCookie('uid')
+                };
+                function callback(res){
+                    self.disciplinelist=res.courseslist
+                }
+                post("/cls/selectCourses",data,callback,errcodefn,errfn)
+            },
+            submitnewq:function(){//保存添加题目接口
+                if(this.qname==''){
+                    layer.msg('请输入题干内容');
+                    return
+                }
+//                if(this.answer!==0&&this.answer!==1){
+//                    layer.msg('请设置正确答案');
+//                    return
+//                }
+                if(this.seldiscipline==''){
+                    layer.msg('请选择题目所属学科');
+                    return
+                }
+                var data={
+                    command:'question/updatetheoryquestion',
+                    sessionid:getCookie('sid'),
+                    loginid:getCookie('uid'),
+                    id:this.questionid,
+                    questionname:this.qname,
+                    questiontypeid:4,
+                    courseid:this.seldiscipline,
+                    answer:this.answer
+                };
+                function callback(res){
+                    layer.msg('已成功修改');
+                    window.parent.vm.pageconf.onchange(findurltype('page'),findurltype('number'));
+                    var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                    setTimeout(function(){
+                        parent.layer.close(index)
+                    },1000)
+                }
+                post('/question/updatetheoryquestion',data,callback,errcodefn,errfn)
+            }
+        }
+    })
+</script>
+</body>
+</html>

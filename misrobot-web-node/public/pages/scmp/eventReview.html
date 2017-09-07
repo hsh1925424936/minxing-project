@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>事件审核设置</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style>
+			body,html{
+				background-color: white;
+			}
+			.eventReview {
+				margin: 0 20px;
+			}
+			
+			.eventReview .op {
+				background-color: #E5E6E8;
+				height: 40px;
+				line-height: 40px;
+				padding-left: 20px;
+				margin-bottom: 20px;
+			}
+			
+			.eventReview .btn {
+				margin-top: 30px;
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="eventReview">
+			<p class="op">事件审核设置</p>
+			<div>
+				<template>
+					<el-table :data="pramlist" border>
+						<el-table-column type="index" label="序号" width="150">
+						</el-table-column>
+						<el-table-column prop="setname" label="事件名称">
+						</el-table-column>
+						<el-table-column label="是否需要审核">
+							<template scope="scope">
+								<el-radio class="radio" v-model="pramlist[scope.$index].status" :label="0">是</el-radio>
+								<el-radio class="radio" v-model="pramlist[scope.$index].status" :label="1">否</el-radio>
+							</template>
+
+						</el-table-column>
+					</el-table>
+				</template>
+			</div>
+			<div class="btn">
+				<el-button type="primary" @click="save">保存</el-button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '.eventReview',
+			data: {
+				radio: '',
+				pramlist: []
+			},
+			mounted: function() {
+				this.getList();
+			},
+			methods: {
+				getList() {
+					let self = this;
+					var data = {
+						command: 'system/querysetlist',
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						paramcode: 'event_audit_set'
+					}
+
+					function callback(res) {
+						if(res && res.errcode == 0) {
+							self.pramlist = res.setlist;
+						} else {
+							layer.msg(res.errdesc)
+						}
+					}
+					post('/system/querysetlist', data, callback, errcodefn, errfn)
+				},
+				save() {
+					let self = this;
+					console.log(self.pramlist)
+					var arr=[];
+                	for(var i=0;i<self.pramlist.length;i++){
+                		arr.push({
+                			id:self.pramlist[i].id,
+                			status:self.pramlist[i].status,
+                			paramcode:'event_audit_set'
+                		})
+                	}
+					let data = {
+						command: 'system/modifyset',
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						setlist: arr
+					}
+
+					function callback(res) {
+						if(res && res.errcode == 0) {
+							layer.msg('设置成功')
+							setTimeout(function() {
+								self.getList();
+							}, 300)
+						} else {
+							layer.msg(res.errdesc)
+						}
+					}
+					post('/system/modifyset', data, callback, errcodefn, errfn)
+
+				}
+			}
+		})
+	</script>
+
+</html>

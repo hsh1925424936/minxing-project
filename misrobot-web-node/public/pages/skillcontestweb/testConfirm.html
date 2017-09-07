@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" style="height:100%;">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=5;IE=7;IE=8;IE=9;" />
+    <title>Title</title>
+    <link rel="stylesheet" href="../../css/skillcontestweb/blueHeader.css">
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../js/skillcontestweb/methods.js"></script>
+    <script src="../../js/skillcontestweb/pcMQ.js"></script>
+</head>
+<body>
+    <div id="header">
+        <p>武汉大学医学部第三届临床医学专业学生临床技能竞赛</p>
+        <h1 id="stationNum"></h1>
+    </div>
+    <div id="submitSuccess" class="hide">
+        <img src="../../images/skillcontestweb/ok.png" alt="">
+        <p><span id="groupNum2"></span>成绩提交成功！</p>
+    </div>
+    <div id="confirmGroup" class="show">
+        <h1>请确认比赛小队：<span id="groupNum3"></span></h1>
+        <span id="status"></span>
+        <div id="errorMsgBox"></div>
+        <div id="objMsgBox2"></div>
+        <div id="mqmsg"></div>
+        <p class="btnGray" id="okBlue">确 认<span id="autoTime"></span></p>
+    </div>
+    <script>
+        var istimer=0;//0表示没有定时器
+        var pageURL="";//本页的url，为获取前一个页面传来的devID
+        var devID="";
+        var readystate="";//（考站状态，换站中？）
+        var deviceInfo={//设备信息，页面加载后就根据device/query接口
+            roomId:"",//701
+            stationId:"",//1
+            stationName:"",//第一站：胸痛问诊
+            examId:"",//1
+            Status:"",//0
+        };
+        var groupInfo= {//收到M18消息后查询接口得到的数据/schedule/tjtc/queryteamstatus
+            stationId:"",//例如：1
+            stationName:"",//当前地点名称（如第一站：问诊）
+            Status:"",//考站状态：1-等待中，4-考试中，2-换站中，3-换站等待中
+            Lefttime:"",//剩余时间：单位：秒
+            uId:"",//小队id
+            Name:"",//小队名称
+        };
+        function setGroupInfo(obj){//把“第一站：问诊”，“第一小队”，“换站状态”显示到页面中的函数。obj是后台返回的对象
+            for(var i=0;i<obj.queryresult.length;i++){
+                if(deviceInfo.stationId==obj.queryresult[i].stationid){//找到当前房间
+                    groupInfo.Status=obj.queryresult[i].status;
+                    groupInfo.uId=obj.queryresult[i].uid;
+                    groupInfo.Name=obj.queryresult[i].name;
+                    $("#groupNum3").html(groupInfo.Name);
+                    if(groupInfo.Status==1){
+                        $("#status").html("比赛尚未开始，请等待");
+                        $("#okBlue").attr("class","btnGray");
+                        $("#okBlue").removeClass("btnTrans");
+                        $("#groupNum3").parent("h1").removeClass("btnTrans");
+                    }
+                    else if(groupInfo.Status==4){
+                        groupInfo.Lefttime=obj.queryresult[i].lefttime;
+                        //$("#leftTimeBox").html(groupInfo.Lefttime);
+                        var aaa=10;
+                        var showBlueBtn=setTimeout(function(){
+                            $("#status").html("请点击确认按钮，进入比赛");
+                            $("#okBlue").attr("class","btnBlue");
+                            $("#okBlue").removeClass("btnTrans");
+                            $("#groupNum3").parent("h1").removeClass("btnTrans");
+                        },2000);
+                        if(istimer==0){
+                            var timerAutoTest=setInterval(function(){
+                                istimer=1;
+                                $("#autoTime").html("("+aaa+")");
+                                //$("#leftTimeBox").html(groupInfo.Lefttime);
+                                aaa--;
+                                groupInfo.Lefttime--;
+                                if(aaa<0){
+                                    clearInterval(timerAutoTest);
+                                    timerAutoTest=null;
+                                    window.location.href="testpc.html?stationName="+deviceInfo.stationName+"&&groupName="+groupInfo.Name+"&&groupId="+groupInfo.uId+"&&leftt="+groupInfo.Lefttime;
+                                }
+                            },1000)
+                        }
+                    }
+                    else if(groupInfo.Status==2){
+                        $("#status").html("换站中，请稍等");
+                        $("#okBlue").attr("class","btnGray");
+                        $("#okBlue").removeClass("btnTrans");
+                        $("#groupNum3").parent("h1").removeClass("btnTrans");
+                    }
+                    else{
+                        $("#status").html("换站尚未结束，请稍等");
+                        $("#okBlue").attr("class","btnGray");
+                        $("#okBlue").removeClass("btnTrans");
+                        $("#groupNum3").parent("h1").removeClass("btnTrans");
+                    }
+                }
+            };
+        };
+        function queryStatusFisrt(){//挂掉后重启程序，直接查一次status，如果是4，继续考试
+            var json={
+                command:"schedule/tjtc/queryteamstatus",
+                examid:deviceInfo.examId,
+                deviceid:devID
+            };
+            function errordesc (obj){
+                $("#errorMsgBox").html(obj.errdesc)
+            };
+            function errorfn(){
+                $("#errorMsgBox").html("连接服务器失败")
+            };
+            function isTestOk(obj){
+                var newObj=JSON.stringify(obj);
+                for(var i=0;i<obj.queryresult.length;i++){
+                    if(deviceInfo.stationId==obj.queryresult[i].stationid){//找到当前房间
+                        groupInfo.Status=obj.queryresult[i].status;
+                        groupInfo.uId=obj.queryresult[i].uid;
+                        groupInfo.Name=obj.queryresult[i].name;
+                        $("#groupNum2,#groupNum3").html(groupInfo.Name);
+                        if(groupInfo.Status==1){
+                            $("#status").html("比赛尚未开始，请等待");
+                            $("#okBlue").attr("class","btnGray");
+                        }
+                        else if(groupInfo.Status==4){
+                            var aaa=10;
+                            groupInfo.Lefttime=obj.queryresult[i].lefttime;
+                            $("#status").html("请点击确认按钮，进入比赛");
+                            $("#okBlue").attr("class","btnBlue");
+                            if(istimer==0){
+                                var timerAutoTest=setInterval(function(){
+                                    istimer=1;
+                                    $("#autoTime").html("("+aaa+")");
+                                    //$("#leftTimeBox").html(groupInfo.Lefttime);
+                                    aaa--;
+                                    groupInfo.Lefttime--;
+                                    if(aaa<0){
+                                        clearInterval(timerAutoTest);
+                                        timerAutoTest=null;
+                                        window.location.href="testpc.html?stationName="+deviceInfo.stationName+"&&groupName="+groupInfo.Name+"&&groupId="+groupInfo.uId+"&&leftt="+groupInfo.Lefttime;
+                                    }
+                                },1000)
+                            }
+                        }
+                        else if(groupInfo.Status==2){
+                            $("#status").html("换站中，请稍等");
+                            $("#okBlue").attr("class","btnGray");
+                        }
+                        else{
+                            $("#status").html("换站尚未结束，请稍等");
+                            $("#okBlue").attr("class","btnGray");
+                        }
+                    }
+                }
+            };
+            postJson("/schedule/tjtc/queryteamstatus",json,isTestOk,errordesc,errorfn)//查状态
+        };
+        function isReady(msg){//收到M18消息后做的事情
+            var json={
+                command:"schedule/tjtc/queryteamstatus",
+                examid:deviceInfo.examId,
+                deviceid:devID
+            };
+			function errordesc (obj){
+				$("#errorMsgBox").html(obj.errdesc)
+			};
+			function errorfn(){
+				$("#errorMsgBox").html("连接服务器失败")
+			};
+            //服务器返回queryresult[考生状态信息数组]
+            // stationid当前考站id
+            //stationname当前地点名称（如第一站：问诊）
+            //status考站状态：1-等待中，4-考试中，2-换站中，3-换站等待中
+            //lefttime剩余时间：单位：秒
+            //uid小队id(未开始考试，小队id为0)
+            //name小队名称（未开始考试，小队名为空字符串）
+            postJson("/schedule/tjtc/queryteamstatus",json,setGroupInfo,errordesc,errorfn)//查状态
+        };
+        function notM18(){
+            return
+        };
+        $("#okBlue").click(function(){//在按钮为蓝色的前提下，点击后跳转到试题界面
+            if($(this).hasClass("btnBlue")){
+                window.location.href="testpc.html?stationName="+deviceInfo.stationName+"&&groupName="+groupInfo.Name+"&&groupId="+groupInfo.uId+"&&leftt="+groupInfo.Lefttime;
+            }
+        });
+        $(window).load(function(){
+            devID = window.external.get_cfg("js.device_id");//调用外部c++方法，获取本机deviceid
+            pushHeatBeat();
+            var timerHeartBeat=setInterval(pushHeatBeat,300000);//每5分钟调用一次心跳函数
+            var pageURL=decodeURI(window.location.href);
+            if(pageURL.indexOf("haha")!=-1){//如果是testpc.html跳转过来的
+                $("#groupNum2").html(pageURL.split("=")[2]);
+                $("#submitSuccess").attr("class","show");
+                $("#confirmGroup").attr("class","hide");
+                var refresh=setTimeout(function(){//显示提交成功后，5秒后回到考试状态栏。
+                    $("#submitSuccess").attr("class","hide");
+                    $("#groupNum2").html("");
+                    $("#confirmGroup").attr("class","show");
+                },3000);
+            }
+            else{
+                $("#submitSuccess").attr("class","hide");
+                $("#confirmGroup").attr("class","show")
+            };
+            //先查询设备信息
+            var json={
+                command:"device/query",
+                deviceid:devID
+            };
+            function query(obj){
+                deviceInfo.roomId=obj.roomid;
+                deviceInfo.stationId=obj.stationid;
+                deviceInfo.stationName=obj.stationname;
+                deviceInfo.examId=obj.examid;
+                deviceInfo.Status=obj.status;
+				$("#stationNum").html(obj.stationname+"(电脑答题)");
+                if(pageURL.indexOf("haha")==-1){//如果不是提交成功过后跳转过来的，那么就是sixCode跳过来的。
+                    queryStatusFisrt();//挂掉后重启程序，直接查一次status，如果是4，继续考试
+                }
+                else{
+                    $("#status").html("成绩已提交");
+                    $("#okBlue").attr("class","btnGray btnTrans");
+                    $("#groupNum3").html("");
+                    $("#groupNum3").parent("h1").addClass("btnTrans");
+                };
+                registerPCStudent(deviceInfo.roomId);//收到roomid之后，开始监听M18
+                recvMQ();
+            };
+            function errorDesc(obj1){
+                $("#errorMsgBox").html(obj1.errdesc);
+            };
+            function errConnect(){
+                $("#errorMsgBox").html("连接服务器失败");
+            };
+            postJson("/device/query",json,query,errorDesc,errConnect);
+            //返回参数：roomid,roomname,stationid,stationname,examid,examname,status
+        })
+    </script>
+</body>
+</html>

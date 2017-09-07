@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/rankscreen/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>决赛</title>
+		<style type="text/css">
+			body{
+				width:100%; height:100%; overflow:hidden;
+			}
+
+			.titOuter{
+				width:100vw; height:11vh; color:white; position:relative;
+				font-weight:bold;
+				background-image:url(../../images/rankscreen/paihang-top.png);
+				background-repeat:no-repeat; background-size:100% 100%;
+			}
+			.titOuter img{
+				width:7.3vh; height:7.3vh; float:left; display:block;
+				margin-left:3.9vw; position:relative; top:50%; margin-top:-3.65vh;
+			}
+			.titOuter h2{
+				height:100%; font-size:5.5vh; top:0; left:0; width:100%;
+				line-height:11.5vh; position:absolute; text-align:center;
+				font-weight:bold;
+			}
+			.th{
+				width:100%; height:5.1vh; color:white; font-size:3.5vh;
+				text-align:center; line-height:5.1vh; background-color:#005EB0;
+				padding-left:4.24vw; padding-right:4.24vw;
+			}
+			.th .td{
+				
+			}
+			.th .td:nth-child(1){
+				position:relative;
+			}
+			.th .td:nth-child(1) img{
+				position:absolute; height:14vh; display:none;
+    			top:10.9vh; left:50%; margin-left:-6.5vh;
+			}
+			.th .td:nth-child(1){
+				border-left:1px solid rgba(255,255,255,0.2);
+			}
+			.td{
+				height:100%; float:left; width:33.33%; box-sizing:border-box;
+				border-right:1px solid rgba(255,255,255,0.2);
+			}
+
+			.trCon{
+				width:100%; text-align:center; line-height:25.84vh;
+				color:white; font-size:6.5vh; background-color:#000000;
+			}
+			.tr{
+				width:100%; height:25.84vh; padding-left:4.24vw; padding-right:4.24vw;
+			}
+			.tr:nth-child(1) .td:nth-child(1),.tr:nth-child(2) .td:nth-child(1),.tr:nth-child(3) .td:nth-child(1){
+				font-size:12vh; font-weight:bold;
+				border-left:1px solid rgba(255,255,255,0.2);
+			}
+			.tr:nth-child(1) .td:nth-child(1){
+				color:rgba(255,255,255,0);
+			}
+			.tr:nth-child(1) .td:nth-child(2),.tr:nth-child(1) .td:nth-child(3){
+				color:rgb(254,240,1);
+			}
+			.tr:nth-child(2) .td:nth-child(1),.tr:nth-child(3) .td:nth-child(1){
+				color:#fff000; text-shadow:0 0.5vh 0.5vh rgba(0,0,0,0.5);
+			}
+			.tr:nth-child(1),.tr:nth-child(3){
+				background-color:rgb(0,48,172);
+			}
+			.tr:nth-child(2){
+				background-color:rgba(0,48,172,0.9);
+			}
+			.tr:nth-child(3) .td{
+				
+			}
+			
+			.tr:nth-child(1) .td:nth-child(2),.tr:nth-child(1) .td:nth-child(3),
+			.tr:nth-child(2) .td:nth-child(2),.tr:nth-child(2) .td:nth-child(3),
+			.tr:nth-child(3) .td:nth-child(2),.tr:nth-child(3) .td:nth-child(3){
+				font-weight:bold;
+			}
+
+			.footCon{
+				width:100%; height:6.32vh; background-image:url(../../images/rankscreen/paihang-but.png);
+				background-size:100% 100%; background-repeat:no-repeat;
+			}
+		</style>	
+		
+		
+	</head>
+	<body>
+		<div class="titOuter">
+			<img src="../../images/rankscreen/wuda_logo.png">
+			<h2>武汉大学医学部第三届临床医学专业学生临床技能竞赛-决赛</h2>
+		</div>
+		<div class="th">
+			<div class="td">
+				排名
+				<img src="../../images/rankscreen/cup.png" class="cup">
+			</div>
+			<div class="td">
+				小组
+			</div>
+			<div class="td">
+				总分
+			</div>
+
+		</div>
+
+		<div class="trCon">
+			<div class="tr">
+				<div class="td"></div>
+				<div class="td"></div>
+				<div class="td"></div>
+			</div>
+			<div class="tr">
+				<div class="td"></div>
+				<div class="td"></div>
+				<div class="td"></div>
+			</div>
+			<div class="tr">
+				<div class="td"></div>
+				<div class="td"></div>
+				<div class="td"></div>
+			</div>
+			
+		</div>
+		<div class="footCon">
+			
+		</div>
+
+	</body>
+	
+	<script type="text/javascript">
+		$(function() {
+			showList();
+			var t = setInterval(showList,30000);
+		});
+
+		function showList(){//展示决赛成绩列表
+			var examid = GetQueryString('examid');//在地址栏中输入examid
+
+			var json = {
+				'1':{
+					command:'osce/report/matchcurrentreport', //接口地址
+					examid:examid
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/osce/report/matchcurrentreport', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						//uselayer(3,base.errdesc);
+						return false;
+					}
+					var matchresult = base.matchresult.matchresult;
+					// if( matchresult[0].finishstationcnt == 0 ){
+					// 	return false;
+					// }
+
+					$('.trCon').html(''); $('.cup').css('display', 'block');
+
+					var sort_matchresult = [];
+					for ( var i = 0; i < matchresult.length; i++ ){
+						for ( var j = 0; j < matchresult.length; j++ ){
+							if( matchresult[j].ranklist == (i+1) ){
+								sort_matchresult.push(matchresult[j]);
+							}
+						}
+					}
+					var str = '';
+					var length_temp = sort_matchresult.length;
+					if ( length_temp > 3 ){
+						length_temp = 3;
+					}
+					for ( var i = 0; i < length_temp; i++ ){
+						var scoredetail = sort_matchresult[i].scoredetail.split('@');
+						for ( var j = 0; j < scoredetail.length; j++ ){
+							if( scoredetail[j] == '-' || !scoredetail[j] ){
+								scoredetail[j] = '-';
+							}else{
+								scoredetail[j] = parseFloat(scoredetail[j]).toFixed(2);
+							}
+						}
+
+						str += 
+						'<div class="tr">'+
+							'<div class="td">'+
+								sort_matchresult[i].ranklist+
+							'</div>'+
+							'<div class="td">'+
+								sort_matchresult[i].examineeid+'队'+
+							'</div>'+
+							'<div class="td">'+
+								parseFloat(sort_matchresult[i].totalscore).toFixed(2)+
+							'</div>'+
+						'</div>';
+					}
+
+					if( sort_matchresult.length < 3 ){
+						var time = 3 - sort_matchresult.length;
+						for ( var i = 0; i < time; i++ ){
+							str += 
+							'<div class="tr">'+
+								'<div class="td">'+
+								'</div>'+
+								'<div class="td">'+
+								'</div>'+
+								'<div class="td">'+
+								'</div>'+
+							'</div>';
+						}
+					}
+
+					$('.trCon').html(str);
+				}
+			});
+		}
+	</script>
+
+</html>

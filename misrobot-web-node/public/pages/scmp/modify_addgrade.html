@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改评分表</title>
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/scmp/addqcommon.css">
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/scmp/newq_compo.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="../../js/base.js"></script>
+    <script src="../../js/ajaxfileupload.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+	<style>
+		.fasten {
+			width:100px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+	    <cpagetitle :title="pagetitletext"></cpagetitle>
+	    <p class="cell"><label>题目名称</label> {{titlename}}</p>
+	    <p class="cell cellline"><label>题目描述</label> {{titlecomment}}</p>
+	    <p class="cell"><label>评分表</label>
+			<div type="button" class="btn btn-primary" @click="modify"><input type="file" name="file" class="uploadfile">修改评分表</div>
+			<!--<button type="button" class="btnBg btn btn-primary" @click="downloadtemplate">模板下载</button>-->
+			<a class="btnBg btn btn-primary" href="/static/excel/operation-question.xls">模板下载</a>
+	    </p>
+	    <p class="cell">
+			注：点击修改评分表操作会重置当前评分表，请谨慎操作。
+		</p>
+	    <!--评分表-->
+	    <ol class="tablebox" v-show="tableboxshow">
+		    <p class="cell"><label>评分表样式：</label> {{listType | listTypeFn}}</p>
+		    <!--步长-->
+			<ol v-if="type==0">
+				<li v-for="(item,index) in conList">
+					<p>
+						<span>{{index+1 | filterFn}}、</span>
+						<span>{{item.name}}</span>
+					</p>
+					<table class="table table-bordered table-hover">
+						<tr class="active">
+							<th class="tableLong fasten">序号</th>
+							<th>评分项</th>
+							<th class="tableLong fasten">分值</th>
+							<th class="tableLong fasten">步长</th>
+						</tr>
+						<tr v-for="(value1,index1) in item.contentName">
+							<td>{{index1+1}}</td>
+							<td>{{value1.evaluate}}</td>
+							<td>{{value1.score}}</td>
+							<td>{{value1.footList}}</td>
+						</tr>
+					</table>
+				</li>
+				<li style="margin-top: 20px;">
+					<span style="margin-left: 20px;">总分 ：</span>
+					<span>{{allScore}}</span>
+				</li>
+			</ol>
+			<!--二级-->
+			<ol v-if="type==2">
+				<li v-for="(item,index) in conList">
+					<p>
+						<span>{{index+1 | filterFn}}、</span>
+						<span>{{item.name}}</span>
+					</p>
+					<table class="table table-bordered table-hover">
+						<tr class="active">
+							<th>序号</th>
+							<th>评分项</th>
+							<th>分值</th>
+							<th>评分表级别</th>
+							<th>分级1</th>
+							<th>分级2</th>
+						</tr>
+						<tr v-for="(value1,index1) in item.contentName">
+							<td>{{index1+1}}</td>
+							<td>{{value1.evaluate}}</td>
+							<td>{{value1.score}}</td>
+							<td>{{type | typeFn}}</td>
+							<td>{{value1.level1}}</td>
+							<td>{{value1.level2}}</td>
+						</tr>
+					</table>
+				</li>
+				<li style="margin-top: 20px;">
+					<span style="margin-left: 20px;">总分 ：</span>
+					<span>{{allScore}}</span>
+				</li>
+			</ol>
+			<!--三级-->
+			<ol v-if="type==3">
+				<li v-for="(item,index) in conList">
+					<p>
+						<span>{{index+1 | filterFn}}、</span>
+						<span>{{item.name}}</span>
+					</p>
+					<table class="table table-bordered table-hover">
+						<tr class="active">
+							<th>序号</th>
+							<th>评分项</th>
+							<th>分值</th>
+							<th>评分表级别</th>
+							<th>分级1</th>
+							<th>分级2</th>
+							<th>分级3</th>
+						</tr>
+						<tr v-for="(value1,index1) in item.contentName">
+							<td>{{index1+1}}</td>
+							<td>{{value1.evaluate}}</td>
+							<td>{{value1.score}}</td>
+							<td>{{type | typeFn}}</td>
+							<td>{{value1.level1}}</td>
+							<td>{{value1.level2}}</td>
+							<td>{{value1.level3}}</td>
+						</tr>
+					</table>
+				</li>
+				<li style="margin-top: 20px;">
+					<span style="margin-left: 20px;">总分 ：</span>
+					<span>{{allScore}}</span>
+				</li>
+			</ol>
+			<!--五级-->
+			<ol v-if="type==5">
+				<li v-for="(item,index) in conList">
+					<p>
+						<span>{{index+1 | filterFn}}、</span>
+						<span>{{item.name}}</span>
+					</p>
+					<table class="table table-bordered table-hover">
+						<tr class="active">
+							<th>序号</th>
+							<th>评分项</th>
+							<th>分值</th>
+							<th>评分表级别</th>
+							<th>分级1</th>
+							<th>分级2</th>
+							<th>分级3</th>
+							<th>分级4</th>
+							<th>分级5</th>
+						</tr>
+						<tr v-for="(value1,index1) in item.contentName">
+							<td>{{index1+1}}</td>
+							<td>{{value1.evaluate}}</td>
+							<td>{{value1.score}}</td>
+							<td>{{type | typeFn}}</td>
+							<td>{{value1.level1}}</td>
+							<td>{{value1.level2}}</td>
+							<td>{{value1.level3}}</td>
+							<td>{{value1.level4}}</td>
+							<td>{{value1.level5}}</td>
+						</tr>
+					</table>
+				</li>
+		   		<p class="cell"><label>评分表总分：</label>11分</p>
+	    	</ol>
+	    </ol>
+
+	   	<div class="cell">
+	   		<label>设置</label>
+	   		<p class="cell"><label>所属学科</label>{{subject}}</p>	
+	   	</div>	
+	    
+	    <div class="footerBtn">
+			<button type="button" class="btnBg btn btn-primary" @click="last">上一步</button>
+	    	<button type="button" class="btn btn-primary" @click="submitquestion">确定</button>
+			<button type="button" class="btnBg btn btn-primary" @click="close">取消</button>
+	    </div>
+	</div>
+<script>
+    var vm=new Vue({
+        el:'.container',
+        data:{
+            pagetitletext:'修改题目-操作',//页面标题
+            questionid:'',//操作题id
+            operation: '',
+			list: '',//列表对象
+			conList: [],//列表数组
+			allScore: '',//总分
+			type:'',//评分表级别
+			listType:'',//评分表样式
+			titlename:'',
+			titlecomment:'',
+			subject:'',
+			tableboxshow:false
+        },
+		filters: {
+			filterFn: function(val) {
+				return china(val + "")
+			},
+			typeFn:function(value){
+				if (value==2) {
+					return '二级'
+				} else if(value==3){
+					return "三级"
+				}else{
+					return '五级'
+				}
+			},
+			listTypeFn: function(value){
+				if(value==0){
+					return '加分(0分开始)'
+				} else if(value==1){
+					return '减分(满分开始)'
+				} else if(value==3){
+					return '单选'
+				}else{
+					return ' '
+				}
+			}
+		},
+        mounted:function(){
+            this.questionid=location.href.split('=')[1];
+            $('.uploadfile').on('change',function () {
+            	var val = $('.uploadfile').val();
+				if(!val) return;
+            	var obj = $(this)[0];
+	            var data={
+	            	command:'question/importoperationquestions',
+	            	sessionid:getCookie('sid'),
+	            	loginid:getCookie('uid'),
+	            	questionid:location.href.split('=')[1]
+	            }
+	            function callback(res){console.log(res)
+	            	$('.uploadfile').val('');
+	            	if(res.errcode==0){
+	            		vm.operationList();
+	            	}
+           		}
+				importExcel($('.uploadfile'),data,callback,function(){
+					$('.uploadfile').val('');
+				})
+        	});
+        	this.queryoprdet();
+			this.operationList();
+        },
+        methods:{
+			last:function(){
+				window.history.go(-1)
+			},
+            queryoprdet:function(){//查询题目详情
+            	var self=this;
+            	var data={
+            		command:"question/queryoprquestion",
+            		sessionid:getCookie('sid'),
+            		loginid:getCookie('uid'),
+            		questionbaseid:window.location.href.split('=')[1]
+            	}
+            	function callback(res){
+            		self.titlename=res.name;
+            		self.titlecomment=res.comment;
+            		self.subject=res.coursename
+            	}
+            	post("/question/queryoprquestion",data,callback,errcodefn,errfn)
+            },
+            importgrade:function(){//导入评分表
+            	this.operationList();
+            },
+            downloadtemplate:function(){//下载评分模板
+            	var data = {
+					sessionid: getCookie('sid'),
+					loginid: getCookie('uid'),
+					command: "question/grademould",
+					questionid: this.questionid
+				};
+				exportExcel(data);
+            },
+			operationList: function() {
+				var self = this;
+				var data = {
+					command: 'question/queryoperation',
+					sessionid: getCookie('sid'),
+					loginid: getCookie('uid'),
+					questionid: window.location.href.split('=')[1]
+				}
+
+				function callback(res) {
+					self.allScore = res.total;
+					self.list = res.queryOperationlist;
+					self.type=res.gradelevel;
+					if (res.queryOperationlist.length!==0){
+						self.tableboxshow=true;
+					}
+					var newList = [];
+					var scoreList = [];
+					var lengthList = [];
+					self.listType=res.queryOperationlist[0].deducting;
+					for(var i = 0; i < self.list.length; i++) {
+						newList.push(self.list[i].opstepcontent);
+						lengthList.push(self.list[i].adjuststepunit)
+					}
+					for(var i = 0; i < self.unique(newList).length; i++) {
+						self.conList.push({
+							name: self.unique(newList)[i],
+							contentName: [],
+						})
+					}
+					for(var i = 0; i < self.conList.length; i++) {
+						for(var j = 0; j < self.list.length; j++) {
+							if(self.conList[i].name == self.list[j].opstepcontent) {
+								self.conList[i].contentName.push({
+									evaluate: self.list[j].rightoperation,
+									score: self.list[j].gradeitemscore,
+									footList: self.list[j].adjuststepunit,
+									level1:self.list[j].classification1,
+									level2:self.list[j].classification2,
+									level3:self.list[j].classification3,
+									level4:self.list[j].classification4,
+									level5:self.list[j].classification5
+								})
+							}
+						}
+					}
+				}
+				post('/question/queryoperation', data, callback, errcodefn, errfn)
+			},
+			submitquestion: function(){//提交题目
+				var self=this;
+				var data={
+					command:"question/infooperation",
+					sessionid:getCookie('sid'),
+					loginid:getCookie('uid'),
+					questionid:window.location.href.split('=')[1]
+				};
+				function callback(res){
+					if(res.errcode==0){
+						layer.msg('已修改当前操作题');
+						window.parent.vm.pageconf.onchange(findurltype('page'),findurltype('number'));
+						var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+						parent.layer.close(index)
+					}else{
+						layer.msg('请导入评分表');
+						return
+					}
+				}
+				post("/question/infooperation",data,callback,errcodefn,errfn)
+			},
+			unique: function(arr) {
+				var result = [];
+				var json = {};
+				for(var i = 0; i < arr.length; i++) {
+					if(!json[arr[i]]) {
+						result.push(arr[i]);
+						json[arr[i]] = 1;
+					}
+				}
+				return result;
+			},
+			modify:function(){
+				var _this = this;
+				var _json = {
+					"1": {
+						command: 'question/deleteimportgrade',
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						id: window.location.href.split('=')[1]
+					}
+				};
+				var json = JSON.stringify(_json);
+				$.ajax({
+					url: "/question/deleteimportgrade",
+					type: "POST",
+					data: json,
+					success: function (data) {
+						data = data["1"];
+						if (data.errcode == 0) {
+							_this.conList=[];
+						} else if (data.errcode == 9904) {
+							layer.msg("登录信息已失效，请重新登录");
+						}
+					},
+					error: function () {
+						errfn();
+					}
+				})
+			},
+			close:function(){
+				var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+				parent.layer.close(index)
+			}
+        }
+    })
+
+var _change = {
+			ary0: ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"],
+			ary1: ["", "十", "百", "千"],
+			ary2: ["", "万", "亿", "兆"],
+			init: function(name) {
+				this.name = name;
+			},
+			strrev: function() {
+				var ary = [];
+				for(var i = this.name.length; i >= 0; i--) {
+					ary.push(this.name[i]);
+				}
+				return ary.join("");
+			},
+			isUnit: function(ary) {
+				var retVal = false;
+				var cur = ary[0];
+				if(this.ary2.indexOf(cur) > 0) {
+					retVal = true;
+				}
+				return retVal;
+			},
+			pri_ary: function() {
+				var $this = this;
+				var ary = this.strrev();
+				var zero = "";
+				var newary = "";
+				var i4 = -1;
+				for(var i = 0; i < ary.length; i++) {
+					if(i % 4 == 0) {
+						i4++;
+						newary = this.ary2[i4] + newary;
+						zero = "";
+					}
+					if(ary[i] == '0') {
+						switch(i % 4) {
+							case 0:
+								break;
+							case 1:
+							case 2:
+							case 3:
+								if(ary[i - 1] != '0') {
+									zero = "零";
+								}
+								break;
+
+						}
+
+						newary = zero + newary;
+						zero = '';
+					} else {
+						newary = this.ary0[parseInt(ary[i])] + this.ary1[i % 4] + newary;
+					}
+
+				}
+				while(newary.indexOf("零") == 0 || this.isUnit(newary)) {
+					newary = newary.substr(1);
+				}
+				return newary;
+			}
+		}
+		function change() {
+			this.init.apply(this, arguments);
+		}
+		change.prototype = _change;
+		function china(val) {
+			var k = new change(val);
+			if(val >= 10 && val <= 19) {
+
+				return k.pri_ary().substring(1, 3)
+			} else {
+				return k.pri_ary()
+			}
+
+		}
+    
+</script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选择开放场地</title>
+    <link rel="stylesheet" href="../../css/scmp/doorControl.css">
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="../../js/scmp/jquery-ui.js"></script>
+    <link rel="stylesheet" href="../../css/assistant/style.css">
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/scmp/scmpcommon.css">
+</head>
+<body>
+    <div class="container-fluid" v-cloak>
+        <div class="setTLeft">
+            <div class="search searchLeft">
+                <input type="text" placeholder="请输入训练项名称">
+                <button class="btn btn-default" onclick="matchPlace(this)"> <i class="glyphicon glyphicon-search"></i> 搜索</button>
+            </div>
+            <ul id="users">
+                <li @click="toggleUser(index)" v-for="(value,index) in newSearched" :data-index="index">
+                    <i class="notChoosed"></i>
+                    <span>{{ value.name }} {{ value.type | learntype}}</span>
+                </li>
+            </ul>
+        </div>
+        <div class="setTCenter">
+            <div>
+                <button class="btn btn-default" @click="pushDoorUser()">增加 &gt;&gt;</button><br><br>
+                <button class="btn btn-default" @click="pullDoorUser()">&lt;&lt; 删除</button>
+            </div>
+        </div>
+        <div class="setTRight">
+            <p style="height:34px;line-height:34px">已选训练项</p>
+            <ul class="choosedList" id="choosedUser">
+                <li @click="toggleChoosedUser(index)" v-for="(value,index) in userChoosed" :data-index="index">
+                    <span>{{ value.name }} {{ value.type | learntype}}</span>
+                </li>
+            </ul>
+        </div>
+        <div class="bottomBtns">
+            <button class="btn btn-primary" onclick="saveAddPlace()">确 定</button>&nbsp;&nbsp;
+            <button class="btn btn-default" onclick="closeAll()">关 闭</button>
+        </div>
+    </div>
+    <script>
+        Vue.filter('learntype',function(value){//过滤训练项类型
+            if(value=="0"){
+                return "在线训练"
+            }else if(value=="1"){
+                return "模型"
+            }else{
+                return "智能设备"
+            }
+        });
+        var vm=new Vue({
+            el:'.container-fluid',
+            data:{
+                userSearched:[],
+                userChoosed:[],
+                newList:[],
+                newSearched:[],
+            },
+            mounted:function(){
+            	this.userChoosed=window.parent.vm.nameList;
+            	this.newList=this.userChoosed;
+            	for (var i=0;i<this.userChoosed.length;i++) {
+            		if (this.userChoosed[i].name==null) {
+            			
+            			this.userChoosed=[];
+            		}
+            	}
+            	this.getPlaceList();
+            	
+//          	if (this.newList[0].type==) {
+//          		
+//          	}
+            },
+            methods:{
+            	getPlaceList:function() {//获取授课地点的函数
+        var self=this;
+            var json={
+                command: "learn/querylearninfo",
+                loginid:getCookie('uid'),
+                sessionid:getCookie('sid')
+            };
+            function callback(response){
+            	
+                self.userSearched=response.learnids;
+                console.log(self.userSearched.length);
+                console.log(self.newList.length);
+                for (var i=0;i<self.userSearched.length;i++) {
+                	if (self.newList[0].type==self.userSearched[i].type) {
+                		self.newSearched.push(self.userSearched[i])
+                	}
+                }
+                console.log(self.newSearched)
+                var newArr=[];
+                for (var i=0;i<window.parent.vm.nameList.length;i++) {
+                	for (var j=0;j<self.userSearched.length;j++) {
+                		if (self.userSearched[j].name==window.parent.vm.nameList[i].name&&self.userSearched[j].type==window.parent.vm.nameList[i].type) {
+                		  window.parent.vm.nameList[i].learnid=self.userSearched[j].learnid
+                	  }
+                	}
+                }
+            };
+            post("/learn/querylearninfo",json,callback,errcodefn,errfn)
+        },
+                toggleUser:function(index){   
+                    $("#users li:not(.userListHeader):eq("+index+") i").toggleClass("isChoosed");
+                    $("#users li:not(.userListHeader):eq("+index+")").toggleClass("grayBg");
+                },
+                toggleChoosedUser:function(index){
+                    $("#choosedUser li:eq("+index+")").toggleClass("grayBg");
+                },
+                pushDoorUser:function(){//点击增加按钮，增加本门的门禁用户
+                    var self=this;
+                    for(var i=0;i<$("#users li.grayBg").length;i++){
+                        self.userChoosed.push(
+                                self.newSearched[$("#users li.grayBg:eq("+i+")").data("index")]
+                        );
+                        console.log(self.userChoosed);
+                    };
+                    $("#users li i").each(function(){
+                        $(this).removeClass("isChoosed");
+                    });
+                    $("#users li").each(function(){
+                        $(this).removeClass("grayBg")
+                    });
+                },
+                pullDoorUser:function(){//点击删除按钮，移除本门的门禁用户
+                    var self=this;
+                    for(var i=0;i<$("#choosedUser li.grayBg").length;i++){
+                        delete self.userChoosed[$("#choosedUser li.grayBg:eq("+i+")").data("index")];
+
+                    };
+                    var temp=[];
+                    for(index in self.userChoosed){
+                        temp.push(self.userChoosed[index])
+                    };
+                    self.userChoosed=[];
+                    self.userChoosed=temp;
+                    $("#choosedUser li").each(function(){
+                        $(this).removeClass("grayBg")
+                    });
+                },
+            }
+        });
+       // getPlaceList();//从后台获取场地列表
+        function matchPlace(elem){//增加门禁用户的搜索框
+            var input=$(elem).prev().val();
+            if(input!="请输入训练项名称"){
+                $("#users li").removeClass('hide');
+                $("#users li span").each(function(){
+                    if($(this).text().indexOf(input)==-1){
+                        $(this).parent().addClass('hide')
+                    }
+                })
+            }else{
+                layer.msg("请输入场地名称")
+            }
+        };
+//      function getPlaceList() {//获取授课地点的函数
+//      
+//          var json={
+//              command: "learn/querylearninfo",
+//              loginid:getCookie('uid'),
+//              sessionid:getCookie('sid')
+//          };
+//          function callback(response){
+//          	
+//              vm.userSearched=response.learnids;
+//              var newArr=[];
+//              for (var i=0;i<window.parent.vm.nameList.length;i++) {
+//              	for (var j=0;j<vm.userSearched.length;j++) {
+//              		if (vm.userSearched[j].name==window.parent.vm.nameList[i].name&&vm.userSearched[j].type==window.parent.vm.nameList[i].type) {
+//              		  window.parent.vm.nameList[i].learnid=vm.userSearched[j].learnid
+//              	  }
+//              	}
+//              }
+//              console.log(window.parent.vm.nameList)
+//          };
+//          post("/learn/querylearninfo",json,callback,errcodefn,errfn)
+//      };
+        function saveAddPlace(){
+        	
+            var learnids=[];
+            for(index in vm.userChoosed){
+                learnids.push({
+                    learnid:vm.userChoosed[index].learnid,
+                    workstationtypeid:window.location.href.split('=')[1],
+                    type:vm.userChoosed[index].type,
+                })
+            };
+            var data={
+                command:'learn/modifylearntotrain',
+                sessionid:getCookie('sid'),
+                loginid:getCookie('uid'),
+                learnids:learnids,
+            };
+            function callback(res){
+                layer.msg('设置训练项成功！',{icon:1},function(){
+                	window.parent.getExeType();
+                	
+                });
+                setTimeout(closeAll,3000);
+            };
+            post('/learn/modifylearntotrain',data,callback,errcodefn,errfn)
+        }
+        
+    </script>
+</body>
+</html>

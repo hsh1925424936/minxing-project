@@ -1,0 +1,369 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" >
+<meta name="keywords" content="">
+<meta name="description" content="">
+<title>在线资源</title>
+	<link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../assets/bootstrap/bootstrap-datepicker/css/bootstrap-datepicker.css" />
+	<link rel="stylesheet" href="../../css/scmp/video.css" />
+	<link rel="stylesheet" href="../../css/scmp/onlineResource.css" />
+
+	<style>
+		[v-cloak] {
+				display:none
+			}
+		
+	</style>
+    
+</head>
+
+<body id="body">
+	<p class="lanmu">在线资源管理</p>
+	
+	<div id="wraper" v-cloak>
+		
+
+		<!--头部开始-->
+		<div class="online-header">
+			<form class="form-inline">
+				<div class="form-group mar-80">
+					<label>资源名称：</label>
+					<input type="text" v-model="key_word" class="form-control">
+				</div>
+				<div class="form-group mar-80">
+					<label>学科：</label>
+					<select class="form-control min-100" v-model="discipline_id">
+						<!--<option value="-1">全部</option>-->
+						<option  v-for="item in subjectListqz" :value="item.discipline_id">{{item.discipline_name}}</option>
+					</select>
+				</div>
+				
+				<div class="form-group mar-80">
+					<label>类型：</label>
+					<select class="form-control min-100" v-model="class_type">
+						<option value="-1">全部</option>
+						<option value="1">word</option>
+						<option value="2">excel</option>
+						<option value="3">ppt</option>
+						<option value="4">pdf</option>
+						<option value="5">mp4</option>
+					</select>
+				</div>
+				<div class="ma-br">
+					<div class="form-group mar-80">
+						<label>上传者：</label>
+						<input type="text"  class="form-control"v-model="author_name">
+					</div>
+				
+					<div class="form-group">
+						<label>上传时间：</label>
+						<div class="input-group input-medium date-picker input-daterange" v-datepicker data-date-format="yyyy-mm-dd">
+							<input class="form-control" id="form-starttime" style="font-size: 13px;width:110px;" type="text" >
+							<span class="input-group-addon" >到</span>
+							<input class="form-control" id="form-endtime" style="font-size: 13px;width:110px;" type="text" >
+						</div>
+					</div>
+					<div class="form-group">
+						<button type="button" class="btn btn-primary" @click="searchResource">查询</button>
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" @click="addRe">新增</button>
+						
+					</div>
+				</div>
+				
+			</form>
+			
+		</div>
+		<!--头部结束-->
+
+
+		<div>
+			<table class="table table-bordered ma-br table-list">
+				<tr class="text-center h4" >
+					<td>序号</td>
+					<td>资源名称</td>
+					<td>学科</td>
+					<td>类型</td>
+					<td>访问次数</td>
+					<td>上传者</td>
+					<td>上传时间</td>
+					<td>操作</td>
+				</tr>
+				<tr class="text-center" v-for="(value, index) in tabList" >
+					<td>{{(page-1)*reqnum+index+1}}</td>
+					<td>{{value.resource_name}}</td>
+					<td>{{value.resource_discipline}}</td>
+					<td>{{value.resource_class | resourceClass}}</td>
+					<td>{{value.resource_viewed}}</td>
+					<td>{{value.resource_author}}</td>
+					<td >{{value.createtime}}</td>
+					<td>
+						<button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#seeModal" @click="seeOnline(index)">查看</button>
+						<button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#upModal" @click="updateOnline(index)">编辑</button>
+						<button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#delModal" :onlineIndex="index" @click="curResourceId=value.resource_id">删除</button>
+					</td>
+				</tr>
+				
+					
+
+			</table>
+		</div>
+		
+		<nav aria-label="Page navigation" class="right" style="float:right;margin-right:20px;">
+			<ul class="pagination" style="margin-top:0">
+				<li @click="upPage(1)"><span>首页</span></li>
+				<li @click="upPage(page-1)"><span aria-hidden="true" >«</span></li>
+				<li v-for="item in pageOnline" :class="{active : item==page}" @click="upPage(item)"><span>{{item}}</span></li>
+				<!--
+				<li><span>2</span></li>
+				<li class="active"><span>3</span></li>
+				<li><span>4</span></li>
+				<li><span>5</span></li>
+				-->
+				<li @click="upPage(page+1)"><span aria-hidden="true" >»</span></li>
+				<li @click="upPage(pages)"><span>尾页</span></li>
+			</ul>
+		</nav>
+
+
+		<!--新增资源开始-->
+		<div class="modal fade online-modal" tabindex="-1" role="dialog" id="myModal">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">新增资源</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-inline label-form">
+							<div class="form-group">
+								<p class="errorPrompt">{{errorPrompt}}</p>
+							</div>
+							<div class="from-group">
+								<label><em class="text-success">*</em>资源名称:</label>
+								<input type="" name=""  v-model="resourceName" class="form-control" />
+							</div>
+							<div class="from-group ma-30">
+								<label><em>*</em>学科:</label>
+								<select class="form-control" v-model="adddiscipline_id" >
+									<option  v-for="(value, index) in subjectList" :value="value.discipline_id" v-show="value.discipline_id!=-1">{{value.discipline_name}}</option>
+								</select>
+							</div>
+							<div class="from-group ma-30">
+								<label><em>*</em>上传资源:</label>
+								<input type="file" name="" id="upResource" type="file" class="form-control border-0 adfile" @change="upResource($event)" />
+							</div>
+							<div class="from-group ma-30">
+								<label><em>*</em>缩略图:</label>
+								<input type="file" name="" type="file" id="slImg" class="form-control border-0 adfile" @change="upImg($event)" />
+							</div>
+							<div class="from-group ma-30">
+								<label><em>*</em>备注:</label>
+								<textarea class="form-control " v-model="desc" width="500" height="120"></textarea>
+							</div>
+
+						</form>
+					</div>
+					
+					<div class="modal-footer border-0">
+						<button type="button" class="btn btn-default btn-100" data-dismiss="modal">取消</button>
+						<input type="button" class="btn btn-primary btn-100" value="保存" @click="uploadOnline($event)"  />
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--新增资源结束-->
+		<!--修改弹框开始-->
+		<div class="modal fade online-modal" tabindex="-1" role="dialog" id="upModal">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">编辑资源</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-inline label-form">
+							<div class="from-group">
+								<label><em class="text-success">*</em>资源名称:</label>
+								<input type="" name="" class="form-control" v-model="curJson.resource_name" />
+							</div>
+							<div class="from-group ma-30">
+								<label><em>*</em>学科:</label>
+								<select class="form-control" v-model="discipline_id2">
+									<option :value="curJson.resource_disciplineid">{{curJson.resource_discipline}}</option>
+									<option  v-for="(value, index) in subjectList" v-if="value.discipline_id!=curJson.resource_disciplineid" v-show="value.discipline_id!=-1" :value="value.discipline_id">{{value.discipline_name}}</option>
+								</select>
+							</div>
+							<div class="from-group ma-30 pofile">
+								<label><em>*</em>上传资源:</label>
+								<!--<input :value="curJson.resource_filepath" class="form-control upfilePath" readonly/>-->
+								<span class="resourceSu">{{curJson.file_name}}{{curJson.resource_suffix}}({{curJson.resource_size | resourceSize}})</span>
+								<!--
+								<input type="file" name=""  type="file" @change="upResource($event)" class="form-control border-0 fileop" />
+								-->
+							</div>
+							<div class="from-group ma-30 pofile">
+								<label><em>*</em>缩略图:</label>
+								<!--<input :value="curJson.resource_thumbnailpath" class="form-control" />-->
+								<input type="file" name=""  type="file"  @change="upImg($event)" class="border-0 fileop" />
+								<div class="showImg">
+									<img :src="curJson.resource_thumbnailpath" id="preview" width="200" height="120"/>
+								</div>
+							</div>
+							<div class="from-group ma-30">
+								<label><em>*</em>备注:</label>
+								<textarea class="form-control " v-model="curJson.resource_desc" width="500" height="120"></textarea>
+							</div>
+
+						</form>
+					</div>
+					
+					<div class="modal-footer border-0">
+						<button type="button" class="btn btn-default btn-100" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-primary btn-100" @click="updateSave($event)">保存</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--修改弹框结束-->
+
+		<!--删除弹框开始-->
+		<div class="modal fade online-modal" tabindex="-1" role="dialog" id="delModal">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">删除</h4>
+					</div>
+					<div class="modal-body">
+						<p>确认删除吗</p>
+					</div>
+					<div class="modal-footer border-0">
+						<button type="button" class="btn btn-default btn-100" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-primary btn-100" @click="deleteOnline">确定</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--删除弹框结束-->
+		<!--其他弹框开始-->
+		<div class="modal fade online-modal" tabindex="-1" role="dialog" id="otherModal">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="otherModal-title">删除</h4>
+					</div>
+					<div class="modal-body">
+						<p id="otherModal-con"></p>
+					</div>
+					<div class="modal-footer border-0">
+						
+						<button type="button" class="btn btn-primary btn-100"  data-dismiss="modal" >关闭</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--其他弹框结束-->
+
+		<!--查看弹框开始-->
+		<div class="modal fade online-modal" tabindex="-1" role="dialog" id="seeModal" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="vpause"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">{{curJson.resource_name}}</h4>
+					</div>
+					<div class="modal-body">
+						<div class="voideCon">
+							<!--视频播放开始-->
+							<div class="videoBox">
+				                <div class="videoContainer">
+				                	
+				                	<iframe v-if="pathMark==1" :src='curJson.resource_filepath' width='100%' height='360' frameborder='0'>This is an embedded <a target='_blank' href='http://office.com'>Microsoft Office</a> document, powered by <a target='_blank' href='http://office.com/webapps'>Office Online</a>.</iframe>
+				                	
+				                	
+				                    <video v-if="pathMark==3" id="myVideo" controls preload="auto" poster="" :src="curJson.resource_filepath" width="750" height="auto" >
+				                        
+				                    </video>
+				                    
+				                    <div class="caption">在线训练</div>
+				                    <div class="control">
+				                        <div class="topControl">
+				                            <div class="progress">
+				                                <span class="bufferBar"></span>
+				                                <span class="timeBar"></span>
+				                            </div>
+				                            <div class="time">
+				                                <span class="current"></span> 
+				                                <span class="duration"></span> 
+				                            </div>
+				                        </div>
+				                
+				                        <div class="btmControl">
+				                            <div class="btnPlay btn" title="播放/暂停"></div>
+				                            <div class="btnStop btn" title="停止播放"></div>
+				                         
+				                            <div class="btnFS btn" title="全屏播放"></div>
+				                            <div class="btnLight lighton btn" title="Turn on/off light"></div>
+				                            <div class="volume" title="Set volume">
+				                                <span class="volumeBar"></span>
+				                            </div>
+				                            <div class="sound sound2 btn" title="Mute/Unmute sound"></div>
+				                        </div>
+				                    </div>
+				                    <div class="loading"></div>
+				                    
+				                </div>
+				                
+				            </div>
+							<!--视频播放结束-->
+						</div>
+					</div>
+					<div class="modal-footer border-0">
+						<div class="modal-footer-con">
+							<div class="online-thumbnail">
+								<span class="thumbnail-text">缩略图：</span>
+								<img :src="curJson.resource_thumbnailpath" width="200" height="100"/>
+							</div>
+
+
+
+							<div class="online-sumary">
+								<span>上传者：{{curJson.resource_author}}</span>
+								<span>上传时间：{{curJson.createtime}}</span>
+								<span>类型：{{curJson.resource_class | resourceClass }}</span>
+								<span>访问量：{{curJson.resource_viewed}}</span>
+
+								<p class="sumary-txt ma-br">备注：{{curJson.resource_desc}}</p>
+							</div>
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<!--查看弹框结束-->
+		
+	</div>
+	
+	<!--进度条-->
+		<div class="upPross"><div class="upPro"></div></div>
+	
+	<script src="../../js/jquery-3.1.1.min.js"></script>
+	<script src="../../js/jquery.cookie.js"></script>
+	<script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../assets/bootstrap/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+	<script src="../../assets/bootstrap/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+	
+	<script src="../../js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" src="../../js/scmp/siteRoot.js"></script>
+	<script type="text/javascript" src="../../js/scmp/onlineResource.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设置训练项</title>
+    <link rel="stylesheet" href="../../css/scmp/staff.css" type="text/css">
+    <script type="text/javascript">
+        window.onload = function (){
+            var oWin=document.getElementById("win");
+            var oBtn=document.getElementById("choicebtn");
+            var oClose=document.getElementById("close");
+            var oH2=oWin.getElementsByTagName("h2")[0];
+            var bDrag=false;
+            var disX=disY=0;
+            oBtn.onclick=function(){
+                oWin.style.display="block"
+            };
+            oClose.onclick=function(){
+                oWin.style.display="none";
+            };
+            oClose.onmousedown=function (event){
+                (event || window.event).cancelBubble=true;
+            };
+            oH2.onmousedown=function (event){
+                var event=event || window.event;
+                bDrag = true;
+                disX = event.clientX - oWin.offsetLeft;
+                disY = event.clientY - oWin.offsetTop;
+                this.setCapture && this.setCapture();
+                return false
+            };
+            document.onmousemove = function (event){
+                if (!bDrag) return;
+                var event = event || window.event;
+                var iL = event.clientX - disX;
+                var iT = event.clientY - disY;
+                var maxL = document.documentElement.clientWidth - oWin.offsetWidth;
+                var maxT = document.documentElement.clientHeight - oWin.offsetHeight;
+                iL = iL < 0 ? 0 : iL;
+                iL = iL > maxL ? maxL : iL;
+                iT = iT < 0 ? 0 : iT;
+                iT = iT > maxT ? maxT : iT;
+
+                oWin.style.marginTop = oWin.style.marginLeft = 0;
+                oWin.style.left = iL + "px";
+                oWin.style.top = iT + "px";
+                return false
+            };
+            document.onmouseup=window.onblur=oH2.onlosecapture=function (){
+                bDrag = false;
+                oH2.releaseCapture && oH2.releaseCapture();
+            };
+            //删除
+            var oWin2 = document.getElementById("win2");
+            var oBtn2 = document.getElementById("choicebtn2");
+            var oClose2 = document.getElementById("close2");
+            var oH3 = oWin2.getElementsByTagName("h2")[0];
+            var bDrag2 = false;
+            var disX2 = disY2 = 0;
+            oBtn2.onclick = function () {
+                oWin2.style.display = "block"
+            };
+            oClose2.onclick = function () {
+                oWin2.style.display = "none";
+            };
+            oClose2.onmousedown = function (event) {
+                (event || window.event).cancelBubble = true;
+            };
+            oH3.onmousedown = function (event) {
+                var event = event || window.event;
+                bDrag2 = true;
+                disX2 = event.clientX - oWin2.offsetLeft;
+                disY2 = event.clientY - oWin2.offsetTop;
+                this.setCapture && this.setCapture();
+                return false
+            };
+            document.onmousemove = function (event) {
+                if (!bDrag2) return;
+                var event = event || window.event;
+                var iL = event.clientX - disX2;
+                var iT = event.clientY - disY2;
+                var maxL = document.documentElement.clientWidth - oWin2.offsetWidth;
+                var maxT = document.documentElement.clientHeight - oWin2.offsetHeight;
+                iL = iL < 0 ? 0 : iL;
+                iL = iL > maxL ? maxL : iL;
+                iT = iT < 0 ? 0 : iT;
+                iT = iT > maxT ? maxT : iT;
+
+                oWin2.style.marginTop = oWin2.style.marginLeft = 0;
+                oWin2.style.left = iL + "px";
+                oWin2.style.top = iT + "px";
+                return false
+            };
+            document.onmouseup = window.onblur = oH3.onlosecapture = function () {
+                bDrag2 = false;
+                oH3.releaseCapture && oH3.releaseCapture();
+            };
+        };
+        function cancel(){
+            var con = document.getElementById("win");
+            con.style.display = "none";
+        }
+        function cancel2(){
+            var con2 = document.getElementById("win2");
+            con2.style.display = "none";
+        }
+        //点击保存按钮返回页面
+        function returnHtl(){
+            window.history.back(-1);
+        }
+        //点击训练位类型维护按钮返回指定页面
+        function linkHmtl(){
+            self.location = "training-type.html";
+        }
+    </script>
+</head>
+<body>
+    <div class="contentbox">
+        <input type="button" class="newBtn" onclick="returnHtl()" value="保存" />
+        <input type="button" class="btn" onclick="returnHtl()" value="取消" />
+        <input type="button" class="btn" onclick="linkHmtl()" value="训练位类型维护">
+        <!--操作弹窗-停用-->
+        <div id="win">
+            <h2>停用<span id="close">×</span></h2>
+            <div class="container">
+                <div class="handlePrompt">确实需要停用本训练位吗？</div>
+                <div class="bouncedInfo">
+                    <input type="button" class="cancelBtn" value="否" onclick="cancel()">
+                    <input type="button" class="operateBtn" value="是" onclick="cancel()">
+                </div>
+            </div>
+        </div>
+        <!--操作弹窗-删除-->
+        <div id="win2">
+            <h2>删除<span id="close2">×</span></h2>
+            <div class="container">
+                <div class="handlePrompt">确实需要删除本训练位吗？</div>
+                <div class="bouncedInfo">
+                    <input type="button" class="cancelBtn" value="否" onclick="cancel2()">
+                    <input type="button" class="operateBtn" value="是" onclick="cancel2()">
+                </div>
+            </div>
+        </div>
+        <!--表格信息-->
+        <div class="tab">
+            <table width="98%" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>训练位编号</td>
+                    <td>训练位类型</td>
+                    <td>训练项</td>
+                    <td>操作</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <select class="selectSet">
+                            <option>综合穿刺设备</option>
+                            <option>气道管理设备</option>
+                            <option>xxx智能设备</option>
+                            <option>xxx模型</option>
+                            <option>BBB模型</option>
+                        </select>
+                    </td>
+                    <td>胸腔穿刺术-智能设备，腹腔穿刺术-智能设备，骨髓穿刺术-智能设备，骨髓穿刺术-智能设备，心包穿刺术-智能设备</td>
+                    <td><a href="#" id="choicebtn">停用</a> <a href="#" id="choicebtn2">删除</a></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><a href="#">停用</a> <a href="#">删除</a></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><a href="#">停用</a> <a href="#">删除</a></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><a href="#">停用</a> <a href="#">删除</a> <a href="#">新增一行</a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

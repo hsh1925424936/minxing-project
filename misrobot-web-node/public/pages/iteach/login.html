@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/iteach/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>login</title>
+		<style type="text/css">
+			html,body{
+				background-color:#0495CA; 
+			}
+			.box{
+				overflow:hidden;
+			}
+
+			.outer{
+				width:100%; height:100%; overflow:hidden; background: none;
+			}
+
+			.engTxt{
+				width:142px; height:48px; display:block; margin:0 auto;
+				margin-top:135px; margin-bottom:40px;
+			}
+			.inpOuter{
+				width:88.5%; height:43px; margin:0 auto; margin-bottom:8px;
+			}
+			.inpOuter input{
+				height:100%; border:0px; border-radius:0px; color:black;
+			}
+			.submit{
+				width:88.5%; height:43px; background-color:transparent;
+				border:1px solid white; margin:0 auto;
+				color:white; display:block; margin-top:40px;
+			}
+			.txt{
+				display: block;
+				width:100%; height:18px; text-align:center; font-size:12px;
+				color:white; line-height:18px; margin:0 auto; margin-top:110px;
+				font-weight:lighter;
+			}
+			.beian { height: 80px; line-height: 80px; text-align: center; color: #fff; font-size:12px ;}
+			
+		</style>
+		<script>
+			istruelogin();
+			if (getCookie('gy_t')) {
+				window.location.href = "start.html";
+			}
+		
+			window.onload = function () {
+        $(".usernumber").keyup(function () {
+            //如果输入非数字，则替换为''
+            this.value = this.value.replace(/[^\d]/g, '');
+        });					
+				if (getCookie('gy_c')) {
+					$('.usernumber').val(getCookie('gy_c'));
+				}
+				
+				$('.submit').click(function () {
+					if ($.trim($('.usernumber').val())=='') {
+						uselayer(1,'用户名不能为空');
+						return false;
+					}
+					if ($.trim($('.password').val())=='') {
+						uselayer(1,'密码不能为空');
+						return false;
+					}
+					setCookie('gy_c',$.trim($('.usernumber').val()),7);
+					Api.R({
+						url: "/usr/login"
+						isShade:1,
+						json:{
+							"1": {
+								command: "usr/login",
+								accountname:$.trim($('.usernumber').val()),
+								password:$.trim($('.password').val()),
+								type:1
+							}
+						},
+						fn:function (json) {
+							if(json["1"].errcode) {
+								uselayer(3, json["1"].errdesc);
+								return;
+							}
+							setCookie('gy_t',json["1"].sessionid,60);
+							setCookie('gy_u',json["1"].userid,7);
+							Api.R({
+								url: "/usr/querymyinfo"
+								isShade:1,
+								json:{
+									"1": {
+										command: "usr/querymyinfo",
+										uid: getCookie('gy_u'),
+										sessionid: getCookie('gy_t')
+									}
+								},
+								fn:function (base) {
+									if (base["1"].errcode) {
+										uselayer(3,base["1"].message);
+										removeCookie('gy_t');
+										return false;
+									}
+									setCookie('gy_a',base["1"].imgurl,7);
+									setCookie('gy_n',strtocode(base["1"].name),7);
+									setCookie('gy_un',base["1"].username,7);
+//									setCookie('gy_r',json.is_std,7);									
+									// setCookie('gy_g',strtocode(json.grade+'级'));
+									window.location.href = "start.html";
+								}
+							});							
+						},
+						error:function (str) {
+							uselayer(3,'登陆失败');
+						}
+					});					
+					
+				});								
+				
+			};
+		</script>
+	</head>
+	<body>
+		
+		<div class="box clearfix">
+			<div class="outer clearfix">
+				<img class="engTxt" src="../../images/iteach/iteach.png" />
+
+				<div class="inpOuter">
+					<input class="form-control usernumber" type="text" placeholder="请输入你的手机号或工号" value="" />
+				</div>
+
+				<div class="inpOuter">
+					<input type="password" class="form-control password" placeholder="请输入你的密码" />
+				</div>
+
+				<button class="submit" type="button">
+					登录
+				</button>
+
+				<a href="find-pwd.html" class="txt">
+					忘记密码?
+				</a>
+				<div class="beian">版权所有贵州医科大学©2015-2016</div>
+			</div>
+
+		</div>
+		
+	</body>
+	
+</html>

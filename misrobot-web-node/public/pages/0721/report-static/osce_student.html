@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<!-- saved from url=(0091)http://zd.aliyun.3322.org:8080/misrobot-service/report/testreport?examid=2&studentid=159417 -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> OSCE考试-考生-个人考试成绩报告</title>
+    <link href="../common/css/report.css" rel="stylesheet" type="text/css">
+<script src="../common/js/jquery-1.11.3.js" charset="utf-8" type="text/javascript"></script><script type="text/javascript">
+  $( document ).ready(function() {
+	  /*
+	  
+	  数据格式：{"1":{"command": "report/testreport", "errdesc":"invalid command.","errcode":"11",
+   	   "reportinfo":
+	  {
+		  "testname": "预防医学概论(考试名称)",
+		  "stuName": "李白(考生姓名)",
+		  "stuNo": "2632465636565（学号）",
+		  "stuClass" : "临床医学2014级定向丙班(班级)",
+		  "testTime" : "2016-12-03 08:00-10:00(考试时间)",
+		  "testWay" : " OSCE(考试方式)",
+		  "fullScore" : 100(本次考试总分，int),
+		  "getScore" : 85(本次考试得分，int),
+		  "stuNum" : 130(本次考试总人数，int),
+		  "ranknum" : 20(本次考试排名，int),
+		  "summaries" : [ (考试项，数组)
+		      {"itemName" : "病史采集(考试项)", "totalScore" : 20(此项总分,int), "maxScore" : 18(最高分,int), "mediuScore" : 15(中值分,int), "avgScore(平均分,int)" : 14, "minScore" : 8(最低分,int), "getScore" : 16(得分,int)},
+		      {"itemName" : "病例分析", "totalScore" : 40, "maxScore" : 38, "mediuScore" : 32, "avgScore" : 33, "minScore" : 27, "getScore" : 36},
+		      {"itemName" : "病史采集", "totalScore" : 40, "maxScore" : 37, "mediuScore" : 33, "avgScore" : 14, "minScore" : 28, "getScore" : 34}
+		  ],
+		  "deficiencies":[(不足点，数组)
+		    {"itemName": "病史采集", "itemPoints" : [{"point": "患者身份核对", "deficiency" : "没有核对患者身份"}, {"point": "家族病史询问", "deficiency" : "没有询问家族病史"}]},
+		    {"itemName": "病例分析", "itemPoints" : [{"point": "患者身份核对2", "deficiency" : "没有核对患者身份2"}, {"point": "家族病史询问2", "deficiency" : "没有询问家族病史2"}]}
+		  ]
+		}  }}
+	  
+	  
+	  */
+	  
+
+	  var info = null;
+//	  var data = {"errcode":"0","errdesc":"success","reportinfo":{"scoreranking":26,"studentname":"徐雯丽","testway":"OSCE","getscore":291,"testname":"2011级临床医学八年制学生医学综合考试II临床综合能力考核","testtime":"2017-06-29 07:00-23:00","studentno":"11518397","deficiencies":[{"itemname":"病例分析","itempoints":[{"deficiency":"得分率：0","point":"首选胰岛素（2分）"},{"deficiency":"得分率：0.8","point":"周围神经病变；（5分）<br>最低分为1分"},{"deficiency":"得分率：0.5","point":"无流产史。绝经前避孕套避孕；（2分）"}]},{"itemname":"临床操作","itempoints":[{"deficiency":"得分率：0.8","point":"大单头端盖过麻醉架，双侧和足端超过手术台30Cm；（5分）"},{"deficiency":"得分率：0.8","point":"规范消毒3遍，每次换棉球等；（5分）"},{"deficiency":"得分率：0.8","point":"提衣动作；（5分）"}]},{"itemname":"问诊2","itempoints":[{"deficiency":"得分率：0.5","point":"月经史：13岁初潮，末次月经为10天前；（2分）"},{"deficiency":"得分率：0","point":"避孕方法：用避孕套；（2分）"},{"deficiency":"得分率：0.5","point":"流产情况：10年前孕2个月人流一次（刮宫手术）；（2分）"}]},{"itemname":"体格检查","itempoints":[{"deficiency":"得分率：0","point":"听诊肺动脉瓣区；（1分）"},{"deficiency":"得分率：0.5","point":"听诊心尖区（二尖瓣区）（> 1分钟）；（2分）"},{"deficiency":"得分率：0.8","point":"人文关怀（包括洗手、第三者在场、检查部位暴露和复原、检查前将自己的手和器械先予温暖、对危重或行动不便的病人能给予帮扶等，错漏一项扣1分）；（5分）<br>最低分为1分"}]}],"studentcount":50,"studentclass":"2011级临床医学八年制","summaries":[{"avgscore":83.48,"itemname":"问诊1","getscore":81,"totalscore":100,"maxscore":98,"minscore":66,"medianscore":84},{"avgscore":90.74,"itemname":"临床操作","getscore":93,"totalscore":100,"maxscore":100,"minscore":74,"medianscore":92},{"avgscore":79.1,"itemname":"问诊2","getscore":83,"totalscore":100,"maxscore":93,"minscore":55,"medianscore":79.5},{"avgscore":37.68,"itemname":"体格检查","getscore":34,"totalscore":50,"maxscore":46,"minscore":25,"medianscore":39}],"fullscore":350},"command":"osce/report/testreport"};
+	  //console.log(data);
+	  if(data && (data.errcode == "0" || data.errcode == 0)){
+		  info = data.reportinfo;
+	  }
+
+	 
+      if(info){
+		  // student basic info  基本信息
+		  $("#testname").text(info.testname + "成绩单");
+          $("#examineename").text(info.studentname);  
+		  $("#uid").text(info.studentno);
+		  $("#stuclass").text(info.studentclass);
+		  $("#testtime").text(info.testtime);
+		  $("#testway").text(info.testway);
+
+		  $("#fullscore").text(info.fullscore);
+		  $("#getscore").text(info.getscore);
+		  $("#ranknum").text(info.scoreranking);
+		  $("#stunum").text(info.studentcount);
+
+          // summary data 各考站成绩分析
+          if(info.summaries){
+             
+			  var $tabsum = $("#tabsum");
+
+			  for(var i=0; i< info.summaries.length; i++){
+                 
+				  var tmpstr = "<tr>";
+                  var str1 = "<td>" +  info.summaries[i].itemname + "</td>";
+				  tmpstr = tmpstr + str1;
+                  var str2 = "<td>" +  info.summaries[i].totalscore + "</td>";
+				  tmpstr = tmpstr + str2;
+				  var str3 = "<td>" +  info.summaries[i].maxscore.toFixed(2) + "</td>";
+				  tmpstr = tmpstr + str3;
+				  var str4 = "<td>" +  info.summaries[i].medianscore.toFixed(2) + "</td>";
+				  tmpstr = tmpstr + str4;
+				  var str5 = "<td>" +  info.summaries[i].avgscore.toFixed(2) + "</td>";
+				  tmpstr = tmpstr + str5;
+				  var str6 = "<td>" +  info.summaries[i].minscore.toFixed(2) + "</td>";
+				  tmpstr = tmpstr + str6;
+				  var str7 = "<td style='font-weight: bold;'>" +  info.summaries[i].getscore.toFixed(2) + "</td>";
+				  tmpstr = tmpstr + str7;
+
+				  tmpstr = tmpstr + "</tr>";
+
+				  
+				  $tabsum.append(tmpstr);
+				 
+			  }
+
+			  // last <tr> tag
+			  var tmpstr = "<tr style='font-weight: bold;'>";
+                  var str1 = "<td>合计</td>";
+				  tmpstr = tmpstr + str1;
+                  var str2 = "<td>" + info.fullscore + "</td>";
+				  tmpstr = tmpstr + str2;
+				  var str3 = "<td>-</td>";
+				  tmpstr = tmpstr + str3;
+				  var str4 = "<td>-</td>";
+				  tmpstr = tmpstr + str4;
+				  var str5 = "<td>-</td>";
+				  tmpstr = tmpstr + str5;
+				  var str6 = "<td>-</td>";
+				  tmpstr = tmpstr + str6;
+				  var str7 = "<td>" +  info.getscore + "</td>";
+				  tmpstr = tmpstr + str7;
+
+				  tmpstr = tmpstr + "</tr>";
+
+				  
+				  $tabsum.append(tmpstr);
+
+		  }
+
+		  //各考站主要不足点
+
+		  if(info.deficiencies){
+			  var $tabdef = $("#tabdef");
+
+              for(var i = 0 ;i< info.deficiencies.length;i++){
+                  var th = "<tr><th colspan='3' style='text-align: left;'>" + (i+1) + "、";
+				  th = th + info.deficiencies[i].itemname + "</th></tr>";
+                  $tabdef.append(th);
+
+				  if(info.deficiencies[i].itempoints){
+                      for(var j=0;j< info.deficiencies[i].itempoints.length; j++){
+                          var tr = "<tr>";
+						  var td1 = "<td style='text-align: left;'>" + (i+1) + "." + (j+1) + "</td>";
+						  tr = tr + td1;
+
+						  var td2 = "<td style='text-align: left;'>" + info.deficiencies[i].itempoints[j].point + "</td>";
+						  tr = tr + td2;
+
+						  //var td3 = "<td style='text-align: left;'>" + info.deficiencies[i].itempoints[j].deficiency + "</td></tr>";
+						  //tr = tr + td3;
+
+						  $tabdef.append(tr);
+
+                      }
+                  }
+			  }
+          }
+
+	  }
+
+
+  });
+  </script></head>
+
+
+<body>
+    <div id="container">
+        <h2><span id="testname">OSCE考试-考生-个人考试成绩报告</span></h2>
+        <div class="contentbox">
+            <!--用户信息-->
+            <div class="userinfo">
+                <ul>
+                    <li>
+                        <span class="fontstyle">姓名</span>
+                        <span class="usenm" id="examineename">徐雯丽</span>
+                    </li>
+                    <li>
+                        <span class="fontstyle">学号</span>
+                        <span class="usenm" id="uid">11518397</span>
+                    </li>
+                    <li>
+                        <span class="fontstyle">班级</span>
+                        <span class="usenm" id="stuclass">2011级临床医学八年制</span>
+                    </li>
+                    <li>
+                        <span class="fontstyle">时间</span>
+                        <span class="usenm" id="testtime">2017-06-29 07:00-23:00</span>
+                    </li>
+                    <li>
+                        <span class="fontstyle">方式</span>
+                        <span class="usenm" id="testway">OSCE</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="score">
+                <div class="score-classfiy fontalgin">满分 <span id="fullscore">600</span>分</div>
+                <div class="score-classfiy">
+                    <span class="score-numb" id="getscore">539</span> 分
+                </div>
+                <div class="score-classfiy fontalgin">排名 <span class="colorred" id="ranknum">26</span>（共<span id="stunum">50</span>人）</div>
+            </div>
+            <!--各考站成绩分析-->
+            <div class="contentbox">
+                <table cellpadding="0" cellspacing="0" border="0" class="datalist" width="100%" id="tabsum">
+                    <tbody><tr>
+                        <th colspan="7" style="text-align: center; background-color: #cccccc;">各考站成绩分析</th>
+                    </tr>
+                    <tr>
+                        <th>考试项目</th>
+                        <th>满分</th>
+                        <th>最高分</th>
+                        <th>中值分</th>
+                        <th>平均分</th>
+                        <th>最低分</th>
+                        <th>得分</th>
+                    </tr>
+
+                <tr><td>病例分析</td><td>100</td><td>98.00</td><td>84.00</td><td>83.48</td><td>66.00</td><td style="font-weight: bold;">81.00</td></tr><tr><td>体格检查</td><td>100</td><td>100.00</td><td>92.00</td><td>90.74</td><td>74.00</td><td style="font-weight: bold;">93.00</td></tr><tr><td>外科操作</td><td>100</td><td>93.00</td><td>79.50</td><td>79.10</td><td>55.00</td><td style="font-weight: bold;">83.00</td></tr><tr><td>内科操作</td><td>100</td><td>97.00</td><td>92.00</td><td>82.3</td><td>75.00</td><td style="font-weight: bold;">96.00</td></tr><tr><td>急救操作</td><td>100</td><td>100.00</td><td>92.00</td><td>90.74</td><td>74.00</td><td style="font-weight: bold;">93.00</td></tr><tr><td>病史采集</td><td>100</td><td>100.00</td><td>92.00</td><td>90.74</td><td>74.00</td><td style="font-weight: bold;">93.00</td></tr><tr style="font-weight: bold;"><td>合计</td><td>600</td><td>-</td><td>-</td><td>-</td><td>-</td><td>539</td></tr></tbody></table>
+            </div>
+            <!--各考站主要不足点-->
+            <div class="contentbox">
+                <table width="100%" cellspacing="0" cellpadding="0" border="0" class="datalist" id="tabdef">
+                    <tbody><tr style="text-align: left;">
+                        <th colspan="3" style="text-align: center; background-color: #cccccc;">各考站主要不足点</th>
+                    </tr>
+
+                <tr><th colspan="3" style="text-align: left;">1、病例分析</th></tr><tr><td style="text-align: left;">1.1</td><td style="text-align: left;">首选胰岛素</td></tr><tr><td style="text-align: left;">1.2</td><td style="text-align: left;">周围神经病变</td></tr><tr><td style="text-align: left;">1.3</td><td style="text-align: left;">2型糖尿病并糖尿病肾病V期</td></tr><tr><th colspan="3" style="text-align: left;">2、体格检查</th></tr><tr><td style="text-align: left;">2.1</td><td style="text-align: left;">（口述）怒张：坐位或半坐位（45°）静脉充盈度超过正常</td></tr><tr><td style="text-align: left;">2.2</td><td style="text-align: left;">钟型听诊器直接放在肿大的甲状腺上，听是否有静脉‘嗡鸣’音（口述），听是否有收缩期动脉杂音（口述）</td></tr><tr><td style="text-align: left;">2.3</td><td style="text-align: left;">同一方法检查另一侧甲状腺</td></tr><tr><th colspan="3" style="text-align: left;">3、外科操作</th></tr><tr><td style="text-align: left;">3.1</td><td style="text-align: left;">如果手术完毕，手套未破，又需连续施行另一手术时，可不用重新刷手，仅需用消毒液再浸泡或涂擦前臂。若前一次为污染手术或手套已破，则连续手术前必须重新外科洗手。</td></tr><tr><td style="text-align: left;">3.2</td><td style="text-align: left;">用右手脱下左手手套至掌部，再以左手指脱去右手手套。最后用右手指在左手掌部推下左手手套。脱手套时，手套的外面不能接触皮肤，保护手臂及洗手衣不被手术衣外面污染。</td></tr><tr><td style="text-align: left;">3.3</td><td style="text-align: left;">无菌手术衣包事先由巡回护士打开，无菌手套亦由巡回护士备好。</td></tr><tr><th colspan="3" style="text-align: left;">4、内科操作</th></tr><tr><td style="text-align: left;">4.1</td><td style="text-align: left;">自皮肤至腹膜壁层用0.5%利多卡因逐层作局部浸润麻醉（每次注药前，必须回抽注射器栓，判断是否刺入血管）</td></tr><tr><td style="text-align: left;">4.2</td><td style="text-align: left;">在穿刺点打皮丘（如条件限制不能打皮丘，可口述）</td></tr><tr><td style="text-align: left;">4.3</td><td style="text-align: left;">严密观察有无出血和继发感染的并发症</td></tr><th colspan="3" style="text-align: left;">5、急救操作</th></tr><tr><td style="text-align: left;">5.1</td><td style="text-align: left;">连接呼吸机与面罩/鼻罩</td></tr><tr><td style="text-align: left;">5.2</td><td style="text-align: left;">连接呼吸机管道及供氧管道</td></tr><tr><td style="text-align: left;">5.3</td><td style="text-align: left;">检查，清除管道积水</td></tr><th colspan="3" style="text-align: left;">6、病史采集</th></tr><tr><td style="text-align: left;">6.1</td><td style="text-align: left;">G.病程中的一般情况 ：饮食、睡眠、精神、小便、体力体重（每项1分）</td></tr><tr><td style="text-align: left;">6.2</td><td style="text-align: left;">F.诊治经过：接受过的检查、结果；有过哪些诊断；使用过的药物、剂量、疗程和疗效（每项1分）</td></tr><tr><td style="text-align: left;">6.3</td><td style="text-align: left;">问诊结束时，谢谢患者合作</td></tr></tbody></table>
+            </div>
+
+        </div>
+    </div>
+
+
+</body></html>

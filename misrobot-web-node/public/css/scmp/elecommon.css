@@ -1,0 +1,218 @@
+[v-cloak]{
+	display: none;
+}
+#inform{
+	background-color: #fff;
+}
+.title{
+    background-color: #E5E6E8;
+    height:40px;
+    line-height: 40px;
+    padding-left:20px;
+    margin-bottom: 20px;
+}
+.content{
+	width: 95%;
+	padding: 0 2.5%;
+}
+
+/*按钮部分*/
+.top{
+	width: 100%;
+	margin-bottom: 30px;
+}
+
+.topcell{
+	display: inline-block;
+	margin-right: 20px;
+}
+.el-pagination{
+	text-align: center;
+	margin: 50px 0;
+}
+
+/*表格部分*/
+.list{
+	width: 100%;
+}
+.list .el-table__body-wrapper{
+	overflow: hidden;
+}
+.el-table th>.cell,.el-table .cell{
+	text-align: center;
+}
+/*弹出窗口*/
+.pop{
+	border: 1px solid #ddd;
+	width: 70%;
+	height: 700px;
+	position: fixed;
+	top: 25px;
+	left: 15%;
+	background-color: #fff;
+	z-index: 10;
+}
+.popperson{
+	width: 40%;left: 30%;height: 400px;top: 200px;
+}
+.popinfodet{
+	width: 30%;
+    left: 30%;
+    height: 500px;
+    top: 100px;
+}
+.poptitle{
+	padding: 10px;
+	border-bottom: 1px solid #ddd;
+}
+.poptitle .popclose{
+	float: right;
+	margin-top: 4px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+.popcontent{
+	display: inline-block;
+	height: 660px;
+}
+.personcontent{
+	height: auto;
+	padding: 10px 10px 30px 10px;
+    border-bottom: 1px solid #ddd;
+}
+.popcell{
+	width: 100%;
+}
+.contentleft{
+	width: 59%;
+	overflow: auto;
+}
+.contentright{
+	width: 40%;
+	vertical-align: top;
+	border-left: 1px solid #ddd;
+}
+.popcontent .popcell .celltitle{
+	margin: 5px 0 5px 10px;
+}
+.popcontent .popcell .celltitle .smalltext{
+	color: #ddd;
+	font-size: 13px;
+}
+.popcontent .popcell .cellcontent{
+	margin: 10px;
+	position: relative;
+}
+.popcontent .popcell .cellcontent .el-input{
+	width: 90%;
+}
+.publishobj{
+	border: 1px solid #bfcbd9;
+	width: 90%;
+	min-height: 36px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+.bottomBtn{
+	text-align: right;
+	padding: 30px 0;
+}
+.indexpop{
+	position: absolute;
+	bottom: 40px;
+	background-color: #fff;
+	width: 50%;
+	height: 600px;
+	margin-left: 4%;
+	z-index: 999;
+	/*overflow: auto;*/
+	border: 1px solid #ddd;
+}
+.indexpop .poptitle{
+	background-color: #E5E6E8;
+}
+.indexpop .popcontent{
+	height: 450px;
+	width: 47%;
+	position: relative;
+	top: 30px;
+	border:1px solid#ddd;
+}
+.indexpop .indexcellcontent{
+	margin: 5px 10px;
+	position: relative;
+}
+.indexpop .indexpopleft{
+	float: left;
+	border-left: none;
+}
+.indexpop .indexpopright{
+	float: right;
+	border-right: none;
+}
+.indexpop .popcontent .poptitle{
+	background-color: transparent;
+}
+.indexpop .el-checkbox{
+	display: block;
+	margin-left: 0;
+}
+.spread{
+	position: absolute;
+    right: 0;
+    top: 5px;
+}
+.contentline{
+	width: 100%;
+	position: relative;
+}
+.littlecell{
+	background-color: #20a0ff;
+    color: #fff;
+    height: 36px;
+    line-height: 36px;
+    margin: 5px;
+    padding: 0px 5px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.avatar-uploader .el-upload {
+	border: 1px dashed #d9d9d9;
+	border-radius: 6px;
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+}
+
+.avatar-uploader .el-upload:hover {
+	border-color: #20a0ff;
+}
+
+.avatar-uploader-icon {
+	font-size: 28px;
+	color: #8c939d;
+	width: 178px;
+	height: 178px;
+	line-height: 178px;
+	text-align: center;
+}
+
+.avatar {
+	width: 178px;
+	height: 178px;
+	display: block;
+}
+.c_classMessage .col-sm-8 .avatar-uploader  input{
+	display: none;
+}
+.pretitle{text-align: center;}
+.pretime{text-align: right;width: 95%;padding: 0 2.5%;font-size: 13px;}
+.preline{width: 95%;padding: 0 2.5%;word-break: break-word;}
+.precontent{
+	/*text-align: justify;*/
+	border-bottom: 1px solid #ddd;padding-bottom: 20px;}
+.preimg{width: 80%;margin: auto;display: block;}
+.markicon{ font-weight: bold;color: red;font-size: 22px;vertical-align: middle;}
+
+

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>场地维护</title>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/scmp/scmpcommon.css">
+</head>
+<style>
+    #title{
+        background-color: #E5E6E8;
+        height:40px;
+        line-height: 40px;
+        padding-left:20px;
+    }
+    #search>input{
+        font-size:12px;
+        float:left;
+        height:34px;
+        line-height: 34px;
+        width:71%;
+        border-radius: 5px 0 0 5px;
+        padding-left:5%;
+        outline: none;
+    }
+    #search>button{
+        float:left;
+        display: block;
+        width:22%;
+    }
+    #search{
+        overflow: hidden;
+        width:30%;
+        margin-left: 35%;
+    }
+    #header>p{
+        position: absolute;
+        top:0;
+        left:0;
+    }
+    #header{
+        position: relative;
+        overflow: hidden;
+        margin-top:20px;
+        height:44px;
+    }
+    #courseTable{
+        margin-top:20px;
+        height:426px;
+        overflow: auto;
+    }
+    div.pageInfo{
+        float:left
+    }
+    div.pageNumBox{
+        float:right;
+    }
+    #doorUserFooter{
+        overflow: hidden;
+        padding:10px 20px 20px 20px;
+    }
+    div.pageInfo>p{
+        margin-left:10px;
+    }
+</style>
+<body>
+    <div class="container-fluid" v-cloak="">
+        <div id="title">场地维护</div>
+        <div id="content">
+            <div id="header">
+                <p>
+                    <button class="btn btn-primary" onclick="addplace()">增加</button>
+                </p>
+                <div id="search" class="">
+                    <input type="text" v-model="gesearch" placeholder="请输入房号"/>
+                    <button class="btn btn-default" @click="search()"> <i class="glyphicon glyphicon-search"></i> 搜索</button>
+                </div>
+            </div>
+            <div id="courseTable">
+                <table class="m0 table table-bordered table-striped table-hover f12">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>房号</th>
+                            <th>楼栋</th>
+                            <th>楼层</th>
+                            <th>场地名称</th>
+                            <th>场地地址</th>
+                            <th>类别</th>
+                            <th>物品库存数量</th>
+                            <!--<th>预计时间(小时)</th>-->
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(value,index) in placelist1" :data-id="value.id">
+                            <td>{{index+1}}</td>
+                            <td>{{value.roomnum}}</td>
+                            <td>{{value.build}}</td>
+                            <td>{{value.floor}}</td>
+                            <td>{{value.name}}</td>
+                            <td>{{value.displayname}}</td>
+                            <td>{{value.catename}}</td>
+                            <td>{{value.assetstotal}}</td>
+                            <!--<td>{{value.usetime}}</td>-->
+                            <td>
+							<button type="button" class="btn btn-primary"  @click="edit_mes(value)">编辑</button>
+<!--							<button type="button" class="btn btn-primary"  @click="delete_mes(value)">删除</button>-->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+            var vm=new Vue({
+            el:'.container-fluid',
+            data:{
+                placelist1:[],
+                gesearch:''
+            },
+            methods:{
+            	//编辑跳转
+				edit_mes:function(value){
+		    		layer.open({
+			                type: 2,
+			                title: value.name+'-编辑实验室场地',
+			                shadeClose: true,
+			                shade: 0.8,
+			                area: ['95%', '65%'],
+			                content: 'sitemaintenanceedui.html?id='+value.id,
+			            });
+				},
+				//搜索
+				search:function(){
+				var self=this;
+				var data={
+					command:'site/listplace',//接口地址
+    				sessionid:getCookie('sid'),
+    				loginid:getCookie('uid'),
+    				roomnum:self.gesearch
+				};
+				console.log(JSON.stringify(data))
+				function callback(res){
+				console.log(JSON.stringify(res))	
+    				vm.placelist1=res.placelist;
+    			};
+    			post('/site/listplace',data,callback,errcodefn,errfn)
+				},
+            }
+        });
+        show_place();
+		function show_place(){
+			var data={
+				command:'site/listplace',//接口地址
+    			sessionid:getCookie('sid'),
+    			loginid:getCookie('uid')
+			};
+			//console.log(JSON.stringify(data))
+			function callback(res){
+			//console.log(JSON.stringify(res.placelist))
+    			vm.placelist1=res.placelist;
+    		};
+    		post('/site/listplace',data,callback,errcodefn,errfn)
+		};
+		function addplace(){//“新建实验室”按钮
+            layer.open({
+            	type:2,
+                title: '新建实验室',
+                shadeClose: true,
+                shade: 0.7,
+                area: ['95%', '65%'],
+                content: 'sitemaintenanceadd.html',
+            });
+      };
+    </script>
+</body>
+</html>

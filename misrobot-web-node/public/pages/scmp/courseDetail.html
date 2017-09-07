@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/scmp/scmpcommon.css">
+    <style>
+        #courseDetail{
+            padding:30px 0;
+        }
+        #courseDetail>div{
+            width:80%;
+            margin:0 auto;
+            border-bottom:1px solid #eee;
+            padding:10px 0;
+        }
+        #courseDetail>div>ul{
+            padding-left:30px;
+        }
+        ul{
+            color:#666;
+        }
+    </style>
+</head>
+<body>
+<div id="courseDetail" v-cloak>
+    <div class="classInfo">
+        <h4>班级信息:</h4>
+        <ul>
+            <li v-for="value in classInfo">
+                <span>{{ value.className }}</span>&nbsp;
+                <span>{{ value.stuNumber }}</span>(人)
+            </li>
+        </ul>
+    </div>
+    <div class="trainInfo">
+        <h4>训练项:</h4>
+        <ul>
+            <li v-for="value in learnids">{{ value.name }} {{ value.type | learntype }}</li>
+        </ul>
+    </div>
+    <div class="preExeInfo">
+        <h4>课前任务:</h4>
+        <ul>
+            <li v-for="value in tasks">{{ value.name }} {{ value.type | type }}</li>
+        </ul>
+    </div>
+</div>
+<script>
+    var sid=getCookie('sid');//sessionid
+    var lgid=getCookie('uid');//loginid
+    var sche=window.location.href.split("=")[1];//需要修改的课程的scheduleid
+    Vue.filter('learntype',function(value){//过滤训练项类型
+        if(value=="0"){
+            return "在线训练"
+        }else if(value=="1"){
+            return "模型"
+        }else{
+            return "智能设备"
+        }
+    });
+    Vue.filter('type',function(value){//过滤训练项类型
+        if(value=="0"){
+            return "必选"
+        } else{
+            return "推荐"
+        }
+    });
+    var vm=new Vue({
+        el:"#courseDetail",
+        data:{
+            learnids:[],
+            tasks:[],//"tasks":[{"id":null,"learnid":9,"name":"三腔二囊管止血法","type":0,"mincount":10,"lasttime":"1486557000","mintime":60,"publishdt":"2017-02-08 20:17:54","scheduleid":458,"learntype":0}]
+            classInfo:[],
+            students:[],
+        },
+        methods:{
+
+        }
+    });
+    (function(){
+        var data={
+            command:"course/querycoursedetailinfo",
+            sessionid:sid,
+            loginid:lgid,
+            scheduleid:sche
+        };
+        function callback(res){
+            vm.learnids=res.learnids;
+            vm.tasks=res.tasks;
+            vm.students=res.students;
+            console.log(JSON.stringify(res));
+            if(vm.students.length!=0){//说明这节课选择了学生
+                var clsnameArr=[];//班级name数组
+                for(index in vm.students){//取出班级name数组
+                    clsnameArr.push(vm.students[index].clsname);
+                };
+                var noRepeat=notRepeat(clsnameArr);
+                for(var i=0;i<noRepeat.length;i++){
+                    var stunum=0;
+                    for(var j=0;j< vm.students.length;j++){
+                        if(vm.students[j].clsname==noRepeat[i]){
+                            stunum++
+                        }
+                    }
+                    vm.classInfo.push({
+                        className:noRepeat[i],
+                        stuNumber:stunum
+                    })
+                }
+            }
+        };
+        post("/course/querycousredetailinfo",data,callback,errcodefn,errfn)
+    })();
+</script>
+</body>
+</html>

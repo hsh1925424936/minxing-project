@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>注意事项管理</title>
+		<link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="../../assets/bootstrap/bootstrap-datepicker/css/bootstrap-datepicker.css" />
+		<link rel="stylesheet" href="../../css/scmp/classManage.css" />
+		<style>
+			[v-cloak] {display:none}
+			.directToPage{padding-top: 0 !important;}
+			.search-wrap .form-group{margin-left: 100px;}
+			section .addBtn{float: left;}
+			.delete_sure{z-index: 5;height: 600px;width: 800px;}
+			section .table-responsive td button{display: inline-block;float: none;}
+			.textarea{float: left;width: 90%;height: 300px;margin-bottom: 20px;}
+			.roomlabel{float: left;border: 1px solid #ccc;color: #ccc;padding: 5px 10px;border-radius: 10px;margin: 0 10px 5px 10px;display: inline-block;}
+			.closelabel{float: right;margin: 2px 5px 0 15px;cursor: pointer;}
+			.delete_sure .btn-primary{right: 400px;}
+			.delete_sure .btn-default{right: 200px;}
+			.selectroom{margin-top: 10px;}
+			.right{float: right;}
+			.left{float: left;}
+			.pagination{margin: 0;}
+		</style>
+	</head>
+
+	<body>
+
+		<section id="testpaperManage" v-cloak>
+			<p>注意事项管理</p>
+			<!--*********************************按钮  搜索部分************************************-->
+			<div class="center search-wrap">
+				<form class="form-inline" style="float:none;">
+					<button type="button" class="btn btn-primary addBtn" @click="addNewTest()">新增</button>
+				</form>
+			</div>
+			<!--************************************************表格   试卷信息**************************************-->
+			<div class="table-responsive">
+				<table class="table table-bordered table-striped">
+					<tr>
+						<th>序号</th>
+						<th>注意事项名称</th>
+						<th>使用实验室</th>
+						<th>操作</th>
+					</tr>
+					<tr v-for="(item, index) in attentionlist">
+						<td>{{index + 1}}</td>
+						<td>{{item.attentionname}}</td>
+						<td>{{item.room}}</td>
+						<td style="position: relative;">
+							<button type="button" class="btn btn-primary btn-xs" @click="checkAttention(item.id)">查看</button>
+							<button type="button" class="btn btn-primary btn-xs" @click="editPopAttention(item)">编辑</button>
+							<button type="button" class="btn btn-primary btn-xs" @click="deleteAttention(item.id)">删除</button>
+						</td>
+					</tr>
+
+				</table>
+			</div>
+			
+			<!--************************************************新增**************************************-->
+			<div class="delete_sure" v-show="addnewshow">
+				<div class="c_studentTop">
+					<p>编辑注意事项</p>
+					<p @click="remove">
+						<span class="glyphicon glyphicon-remove"></span>
+					</p>
+				</div>
+				<div class="c_classMessage">
+					<div class="message-left">
+						<form role="form">
+							<div class="form-group">
+								<label for="uname" class="col-sm-4 control-label">注意事项名称:</label>
+								<div class="col-sm-8">
+									<input type="text" placeholder="注意事项名称" class="form-control" v-model="attentionname">
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="message-left">
+						<form role="form">
+							<div class="form-group">
+								<label for="uname" class="col-sm-4 control-label">注意事项正文:</label>
+								<div class="col-sm-8">
+									<textarea class="textarea" v-model="attentiontext"></textarea>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="message-left">
+						<form role="form">
+							<div class="form-group">
+								<label for="uname" class="col-sm-4 control-label">使用实验室:</label>
+								<div class="col-sm-8">
+									<div class="roomlabel" v-for="item in addroomlist">
+										{{item.placename}}
+										<span class="glyphicon glyphicon-remove closelabel" @click="deleteroom(item.placeid)"></span>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="message-left">
+						<form role="form">
+							<div class="form-group">
+								<label for="uname" class="col-sm-4 control-label"></label>
+								<div class="col-sm-8">
+									<select class="form-control selectroom" v-model="roomname">
+										<option value=""> 请选择场地名称 </option>
+										<option v-for="(item,index) in roomlist" :value="item.id">{{item.name}}</option>
+									</select>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<button class="btn btn-primary " type="submit" @click="sureadd">保存</button>
+				<button class="btn btn-default" type="submit" @click="remove">取消</button>
+			</div>
+			<!--************************************************查看**************************************-->
+			<div class="delete_sure" v-show="checkshow">
+				<div class="c_studentTop">
+					<p>查看--{{attentionname}}</p>
+					<p @click="remove">
+						<span class="glyphicon glyphicon-remove"></span>
+					</p>
+				</div>
+				<div class="c_classMessage">
+					<div class="message-left">
+						<form role="form">
+							<div class="form-group">
+								<label for="uname" class="col-sm-4 control-label">注意事项:</label>
+								<div class="col-sm-8" style="text-align: left;">
+									<p style="word-wrap: break-word;">{{attentiontext}}</p>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="message-left">
+						<form role="form">
+							<div class="form-group">
+								<label for="uname" class="col-sm-4 control-label">使用实验室:</label>
+								<div class="col-sm-8" style="text-align: left;">
+									<p style="word-wrap: break-word;">{{checkroom}}</p>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<button style="right: 350px;" class="btn btn-primary " type="submit" @click="remove">关闭</button>
+			</div>
+			<!--************************************************分页**************************************-->
+			<page_component :pageconf="pageconf" :pages="pages"></page_component>
+		</section>	
+	</body>
+	<script src="../../js/jquery-3.1.1.min.js"></script>
+	<script src="../../js/vue-2.1.6.min.js"></script>
+	<script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8" class="bootstrap"></script>
+	<script src="../../layer/xie/layer1.js"></script>
+	<script src="../../js/scmp/common.js"></script>
+	<script src="../../js/base.js"></script>
+	<script src="../../js/scmp/pageComponent.js"></script>
+	<script>
+var vm = new Vue({
+	el:"#testpaperManage",
+	data:{
+		addnewshow:false,
+		checkshow:false,
+		statu:0,//0：新增，1：编辑
+		attentionlist:[],//列表
+		attentionid:'',
+		attentionname:'',//注意事项名称
+		attentiontext:'',//注意事项正文
+		roomname:'',//实验室名称
+		roomlist:[],//实验室列表
+		addroomlist:[],//增加的实验室
+		addroomlistid:[],
+		checkroom:'',//查看实验室名称
+		pageconf: {
+			itemsPerPage:10,//默认显示10条
+			current: 1, //默认显示第一页
+			showItem: 10, //最多显示多少页，自己定义
+			allpage: '', //总共多少页，根据请求返回结果计算
+			totalnum: '', //总共条数，请求返回
+			onchange: function(index,itemsperpage) { 
+				var data = {
+					command:"attention/queryattentionlist",
+					sessionid:getCookie('sid'),
+					loginid:getCookie('uid'),
+					requestPage:index,
+					sizePerPage:itemsperpage,
+				};
+				function callback(res) {
+					vm.attentionlist=[];
+					for (var i=0;i<res.attentionlist.length;i++) {
+						var placelist=[];
+						for (var j=0;j<res.attentionlist[i].placelist.length;j++) {
+							placelist.push(res.attentionlist[i].placelist[j].placename)
+						}
+						var room=placelist.join(',')
+//						res.attentionlist[i].placelist=room;
+						vm.attentionlist.push({
+							id:res.attentionlist[i].id,
+							attentionname:res.attentionlist[i].attentionname,
+							content:res.attentionlist[i].content,
+							placelist:res.attentionlist[i].placelist,
+							room:room
+						})
+					}
+//					vm.attentionlist=res.attentionlist;
+					vm.pageconf.totalnum=res.allcount;
+					vm.pageconf.allpage = Math.ceil(res.allcount / itemsperpage);
+				};
+				post("/attention/queryattentionlist", data, callback, errcodefn, errfn)
+			}
+		},
+	},
+	mounted:function(){
+		this.pageconf.onchange(1,10);
+		this.queryRoom();
+	},
+	methods:{
+		queryRoom:function(){//查询实验室列表
+            var data={
+                command:"site/listplace",
+                sessionid:getCookie('sid'),
+                loginid:getCookie('uid')
+            }
+            function callback(res){
+            	vm.roomlist=res.placelist;
+            }
+            post("/site/listplace",data,callback,errcodefn,errfn)
+		},
+		checkAttention:function(id){
+			var data={
+                command:"attention/queryattention",
+                sessionid:getCookie('sid'),
+                loginid:getCookie('uid'),
+                id:id
+            }
+            function callback(res){
+            	console.log(JSON.stringify(res))
+            	vm.attentionname=res.attentionname;
+            	vm.attentiontext=res.content;
+            	var room=[];
+            	for (var i=0;i<res.placelist.length;i++) {
+            		room.push(res.placelist[i].placename)
+            	}
+            	vm.checkroom=room.join();
+            	vm.checkshow=true
+            }
+            post("/attention/queryattention",data,callback,errcodefn,errfn)
+		},
+		deleteAttention:function(id){//删除列表
+			console.log(id)
+			var data={
+                command:"attention/deleteattention",
+                sessionid:getCookie('sid'),
+                loginid:getCookie('uid'),
+                id:id
+            }
+            function callback(res){
+            	if (res.errcode==0) {
+            		layer.msg("删除成功！")
+            		vm.pageconf.onchange(vm.pageconf.current,vm.pageconf.itemsPerPage);
+            		return false
+            	}
+            }
+            post("/attention/deleteattention",data,callback,errcodefn,errfn)
+		},
+		editPopAttention: function(item){//编辑注意事项
+			this.statu=1;
+			this.attentionid=item.id;
+			this.attentionname=item.attentionname;
+			this.attentiontext=item.content;
+			this.addroomlist=item.placelist;console.log(JSON.stringify(item))
+			this.addnewshow=true;
+		},
+		addNewTest:function(){//打开新增窗口
+			this.statu=0;
+			this.attentionname='';
+			this.attentiontext='';
+			this.addroomlist=[];
+			this.addroomlistid=[];
+			this.addnewshow=true;
+		},
+		deleteroom:function(id){//删除实验室
+			for(var i=0;i<this.addroomlist.length;i++){
+				if (id==this.addroomlist[i].placeid) {
+					this.addroomlist.splice(i,1)
+				}
+			}
+		},
+		remove:function(){//关闭新增窗口
+			this.addnewshow=false;
+			this.checkshow=false
+		},
+		sureadd:function(){//新增或编辑试卷
+			var self=this;
+			if( !self.attentionname ){
+				layer.msg('请填写注意事项名称!');
+				return false;
+			}
+			if( !self.attentiontext ){
+				layer.msg('请填写注意事项的内容!');
+				return false;
+			}
+			if( self.addroomlist.length==0 ){
+				layer.msg('请选择实验室!');
+				return false;
+			}
+			
+			if (this.statu==0) {
+				var data={
+					command:"attention/addattention",
+					sessionid:getCookie('sid'),
+					loginid:getCookie('uid'),
+					attentionname:self.attentionname,
+					content:self.attentiontext,
+					placelist:self.addroomlist,
+				}
+				function callback(res){
+					if(res.errcode==0){
+	            		vm.pageconf.onchange(vm.pageconf.current,vm.pageconf.itemsPerPage);
+						vm.addnewshow=false
+						layer.msg("新增注意事项成功！")
+						return false
+					}
+				}
+				post("/attention/addattention",data,callback,errcodefn,errfn)
+			}else{
+				var idarr=[];
+				for (var i=0;i<self.addroomlist.length;i++) {
+					idarr.push({
+						placeid:self.addroomlist[i].placeid
+					})
+				}
+				var data={
+					command:"attention/modifyattention",
+					sessionid:getCookie('sid'),
+					loginid:getCookie('uid'),
+					attentionname:self.attentionname,
+					content:self.attentiontext,
+					placelist:idarr,
+					id:self.attentionid
+				}
+				function callback(res){
+					if(res.errcode==0){
+	            		vm.pageconf.onchange(vm.pageconf.current,vm.pageconf.itemsPerPage);
+						vm.addnewshow=false
+						layer.msg("编辑注意事项成功！")
+						return false
+					}
+				}
+				post("/attention/modifyattention",data,callback,errcodefn,errfn)
+			}
+			
+			
+		}
+	},
+	watch:{
+		roomname:function(newval){//监听roomname
+			if(newval){
+//				console.log(JSON.stringify(this.addroomlist),'------',JSON.stringify(this.addroomlistid),newval)
+				if (this.addroomlistid.indexOf(newval)>=0) {console.log(this.addroomlistid.indexOf(newval))
+					layer.msg('该实验室已选！')
+					return false
+				} 
+				if (this.addroomlistid.indexOf(newval)==-1){console.log(this.addroomlistid.indexOf(newval))
+					for (var i=0;i<this.roomlist.length;i++) {
+						if(newval==this.roomlist[i].id){
+							this.addroomlist.push({
+								placeid:this.roomlist[i].id,
+								placename:this.roomlist[i].name
+							})
+							this.addroomlistid.push(this.roomlist[i].id)
+						}
+					}
+				}
+				
+//				for (var i=0;i<this.roomlist.length;i++) {
+//					if(newval==this.roomlist[i].id){console.log('111111111111')
+//						this.addroomlist.push({
+//							placeid:this.roomlist[i].id,
+//							placename:this.roomlist[i].name
+//						})
+//					}
+//				}
+			}
+		}
+	},
+	computed: {
+		pages: function() {
+			var pag = [];
+			if(this.pageconf.current < this.pageconf.showItem) { //如果当前的激活的项 小于要显示的条数
+				//总页数和要显示的条数那个大就显示多少条
+				var i = Math.min(this.pageconf.showItem, this.pageconf.allpage);
+				while(i) {
+					pag.unshift(i--);
+				}
+			} else { //当前页数大于显示页数了
+				var middle = this.pageconf.current - Math.floor(this.pageconf.showItem / 2), //从哪里开始
+					i = this.pageconf.showItem;
+				if(middle > (this.pageconf.allpage - this.pageconf.showItem)) {
+					middle = (this.pageconf.allpage - this.pageconf.showItem) + 1
+				}
+				while(i--) {
+					pag.push(middle++);
+				}
+			}
+			return pag
+		}
+	},
+})
+	</script>
+</html>

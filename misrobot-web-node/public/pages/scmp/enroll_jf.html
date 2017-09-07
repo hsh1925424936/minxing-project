@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>培训报名审核</title>
+		<link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css" />
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<script src="../../js/vue.js"></script>
+		<link rel="stylesheet" href="../../css/assistant/style.css">
+		<link rel="stylesheet" href="../../css/scmp/scmpcommon.css">
+	</head>
+	<style>
+		.beizhu {
+			resize: none;
+			width: 335px;
+			height: 132px;
+			max-width: 335px;
+			max-height: 132px;
+		}
+		
+		.shenhe>div{
+			overflow: hidden;
+		}
+		.shen_p{
+			float: left;
+			width: 25%;
+			text-align: right;
+			padding: 20px;
+		}
+		.shen_p + div{
+			float: left;
+			padding: 20px 0;
+		}
+	</style>
+
+	<body>
+		<div class="shenhe">
+			<div>
+				<p  class="shen_p">缴费单号：</p>
+				<div>
+				     <input class="danhao" size="42" v-model="oddNum" />
+				</div>
+			</div>
+			<div class="bztext">
+				<p class="shen_p">备注：</p>
+				<div>
+				     <textarea class="beizhu" v-model="remark"></textarea>
+				</div>
+			</div>
+			<div style="clear:left;overflow:hidden;padding:25px 30px 0 0;text-align: center;" class="bt_add">
+				<button class="btn btn-default" v-on:click="cancel" style="text-align: center;">取消</button>
+				<button class="btn btn-primary" type="submit" style="text-align: center;" @click="paymentSuccess">保存</button>
+			</div>
+		</div>
+	</body>
+
+</html>
+<script type="text/javascript">
+	var vm = new Vue({
+		el: '.shenhe',
+		data: {
+			oddNum: '',
+			remark: ''
+		},
+		mounted: function() {
+
+		},
+		methods: {
+			paymentSuccess: function() {
+				var self = this;
+				if(self.oddNum != '') {
+					var data = {
+						command: 'approvemanage/palymoney', //接口地址
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						id: window.location.href.split('=')[1],
+						receipt_num: self.oddNum,
+						remark: self.remark
+					};
+					function callback(res) {
+						window.parent.vm.activeName="second"
+						window.parent.vm.show_pending();
+						closeAll();
+					};
+					post('/approvemanage/palymoney', data, callback, errcodefn, errfn)
+				} else {
+					layer.msg('请填入缴费单号');
+				}
+			},
+			cancel: function() {
+				closeAll();
+			}
+		}
+	})
+</script>

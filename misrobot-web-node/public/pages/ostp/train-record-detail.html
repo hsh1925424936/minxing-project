@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>训练详情</title>
+		<style type="text/css">
+			body{
+				background-color:#F6F6F6;
+			}
+			
+			.reportOuter{
+				width:1024px; margin:15px auto; background-color:white;
+			}
+			.reportTit{
+				width:100%; font-size:18px; text-align:center;
+				line-height:45px; margin-top:30px;
+			}
+			.reportSubTit{
+				width:100%; font-size:12px; text-align:center;
+				line-height:45px; color:rgb(102,102,102);
+			}
+			.chartOuter{
+				width:100%;
+			}
+			.smartModeOuter{
+				width:470px; float:left; height:300px;
+				margin-left:80px;
+			}
+			.smartModeBox{
+				width:165px; float:left; height:190px; margin-left:35px;
+				margin-right:35px;
+			}
+			.smartModeBox span{
+				display:block; width:100%;
+				font-size:14px; font-weight:bold;
+				margin-top:12px; text-align:center;
+			}
+			.smartModeCon{
+				width:160px; height:160px; margin: 0 auto; position: relative;
+				background: url(../../images/ostp/train-record-detail-bg.png) no-repeat; 
+				background-size: 100% 100%; text-align: center; line-height: 160px;
+				color: #333; border-radius: 50%; overflow: hidden;
+			}
+			.smartModeCon strong { font-size: 50px;}
+			.smartModeCon strong,.smartModeCon span { z-index: 2; position: relative;}
+			.smartModeCon div { width: 100%; background: #ff8019; position: absolute;
+				left: 0; bottom: 0; height: 0%;
+			}
+			
+			.abilityEvalute{
+				float:right; margin-right:40px; width:350px; height:250px;  position: relative;
+			}
+			.abilityEvalute span {
+				position:absolute;left:50%;top:0; margin:-30px; border-radius:50%;border: 1px solid #ccc;
+				text-align: center; width:60px; height:60px; line-height: 60px; background: #fff; font-size:12px ;
+			}
+			.abilityEvalute span.active { background: #dfebf7;}
+			
+			.abilityEvalute p {
+				position: absolute; left: 0; top: 0; width:200px; height:200px; line-height: 200px; text-align: center;
+			}
+			
+			.triOuter{
+				width:100%; height:16px; border-bottom:1px solid #F1F1F1;
+				float:left; margin-top:5px;
+			}
+			.triOn{
+				background-image:url('../../images/ostp/tri.jpg');
+			}
+			.triOuter span{
+				display:block; width:36px; height:100%;
+				background-size:100% 100%; background-repeat:no-repeat;
+				margin-top:1px;
+			}
+			.tri1{
+				float:left; margin-left:100px;
+			}
+			.tri2{
+				float:right; margin-right:100px;
+			}
+			.summaryOuter{
+				width:100%; border-bottom:1px solid #F1F1F1;
+				float:left;
+			}
+			.summary{
+				display:block; float:left; width:33.3%; height:37px;
+				line-height:37px; text-align:center; font-size:14px;
+				color:rgb(2,2,2);
+			}
+			.summary span{
+				font-size:18px; color:rgb(255,127,25);
+			}
+
+			.th{
+				width:100%; background-color:#F7F7F7;
+				font-size:14px; height:54px;
+				line-height:54px; text-align:center;
+				border-bottom:2px solid #E6E6E6; color:rgb(2,2,2);
+			}
+			.th li{
+				float:left;
+			}
+			.th .learnPoint{
+				border-right:2px solid #E6E6E6; width:166px; 
+			}
+			.th .wrongTxt{
+				border-right:2px solid #E6E6E6; width:540px;
+			}
+			.th .accessory{
+				border-right:2px solid #E6E6E6; width:70px;
+			}
+			.th .score{
+				border-right:2px solid #E6E6E6; width:70px;
+			}
+			.th .abilityChange{
+				width:175px;
+			}
+
+			.tr{
+				width:100%; padding: 10px 0;
+				font-size:14px; 
+				/*text-align:center;*/ 
+				border-bottom:1px solid #E6E6E6;
+			}
+			.tr li{
+				float:left;
+			}
+			
+			.tr .learnPoint{
+				width:166px;padding-left: 2em;
+			}
+			.tr .wrongTxt{
+				width:540px;
+			}
+			.tr .accessory{
+				width:70px;
+			}
+			.tr .accessory span{
+				visibility: hidden;
+			}
+			.tr .score{
+				width:70px; text-align: center;
+			}
+			.tr .abilityChange{
+				width:175px;
+			}
+			.accessory>span{
+				display:block; margin:auto; width:25px; height:18px;
+				background-image:url('../../images/ostp/movie.png');
+				background-size:100% 100%; background-repeat:no-repeat; 
+			}
+			.abilityChange>span{
+				display:block; float:left; width:18px; height:12px;
+				background-size:100% 100%; background-repeat:no-repeat;
+				margin-left:6px; margin-top: 5px;
+			}
+			.fishOn{
+				background-image:url('../../images/ostp/fishOn.png');
+			}
+			.fish{
+				background-image:url('../../images/ostp/fish.png');
+			}
+		</style>
+		<script>
+			//$('.bootstrap').remove();
+		</script>
+	</head>
+	<body>
+	
+		<div class="top1Con">
+			<div class="top1Outer clearfix">
+				<a href="index.html" class="top1Tit">临床技能中心</a>
+				<div class="top1Tit-right">
+					<img src="../../images/ostp/bell.png" class="bell" />
+					<img src="../../images/ostp/redCircle.png" class="redCircle" />
+					<img src="../../images/ostp/feifei.png" class="headImg" />
+					<div class="nameAndYear clearfix">
+						<div class="nameAndYearInner clearfix">
+							<div class="userName"></div>
+							<div class="year"></div>
+							<span class="arrow"></span>
+						</div>
+						<ul class="selectUl"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="top2Outer">
+			<div class="top2Con clearfix">
+				<a href="index.html" class="top2Con-index">
+					<img src="../../images/ostp/logo.png" class="logoPng" />
+					<div class="top2Tit">在线自主技能训练平台</div>					
+				</a>
+				<div class="navigateOuter clearfix">
+					<a href="index.html" class="navigate">
+						首页
+					</a>
+					<a href="my-work.html" class="navigate">
+						我的作业
+					</a>
+					<a href="self-train.html" class="navigate">
+						自主训练
+					</a>
+					<a href="online-study.html" class="navigate">
+						自主学习
+					</a>
+					<div class="navigate navigateOn">
+						成长中心
+						<ul>
+							<li><a href="grow-center.html">学习指数</a></li>
+							<li><a href="train-record.html">训练记录</a></li>
+						</ul>
+					</div>	
+					<!-- <a href="subscribe-train.html" class="navigate">
+						预约训练
+					</a> -->
+				</div>
+			</div>
+		</div>
+
+		<div class="mainOuter">
+			<div class="reportOuter clearfix">
+				<h3 class="reportTit">
+					&nbsp;
+				</h3>
+				<h4 class="reportSubTit">
+					来源：&nbsp;&nbsp;&nbsp;&nbsp;
+				</h4>
+
+				<div class="chartOuter clearfix">
+					<div class="smartModeOuter clearfix">
+						<div class="smartModeCon">
+							<strong>0</strong><span>分</span>
+							<div></div>
+						</div>
+
+			
+						<div class="summaryOuter clearfix">
+							
+							<span class="summary">
+								答题数
+							</span>
+							<span class="summary">
+								总用时长
+							</span>
+							<span class="summary">
+								击败同学
+							</span>
+							<span class="summary itemscount">
+								<span>0</span>/0题
+							</span>
+							<span class="summary itemstime">
+								<span>0</span>分钟
+							</span>
+							<span class="summary itemsrank">
+								<span>0</span>%
+							</span>
+
+						</div>
+					</div>
+
+					<div class="abilityEvalute">
+						<!--<div>
+							
+						</div>
+						<p>评测能力</p>-->
+					</div>
+				</div>
+
+				<ul class="th clearfix">
+					<li class="learnPoint">操作步骤</li>
+					<li class="wrongTxt">实际操作</li>
+					<li class="accessory">附件</li>
+					<li class="score">得分</li>
+					<li class="abilityChange">能力变化</li>
+				</ul>
+
+				<div class="table">
+					
+				</div>
+
+			</div>
+
+		</div>
+
+	</body>
+
+	<script src="../../js/echarts-all.js"></script>
+	<script src="../../js/ostp/web_chart.js"></script>
+
+	<script>
+		var R;
+		window.onload = function () {
+			'use strict';			
+			common();
+			var oId = findurl('detail');			
+			Api.R({
+				url: "/grade/getscore",
+				isShade:1,
+				istoken:1,
+				json:{	
+					"1": {
+						command:'grade/getscore',
+						operatoraccount:getCookie('gy_un'),
+						scoreid:oId,
+						sessionid: getCookie('gy_t'),
+						uid: getCookie('gy_u'),
+						loginid: getCookie('gy_u')
+					}
+				},
+				fn:function (base) {
+					console.log(base);
+					base = base[1];
+					if (base.errcode!= 0) {
+						uselayer(1,base.errdesc);
+						return false;
+					}
+					
+					var str = base.scoresheetcode;
+					str = str.substring(str.indexOf('-')+1,str.indexOf('-')+2);
+					switch (str){
+						case '2':$('.reportSubTit').html('来源：智能设备');
+							break;
+						case '1':$('.reportSubTit').html('来源：模拟训练');
+							break;
+						default: $('.reportSubTit').html('来源：在线训练');
+							break;
+					}
+					
+					$('.reportTit').html(base.drillname);
+					$('.smartModeCon strong').html(Math.round(isnull(base.totalscore)));
+					$('.smartModeCon div').stop().animate({'height':parseFloat(isnull(base.totalscore))+'%'});
+					$('.itemscount').html('<span>'+isnull(base.doneitems)+'</span>/'+isnull(base.totalitems)+'题');
+					var time = isnull((datetotime(base.endtime.split('.')[0])- datetotime(base.begintime.split('.')[0]))/60);
+					time = time < 1 ? 1 : time;
+					$('.itemstime span').html(Math.round(time));
+					$('.itemsrank span').html((isnull(base.beat)*100).toFixed(2));
+					
+					var arr = base.score;
+					$('.table').html('');
+					for (var i = 0 ; i < arr.length; i++) {
+						var _str = '';
+						var _num = arr[i].score-arr[i].lastscore;
+						for (var j=0; j<5; j++  ) {
+							if (j<_num) {
+								_str+='<span class="fishOn"></span>';
+							} else {
+								_str+='<span class="fish"></span>';
+							}
+						}
+						
+						var str = 
+							'<ul class="tr clearfix">'
+								+'<li class="learnPoint">'+arr[i].opstepcontent+'</li>'
+								+'<li class="wrongTxt">'+arr[i].subitemcontent+'</li>'
+								+'<li class="accessory"><span></span></li>'
+								+'<li class="score">'+parseFloat(arr[i].score)+'</li>'
+								+'<li class="abilityChange">'
+									+_str
+								+'</li>'
+							+'</ul>';							
+							
+						$('.table').append(str);
+					}
+					
+					//画单次训练的雷达图
+					function toPositive(num){//把负数转换成0
+						if(num < 0){
+							num = 0;
+						}
+						return num;
+					}
+
+					if (base.errcode!=0) {
+						uselayer(1,base.errdesc);
+						return false;
+					}	
+					var arr1 = [
+						{text:'病人安全',max:100},
+						{text:'无菌观念',max:100},
+						{text:'人文关怀',max:100},
+						{text:'专业知识',max:100},
+						{text:'专业技能',max:100},
+						{text:'临床思维',max:100},
+						{text:'职业素养',max:100},
+						{text:'医患沟通',max:100}
+					];
+					var arr2 = [
+						toPositive(parseFloat(base.braq_score)).toFixed(2),
+						toPositive(parseFloat(base.wjgn_score)).toFixed(2),
+						toPositive(parseFloat(base.rwgh_score)).toFixed(2),
+						toPositive(parseFloat(base.zyzs_score)).toFixed(2),
+						toPositive(parseFloat(base.zyjn_score)).toFixed(2),
+						toPositive(parseFloat(base.lcsw_score)).toFixed(2),
+						toPositive(parseFloat(base.zysy_score)).toFixed(2),
+						toPositive(parseFloat(base.yhgt_score)).toFixed(2)
+					];
+								
+					writeradar({
+						obj:$('.abilityEvalute')[0],
+						name:arr1,
+						value:arr2,
+						show:true,
+						bg:'#ffffff',
+						line:'#0496ca',
+						type:'solid',
+						color:'rgba(4,150,202,0.2)'
+					});			
+				},
+				error:function (str) {
+					console.log(str)
+				}
+				
+				
+			});	
+		};	
+		function move(obj,iTarget){
+			var start = obj.a || 0;
+			var dis = iTarget - start;
+			var time = 1000;
+			var count = Math.round(time/30);
+			var n = 0;
+			clearInterval(obj.timer);
+			obj.timer = setInterval(function(){
+				n++;
+				var cur = start + dis/count*n;  //角度
+				obj.a = cur;
+				obj.style.left = R + Math.sin(d2a(cur))*R + "px";
+				obj.style.top  = R - Math.cos(d2a(cur))*R + "px";
+				if(n == count){
+					clearInterval(obj.timer);
+				}
+			},30);
+		}		
+		function d2a(n){
+			return n*Math.PI/180;
+				
+		};			
+	</script>
+	
+</html>

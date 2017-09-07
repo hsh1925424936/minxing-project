@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>考勤管理</title>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/futuredoctorapp/common.js"></script>
+    <script src="../../js/futuredoctorapp/vueComponent.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../css/futuredoctorapp/common.css">
+    <link rel="stylesheet" href="../../css/futuredoctorapp/vueComponent.css">
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <style>
+        body{
+            background-color: #F2F2F2;
+        }
+        .container{ padding-left:0;padding-right:0}
+    </style>
+</head>
+<body>
+    <div class="container" id="container" v-cloak>
+        <headerbox :thistitle="headerTitle" :titlenum="titlenum" id="header"></headerbox>
+        <div></div>
+    </div>
+    <script>
+        var vm=new Vue({
+            el:"#container",
+            data:{
+                headerTitle:'签到设置',
+                titlenum:0,
+            },
+            methods:{
+
+            }
+        })
+    </script>
+</body>
+</html>

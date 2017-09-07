@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>新增物品类别</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style type="text/css">
+			.addGoodsType .oInput {
+				width: 221px;
+			}
+			
+			.addGoodsType ul li {
+				margin-bottom: 30px;
+			}
+			
+			.addGoodsType ul {
+				width: 80%;
+				margin-left: 10%;
+				margin-top: 50px;
+			}
+			
+			.addGoodsType .oLabel {
+				width: 10px;
+				text-align: right;
+				margin-right: 20px;
+			}
+			
+			.addGoodsType .oBtn {
+				text-align: center;
+				margin-top: 50px;
+			}
+			
+			.addGoodsType .oBtn .save {
+				margin-right: 20px;
+			}
+			
+			.addGoodsType .oInput {
+				width: 200px;
+			}
+			
+			.addGoodsType .red {
+				color: red;
+			}
+			
+			.addGoodsType .tree .content{
+				/* height: 200px; */
+				 /* overflow: auto;  */
+				 /* width:100%;
+				 height:80%;
+				 overflow-y:auto;
+				 overflow-x: hidden; */
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="addGoodsType">
+			<div class="tree" v-show="false">
+				<div class="content" style="width:100%;height:155px;overflow-y:auto;">
+					<el-tree :data="treeList" :props="defaultProps" show-checkbox accordion
+					@check-change="handleCheckChange" check-strictly="true" default-expand-all>
+				</div>
+				<div style="background:rgb(247,247,247);text-align:right;padding:5px 20px;box-sizing:border-box;">
+					<el-button type="primary" @click="sure">确定</el-button>
+				</div>
+			</div>
+			<ul>
+				<li>
+					<label class="red">*</label>
+					<label class="oLabel">上级分类</label>
+					<el-input v-model="parent" class="oInput" @focus="treeBlur"></el-input>
+				</li>
+				<li>
+					<label class="red">*</label>
+					<label class="oLabel">类别名称</label>
+					<el-input class="oInput" v-model="typeName"></el-input>
+				</li>
+			</ul>
+			<div class="oBtn">
+				<el-button type="primary" class="save" @click="save">保存</el-button>
+				<el-button @click="cancel">取消</el-button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '.addGoodsType',
+			data: {
+				treeList: [],
+				tree: false,
+				parent: '', //上级分类
+				typeName: '', //类别名称
+				treeid: '', //上级分类对应的id
+				pram: window.location.href.split('=')[1],
+				id:'',
+				index:'',
+				pid:'',
+				checkList:[],
+				checkedList:[],
+				defaultProps: {
+					children: 'children',
+					label: 'label'
+				},
+				// num:0,
+			},
+			mounted() {
+				var self=this;
+				self.getTree();
+				if(self.pram==1){
+					self.id=window.parent.vm.editId;
+					var data={
+						command:'assetcate/getassetcateinfo',
+						sessionid:getCookie('sid'),
+     	 				loginid:getCookie('uid'),
+						id:self.id
+					}
+					function  callback(res){
+						if(res && res.errcode==0){
+							// console.log(res)
+							self.parent=res.parentName;
+							self.typeName=res.name;
+							self.treeid=res.pid;
+						}else{
+							layer.msg(res.errdesc)
+						}
+					}
+					post('/assetcate/getassetcateinfo',data,callback,errcodefn,errfn)
+				}
+			},
+			methods: {
+				handleNodeClick(data) {
+					this.parent = data.label;
+					this.tree = false;
+					this.treeid = data.id;
+					// alert(this.treeid)
+				},
+				getTree() {
+					var self = this;
+					var data = {
+						command: 'assetcate/getallassetcates',
+						sessionid:getCookie('sid'),
+     	 				loginid:getCookie('uid')
+					}
+
+					function callback(res) {
+						if(res && res.errcode == 0) {
+							self.treeList = res.children;
+						} else {
+							layer.msg(res.errdesc)
+						}
+					}
+					post('/assetcate/getallassetcates', data, callback, errcodefn, errfn)
+				},
+				save() {
+					var self = this;
+					// alert(this.treeid)
+					if(this.checkedList && this.checkedList.length != 0){
+						this.pid = this.checkedList[0].id
+					}else{
+						this.pid = this.treeid
+					}
+					// alert(this.pid)
+					// alert(this.id)
+					if(self.parent == ''){
+						layer.msg('上级分类不能为空！')
+						return
+					}
+					if(self.typeName == '') {
+						layer.msg('类别名称不能为空！')
+						return
+					}
+					if(self.typeName.length > 20){
+						layer.msg('类别名称不能超过20个！')
+						return
+					}
+					if(self.pram == 0) {//0代表新增
+						var data = {
+							command: 'assetcate/addassetcate',
+							sessionid:getCookie('sid'),
+     	 				    loginid:getCookie('uid'),
+							pid: self.pid,
+							name: self.typeName
+						}
+
+						function callback(res) {
+							if(res && res.errcode == 0) {
+								layer.msg('新增成功')
+								setTimeout(function() {
+									closeAll();
+									window.parent.vm.getTree();
+								}, 300)
+							} else {
+								layer.msg(res.errdesc)
+							}
+						}
+						post('/assetcate/addassetcate', data, callback, errcodefn, errfn)
+					}
+					if(self.pram==1){//1代表编辑
+						// alert(self.checkedList[0].id)
+                    	var _json={
+                    		command:'assetcate/updateassetcate',
+                    		sessionid:getCookie('sid'),
+     	 				    loginid:getCookie('uid'),
+                    		id:self.id,
+                    		pid:self.pid,
+                    		name:self.typeName
+                    	}
+                    	function callbackEdit(res){
+                    		if(res && res.errcode==0){
+								layer.msg('编辑成功')
+								self.checkedList = []
+								self.checkList = []
+                    			setTimeout(function(){
+                    				closeAll();
+                    				window.parent.vm.getTree();
+                    			},300)
+                    		}else{
+                    			layer.msg(res.errdesc)
+                    		}
+                    	}
+                    	post('/assetcate/updateassetcate',_json,callbackEdit,errcodefn,errfn)
+                    }
+				},
+				cancel() {
+					closeAll();
+				},
+				treeBlur() {
+					// this.tree = true;
+					let self = this
+					this.checkList = []
+					this.checkedList = []
+					// this.num = 0
+					layer.open({
+						type: 1,
+						title: '选择物品类别',
+						shadeClose: true,
+						shade: 0,
+						area: ['80%', '80%'],
+						content: $('.tree'),
+						success:function(layerro,index){
+							self.index = index
+						}
+					});
+				},
+				sure(){
+					this.checkedList = []
+					this.checkList.map((item)=>{
+						if(item.checked){
+							this.checkedList.push(item)
+						}
+					})
+					console.log(this.checkedList)
+					if(this.checkedList.length != 1){
+						layer.msg('只能选择一个上级！')
+					}else{
+						this.parent = this.checkedList[0].label
+						layer.close(this.index)
+					}
+					// layer.close(this.index)
+
+				},
+				handleCheckChange(data, checked, indeterminate) {
+					// console.log(data, checked, indeterminate)
+					// this.checkList = []
+						// this.num ++
+						// this.checkList.map((item)=>{
+						// 	if(item.id == data.id){
+								
+						// 	}
+						// })
+						if(checked){
+							this.checkList.push({
+								id:data.id,
+								label:data.label,
+								checked:checked
+							})
+						}else{
+							this.checkList.map(function(item,index,arr){
+								if(item.id == data.id){
+									item.checked = false
+								}
+							})
+						}
+						
+					// console.log(this.num)
+					// console.log(this.checkList)
+
+				},
+			}
+		})
+	</script>
+
+</html>

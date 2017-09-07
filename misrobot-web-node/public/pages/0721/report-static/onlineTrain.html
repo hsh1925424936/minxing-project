@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>自主训练</title>
+	<script type="text/javascript" src="../common/js/layout.js" ></script>
+	<style type="text/css">
+		body{
+			background: rgb(246,246,246);
+		}
+		.flex{
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		.nav{
+			background: rgb(246,246,246);
+			width: 100vw;
+			/*height: 10vh;*/
+			/*border-bottom: solid 1px gray;*/
+			padding: 0.5rem 5rem;
+			font-size: 0.8rem;
+		}
+		.navRight img:nth-of-type(1){
+			width: 1.5rem;
+			height: 1.5rem;
+			margin-right: 1rem;
+		}
+		.navRight img:nth-of-type(2){
+			width: 2rem;
+			height: 2rem;
+			margin-right: 1rem;
+			border-radius: 50%;
+		}
+		.navRight img:nth-of-type(3){
+			width: 0.7rem;
+			height: 0.5rem;
+			margin-left: 5rem;
+		}
+		.header{
+			background:rgb(255,255,255);
+			/*border-bottom: solid 1px gray;*/
+			padding: 0.5rem 2rem;
+		}
+		.headerLeft img{
+			width: 5rem;
+			height: 2.8rem;
+			margin-right: 1rem;
+		}
+		.headerLeft span{
+			font-weight: 450;
+			font-size: 1rem;
+		}
+		.headerRight ul li{
+			font-size: 0.8rem;
+			padding: 0 0.3rem;
+			text-align: center;
+			height: 2rem;
+			line-height: 2rem;
+			border-radius: 0.2rem;
+		}
+		.headerRight ul li:nth-of-type(3){
+			color: rgb(0,141,196);
+		}
+		.search{
+			padding: 0.5rem 3vw;
+			font-size: 0.8rem;
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+		}
+		.search p:nth-of-type(1){
+			position: relative;
+			margin-left: 2rem;
+		}
+		.search p:nth-of-type(1) input{
+			width: 20rem;
+			height: 1.8rem;
+			border: solid 1px lightgray;
+			border-radius: 1.2rem
+		}
+		.search p:nth-of-type(1) img{
+			width: 1rem;
+			height: 1rem;
+			position: absolute;
+			right: 1rem;
+			top:calc(50% - 0.5rem);
+		}
+		.main{
+			width: 100%;
+			padding: 0 3vw;
+			display: flex;
+			font-size: 0.8rem;
+		}
+		.mainLeft ul li{
+			width: 16vw;
+			height: 2.2rem;
+			line-height: 2.2rem;
+			font-size: 0.8rem;
+			font-weight: 600;
+			background: white;
+			border-top: solid 1px rgb(240,240,240);
+			padding-left: 1rem;
+			box-sizing: border-box;
+		}
+		.mainLeft ul li:nth-of-type(1){
+			background: rgb(4,151,203);
+			color: white;
+			text-align: center;
+			border:none;
+			padding-left: 0;
+		}
+		.mainRight{
+			/*border: solid 1px lightgray;*/
+			width:calc(100% - 20vw);
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			align-items: center;
+			margin-left: 2vw;
+			border: none;
+		}
+		.mainRight div{
+			width: calc(25% - 1vw);
+			background: white;
+			margin-top: 1rem;
+		}
+		.mainRight div>img{
+			width: 100%;
+			height: auto;
+		}
+		.name{
+			margin-left: 1rem;
+			margin-top: 0.6rem;
+		}
+		.user{
+			padding: 0.8rem 1rem;
+			box-sizing:border-box;
+			color: gray;
+		}
+		.user img{
+			width: 0.7rem;
+			height: 0.7rem;
+		}
+		.user span:nth-last-of-type(1){
+			float: right;
+		}
+		.footer{
+			width: 100%;
+			height: 5rem;
+			font-size: 0.6rem;
+			position: relative;
+		}
+		.footer ul{
+			display: flex;
+			position: absolute;
+			top:1.6rem;
+			left:calc(50% - 3rem);
+		}
+		.footer ul li{
+			border: solid 1px lightgray;
+			padding:0.3rem 0.6rem;
+			border-left: none;
+			color: gray;
+			font-size: 0.6rem;
+		}
+		.footer ul li:nth-child(1){
+			border-left: solid 1px lightgray;
+			border-top-left-radius: 0.3rem;
+			border-bottom-left-radius: 0.3rem;
+		}
+		.footer ul li:nth-child(7){
+			border-top-right-radius: 0.3rem;
+			border-bottom-right-radius: 0.3rem;
+		}
+		.footer ul li:nth-child(3){
+			background: rgb(51,152,220);
+			color: white;
+			border-color: rgb(51,152,220);
+		}
+	</style>
+</head>
+<body id='course'>
+	<div class="container">
+	<nav class="nav flex">
+		<div class="navLeft">
+			<span>临床技能中心</span>
+		</div>
+		<div class="navRight flex">
+			<img src="../../../images/ostp/bell.png">
+			<img src="../../../images/ostp/feifei.png">
+			<span>章一星</span>
+			<img src="../common/images/turnDown.png" alt="">
+		</div>
+	</nav>
+	<header class="header flex"> 
+		<div class="headerLeft flex">
+			<img src="../../../images/ostp/logo.png">
+			<span>在线自主技能训练平台</span>
+		</div>
+		<div class="headerRight">
+			<ul class="flex">
+				<li v-for='(item,index) in menus'>{{item}}</li>
+			</ul>
+		</div>
+	</header>
+	<div class="search">
+			<span>自主训练</span>
+			<p>
+				<input type="text">
+				<img src="../common/images/sosuo.png" alt="">
+			</p>
+	</div>
+	<main class="main">
+		<div class="mainLeft">
+			<ul>
+				<li v-for="item in course">{{item}}</li>
+			</ul>
+		</div>
+		<div class="mainRight">
+			<div v-for="item in list">
+				<img :src="item.img" alt="">
+				<p class="name">{{item.name}}</p>
+				<p class="user">
+					<img src="../../../images/futuredoctorapp/icon-dl-touxiang.png" alt="">
+					<span>{{item.read}}次</span>
+					<span>{{item.course}}</span>
+				</p>
+			</div>
+		</div>
+	</main>
+	<footer class="footer">
+		<ul>
+			<li><a>首页</a></li>
+			<li><a>上一页</a></li>
+			<li><a>1</a></li>
+			<li><a>2</a></li>
+			<li><a>3</a></li>
+			<li><a>下一页</a></li>
+			<li><a>末页</a></li>
+		</ul>
+	</footer>
+	</div>
+	<script>
+		// function resize(){
+		// 	let width = document.documentElement.clientWidth;
+		// 	let html = document.documentElement
+		// 	if(width < 320){
+		// 		html.style.fontSize = '10px';
+		// 	}else if(width > 1024){
+		// 		html.style.fontSize = '20px';
+		// 	}else{
+		// 		html.style.fontSize = width/50 + 'px';
+		// 	}
+		// }
+		// window.onresize = resize
+		// resize()
+		var vm = new Vue({
+			el:'.container',
+			data:{
+				menus:['首页','我的作业','自主训练','自主学习','课件库','在线试题','成长中心'],
+				course:['全部学科','内科学','外科学','妇产科学','儿科学','内科学','老年医学','神经病学'],
+				list:[
+					{img:'../../../images/group/rBAByFfocPGAM1zYAACYcMWp0Lk345.jpg',
+					name:'腹腔穿刺术',read:200,course:'内科学'},
+					{img:'../../../images/group/rBAByFfodSyAdLUEAACDUhGQTmg282.jpg',
+					name:'腹腔穿刺术',read:180,course:'内科学'},
+					{img:'../../../images/group/rBAByFfocR2ANVrNAACIJ_1_tWY787.jpg',
+					name:'腹腔穿刺术',read:178,course:'内科学'},
+					{img:'../../../images/group/CmcZDFgGKLmAGSLYAACFWYwHv6o276.jpg',
+					name:'腹腔穿刺术',read:110,course:'内科学'},
+
+					{img:'../../../images/group/rBAByFfocyeAF36dAACDQ1-eNeg743.jpg',
+					name:'腹腔穿刺术',read:109,course:'内科学'},
+					{img:'../../../images/group/rBABylfnMWOAQ5j3AAB8AAHBnKo967.jpg',
+					name:'腹腔穿刺术',read:120,course:'内科学'},
+					{img:'../../../images/group/rBAByFfnMXaARIa9AACDw_OmGMs326.jpg',
+					name:'腹腔穿刺术',read:101,course:'内科学'},
+					{img:'../../../images/group/rBABylfmQNaADQk4AACBY1GLtj4310.jpg',
+					name:'腹腔穿刺术',read:246,course:'儿科学'},
+				]
+			}
+		})
+	</script>
+</body>
+</html>

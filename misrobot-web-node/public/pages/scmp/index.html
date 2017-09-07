@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>管理平台</title>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/scmp/scmpcommon.css">
+    <style>
+        body{ overflow:hidden; }
+        #header{
+            background-color:#252C34;
+            height:40px;
+            line-height:40px;
+            border-bottom:1px solid #030305;
+        }
+        #header>div:not(:first-child){
+            border-left:1px solid #030305;
+        }
+        .main{
+          padding-top:40px; margin-top:-40px;
+        }
+        #leftList{
+            background-color:#252C34;
+            padding:0;
+        }
+        #leftList>ul>li>a{
+            color:#E4E5E7;
+            font-size:16px;
+        }
+        #leftList>ul>li{
+            position:relative;
+        }
+        .listitem1>p{
+            background-image:url("../../images/scmp/list1.png");
+            background-size:contain;
+            padding:0 0 0 60px;
+            margin:0;
+            height:40px;
+            line-height:40px;
+            color:#E4E5E7;
+            position: relative;
+            cursor: pointer;
+        }
+        .listitem1>p>i{
+            position: absolute;
+            left:27px;
+            top:12px;
+        }
+        .listitem1>p>span{
+            position: absolute;
+            right:20px;
+            top:12px;
+            font-weight:normal;
+        }
+        .listitem1>ul>li{
+            padding:5px 0 5px 60px;
+            cursor: pointer;
+            position: relative;
+        }
+        .listitem1>ul>li>span{
+            position:absolute;
+            top:2px;
+            left:30px;
+        }
+        .listitem1>ul{
+            padding:10px 0 10px 0;
+        }
+        .listitem1>ul>li>i{
+            position:absolute;
+            top:5px;
+            right:-1px;
+            width:16px;
+            height:20px;
+            background-image:url(../../images/scmp/treangle.png);
+            background-size:contain;
+        }
+        .active{
+            background-color: black;
+        }
+        #pageBox{
+            height:100%; padding:0;
+            background-color: #d2d2d2;
+        }
+        #pages{
+            width:100%;
+            height:100%;
+        }
+    </style>
+</head>
+<body>
+   <div class="container-fluid" id="container" v-cloak>
+       <div id=header class="row">
+           <div class="col col-md-2 fwhite f18">技能中心管理平台</div>
+           <div class="col col-md-2 col-md-offset-7 fgray">您好!&nbsp;{{ uname }}</div>
+           <div class="col col-md-1"><a href="login.html" class="fgray"><i class="glyphicon glyphicon-log-out"></i> &nbsp;&nbsp;退出</a></div>
+       </div>
+       <div class="row main" style="height:100%">
+           <div class="col col-md-2" id="leftList" style="height:100%">
+               <ul class="list-unstyled">
+                   <li v-for="(value1,index1) in leftList" class="listitem1">
+                       <p @click="linkto(value1,index1)">
+                           <i class="glyphicon glyphicon-star-empty"></i>
+                           <b class="f18">{{ value1.name }}</b>
+                           <span class="glyphicon glyphicon-chevron-down" v-show="value1.cldlist.length!=0"></span>
+                       </p>
+                       <ul class="list-unstyled fgray" v-show="level1_index==index1">
+                           <li v-for="(value2,index2) in leftList[index1].cldlist"
+                               @click="linkto(value2,index1,index2)" :class="{active:level1_index==index1 && level2_index==index2}">
+                               <span class="f18"> - </span>
+                               {{ value2.name }}
+                               <i v-show="level1_index==index1 && level2_index==index2"></i>
+                           </li>
+                       </ul>
+                   </li>
+               </ul>
+           </div>
+           <div class="col col-md-10" id="pageBox">
+               <iframe :src="url" frameborder="0" id="pages"></iframe>
+           </div>
+       </div>
+   </div>
+   <script>
+       var vm=new Vue({
+           el:"#container",
+           data:{
+               leftList:[],
+               url:"",
+               uname:getCookie('uname'),
+               level1_index:-1,//记录选中的一级菜单索引
+               level2_index:-1,//记录选中的二级菜单索引
+           },
+           methods:{
+                linkto:function(value,index1,index2){
+                  var url = value.url; var title;
+                  if( index2 == undefined && value.cldlist.length > 0 ){//点击一级菜单并且有子菜单
+                    title = value.cldlist[0].name;
+                  }else{//点击一级菜单没有子菜单
+                    title = value.name;
+                  }
+                  if( index2 == undefined && index1 == this.level1_index ){//收起菜单
+                    this.level1_index = -1;
+                    this.level2_index = -1;
+                  }else{//展开菜单
+                    this.url=url+"?name="+title;
+                    this.level1_index = index1;
+                    this.level2_index = index2 || 0;
+                  }
+                      
+                }
+           },
+           mounted:function(){
+            var self = this;
+            var data={
+                 command:"menus/querymenusbyrole",
+                 loginid:getCookie('uid'),
+                 sessionid:getCookie('sid'),
+                 moduleid:'app'//管理平台菜单模块
+             };
+             function callback(res){
+                self.leftList=res.resultlist;
+                if( GetQueryString('src') ){
+                    var name = ''; var src = GetQueryString('src');
+                    $(res.resultlist).each(function(i, el) {
+                      if(name){
+                        return false;
+                      }
+                      if( el.url == src && el.cldlist.length == 0 ){//没有二级菜单
+                        self.level1_index = i;
+                        name = el.name;
+                        return false;
+                      }else if( el.cldlist.length > 0 ){
+                        $(el.cldlist).each(function(j,el2){
+                          if( el2.url == src ){
+                            self.level1_index = i;
+                            self.level2_index = j;
+                            name = el2.name;
+                            return false;
+                          }
+                        })
+                      }
+                    });
+                    self.url = src+'?name='+name;
+                }
+             };
+             post("/menus/querymenusbyrole",data,callback,errcodefn,errfn);
+
+           }
+       });
+       
+   </script>
+</body>
+</html>

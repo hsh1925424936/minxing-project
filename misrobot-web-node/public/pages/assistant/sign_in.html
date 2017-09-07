@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/assistant/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>签到</title>
+		<style type="text/css">
+			body{
+				background-color:#ECECEC; padding-bottom:30px;
+			}
+
+			.topBar{
+				width:100%; height:60px; background-color:#F5F5F5;
+				border-top:1px solid #DCDCDC; border-bottom:1px solid #DCDCDC;
+				font-size:16px;
+			}
+			.topBarInner{
+				width:1024px; height:100%; margin:auto;
+			}
+			/*.topBar button{
+				display:block; float:right; position:relative; top:50%; margin-top:-18px;
+				width:108px; height:38px; text-align:center; line-height:36px;
+				border:1px solid #0496C9; box-sizing:border-box; border-radius:3px;
+				margin-right:32px; background-color:#ffffff; color:rgb(4,150,202);
+			}
+			.topBar button:hover{
+				background-color:#f2fafc;
+			}*/
+
+			.myselect{
+				float:right; position:relative; top:50%; margin-top:-18px;
+				width:108px; height:38px; text-align:center; line-height:36px;
+				border:1px solid #c3c3c3; box-sizing:border-box; border-radius:3px;
+				cursor:pointer; background-color:white;
+				position:relative;
+			}
+			.myselect:hover{
+				border:1px solid #999999; background-color:#e5e5e5;
+			}
+			.myselect>p{
+				width:85%; height:100%; float:left; margin-right:-8px;
+			}
+			.myselect>img{
+				display:block; float:left; width:12px; height:8px; margin-top:14px;
+			}
+			.myselect select{
+				position:absolute; width:100%; border-radius:3px;
+				top:46px; z-index:1; border:1px solid #c3c3c3; font-size:16px;
+				display:none; text-align:center;
+			}
+			.myselect select option{
+				padding-top:8px; padding-bottom:8px;
+			}
+			.myselect select option:hover{
+				background-color:#dcdcdc;
+			}
+			.myselect>span{
+				background-image:url(../../images/assistant/sanjiao-xiala.png);
+				background-repeat:no-repeat; background-size:100% 100%;
+				width:16px; height:11px; display:none; position:relative;
+				top:36px; left:70px; z-index:2;
+			}
+
+			.mainOuter{
+				width:1024px; margin:20px auto; height:450px;
+			}
+			.mainOuter>div{
+				height:100%; float:left;
+			}
+			.not_signin_box{
+				width:25%; background-color:white; box-sizing:border-box; border:1px solid #DCDCDC;
+			}
+			.signin_outer{
+				width:75%; padding-left:18px;
+			}
+			.signin_box{
+				width:100%; box-sizing:border-box; border:1px solid #DCDCDC; height:100%;
+				background-color:white;
+			}
+			.box_tit{
+				width:100%; height:74px; line-height:74px;
+				text-align:center; font-size:19px; color:#333333;
+			}
+			.stu_outer{
+				width:100%; overflow-y:auto; height:370px;
+			}
+			.stu_outer1{
+				padding-left:6px; padding-right:6px; padding-top:10px;
+			}
+			.stuBox{
+				width:48px; height:92px; float:left; cursor:pointer;
+				position:relative;
+			}
+			.stu_outer1 .stuBox{
+				margin-left:6px; margin-right:6px;
+			}
+			.stu_outer2{
+				padding-left:43px; padding-right:43px; padding-top:10px;
+			}
+			.stu_outer2 .stuBox{
+				margin-left:6px; margin-right:6px;
+			}
+			.stuBox img{
+				display:block; width:40px; height:40px; border-radius:30px;
+				margin:auto;
+			}
+			.stuBox h5{
+				width:100%; font-size:12px;
+				text-align:center; padding-top:10px;
+			}
+			.stuBox h4{
+				width: 54px; height: 20px; font-size: 10px;
+    			text-align: center; line-height: 20px; color: white;
+    			position: absolute; border-radius: 20px; background-color: #0595C9;
+    			left: 50%; top: -9px; margin-left: -27px; display:none;
+			}
+			.stuBox:hover h4{
+				display:block;
+			}
+			.stuBox select{
+				width:80px; font-size:13px;
+    			position:absolute; left:-32%; border:1px solid #0496C9;
+    			top:50px; z-index:1; display:none; text-align:center;
+    			border-radius:3px;
+			}
+			.stuBox select option{
+				padding-top:3px; padding-bottom:3px;
+			}
+			.stuBox select option:hover{
+				background-color:#dcdcdc;
+			}
+			.mainOuter>p{
+				font-size:16px; margin-top:18px; float:left;
+			}
+
+		</style>	
+		
+		
+	</head>
+	<body>
+		<div class="topBar">
+			<div class="topBarInner">
+			<!-- <button type="button" class="sign_in_detail">签到明细</button> -->
+				<div class="myselect">
+					<p>分组</p><img src="../../images/assistant/sanjiao-xian.png">
+					<span></span>
+					<select size='6' class="grouping_select">
+						<option value='1'>未分组</option>
+						<option value='2'>2组</option>
+						<option value='3'>3组</option>
+						<option value='4'>4组</option>
+						<option value='5'>5组</option>
+						<option value='6'>6组</option>
+						<option value='7'>7组</option>
+						<option value='8'>8组</option>
+						<option value='9'>9组</option>
+						<option value='10'>10组</option>
+						<option value='11'>11组</option>
+						<option value='12'>12组</option>
+						<option value='13'>13组</option>
+						<option value='14'>14组</option>
+						<option value='15'>15组</option>
+						<option value='16'>16组</option>
+						<option value='17'>17组</option>
+						<option value='18'>18组</option>
+						<option value='19'>19组</option>
+						<option value='20'>20组</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<div class="mainOuter">
+			<div class="not_signin_box">
+				<h2 class="box_tit">
+					未签到
+				</h2>
+				<div class="stu_outer stu_outer1">
+					<div class="stuBox">
+						<img src="../../images/assistant/default_head.png">
+						<h5>王恩亭</h5>
+						<h4>手工签到</h4>
+						<select multiple size="5">
+							<option>08:00</option>
+							<option>08:05</option>
+							<option>08:10</option>
+							<option>08:15</option>
+							<option>08:20</option>
+							<option>08:25</option>
+							<option>08:30</option>
+							<option>08:40</option>
+							<option>08:50</option>
+							<option>09:00</option>
+						</select>
+					</div>
+					<div class="stuBox">
+						<img src="../../images/assistant/default_head.png">
+						<h5>王恩亭</h5>
+						<h4>手工签到</h4>
+						<select multiple size="5">
+							<option>08:00</option>
+							<option>08:05</option>
+							<option>08:10</option>
+							<option>08:15</option>
+							<option>08:20</option>
+							<option>08:25</option>
+							<option>08:30</option>
+							<option>08:40</option>
+							<option>08:50</option>
+							<option>09:00</option>
+						</select>
+					</div>
+					<div class="stuBox">
+						<img src="../../images/assistant/default_head.png">
+						<h5>王恩亭</h5>
+						<h4>手工签到</h4>
+						<select multiple size="5">
+							<option>08:00</option>
+							<option>08:05</option>
+							<option>08:10</option>
+							<option>08:15</option>
+							<option>08:20</option>
+							<option>08:25</option>
+							<option>08:30</option>
+							<option>08:40</option>
+							<option>08:50</option>
+							<option>09:00</option>
+						</select>
+					</div>
+					
+				</div>
+			</div>
+			<div class="signin_outer">
+				<div class="signin_box">
+					<h2 class="box_tit">
+						已签到
+					</h2>
+					<div class="stu_outer stu_outer2">
+						<div class="stuBox">
+							<img src="../../images/assistant/default_head.png">
+							<h5>王恩亭</h5>
+							<h4 class="cancel_signin">取消签到</h4>
+						</div>
+						<div class="stuBox">
+							<img src="../../images/assistant/default_head.png">
+							<h5>王恩亭</h5>
+							<h4 class="cancel_signin">取消签到</h4>
+						</div>
+						<div class="stuBox">
+							<img src="../../images/assistant/default_head.png">
+							<h5>王恩亭</h5>
+							<h4 class="cancel_signin">取消签到</h4>
+						</div>
+					
+					</div>
+				</div>
+			</div>
+
+			<p class="footer_txt">
+				              已签到 人/未签到 人
+			</p>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		var schedules_starttime;//课程开始时间
+		var schedules_coursename;//课程名称
+		var scheduleid;//课程表id
+		var t;//轮询刷新数据显示学生的定时器
+
+		//学生手动签到下拉框显示和隐藏效果
+		function sign_in_select(){
+			$('.stuBox h4').click(function(event) {
+				$('.stuBox select').css('display', 'none');
+				$('.stuBox h4').removeAttr('style');
+
+				$(this).css('display', 'block');
+				//$(this).siblings('select').css('display', 'block');
+				$(this).siblings('select').change();
+				event.stopPropagation();
+			});
+			$(document).click(function() {
+				$('.stuBox select').css('display', 'none');
+				$('.stuBox h4').removeAttr('style');
+			});
+			hand_sign_in();//点击未签到学生进行手动签到
+		}
+
+		function cancel_signin(){
+			$('.cancel_signin').click(function() {//点击过后就取消签到
+				var stuid = $(this).parent().attr('stuid');
+				var json = {
+					'1':{
+						command:'sign/signcancel', //接口地址
+						uid:stuid,//学生id
+						signid:getCookie('uid'),
+						scheduleid:scheduleid,
+						sessionid:getCookie('sessionid'),
+						loginid:getCookie('loginid')
+					}
+				};
+				Api.dataToJava({
+					json:{
+						url:'/sign/signcancel', //一次性走几个接口
+						data:JSON.stringify(json)
+					},
+					fn:function (base) {
+						base = base[1]; //取接口的第一个返回值
+						console.log(base);
+						
+						//判断接口是否走成功， errcode为0是成功
+						if (base.errcode!=0) {
+							uselayer(3,'取消签到失败<br/>'+base.errdesc);
+							return false;
+						}
+						uselayer(3,'取消签到成功!');
+						getStudent();//刷新学生信息
+					}
+				});
+			});
+		}
+
+		function hand_sign_in(){//点击未签到学生进行手动签到
+			$('.stuBox select').change(function() {
+				//var signin_at = parseInt($(this).val());//老师给学生签到输入的时间
+				var stuid = $(this).parent().attr('stuid');
+				var json = {
+					'1':{
+						command:'sign/signin', //接口地址
+						uid:stuid,//学生id
+						signid:getCookie('uid'),
+						scheduleid:scheduleid,
+						sessionid:getCookie('sessionid'),
+						loginid:getCookie('loginid'),
+						signin_at:schedules_starttime
+					}
+				};
+
+				Api.dataToJava({
+					json:{
+						url:'/sign/signin', //一次性走几个接口
+						data:JSON.stringify(json)
+					},
+					fn:function (base) {
+						base = base[1]; //取接口的第一个返回值
+						console.log(base);
+						
+						//判断接口是否走成功， errcode为0是成功
+						if (base.errcode!=0) {
+							uselayer(3,'签到失败<br/>'+base.errdesc);
+							return false;
+						}
+
+						uselayer(3,'签到成功!');
+						getStudent();//刷新学生信息
+					}
+				});
+			});
+		}
+
+		function getStudent(){//获取所有学生数据并显示
+			var json = {
+				'1':{
+					command:'sign/signquery', //接口地址
+					scheduleid:scheduleid,
+					sessionid:getCookie('sessionid'),
+					loginid:getCookie('loginid')
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/sign/signquery', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+
+					//清空数据
+					$('.stu_outer1').html('');
+					$('.stu_outer2').html('');
+
+					show_unsignedlist(base.unsignedlist);
+					show_signedlist(base.signedlist);
+					
+					sign_in_select();
+					var unsigned_num = base.unsignedlist.length;//未签到的人数
+					var signed_num = base.signedlist.length;//已经签到的人数
+
+					$('.myselect select').removeAttr('disabled');
+					if( signed_num < 1 ){//没有人签到时分组下拉框点击时做相应的处理
+						$('.myselect select').attr('disabled', 'disabled');
+					}
+					$('.signin_box').attr('num',signed_num);
+
+					if( unsigned_num/(signed_num+unsigned_num) < 0.33 ){
+						$('.not_signin_box').css('width', '25%');
+						$('.signin_outer').css('width', '75%');
+					}else if( unsigned_num/(signed_num+unsigned_num) < 0.66 ){
+						$('.not_signin_box').css('width', '50%');
+						$('.signin_outer').css('width', '50%');
+					}else{
+						$('.not_signin_box').css('width', '75%');
+						$('.signin_outer').css('width', '25%');
+					}
+					//给头像设置默认图片
+					$('.stuBox img').attr('onerror', 'this.src="../../images/assistant/default_head.png"');
+
+					$('.footer_txt').html(schedules_coursename+' 已签到'+signed_num+'人/未签到'+unsigned_num+'人');
+				}
+			});
+
+		}
+
+		function show_unsignedlist(stu_list){//显示未签到的人stuid stuname
+			var str = '';
+			for ( var i = 0; i < stu_list.length; i++ ){
+				var list = stu_list[i];
+				if( list.imgurl == '' ){
+					list.imgurl = '../../images/assistant/default_head.png';
+				}
+				str+='<div class="stuBox" stuid="'+list.stuid+'">'+
+						'<img src="'+list.imgurl+'">'+
+						'<h5>'+list.stuname+'</h5>'+
+						'<h4>手工签到</h4>'+
+						'<select multiple="" size="5" style="display: none;">'+
+							'<option value="'+schedules_starttime+'">'+timetodate(schedules_starttime,2)+'</option>'+
+							'<option value="'+(parseInt(schedules_starttime)+300)+'">'+timetodate(parseInt(schedules_starttime)+300,2)+'</option>'+
+							'<option value="'+(parseInt(schedules_starttime)+600)+'">'+timetodate(parseInt(schedules_starttime)+600,2)+'</option>'+
+							'<option value="'+(parseInt(schedules_starttime)+900)+'">'+timetodate(parseInt(schedules_starttime)+900,2)+'</option>'+
+							'<option value="'+(parseInt(schedules_starttime)+1200)+'">'+timetodate(parseInt(schedules_starttime)+1200,2)+'</option>'+
+							'<option value="'+(parseInt(schedules_starttime)+1500)+'">'+timetodate(parseInt(schedules_starttime)+1500,2)+'</option>'+
+							'<option value="'+(parseInt(schedules_starttime)+1800)+'">'+timetodate(parseInt(schedules_starttime)+1800,2)+'</option>'+
+							'<option value="'+(parseInt(schedules_starttime)+2400)+'">'+timetodate(parseInt(schedules_starttime)+2400,2)+'</option>'+
+							'<option value="'+(parseInt(schedules_starttime)+3000)+'">'+timetodate(parseInt(schedules_starttime)+3000,2)+'</option>'+
+						'</select>'+
+					'</div>';
+			}
+			$('.stu_outer1').html(str);
+		}
+
+		function show_signedlist(stu_list){//显示签到的人stuid stuname
+			var str = '';
+			for ( var i = 0; i < stu_list.length; i++ ){
+				var list = stu_list[i];
+				if( list.imgurl == '' ){
+					list.imgurl = '../../images/assistant/default_head.png';
+				}
+				str+='<div class="stuBox" stuid="'+list.stuid+'">'+
+						'<img src="'+list.imgurl+'">'+
+							'<h5>'+list.stuname+'</h5>'+
+							'<h4 class="cancel_signin">取消签到</h4>'+
+						'</div>';
+			}
+			$('.stu_outer2').html(str);
+			cancel_signin();//注册取消签到按钮的方法
+		}
+
+		function get_starttime(){//查询授课开始时间和课程名称
+			schedules_starttime = datetotime( getCookie('starttime') );//课程开始时间
+			schedules_coursename = getCookie('coursename');//课程名称
+			scheduleid = getCookie('scheduleid');//课程表id
+			getStudent();//获取所有学生数据并显示
+			getGroupNum();//获取当前的组数并对应分组下拉框的值
+			t = setInterval(function(){
+				getStudent();//刷新显示学生信息
+			},15000);
+		}
+
+		$(function() {
+			//页面加载完就清空数据
+			$('.stu_outer1').html('');
+			$('.stu_outer2').html('');
+
+			//自定义的select
+			$('.myselect').click(function(event) {
+				if( $(this).find('select').css('display') == 'none' ){
+					if( $('.signin_box').attr('num') > 0 ){
+						$(this).find('select').css('display', 'block');
+						$(this).children('span').css('display', 'block');
+					}else{
+						uselayer(3,'当前没有人签到，还不能分组!');
+					}
+					
+				}else{
+					$(this).find('select').css('display', 'none');
+					$(this).children('span').css('display', 'none');
+				}
+				event.stopPropagation();
+			});
+
+			$(document).click(function() {
+				$('.myselect select').css('display', 'none');
+				$('.myselect span').css('display', 'none');
+			});
+			$('.myselect select').change(function() {
+				var text = $(this).find('option:selected').html();
+				$(this).siblings('p').html(text);
+			});
+
+			// (签到明细功能先不做)
+			// $('.sign_in_detail').click(function() {//打开iframe
+			// 	open_dialog('sign_in_detail.html');//打开弹窗的方法
+			// });
+
+			c_interface.getLoginInfo({
+			    fn:function(loginInfo){
+			    	get_starttime();//查询授课开始时间和课程名称
+				}
+			});
+
+			
+
+		});
+
+		function jumpgrouping(content){//通过c++跳转到分组页面
+			$('.grouping_select').change(function() {
+				grouping(content);//执行分组的方法
+			});
+		}
+		
+		function getGroupNum(){//根据目前的分组改变下拉框的值
+			var json = {
+				'1':{
+					command:'group/querygroupinfo', //接口地址
+					scheduleid:scheduleid,
+					sessionid:getCookie('sessionid'),
+					loginid:getCookie('loginid')
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/group/querygroupinfo', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+					var groupNum;
+					if( base.groupresult ){//有分组
+						groupNum = base.groups;//组数
+					}else{
+						groupNum = 1;
+					}
+					$('.myselect select').val(groupNum);
+					$('.myselect select').change();
+
+					c_interface.sendInfo({//给下拉框注册事件先分组并调用c++接口跳转到分组页面
+						fn:function(content){
+							jumpgrouping(content);
+						}
+					});
+
+				}
+			});
+			
+		}
+
+		function grouping(content){//点击下拉框进行分组
+			var groups = $('.myselect select').val();
+			var json = {
+				'1':{
+					command:'group/group', //接口地址
+					scheduleid:scheduleid,
+					groups:groups,
+					sessionid:getCookie('sessionid'),
+					loginid:getCookie('loginid')
+				}
+			};
+			Api.dataToJava({
+				isShade:1,
+				json:{
+					url:'/group/group', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,'分组失败<br/>'+base.errdesc);
+						return false;
+					}
+
+					uselayer(3,'分组成功!',function(){
+						content.setToolbarIndex(4);//使QT C++ 切换到 “分组”页（界）面
+					});
+				}
+			});
+		}
+	</script>
+
+</html>

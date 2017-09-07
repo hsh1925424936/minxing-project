@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>设置参数</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style>
+			html,body{
+				background-color: white;
+			}
+			.setParameter{
+				margin: 0 20px;
+			}
+			.setParameter .op {
+				margin-top: 50px !important;
+				width: 80%;
+				margin: auto;
+			}
+			.setParameter .op .oSpan{
+				display: inline-block;
+				width: 200px;
+				text-align: right;
+			}
+			.setParameter .btn {
+				text-align: center;
+				margin-top: 50px;
+			}
+			.setParameter #op {
+				background-color: #E5E6E8;
+				height: 40px;
+				line-height: 40px;
+				padding-left: 20px;
+				margin-bottom: 20px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="setParameter">
+			<p id="op">参数设置</p>
+			<div style="text-align: center;">
+				<p class="op" v-for="item in pramlist">
+					<span class="oSpan">{{item.setname}} ：</span>
+					<span>
+					<template>
+						  <el-radio class="radio" v-model="item.status" :label="0">是</el-radio>
+						  <el-radio class="radio" v-model="item.status" :label="1">否</el-radio>
+					</template>
+				</span>
+				</p>
+			</div>
+			<div class="btn">
+				<el-button type="primary" @click="save">保存</el-button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '.setParameter',
+			data: {
+				pramlist:[]
+			},
+			mounted(){
+				this.getList();
+			},
+			methods: {
+                getList(){
+                	let self=this;
+                	var data={
+                		command:'system/querysetlist',
+                		sessionid:getCookie('sid'),
+                		loginid:getCookie('uid'),
+                		paramcode:'param_set'
+                	}
+                	function callback(res){
+                		if(res && res.errcode==0){
+                			self.pramlist=res.setlist;
+                		}else{
+                			layer.msg(res.errdesc)
+                		}
+                	}
+                	post('/system/querysetlist',data,callback,errcodefn,errfn)
+                },
+                save(){
+                	let self=this;
+                	console.log(self.pramlist)
+                	var arr=[];
+                	for(var i=0;i<self.pramlist.length;i++){
+                		arr.push({
+                			id:self.pramlist[i].id,
+                			status:self.pramlist[i].status,
+                			paramcode:'param_set'
+                		})
+                	}
+                	let data={
+                		command:'system/modifyset',
+                		sessionid:getCookie('sid'),
+                		loginid:getCookie('uid'),
+                		setlist:arr
+                	}
+                	function callback(res){
+                		if(res && res.errcode==0){
+                			layer.msg('设置成功')
+                			setTimeout(function(){
+                				self.getList();
+                			},300)
+                		}else{
+                			layer.msg(res.errdesc)
+                		}
+                	}
+                	post('/system/modifyset',data,callback,errcodefn,errfn)
+                }
+			}
+		})
+	</script>
+
+</html>

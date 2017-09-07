@@ -1,0 +1,27 @@
+.test {
+  margin-top:0.1rem;
+  ul {
+    background: #fff;
+    padding:0.1rem;
+    margin-bottom: 0.1rem;
+    overflow:hidden;
+    li {
+      line-height: 0.4rem;
+      span{
+          color: #8D8D8D;
+        width:1.4rem;
+        text-align: left;
+      }
+      a {
+        float: right;
+        display: inline-block;
+        border:1px solid #000;
+        border-radius: 0.1rem;
+        padding:0.1rem;
+      }
+      i {
+        font-style: normal;
+      }
+    }
+  }
+}

@@ -1,0 +1,85 @@
+tr{
+	height:36px;
+}
+.calendar {
+  width: 340px;
+  height:276px;
+  overflow: hidden;
+  margin:38px 0 0 34px;
+  font-family: microsoft yahei;
+  float:left;
+}
+.ui-datepicker-header {
+  height: 42px;
+  line-height: 42px;
+  color: white;
+  background: #0495CA;
+  margin-bottom:14px;
+  border-radius:21px;
+}
+.ui-datepicker-prev,
+.ui-datepicker-next {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  margin-top: 12px;
+}
+.ui-datepicker-prev {
+  float: left;
+  margin-left: 12px;
+  background-image:url("../../images/iteach/jiantou-zuo.png");
+}
+.ui-datepicker-prev:after {
+  transform: rotate(45deg);
+  margin: -43px 0px 0px 8px;
+}
+.ui-datepicker-next {
+  float: right;
+  margin-right: 12px;
+  background-image:url("../../images/iteach/jiantou-you.png");
+}
+.ui-datepicker-next:after {
+  transform: rotate(-135deg);
+  margin: -43px 0px 0px 6px;
+}
+.ui-datepicker-title {
+  text-align: center;
+  font-size:16px;
+}
+.ui-datepicker-calendar {
+  width: 100%;
+  text-align: center;
+  position:relative;
+  left:8px;
+}
+.ui-datepicker-calendar thead tr th span {
+  display: block;
+  width: 32px;
+  color: #00a8b2;
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+.ui-state-default {
+  display: block;
+  text-decoration: none;
+  color: #333;
+  width: 32px;
+  height:32px;
+  font-size: 16px;
+  line-height:32px;
+}
+.ui-state-default:hover{
+  text-decoration: none;
+}
+.ui-state-highlight {
+  color: #8dd391;
+}
+.ui-state-active {
+  background-color:#0495CA;
+  color:white;
+  border-radius: 50%;
+}
+.ui-datepicker-unselectable .ui-state-default {
+  color: #eee;
+  border: 2px solid transparent;
+}

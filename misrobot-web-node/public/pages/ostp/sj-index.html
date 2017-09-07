@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/echarts-all.js" ></script>
+		
+		<style>
+
+			
+			.line { width: 600px; height: 300px; border: 1px solid #ccc; clear: both;}
+			
+			
+		</style>
+		
+		<script>
+			window.onload = function () {
+				
+
+	            $(window).scroll(function() {
+					console.log($(document).scrollTop());
+	            });
+				
+			
+
+				var arr1 = ['准备','体位','定位','消毒铺巾','麻醉','穿刺过程','标本收集','人文关怀','无菌观念'];
+				var  arr2 = [1,2,3,4,5,6,7,8,9];
+				var  arr3 = [9,8,7,6,5,4,3,2,1];
+				writeline($('.line')[0],arr1,arr2,arr3);
+							
+				/**
+				 * 折线图
+				 * @author sunjie
+				 * @date    2016-07-14
+				 * @version [1.0]
+				 * @param   {string}   title 图表标题
+				 * @param   {array}   arr1  横轴数据
+				 * @param   {array}   arr2  [纵轴具体数据]
+				 * @param {object}    arr3 [结果数据]
+				 */
+				function writeline(obj,arr1,arr2,arr3) {
+					var option = {
+					    title : {
+					        text: '教学成果课前课后对比',
+					        subtext: '（错误人数对比）',
+					        x:'left'
+					    },
+//					    backgroundColor:'#ccc',
+					    tooltip : {
+					        trigger: 'axis',
+					        backgroundColor:'#428bca',
+					        axisPointer:{
+					        	type:'line',
+					        	lineStyle:{
+					        		color:'#428bca',
+					        		type:'dashed'
+					        	}
+					        },
+					        textStyle:{
+					        	fontSize:12			
+					        },
+					        formatter : function (params) {//具体值显示提示
+			                	var str = params[0].name+
+			                  			'<br/>授课后错误降低：' + (params[1].data-params[0].data) +
+			                            '%<br/>上课前：' +params[0].data + '%<br/>上课后：' +params[1].data + '%';
+			                	return str;
+			                }
+					    },
+					    legend: {
+					        show:true,      //图列
+					        x:'right',
+					        data:['课前','课后']
+					    },
+					    toolbox: {
+					        show : false     //工具栏
+					    },
+					    calculable : false,  //可拖动
+					    xAxis : [
+					        {
+					            type : 'category',
+					            splitLine:{show:false},
+					            axisLine:{
+					            	lineStyle:{
+									    color: '#ccc',
+									    width: 1,
+									    type: 'solid'
+									}
+					            },
+					            
+					            data : arr1
+					        }
+					    ],
+					    grid:{// 控制图的大小，调整下面这些值就可以，
+					    	borderWidth:0,
+			             	x: 40,
+			            	x2: 40
+					    },
+					    yAxis : [
+					        {
+					            type : 'value',
+					            splitLine:{
+					            	show:true,
+					            	lineStyle:{
+					            		type:'dotted'
+					            	}
+					            },
+					            axisLabel : {
+					                formatter: '{value} %'
+					            },		            
+					            axisLine:{
+					            	lineStyle:{
+									    color: '#ccc',
+									    width: 1,
+									    type: 'solid'
+									}
+					            }
+					        }
+					    ],
+					    series : [
+					        {
+					            name:'课前',
+					            type:'line',
+					            symbol:'emptyCircle',
+					            symbolSize:4,
+					            itemStyle: {
+							    normal: {
+							        	color:'blue'
+								    }
+								},
+								clickable:false,
+					            data:arr2
+					        },
+					        {
+					            name:'课后',
+					            type:'line',
+					            symbol:'emptyCircle',
+					            symbolSize:4,
+					            itemStyle: {
+							    normal: {
+							        	color:'orange'
+								    }
+								},
+								clickable:false,
+					            data:arr3
+					        },
+					    ]
+					};
+			
+					echarts.init(obj).setOption(option);
+				};
+				
+				var arr1 = ['2月','3月','4月','5月','6月','7月'];
+				var arr2 = [1,2,3,4,5,6];
+				writeline2($('.line')[1],arr1,arr2);
+							
+				/**
+				 * 折线图
+				 * @author sunjie
+				 * @date    2016-07-14
+				 * @version [1.0]
+				 * @param   {string}   title 图表标题
+				 * @param   {array}   arr1  横轴数据
+				 * @param   {array}   arr2  [纵轴具体数据]
+				 * @param {object}    arr3 [结果数据]
+				 */
+				function writeline2(obj,arr1,arr2) {
+					var option = {
+					    title : {
+					        text: '近6个月成长趋势',
+					        x:'center'
+					    },
+					    tooltip : {
+					        trigger: 'item',
+					        backgroundColor:'orange',
+	
+					        textStyle:{
+					        	fontSize:12			
+					        },
+					        formatter : '     {c}      分'
+					    },
+					    legend: {
+					        show:false,      //图列
+					        x:'right',
+					        data:['得分']
+					    },
+					    toolbox: {
+					        show : false     //工具栏
+					    },
+					    calculable : false,  //可拖动
+					    xAxis : [
+					        {
+					            type : 'category',
+					            splitLine:{show:false},
+					            axisLine:{
+					            	lineStyle:{
+									    color: '#ccc',
+									    width: 1,
+									    type: 'solid'
+									}
+					            },
+					            
+					            data : arr1
+					        }
+					    ],
+					    grid:{// 控制图的大小，调整下面这些值就可以，
+					    	borderWidth:0,
+			             	x: 40,
+			            	x2: 40
+					    },
+					    yAxis : [
+					        {
+					            type : 'value',
+					            splitLine:{
+					            	show:true,
+					            	lineStyle:{
+					            		type:'dotted'
+					            	}
+					            },
+					            axisLabel : {
+					            	show:false,
+					                formatter: '{value} 分'
+					            },		            
+					            axisLine:{
+					            	lineStyle:{
+									    color: '#fff',
+									    width: 1,
+									    type: 'solid'
+									}
+					            }
+					        }
+					    ],
+					    series : [
+					        {
+					            name:'得分',
+					            type:'line',
+					            symbol:'emptyCircle',
+					            symbolSize:4,
+					            itemStyle: {
+							    normal: {
+							        	color:'#428bca'
+								    }
+								},
+								clickable:false,
+					            data:arr2
+					        }
+					    ]
+					};
+			
+					echarts.init(obj).setOption(option);
+				};				
+				var arr1 = ['2月','3月','4月','5月','6月','7月'];
+				
+				var arr2 = [
+					{
+                   	value : [97, 42, 88, 94, 90, 86],
+                    name : '舍普琴科'						
+					}
+				];
+				writeline3($('.line')[2],arr1,arr2);
+							
+				/**
+				 * 折线图
+				 * @author sunjie
+				 * @date    2016-07-14
+				 * @version [1.0]
+				 * @param   {string}   title 图表标题
+				 * @param   {array}   arr1  横轴数据
+				 * @param   {array}   arr2  [纵轴具体数据]
+				 * @param {object}    arr3 [结果数据]
+				 */
+				function writeline3(obj,arr1,arr2) {
+					var option = {
+					    title : {
+					    	show:false
+					    },
+					    tooltip : {
+					        trigger: 'axis',
+					        formatter : '{d}：{c}分'
+					    },
+					    legend: {
+					    	show:false,
+					        x : 'center',
+					        data:['功力评估']
+					    },
+					    toolbox: {
+					        show : false     //工具栏
+					    },
+					    calculable : false,  //可拖动
+
+					    polar : [
+					        {
+					            indicator : [
+					                {text : '专业能力', max  : 10},
+					                {text : '授课方法', max  : 10},
+					                {text : '授课态度', max  : 10},
+					                {text : '授课方法', max  : 10},
+					                {text : '沟通技巧', max  : 10},
+					                {text : '自我提升', max  : 10}
+					            ],
+					            
+					            axisLine: {            // 坐标轴线
+					                show: false,        // 默认显示，属性show控制显示与否
+					            },
+					            
+					            splitArea : {
+					                show : true,
+					                areaStyle : {
+					                    color: ['#fff','#fff']
+					                }
+					            },
+					            splitLine : {
+					                show : true,
+					                lineStyle : {
+					                    width : 1,
+					                    color : '#ccc'
+					                }
+					            }
+					        }
+					    ],					    
+					    
+					    series : [
+					        {
+					            name: '功力评估',
+					            type: 'radar',
+					            
+					            data : [
+					                {	
+							            symbol:'emptyCircle',
+							            symbolSize:4,
+							            itemStyle: {
+							                normal: {
+							                    areaStyle: {
+							                        color:'#ccc'
+							                    },
+								            	lineStyle:{
+												    color: '#000',
+												    width: 2,
+												    type: 'solid'
+												}
+							                }
+							            },
+					                    value : [8, 8, 8, 8, 8, 8],
+					                    name : '功力评估'
+					                }
+					            ]
+					        }
+					    ]
+					};
+
+					echarts.init(obj).setOption(option);
+				};				
+				
+
+}			
+		</script>
+		
+		
+	</head>
+	<body>
+		
+		
+			<div class="line">
+				
+				
+				
+			</div>
+		
+		
+			<div class="line">
+				
+				
+				
+			</div>
+			
+			
+			<div class="line">
+				
+				
+				
+			</div>
+			
+			
+			
+		
+	</body>
+</html>

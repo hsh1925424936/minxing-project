@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/iteach/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>课前报告</title>
+		<style type="text/css">
+			body{
+				background-color:#EFF3F6;
+			}
+			.box{
+				 padding-bottom:50px;
+			}
+			.outer{
+				width:100%;
+			}
+
+
+			.scoreOuter{
+				width:100%; background-color:#0495CA; overflow:hidden; position: relative;
+			}
+			.score{
+				width:128px; height:128px; margin: 40px auto 20px; border-radius: 50%; 
+				border: 4px solid #37b1d8; text-align: center; color: #fff; position: relative;
+				overflow: hidden;
+			}
+			.score p {
+				line-height: 60px; font-size: 48px; margin-top: 10px;
+				
+			}
+			.score p,.score span{
+				position: relative; z-index: 2;
+			}
+			.score div {
+				width: 120px; height: 120px; position: absolute; background: #68c6e2; left: 0; top: 120px;
+			}
+			
+			
+			.scoreTxt{
+				width:50%; height:40px; color:white; text-align:center;
+				font-size:12px; float:left; margin-top: 200px;
+			}
+			.boxOuter{
+				width:100%; background-color:white;
+			}
+			.boxOuter p{
+				padding-left:20px; padding-right:20px;
+			}
+			.detail{
+				border-bottom:1px solid #F6F6F6; width:100%; color:#7B7B7B;
+				font-size:14px; line-height:18px; padding:15px;
+			}
+			.name{
+				width:30%; float:left;
+			}
+			.val{
+				width:70%; float:left; text-align:right;
+			}
+			.subTit{
+				width:100%; color:#7B7B7B; background-color:#F0EFF5;
+				font-size:14px; line-height:18px; padding:15px;
+			}
+			.subTit span{
+				display:block; float:right; color:black;
+			}
+			.littleTit{
+				width:100%; font-size:14px; line-height:50px;
+				text-align:center;
+			}
+			.chartOuter{
+				width:100%; height:470px;
+			}
+			.result-count{
+				height:300px;
+			}
+			.error-rate  {
+				height: 320px;
+			}
+			
+			.wrongTit{
+				width:100%; font-size:14px; line-height:36px;
+				border-bottom:2px solid #D8D8D8; color:#78787A;
+				background-color:#F7F6FB; font-weight:bold;
+				padding-left:10px; padding-right:10px;
+			}
+			.wrongName{
+				width:70%; float:left; padding-left:10px; padding-right:10px;
+			}
+			.wrongPeople{
+				width:30%; float:left; text-align:right;
+			}
+			.wrongItem{
+				width:100%; font-size:14px; line-height:36px;
+				border-bottom:1px solid #F6F6F6; color:#8C8C8C;
+				padding-left:10px; padding-right:10px;
+			}
+			.wrongItemRed{
+				color:#EC7D2E;
+			}
+			.score2{
+				width:100%; padding-left:10px; padding-top:10px;
+				font-weight:bold; color:#5A5A5A;
+			}
+			
+			.switch{
+				width:100%; height:36px; float:left; background-color:#1EA1CF;
+			}
+			.switchLi{
+				width:50%; height:100%; float:left;
+				color:#A8DBED; line-height:36px; text-align:center;
+			}
+			.switchLi:hover{
+				background-color:#4CB4D9;
+			}
+			.switchOn{
+				background-color:#4CB4D9;
+			}
+			.switchCon2{
+				display:none;
+			}
+			
+			.scoreCon { height: 200px; overflow: hidden; width: 200%; position: absolute; left: 0; top: 0; }
+			.scoreList,.scoreRadar { width: 50%; float: left;}
+			.Radar { height: 180px;}
+			.scoreOuter ol {
+				position: absolute; bottom: 70px;  left: 50%; margin-left: -35px;
+				width: 70px; height: 20px;  
+			}
+			.scoreOuter ol li {
+				border-radius: 50%; cursor: pointer; opacity: 0.5;
+				width: 14px; height: 14px; background: #fff; float: left; margin: 0 10px;
+			}
+			.scoreOuter ol li.active { opacity: 1}
+			
+			.trainSkillOuter{
+				width:100%; overflow-x:auto; margin-top:30px;
+			}
+			.trainSkillBox{
+				width:100%;
+			}
+			.skillCon{
+				width:50%; float:left;
+			}
+			.skillCon>span{
+				width:100%; line-height:50px; font-size:16px;
+				color:#8B8B8D; text-align:center; display:block;
+			}
+			.skillImg{
+				width:70px; height:70px; margin:0 auto;
+				background-color:#D6DEE0;
+				background-image:url('../../images/iteach/beforeLesson.jpg');
+				background-size:40% 50%; background-repeat:no-repeat;
+				background-position:50% 50%; border-radius:40px;
+			}
+			.skillImgOn div{
+				background-color:#63BCDC;
+			}			
+			
+			
+			
+		</style>
+
+	</head>
+	<body>
+		
+		<div class="box clearfix">
+			<div class="outer clearfix">
+				<div class="topOuter">
+					<div class="return1">
+						
+					</div>
+					<div class="topTxt">
+						&nbsp;
+					</div>
+					<div class="topRight">
+						
+					</div>
+				</div>
+
+				<div class="scoreOuter">
+					<div class="scoreCon clearfix"> 
+						<div class="scoreRadar">
+							<div class="Radar">
+								
+							</div>								
+						</div>
+						<div class="scoreList">
+							<div class="score">
+								<p>0</p>
+								<span>平均得分</span>
+								<div></div>
+							</div>								
+						</div>
+
+					</div>
+					<ol>
+						<li class="active" _type="1"></li>
+						<li _type="2"></li>
+					</ol>
+					<div class="scoreTxt">
+						&nbsp;
+					</div>
+					<div class="scoreTxt">
+						&nbsp;
+					</div>
+					<ul class="switch">
+						<li class="switchLi switchLi1 switchOn">完成情况</li>
+						<li class="switchLi switchLi2">错误情况</li>
+					</ul>
+				</div>
+				
+				
+				<div class="trainSkillOuter">
+					<div class="trainSkillBox clearfix">
+						<div class="skillCon">
+							<div class="skillImg">
+							</div>
+							<span>&nbsp;</span>
+						</div>
+					</div>
+				</div>
+				
+				<div class="subTit">
+					班级情况
+				</div>
+
+				<div class="boxOuter">
+					<div class="detail clearfix">
+						<div class="name">
+							课程
+						</div>
+						<div class="val">
+							&nbsp;
+						</div>
+					</div>
+
+					<div class="detail clearfix">
+						<div class="name">
+							上课时间
+						</div>
+						<div class="val">
+							&nbsp;
+						</div>
+					</div>
+
+					<div class="detail clearfix">
+						<div class="name">
+							班级
+						</div>
+						<div class="val">
+							&nbsp;
+						</div>
+					</div>
+
+					<div class="detail clearfix">
+						<div class="name">
+							系别
+						</div>
+						<div class="val">
+							&nbsp;
+						</div>
+					</div>
+
+					<div class="detail clearfix">
+						<div class="name">
+							学院
+						</div>
+						<div class="val">
+							&nbsp;
+						</div>
+					</div>
+
+					<div class="detail clearfix">
+						<div class="name">
+							学生人数
+						</div>
+						<div class="val">
+							0人
+						</div>
+					</div>
+					<div class="skill-list">
+						
+					</div>
+					
+				</div>
+
+				<div class="subTit">
+					班级成绩统计
+				</div>
+
+				<div class="boxOuter">
+					<div class="chartOuter result-count">
+						
+					</div>
+				</div>
+
+				<div class="subTit">
+					完成人数
+				</div>
+
+				<div class="boxOuter">
+					<div class="littleTit">
+						对应训练次数&nbsp;完成人数统计
+					</div>
+
+					<div class="chartOuter train-time">
+						
+					</div>
+				</div>
+
+				<div class="boxOuter">
+					<div class="littleTit">
+						未训练名单
+					</div>
+					<p class="notrain">
+						
+					</p>
+				</div>
+				
+
+
+				<div class="bottomOuter">
+					<a href="schedule.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/kebiao.png"/>
+						<span>课表</span>
+					</a>
+
+					<a href="report.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/baogaoon.png"/>
+						<span class="bottomItemOn">报告</span>
+					</a>
+
+					<a href="message-list.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/message.png"/>
+						<span>通知</span>
+					</a>
+
+					<a href="person-center.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/head2.png"/>
+						<span>我</span>
+					</a>
+				</div>
+
+			</div>
+
+		</div>
+		
+		<script src="../../js/echarts-all.js"></script>
+		<script src="../../js/iteach/web_chart.js"></script>
+		<script src="../js/iteach/web_pre_report.js"></script>
+	</body>
+	
+</html>

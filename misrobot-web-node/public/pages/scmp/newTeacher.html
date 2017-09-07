@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>考官认证技能项</title>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+    <script src="../../js/element.js"></script>
+    <link rel="stylesheet" href="../../css/assistant/style.css">
+    <link rel="stylesheet" href="../../css/element.css">
+    <link rel="stylesheet" href="../../css/scmp/scmpcommon.css">
+    <link rel="stylesheet" href="../../css/scmp/newTeacher.css">
+</head>
+<body style="overflow: hidden">
+    <div id="addTeacher" v-cloak>
+        <section>
+            <div class="choose">
+                <b>考官：</b>
+                <p v-show="teachers"><span v-for="val in choiceList">{{val.name}}&nbsp;&nbsp;</span></p>
+                <el-button  @click="showTeacher">选择</el-button>
+            </div>
+            <div class="choose">
+                <b>技能项：</b>
+                <p v-show="arts"><span v-for="val in choiceArtList">{{val.name}}</span></p>
+                <el-button @click="showArt">选择</el-button>
+            </div>
+            <div class="choose">
+                <b>备注：</b>
+                <el-input class="remark" type="textarea" :rows="5" placeholder="请输入内容" v-model="textarea"></el-input>
+            </div>
+            <div class="btnA">
+                <el-button type="info" @click="addTeacher">保存</el-button>
+                <el-button  @click="close">取消</el-button>
+            </div>
+        </section>
+        <div class="choice" v-show="choice">
+            <header>
+                <p>
+                    <span>选择老师</span>
+                    <span class="choose-right" @click="closeAlert">X</span>
+                </p>
+            </header>
+            <section>
+                <div class="left-part search-btn">
+                    <div>
+                        <el-input placeholder="请输入考官姓名" v-model="searchName">
+                            <el-button slot="append" icon="search" @click="searchTeacher"></el-button>
+                        </el-input>
+                    </div>
+                    <ul class="list">
+                        <el-checkbox-group v-model="checkList">
+                            <li v-for="(value,index) in list">
+                                <el-checkbox :label="value">
+                                    {{value.name}}
+                                </el-checkbox>
+                            </li>
+                        </el-checkbox-group>
+                    </ul>
+                </div>
+                <div class="btnB">
+                    <el-button @click="addRight"><i class="el-icon-d-arrow-right"></i></el-button>
+                    <br>
+                    <el-button @click="deletedRight"><i class="el-icon-d-arrow-left"></i></el-button>
+                </div>
+                <div class="right-part">
+                    <p>已选老师：</p>
+                    <ul class="list">
+                        <el-checkbox-group v-model="deleteList">
+                            <li v-for="(value,index) in choiceList">
+                                <el-checkbox :label="value">
+                                    {{value.name}}
+                                </el-checkbox>
+                            </li>
+                        </el-checkbox-group>
+                    </ul>
+                </div>
+            </section>
+            <div class="btn-group">
+                <div class="btnC">
+                    <el-button type="info" @click="saveTeacher">保存</el-button>
+                    <el-button  @click="closeAlert">取消</el-button>
+                </div>
+            </div>
+        </div>
+        <div class="choice" v-show="choiceArt">
+            <header>
+                <p>
+                    <span>选择训练项</span>
+                    <span class="choose-right" @click="closeArt">X</span>
+                </p>
+            </header>
+            <section>
+                <div class="left-part search-btn">
+                    <div>
+                        <el-input placeholder="请输入技能项" v-model="searchName">
+                            <el-button slot="append" icon="search"></el-button>
+                        </el-input>
+                    </div>
+                    <ul class="list">
+                        <el-checkbox-group v-model="artList">
+                            <li v-for="(value,index) in art">
+                                <el-checkbox :label="value">
+                                    {{value.name}}
+                                </el-checkbox>
+                            </li>
+                        </el-checkbox-group>
+                    </ul>
+                </div>
+                <div class="btnB">
+                    <el-button @click="artRight"><i class="el-icon-d-arrow-right"></i></el-button>
+                    <br>
+                    <el-button @click="deletedArt"><i class="el-icon-d-arrow-left"></i></el-button>
+                </div>
+                <div class="right-part">
+                    <p>已选技能项：</p>
+                    <ul class="list">
+                        <el-checkbox-group v-model="deleteArt">
+                            <li v-for="(value,index) in choiceArtList">
+                                <el-checkbox :label="value">
+                                    {{value.name}}
+                                </el-checkbox>
+                            </li>
+                        </el-checkbox-group>
+                    </ul>
+                </div>
+            </section>
+            <div class="btn-group">
+                <div class="btnC">
+                    <el-button type="info" @click="saveArt">保存</el-button>
+                    <el-button  @click="closeArt">取消</el-button>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    var vm=new Vue({
+        el:'#addTeacher',
+        data:{
+            teachers:false,
+            choice:false,
+            textarea:"",//备注
+            teacherList:[],//后台返回数组
+            list:[],//循环到列表的数组==teacherList
+            checkList:[],//左边选中的数组
+            searchName:'',
+            choiceList:[],//右边循环的数组==checkList
+            deleteList:[],//右边选中准备删除的数组
+//            TODO Art
+            arts:false,//显示已选
+            choiceArt:false,//选择框
+            artsList:[],
+            art:[],//循环到列表的数组
+            artList:[],//选中的技能的数组
+            deleteArt:[],//右边选中准备删除的数组
+            choiceArtList:[],//右边循环的数组
+            teacherResult:[],
+            artResult:[]
+        },
+        mounted:function(){
+            this.getTeacherList();
+            this.getArtList();
+        },
+        methods: {
+            close:function(){
+                closeAll();
+            },
+            closeAlert:function(){
+                this.searchName='';
+                this.choice=false;
+                
+            },
+            showTeacher:function(){
+                this.choice=true;
+            },
+            closeArt:function(){
+                this.searchName='';
+                this.choiceArt=false;
+                
+            },
+            showArt:function(){
+                this.choiceArt=true;
+            },
+            searchTeacher:function(){
+                var _this=this;
+                var _json={ "1":{
+                    command:"examiner/listnoexistexaminer",
+                    loginid:getCookie('uid'),
+                    sessionid:getCookie('sid'),
+                    name:_this.searchName
+                }};
+                var json=JSON.stringify(_json);
+                $.ajax({
+                    url: "/examiner/listnoexistexaminer",
+                    type: "POST",
+                    data:json,
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            if (data.teachers==''){
+                                layer.msg("未搜索到该考官，请重新搜索。")
+                            }else{
+                                _this.teacherList=data.teachers;
+                                _this.list=_this.teacherList;
+                            }
+                        }else if(data.errcode==9904){
+                            layer.msg("登录信息已失效，请重新登录");
+                        }
+                    },
+                    error:function() {
+                        errfn();
+                    }
+                })
+            },
+//            TODO teacher
+            addRight:function(){
+                if(this.checkList.length>0){
+                    this.choiceList=this.checkList;
+                    for(var i=this.list.length-1;i>=0;i--){
+                        for(var j=this.checkList.length-1;j>=0;j--){
+                            if(this.list[i] == this.checkList[j]){
+                                this.list.splice(i,1);
+                            }
+                        }
+                    }
+                }
+            },
+            deletedRight:function(){
+                if (this.deleteList.length>0){
+                    for(var i=this.choiceList.length-1; i>=0;i--){
+                        for(var j=this.deleteList.length-1;j>=0;j--){
+                            if(this.choiceList[i] == this.deleteList[j]){
+                                this.choiceList.splice(i,1);
+                            }
+                        }
+                    }
+                    this.list=this.list.concat(this.deleteList);
+                    this.deleteList=[];
+                }
+            },
+            saveTeacher:function(){
+                if (this.choiceList==""){
+                    this.teachers=false;
+                    this.teacherResult=[];
+                    this.choice=false;
+                    this.searchName='';
+                }else {
+                    this.teachers=true;
+                    vm.teacherResult=[];
+                    this.choiceList.forEach(function(value,index){
+                        vm.teacherResult.push(value.id);
+                    });
+                    this.choice=false;
+                    this.searchName='';
+                }
+            },
+            saveArt:function(){
+                if (this.choiceArtList==""){
+                    this.arts=false;
+                    this.artResult=[];
+                    this.choiceArt=false;
+                    this.searchName='';
+                }else {
+                    this.arts=true;
+                    vm.artResult=[];
+                    this.choiceArtList.forEach(function(value,index){
+                        vm.artResult.push(value.learnid);
+                    });
+                    this.choiceArt=false;
+                    this.searchName='';
+                }
+            },
+//            TODO arts
+            artRight:function(){
+                if(this.artList.length>0){
+                    this.choiceArtList=this.artList;
+                    for(var i=this.art.length-1;i>=0;i--){
+                        for(var j=this.artList.length-1;j>=0;j--){
+                            if(this.art[i] == this.artList[j]){
+                                this.art.splice(i,1);
+                            }
+                        }
+                    }
+                }
+            },
+            deletedArt:function(){
+                if (this.deleteArt.length>0){
+                    for(var i=this.choiceArtList.length-1; i>=0;i--){
+                        for(var j=this.deleteArt.length-1;j>=0;j--){
+                            if(this.choiceArtList[i] == this.deleteArt[j]){
+                                this.choiceArtList.splice(i,1);
+                            }
+                        }
+                    }
+                    this.art=this.art.concat(this.deleteArt);
+                    this.deleteArt=[];
+                }
+            },
+//            TODO 获取老师列表
+            getTeacherList:function(){
+                var _this=this;
+                var _json={ "1":{
+                    command:"examiner/listnoexistexaminer",
+                    loginid:getCookie('uid'),
+                    sessionid:getCookie('sid')
+                }};
+                var json=JSON.stringify(_json);
+                $.ajax({
+                    url: "/examiner/listnoexistexaminer",
+                    type: "POST",
+                    data:json,
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            _this.teacherList=data.teachers;
+                            _this.list=_this.teacherList;
+                        }else if(data.errcode==9904){
+                            layer.msg("登录信息已失效，请重新登录");
+                        }
+                    },
+                    error:function() {
+                        errfn();
+                    }
+                })
+            },
+//            TODO 获取技能列表
+            getArtList:function(){
+                var _this=this;
+                var _json={ "1":{
+                    command: "learn/querylearninfo",
+                    type:3,
+                    loginid:getCookie('uid'),
+                    sessionid:getCookie('sid')
+                }};
+                var json=JSON.stringify(_json);
+                $.ajax({
+                    url: "/learn/querylearninfo",
+                    type: "POST",
+                    data:json,
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            _this.artsList=data.learnids;
+                            _this.art=_this.artsList;
+                        }else if(data.errcode==9904){
+                            layer.msg("登录信息已失效，请重新登录");
+                        }
+                    },
+                    error:function() {
+                        errfn();
+                    }
+                })
+            },
+//            TODO 提交保存
+            addTeacher:function(){
+                var _this=this;
+                var _json={ "1":{
+                    command:"examiner/addexaminer",
+                    sessionid:getCookie('sid'),
+                    loginid:getCookie('uid'),
+                    uid:_this.teacherResult.toString(),
+                    learnid:_this.artResult.toString()
+                }};
+                var json=JSON.stringify(_json);
+                if (_this.artResult==""&&_this.teacherResult==""){
+                    layer.msg("请选择需要认证的考官和技能");
+                } else if (_this.teacherResult==""){
+                    layer.msg("请选择需要认证的考官");
+                }else if (_this.artResult==""){
+                    layer.msg("请选择需要认证的考官技能");
+                }else {
+                    $.ajax({
+                        url: "/examiner/addexaminer",
+                        type: "POST",
+                        data:json,
+                        success: function (data) {
+                            data = data["1"];
+                            if (data.errcode == 0) {
+                                layer.msg("保存成功");
+                                window.parent.location.reload();
+                                _this.close();
+                            }else if(data.errcode==9904){
+                                layer.msg("登录信息已失效，请重新登录");
+                            }
+                        },
+                        error:function() {
+                            errfn();
+                        }
+                    })
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

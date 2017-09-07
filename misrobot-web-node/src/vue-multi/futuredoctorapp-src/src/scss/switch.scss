@@ -1,0 +1,158 @@
+.switch {
+    width: .52rem;
+    height: .3rem;
+    position: relative;
+    border: 1px solid #dfdfdf;
+    background-color: #fdfdfd;
+    box-shadow: #dfdfdf 0 0 0 0 inset;
+    border-radius: .15rem;
+    border-top-left-radius: .15rem;
+    border-top-right-radius: .15rem;
+    border-bottom-left-radius: .15rem;
+    border-bottom-right-radius: .15rem;
+    background-clip: content-box;
+    display: inline-block;
+    -webkit-appearance: none;
+    user-select: none;
+    outline: none;
+}
+.switch:before {
+    content: '';
+    width: .28rem;
+    height: .28rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: .14rem;
+    background-color: #fff;
+    box-shadow: 0 .01rem .03rem rgba(0, 0, 0, 0.4);
+}
+.switch:checked {
+    border-color: #64bd63;
+    box-shadow: #64bd63 0 0 0 .16rem inset;
+    background-color: #64bd63;
+}
+.switch:checked:before {
+    left: .21rem;
+}
+.switch.switch-animbg {
+    transition: background-color ease 0.4s;
+}
+.switch.switch-animbg:before {
+    transition: left 0.3s;
+}
+.switch.switch-animbg:checked {
+    box-shadow: #dfdfdf 0 0 0 0 inset;
+    background-color: #64bd63;
+    transition: border-color 0.4s, background-color ease 0.4s;
+}
+.switch.switch-animbg:checked:before {
+    transition: left 0.3s;
+}
+.switch.switch-anim {
+    transition: border cubic-bezier(0, 0, 0, 1) 0.4s, box-shadow cubic-bezier(0, 0, 0, 1) 0.4s;
+}
+.switch.switch-anim:before {
+    transition: left 0.3s;
+}
+.switch.switch-anim:checked {
+    box-shadow: #64bd63 0 0 0 .16rem inset;
+    /* background-color: #64bd63; */
+    transition: border ease 0.4s, box-shadow ease 0.4s, background-color ease 1.2s;
+}
+.switch.switch-anim:checked:before {
+    transition: left 0.3s;
+}
+
+
+.switch.switch-red:checked {
+    border-color: #FE434C;
+    box-shadow: #FE434C 0 0 0 .16rem inset;
+    background-color: #FE434C;
+}
+
+.switch.switch-blue:checked {
+    border-color: #4389FE;
+    box-shadow: #4389FE 0 0 0 .16rem inset;
+    background-color: #4389FE;
+}
+
+.switch.switch-green:checked {
+    border-color: #66D296;
+    box-shadow: #66D296 0 0 0 .16rem inset;
+    background-color: #66D296;
+}
+
+.switch.switch-orange:checked {
+    border-color: #F0A009;
+    box-shadow: #F0A009 0 0 0 .16rem inset;
+    background-color: #F0A009;
+}
+
+
+
+//radio,checkbox
+.#{$namespace}radio,.#{$namespace}checkbox{
+    position:relative;
+    label{
+        float: none;
+        display: inline-block;
+        width: 100%;
+        padding-right: 58px;
+    }
+
+}
+.#{$namespace}radio.#{$namespace}left input[type="radio"],.#{$namespace}checkbox.#{$namespace}left input[type="checkbox"]{
+    left:20px;
+}
+.#{$namespace}radio.#{$namespace}left label,.#{$namespace}checkbox.#{$namespace}left label{
+    padding-left: 58px;
+    padding-right: 15px;
+}
+.#{$namespace}radio input[type="radio"],.#{$namespace}checkbox input[type="checkbox"]{
+    -webkit-appearance:none;
+    outline: 0!important;
+    width: 28px;
+    border: 0;
+    height: 26px;
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+    top: 4px;
+//设置背景色，否则在Ios上会有黑色边框；
+background-color:transparent;
+&[disabled]:before{
+     opacity: .3;
+ }
+&:before{
+     font-family: Muiicons;
+     font-weight: normal;
+     border-radius: 0;
+     font-size: 28px;
+     line-height: 1;
+     text-decoration: none;
+     -webkit-font-smoothing: antialiased;
+     color: rgb(170, 170, 170);
+     background: none;
+ }
+&:checked:before{
+     color:$blue;
+ }
+
+}
+.#{$namespace}radio.#{$namespace}disabled label,.#{$namespace}radio label.#{$namespace}disabled,.#{$namespace}checkbox.#{$namespace}disabled label,.#{$namespace}checkbox label.#{$namespace}disabled{
+    opacity: .4;
+}
+.#{$namespace}radio input[type="radio"]:before{
+    content: "\e411";
+}
+.#{$namespace}radio input[type="radio"]:checked:before{
+    content: "\e441";
+}
+.#{$namespace}checkbox input[type="checkbox"]:before{
+    content: "\e411";
+}
+.#{$namespace}checkbox input[type="checkbox"]:checked:before{
+    content: "\e442";
+}
+

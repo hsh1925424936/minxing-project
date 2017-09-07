@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<script type="text/javascript" src="../../js/news/myUnSlider.js"></script>
+		<script type="text/javascript" src="../../js/news/skill-center.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../css/news/myUnSlider.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/news/skill_center_common.css" />
+		<meta charset="UTF-8">
+		<title>技能中心首页</title>
+		<style type="text/css">
+			.top2Outer{
+				margin:0 auto; background-color:rgba(255,255,255,0.7);
+				z-index:20; position:absolute; top:110px;
+			}
+			.mainOuter{
+				margin-top:-110px; width:100%;
+				position:relative;
+			}
+
+			.imgOuter{
+				width:100%; height:660px; position:relative; max-width:1350px;
+				margin:auto;
+			}
+			.imgOuter>.bigImgCon{
+				width:100%; height:660px;
+			}
+			.imgOuter>h2{
+				width:480px; font-size:36px;
+				position:absolute; left:63%; top:275px; text-align:center;
+				letter-spacing:0.1em; margin-left:-240px; z-index:7;
+				color:rgb(42,30,31);
+			}
+			.imgOuter>h3{
+				width:440px; font-size:18px;
+				position:absolute; left:63%; top:340px; text-align:center;
+				letter-spacing:0.1em; margin-left:-220px; z-index:30;
+				color:rgb(42,30,31);
+			}
+			.imgOuter>a{
+				width:140px; font-size:16px; height:42px; line-height:42px;
+				position:absolute; left:63%; top:385px; text-align:center;
+				display:block; border-radius:40px; color:white;
+				letter-spacing:0.1em; cursor:pointer; margin-left:-80px;
+				z-index:30; background-color:#0497CB;
+			}
+			.show_movie{
+				width:140px; height:42px; position:absolute;
+				left:63%; top:385px;
+				display:block; border-radius:40px;
+				cursor:pointer; margin-left:80px;
+				z-index:30; background-image:url('../../images/ostp/show-movie-btn.png');
+				background-size:100% 100%; background-repeat:no-repeat;
+			}
+
+			.typeOuter{
+				width:1024px; height:235px; margin:0 auto;
+			}
+			.itemOuter{
+				float:left; width:20%; height:100%; cursor:pointer; position:relative;
+			}
+			.itemImgOuter{
+				margin:0 auto; width:82px; height:82px;
+				border-radius:70px; margin-top:40px;
+				background-size:100% 100%; margin-bottom:5px;
+			}
+			
+
+			.itemOuter img{
+				display:block; width:100%; height:100%;
+				border-radius:70px; background-color:#F6F6F6;
+			}
+			.itemOuter>h3{
+				width:100%; height:40px; color:rgb(102,102,102);
+				font-size:21px; text-align:center;
+				line-height:40px; letter-spacing:0.1em;
+			}
+			.itemOuter>h5{
+				width:100%; height:40px; color:rgb(102,102,102);
+				font-size:14px; text-align:center;
+				line-height:40px; letter-spacing:0.1em;
+			}
+
+			.typeCon{
+				width:100%;
+				background-color:white;
+			}
+			.typeCon>div{
+				width:1024px; min-height:350px; margin:0 auto;
+				padding-top:30px; padding-bottom:30px; 
+			}
+			.typeCon>div>div{
+				height:100%; float:left;
+			}
+			.typeCon h4{
+				width:100%; line-height:50px; height:50px;
+				font-size:16px; color:rgb(51,51,51);
+			}
+			.typeCon .listOuter{
+				width:100%; line-height:40px; font-size:14px;
+				color:rgb(102,102,102);
+				border-top:4px solid #73B8D7;
+			}
+			
+			.listOuter h5{
+				width:100%; height:40px; padding-right:85px; line-height:40px;
+				margin-right:-86px; float:left; overflow:hidden; font-size:14px;
+				cursor:pointer;
+			}
+			.listOuter span{
+				width:85px; height:40px; float:left; line-height:40px;
+				font-size:14px; padding-left:30px;
+			}
+
+			.newsOuter{
+				width:630px;
+			}
+			.msgOuter{
+				width:294px; margin-left:66px;
+			}
+			.fileCon{
+				width:235px; height:275px; background-color:white;
+				float:left; margin-right:20px; padding-bottom:20px;
+				margin-bottom:20px; border:1px solid #ccc;
+			}
+			.filePic{
+				width:100%; height:170px; overflow:hidden;
+				background-size:100% 100%; background-repeat:no-repeat;
+			}
+			.filePic img { display: block; width: 100%; height: 100%;}
+			
+			
+			.fileTxt{
+				width:100%; margin-top:21px; background-color:white;
+				opacity:0.5; padding-left:30px; padding-right:30px;
+				padding-top:12px; padding-bottom:12px;
+			}
+			.fileTxt1{
+				display:block; font-size:14px;
+			}
+			.fileTxt2{
+				display:block; font-size:24px;
+			}
+			.fileName{
+				width: 100%; font-size: 14px; padding: 20px;
+    			color: rgb(51,51,51); padding-bottom: 0px; margin-bottom: 12px;
+    			overflow: hidden; height: 50px; padding-top: 30px;
+			}
+			.fileBottom{
+				width:100%; height:26px;
+			}
+			.headIcon{
+				width:12px; height:16px; margin-top:5px;
+				background-image:url('../../images/ostp/head4.png');
+				background-size:100% 100%; background-repeat:no-repeat;
+				float:left; margin-left:30px;
+			}
+			.count{
+				float:left; color:rgb(153,153,153); font-size:12px;
+				width:70px; height:100%; line-height:26px;
+				margin-left:5px;
+			}
+			.fileType{
+				float:right; width:116px; height:26px;
+				font-size:14px; color: rgb(153,153,153);
+				line-height:26px; text-align:center;
+			}
+			.showinfo{
+				display:none;
+				width:154px;
+				height:178px;
+				background:#FFFFFF;
+				position: absolute;
+				z-index:999999;
+				-webkit-box-shadow:0 0 2px 1px #b7c1c5;
+				-moz-box-shadow:0 0 2px 1px #b7c1c5;
+				box-shadow:0 0 2px 1px #b7c1c5;
+			}
+			.showinfo img{
+				padding: 20px 20px 0 20px;;
+			}
+			.showinfo p{
+				margin-top: -20px;
+				padding: 0;
+				text-align: center;
+				font-family: 微软雅黑;
+				font-size: 14px;
+			}
+			.appBox{
+				width: 120px;
+				height: 20px;
+				float: right;
+				position: relative;
+				right: -520px;
+			}
+			.appBox a {
+				color: #FFFFFF;
+			}
+			.appBox img {
+				position: relative;
+				top: -1px;
+				left: -3px;
+			}
+			.appBtn{
+				padding: 3px 10px 3px 10px;
+				background-color: #0299c9;
+				color: #FFFFFF;
+				font-family: 微软雅黑;
+				font-size: 12px;
+				border-radius: 20px;
+			}
+
+		</style>
+		<script>
+			var MouseEvent = function(e){
+				this.x = e.pageX
+				this.y = e.pageY
+			}
+			var Mouse = function(e){
+				var kdheight =  jQuery(document).scrollTop();
+				mouse = new MouseEvent(e);
+				leftpos = mouse.x-2;
+				toppos = mouse.y-kdheight-2;
+			}
+			jQuery(
+					function(){
+						jQuery(".app").hover(
+								function(e){
+									Mouse(e);
+									jQuery(".showinfo").css({top:toppos,left:leftpos}).fadeIn(100);
+								},function(){
+									jQuery(".showinfo").hide();
+								}
+						)
+					}
+			)
+		</script>
+		</head>
+	<body>
+
+		<div class="mainOuter clearfix">
+			<div class="top2Outer">
+				<div class="top2Con clearfix">
+					<a href="#" class="top2Con-index">
+						<img src="../../images/ostp/logo.png" class="logoPng" />
+						<div class="top2Tit">临床技能中心</div>					
+					</a>
+					<div class="navigateOuter clearfix">
+						<a href="#">
+							<span class="navigate navigateOn">
+								首页
+							</span>
+						</a>
+						<a href="pages/news/skill-center-introduce.html">
+							<span class="navigate">
+								中心介绍
+							</span>
+						</a>
+						<span class="navigate pull_down_nav" style="width:155px; margin:0;">
+							<a href="pages/news/skill-center-reformation.html?index=0">医学教育改革探索</a>
+							<hr/>
+							<ul>
+								<li><a href="pages/news/skill-center-reformation.html?index=0">技能教学新模式</a></li>
+								<li><a href="pages/news/skill-center-reformation.html?index=1">医教现代教育技术应用</a></li>
+								<li><a href="pages/news/skill-center-reformation.html?index=2">智慧医学教育中心建设</a></li>
+							</ul>
+						</span>
+						<a href="pages/ostp/login.html">
+							<span class="navigate">
+								技能训练
+							</span>
+					</a>
+					</div>
+					<div class="appBox">
+						<a href="#" class="app appBtn">app下载</a>
+						<img src="../../images/news/ico.png">
+					</div>
+					<div class="showinfo">
+						<img src="../../images/news/erweima.png">
+						<p>扫描下载 明日良医App</p>
+					</div >
+				</div>
+			</div>
+
+
+			<div class="imgOuter">
+				<div class="bigImgCon">
+					<div class="take_turns_change_outer">
+						<ul class="take_turns_change_content">
+							<li><img src="../../images/ostp/banner-01.jpg" /></li>
+							<li><img src="../../images/ostp/banner-10.jpg" /></li>
+							<li><img src="../../images/ostp/banner-06.jpg" /></li>
+							<li><img src="../../images/ostp/banner-07.jpg" /></li>
+							<li><img src="../../images/ostp/banner-09.jpg" /></li>
+						</ul>
+					</div>
+
+				</div>
+				<h2>欢迎来到在线自主训练平台</h2>
+				<h3>我们给你提供一个自主学习医学技能知识的平台</h3>
+				<a href="pages/ostp/login.html">马上体验</a>
+				<span class="show_movie"></span>
+			</div>
+
+			<div class="typeOuter">
+				<div class="itemOuter" index='0'>
+					<div class="itemImgOuter" style="background-image:url('../../images/ostp/skill-center-1-2.png');">
+						<img src="../../images/ostp/skill-center-1-1.png" style="display:none;" />
+					</div>
+					<h3>新技能中心</h3>
+					<h5>智能&nbsp;&nbsp;自主&nbsp;&nbsp;创新</h5>
+				</div>
+
+				<div class="itemOuter" index='1'>
+					<div class="itemImgOuter" style="background-image:url('../../images/ostp/skill-center-2-2.png')">
+						<img src="../../images/ostp/skill-center-2-1.png" />
+					</div>
+					<h3>自主训练</h3>
+					<h5>随时随地想练就练</h5>
+				</div>
+
+				<div class="itemOuter" index='2'>
+					<div class="itemImgOuter" style="background-image:url('../../images/ostp/skill-center-3-2.png')">
+						<img src="../../images/ostp/skill-center-3-1.png" />
+					</div>
+					<h3>自主学习</h3>
+					<h5>在线也可以学到技能</h5>
+				</div>
+
+				<div class="itemOuter" index='3'>
+					<div class="itemImgOuter" style="background-image:url('../../images/ostp/skill-center-4-2.png')">
+						<img src="../../images/ostp/skill-center-4-1.png" />
+					</div>
+					<h3>成长曲线</h3>
+					<h5>帮你管理学习成绩</h5>
+				</div>
+
+				<div class="itemOuter" index='4'>
+					<div class="itemImgOuter" style="background-image:url('../../images/ostp/skill-center-5-2.png')">
+						<img src="../../images/ostp/skill-center-5-1.png" />
+					</div>
+					<h3>预约训练</h3>
+					<h5>自助式预约技能操作</h5>
+				</div>
+
+			</div>
+
+			<div class="typeCon">
+				<div>
+					<div class="newsOuter">
+						<h4>新闻中心</h4>
+						<div class="listOuter clearfix">
+							<h5>要坚持精准扶贫、精准脱贫，重在提高脱贫攻坚成效。</h5>
+							<span>10-08</span>
+							<h5>要坚持精准扶贫、精准脱贫，重在提高脱贫攻坚成效。</h5>
+							<span>10-08</span>
+							<h5>要坚持精准扶贫、精准脱贫，重在提高脱贫攻坚成效。</h5>
+							<span>10-08</span>
+							<h5>要坚持精准扶贫、精准脱贫，重在提高脱贫攻坚成效。</h5>
+							<span>10-08</span>
+							<h5>要坚持精准扶贫、精准脱贫，重在提高脱贫攻坚成效。</h5>
+							<span>10-08</span>
+							<h5>要坚持精准扶贫、精准脱贫，重在提高脱贫攻坚成效。</h5>
+							<span>10-08</span>
+						</div>
+					</div>
+					<div class="msgOuter">
+						<h4>通知公告</h4>
+						<div class="listOuter clearfix">
+							<h5>要坚持精准扶贫、精准脱贫，重在提高脱贫攻坚成效。</h5>
+							<span>10-08</span>
+							<h5>要坚持精准扶贫、精准脱贫，重在提高脱贫攻坚成效。</h5>
+							<span>10-08</span>
+							<h5>要坚持精准扶贫、精准脱贫，重在提高脱贫攻坚成效。</h5>
+							<span>10-08</span>
+							<h5>要坚持精准扶贫、精准脱贫，重在提高脱贫攻坚成效。</h5>
+							<span>10-08</span>
+							<h5>要坚持精准扶贫、精准脱贫，重在提高脱贫攻坚成效。</h5>
+							<span>10-08</span>
+							<h5>要坚持精准扶贫、精准脱贫，重在提高脱贫攻坚成效。</h5>
+							<span>10-08</span>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</body>
+	
+	<script type="text/javascript">
+		$('.itemOuter').mouseenter(function() {
+
+			$('.itemImgOuter>img').css('display', 'block');
+			$(this).find('img').css('display', 'none');
+		});
+
+		$(function() {
+			myUnSlider.init({//启动轮播图
+				speed:1000,
+				wait:5000
+			});
+			makeList();//生成新闻和通知列表
+
+			$('.show_movie').click(function(event) {
+				window.location.href = '/video/intro.mp4';
+			});
+		});
+
+		
+
+		function makeList(){//生成新闻和通知列表
+			$('.listOuter').html('');
+
+			getList(1);
+			getList(2);
+		}
+
+		function getList(typeid){//1 新闻 2 通知
+
+			Api.R({
+				url: "/news/querynewstitle",
+				isShade:1,
+				istoken:1,
+				json:{
+					'1':{
+						command:'news/querynewstitle',
+						typeid:typeid
+					}
+				},
+				fn:function (base) {
+					var base = base[1];
+					console.log(base);
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+					
+					var str = '';
+					var news = base.news;
+					var newsLen = news.length;
+					if( news.length == 0 ){
+						$('.listOuter').eq(typeid-1).html(
+							'<p class="no-data" style="height:166px">暂无相关数据</p>'
+						);
+						return false;
+					}
+					if( newsLen > 6 ){
+						newsLen = 6;
+					}
+					for( var i = 0; i < newsLen; i++ ){
+						str+='<h5>'+news[i].title+'</h5><span>'+
+						timetodate(datetotime(news[i].created_at),8)+'</span>';
+					}
+					
+					$('.listOuter').eq(typeid-1).html(str);
+
+					//注册每条列表的点击事件
+					$('.newsOuter h5').click(function() {
+						window.location.href = 'pages/news/skill-center-news.html#type=0';
+					});
+
+					$('.msgOuter h5').click(function() {
+						window.location.href = 'pages/news/skill-center-news.html#type=1';
+					});
+					 
+				}
+			});
+		}
+	</script>
+
+</html>

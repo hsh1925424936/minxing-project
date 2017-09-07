@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>题目类型管理</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/lodash.min.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style type="text/css">
+			html,
+			body {
+				background-color: white;
+			}
+			[v-cloak]{
+				display:none;
+			}
+			.title{
+				background-color: #E5E6E8;
+				height: 40px;
+				line-height: 40px;
+				padding-left: 20px;
+				margin-bottom: 20px;
+			}
+			.tree{
+				margin-top: 10px;
+			}
+		</style>
+	</head>
+<body>
+	<div id = "app">
+		<div class = "title">题目类别管理</div>
+		<el-button type ="primary" @click = "newType">新增</el-button>
+		<el-button type ="primary" @click = "editType">编辑</el-button>
+		<el-button type ="primary" @click = "delType">删除</el-button>
+		<div class = "tree">
+			<el-tree :data="typeList" :props="defaultProps" :highlight-current="true" @node-click="handleNodeClick0" ></el-tree>
+		</div>
+		<el-dialog title="新增题目类型" :visible.sync="dialogFormVisible">
+		  <el-form :model="form">
+		    <el-form-item label="上级分类:" prop = "parent" label-width="150px">
+		      <el-input style="width:250px" v-model="form.parentName" auto-complete="off" @focus="openTree"></el-input>
+		    </el-form-item>
+		    <el-form-item label="类型名称:" prop = "typename" label-width="150px">
+		      <el-input style="width:250px" v-model="form.name" auto-complete="off"></el-input>
+		    </el-form-item>
+		    </el-form-item>
+		  </el-form>
+		  <div slot="footer" class="dialog-footer">
+		    <el-button @click="dialogFormVisible = false">取 消</el-button>
+		    <el-button type="primary" @click="submitAddOrEdit">确 定</el-button>
+		  </div>
+		</el-dialog>
+		<el-dialog title="选择上级分类" :visible.sync="dialogTreeVisible">
+			<el-tree :data="typeList1" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+			<!-- <div slot="footer" class="dialog-footer">
+			    <el-button @click="dialogTreeVisible = false">取 消</el-button>
+			    <el-button type="primary" @click="submitParentId">确 定</el-button>
+			</div> -->
+		</el-dialog>
+	</div>
+</body>
+<script type="text/javascript">
+	var vm = new Vue({
+		el:'#app',
+		data(){
+			return{
+				typeList:[],
+				typeList1:[],
+				currentType:null,
+				defaultProps: {
+		          children: 'children',
+		          label: 'name'
+		        },
+		        mode:'',
+		        form:{parentName:'',name:'',parentid:''},
+		        dialogFormVisible:false,
+		        dialogTreeVisible:false,
+			}
+		},
+		computed:{
+			// typeList1(){
+			// 	return this.moveCurrentType(_.cloneDeep(this.typeList))
+			// }
+		},
+		watch:{
+			typeList(cval,oval){
+				this.typeList1=this.moveCurrentType(_.cloneDeep(this.typeList));
+			},
+			currentType(){
+				this.typeList1=this.moveCurrentType(_.cloneDeep(this.typeList));
+			}
+		},
+		methods:{
+			moveCurrentType(list){
+				list.forEach((item,index,arr)=>{
+					if(item.value == this.currentType){
+						arr.splice(index,1);
+					}else if(item.children&&item.children.length>0){
+						this.moveCurrentType(item.children)
+					}
+				})
+				return list;
+			},
+			queryAllType(){
+				var self=this;
+ 	 			var data={
+ 	 				command:'question/questioncategorytree',
+ 	 				sessionid:getCookie('sid'),
+ 	 				loginid:getCookie('uid')
+ 	 			}
+ 	 			function callback(res){
+ 	 				if(res && res.errcode==0){
+ 	 					self.typeList=res.children;
+						  console.log(self.typeList)
+ 	 				}else{
+ 	 					layer.msg(res.errdesc)
+ 	 				}
+ 	 			}
+ 	 			post('/question/questioncategorytree',data,callback,errcodefn,errfn)
+			},
+			submitAddOrEdit(){
+				if(this.mode=="add"){
+					this._newType(this.form.parentid,this.form.name)
+
+				}else{
+					this._editType(this.currentType,this.form.parentid,this.form.name)
+				}
+				this.dialogFormVisible=false;
+
+			},
+			openTree(){
+				this.dialogTreeVisible = true;
+				if(this.mode=="add"){
+					this.typeList1 = this.typeList;
+				}
+			},
+			handleNodeClick0(obj){
+				this.currentType = obj.value;
+			},
+			handleNodeClick(obj){
+				this.form.parentid = obj.value;
+				this.form.parentName = obj.name;
+				this.dialogTreeVisible= false;
+			},
+			newType(){
+				this.dialogFormVisible  =true;
+				this.mode = "add"
+			},
+			_newType(id,name){
+				var self=this;
+ 	 			var data={
+ 	 				command:'question/insertquestioncategory',
+ 	 				sessionid:getCookie('sid'),
+ 	 				loginid:getCookie('uid'),
+ 	 				parentId:id,
+ 	 				name:name
+ 	 			}
+ 	 			function callback(res){
+ 	 				if(res && res.errcode==0){
+ 	 					//self.typeList=res.children;
+ 	 					self.queryAllType();
+						  console.log(self.typeList)
+						self.form = {parentName:'',name:'',parentid:''};
+						self.$message({
+							type:'success',
+							message:'新增成功'
+						})
+ 	 				}else{
+ 	 					layer.msg(res.errdesc)
+ 	 				}
+ 	 			}
+ 	 			post('/question/insertquestioncategory',data,callback,errcodefn,errfn)
+			},
+			editType(){
+				this.dialogFormVisible  =true;
+				this.mode = "edit";
+			},
+			_editType(cid,pid,name){
+				var self=this;
+ 	 			var data={
+ 	 				command:'question/updatequestioncategory',
+ 	 				sessionid:getCookie('sid'),
+ 	 				loginid:getCookie('uid'),
+ 	 				categoryId:cid,
+ 	 				parentId:pid,
+ 	 				name:name
+ 	 			}
+ 	 			function callback(res){
+ 	 				if(res && res.errcode==0){
+ 	 					//self.typeList=res.children;
+ 	 					self.queryAllType();
+						  console.log(self.typeList)
+						self.form = {parentName:'',name:'',parentid:''};
+						self.$message({
+							type:'success',
+							message:'编辑成功'
+						})
+ 	 				}else{
+ 	 					layer.msg(res.errdesc)
+ 	 				}
+ 	 			}
+ 	 			post('/question/updatequestioncategory',data,callback,errcodefn,errfn)
+			},
+			delType(){
+				var self=this;
+ 	 			var data={
+ 	 				command:'question/deletequestioncategory',
+ 	 				sessionid:getCookie('sid'),
+ 	 				loginid:getCookie('uid'),
+ 	 				categoryId:this.currentType,
+ 	 			}
+ 	 			function callback(res){
+ 	 				if(res && res.errcode==0){
+ 	 					//self.typeList=res.children;
+ 	 					self.queryAllType();
+						  console.log(self.typeList)
+						//self.form = {parentName:'',name:'',parentid:''};
+						self.$message({
+							type:'success',
+							message:'删除成功'
+						})
+ 	 				}else{
+ 	 					layer.msg(res.errdesc)
+ 	 				}
+ 	 			}
+ 	 			this.$confirm('是否删除当前选中的题目类型?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+		          post('/question/deletequestioncategory',data,callback,errcodefn,errfn)
+		        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消删除'
+		          });          
+		        });
+ 	 			
+			}
+		},
+		mounted(){
+			this.queryAllType();
+		}
+	})
+</script>
+</html>	

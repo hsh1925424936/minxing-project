@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/rankscreen/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>晋级榜</title>
+		<style type="text/css">
+			body{
+				width:100%; height:100%; overflow:hidden;
+			}
+
+			.titOuter{
+				width:100vw; height:11vh; color:white; position:relative;
+				font-weight:bold;
+				background-image:url(../../images/rankscreen/paihang-top.png);
+				background-repeat:no-repeat; background-size:100% 100%;
+			}
+			.titOuter img{
+				width:7.3vh; height:7.3vh; float:left; display:block;
+				margin-left:3.9vw; position:relative; top:50%; margin-top:-3.65vh;
+			}
+			.titOuter h2{
+				height:100%; font-size:5.5vh; top:0; left:0; width:100%;
+				line-height:11.5vh; position:absolute; text-align:center;
+				font-weight:bold;
+			}
+			
+			.sub_tit{
+				width:100%; height:8.4vh; background-color:#0030AC; color:white;
+				font-size:4.7vh; line-height:8.4vh; text-align:center;
+			}
+
+			.mainOuter{
+				width:100%; height:74.3vh; background-color:#0069C4;
+			}
+			.mainOuter>div{
+				overflow:hidden; position:relative;
+			}
+			.mainOuter .kuang{
+				margin:auto; height:6.8vh; margin-top:3.5vh;
+			}
+			.mainOuter>div>h3{
+				width:8.5vw; height:3.4vh; line-height:3.4vh; text-align:center; 
+				left:50%; margin-left:-4.25vw; position:absolute;
+				font-size:4.2vh; background-color:#0069C4; top:1.7vh;
+			}
+			.mainOuter>div>span{
+				width:8.4vh; height:8.4vh; line-height:8vh; text-align:center; 
+				margin-left:-4.2vh; position:absolute; display:block;
+				font-size:3.1vh; color:white; top:6.45vh;
+				border-radius:8vh;
+			}
+			.line{
+				width:1vw; height:3.7vh; left:50%;
+			    margin-left:-0.5vw; position:absolute;
+			    top:14.8vh;
+			}
+			.one{
+				width:100%; height:18vh;
+			}
+			.one>h3{
+				width:8.5vw; height:3.4vh; line-height:3.4vh; text-align:center; 
+				font-size:3.7vh;
+				margin:auto;
+			}
+			.one div{
+				width:8.54vh; height:11.6vh;
+				background-repeat:no-repeat; background-size:100% 100%;
+				margin:auto; line-height:15.3vh; text-align:center;
+				color:white; font-size:3.1vh; margin-top:6vh;
+			}
+			.two{
+				width:100%; height:18.5vh;
+			}
+			.two .kuang{
+				width:40vw;
+			}
+			.two span:nth-child(3){
+				left:38%;
+			}
+			.two span:nth-child(4){
+				left:50%;
+			}
+			.two span:nth-child(5){
+				left:62%;
+			}
+			
+			.three{
+				width:100%; height:18.5vh;
+			}
+			.three .kuang{
+				width:73vw;
+			}
+			.three span:nth-child(3){
+				left:24%;
+			}
+			.three span:nth-child(4){
+				left:34%;
+			}
+			.three span:nth-child(5){
+				left:44%;
+			}
+			.three span:nth-child(6){
+				left:56%;
+			}
+			.three span:nth-child(7){
+				left:66%;
+			}
+			.three span:nth-child(8){
+				left:76%;
+			}
+			.three .line{
+				top:10.4vh; height:5.7vh;
+			}
+
+			.four{
+				width:100%; height:18.5vh;
+			}
+			.four .kuang{
+				width:83vw;
+			}
+			.four span:nth-child(3){
+				left:8.5%;
+			}
+			.four span:nth-child(4){
+				left:16.1%;
+			}
+			.four span:nth-child(5){
+				left:24%;
+			}
+			.four span:nth-child(6){
+				left:31%;
+			}
+			.four span:nth-child(7){
+				left:39%;
+			}
+			.four span:nth-child(8){
+				left:46%;
+			}
+			.four span:nth-child(9){
+				left:54%;
+			}
+			.four span:nth-child(10){
+				left:61%;
+			}
+			.four span:nth-child(11){
+				left:69%;
+			}
+			.four span:nth-child(12){
+				left:76%;
+			}
+			.four span:nth-child(13){
+				left:83.9%;
+			}
+			.four span:nth-child(14){
+				left:91.5%;
+			}
+
+			/*status1是未进行状态 status2是正在进行状态 status3是过去状态*/
+			.status1>h3{
+				color:rgba(255,255,255,0.3); background-color:#0069C4;
+			}
+			.status1>.group{
+				background-image:url(../../images/rankscreen/guanjun.png);
+			}
+			.status1>.kuang{
+				border:1px solid rgba(255,255,255,0.3);
+			}
+			.status1>span{
+				border:1px solid rgba(255,255,255,0.3); background-color:#0069C4;
+			}
+			.status1>.line{
+				background-color:rgba(255,255,255,0.3);
+			}
+
+			.status2>h3{
+				color:rgba(255,255,255,1); background-color:#0069C4;
+			}
+			.status2>.group{
+				background-image:url(../../images/rankscreen/guanjun-h.png);
+			}
+			.status2>.kuang{
+				border:2px solid rgba(255,255,255,1);
+			}
+			.status2>span{
+				border:2px solid rgba(255,255,255,1); background-color:#0030AC;
+			}
+			.status2>.line{
+				background-color:rgba(255,255,255,1);
+			}
+
+			.status3>h3{
+				color:rgba(255,255,255,1); background-color:#0069C4;
+			}
+			.status3>.group{
+				background-image:url(../../images/rankscreen/guanjun-h.png);
+			}
+			.status3>.kuang{
+				border:1px solid rgba(255,255,255,1);
+			}
+			.status3>span{
+				border:1px solid rgba(255,255,255,1); background-color:#0069C4;
+			}
+			.status3>.line{
+				background-color:rgba(255,255,255,1);
+			}
+			
+
+			.footCon{
+				width:100%; height:6.32vh;
+				background-image:url(../../images/rankscreen/ranking_bottom.png);
+				background-size:100% 100%; background-repeat:no-repeat;
+			}
+		</style>	
+		
+		
+	</head>
+	<body>
+		<div class="titOuter">
+			<img src="../../images/rankscreen/wuda_logo.png">
+			<h2>武汉大学医学部第二届临床医学专业学生临床技能竞赛-初赛</h2>
+		</div>
+		
+		<div class="sub_tit">
+			晋级榜
+		</div>
+
+		<div class="mainOuter">
+			<div class="one">
+				<h3>冠军</h3>
+				<div class="group"></div>
+			</div>
+			<div class="two">
+				<div class="kuang">
+				</div>
+				<h3>决赛</h3>
+				<span></span>
+				<span></span>
+				<span></span>
+				<div class="line"></div>
+			</div>
+			<div class="three">
+				<div class="kuang">
+				</div>
+				<h3>复赛</h3>
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+				<div class="line"></div>
+			</div>
+			<div class="four">
+				<div class="kuang">
+				</div>
+				<h3>初赛</h3>
+				<span>1队</span>
+				<span>2队</span>
+				<span>3队</span>
+				<span>4队</span>
+				<span>5队</span>
+				<span>6队</span>
+				<span>7队</span>
+				<span>8队</span>
+				<span>9队</span>
+				<span>10队</span>
+				<span>11队</span>
+				<span>12队</span>
+			</div>
+
+		</div>
+
+		<div class="footCon">
+			
+		</div>
+
+	</body>
+	
+	<script type="text/javascript">
+		var examid1; var examid2; var examid3; var t;
+		$(document).ready(function() {
+			// 访问的时候在url后面加上 1=x&2=y&3=z  第一个参数是查询初赛的examid 第二个参数是查询复赛的examid 第三个参数是查询决赛的examid
+			examid1 = GetQueryString(1);
+			examid2 = GetQueryString(2);
+			examid3 = GetQueryString(3);
+			showTwo(examid1);
+			t = setInterval(function(){
+				showTwo(examid1);
+			},30000);
+		});
+
+		function style1(){//第一阶段显示的样式
+			clear_style();
+			$('.one').addClass('status1');
+			$('.two').addClass('status1');
+			$('.three').addClass('status1');
+			$('.four').addClass('status2');
+
+			$('.one .group').html('');
+			$('.two span').html('');
+			$('.three span').html('');
+		}
+
+		function style2(){//第二阶段显示的样式
+			clear_style();
+			$('.one').addClass('status1');
+			$('.two').addClass('status1');
+			$('.three').addClass('status2');
+			$('.four').addClass('status3');
+
+			$('.one .group').html('');
+			$('.two span').html('');
+		}
+
+		function style3(){//第三阶段显示的样式
+			clear_style();
+			$('.one').addClass('status1');
+			$('.two').addClass('status2');
+			$('.three').addClass('status3');
+			$('.four').addClass('status3');
+
+			$('.one .group').html('');
+		}
+
+		function style4(){//第四阶段显示的样式
+			clear_style();
+			$('.one').addClass('status2');
+			$('.two').addClass('status3');
+			$('.three').addClass('status3');
+			$('.four').addClass('status3');
+		}
+
+		function clear_style(){
+			$('.one').removeClass('status1 status2 status3');
+			$('.two').removeClass('status1 status2 status3');
+			$('.three').removeClass('status1 status2 status3');
+			$('.four').removeClass('status1 status2 status3');
+		}
+
+		function showTwo(examid){//展示初赛和复赛的队伍编号 传初赛的examid
+			var json = {
+				'1':{
+					command:'osce/report/matchcurrentreport', //接口地址
+					examid:examid
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/osce/report/matchcurrentreport', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						//uselayer(3,base.errdesc);
+						style1();
+						return false;
+					}
+
+					
+					var matchresult = base.matchresult.matchresult;
+					var is_pre_finished = 1;
+					for ( var i = 0; i < matchresult.length; i++ ){
+						if ( matchresult[i].finishstationcnt != 6 ){//还有没有完成的
+							is_pre_finished = 0;
+						}
+					}
+					if ( matchresult.length == 0 || is_pre_finished == 0 ){
+						style1();
+						return false;
+					}
+					clearData2();
+					showThree(examid2);
+					var matchObj = [];
+					for ( var i = 0; i < matchresult.length; i++ ){
+						for ( var j = 0; j < matchresult.length; j++ ){
+							if( matchresult[j].ranklist == (i+1) ){
+								matchObj.push(matchresult[j]);
+							}
+						}
+					}
+					var str = '';
+					for ( var i = 0; i < matchresult.length; i++ ){
+						$('.four span').eq(i).html(matchObj[i].examineeid+'队');
+						$('.three span').eq(i).html(matchObj[i].examineeid+'队');
+					}
+
+				}
+			});
+			
+		}
+
+		function showThree(examid){//展示初赛和复赛和决赛的队伍编号 传复赛的examid
+			var json = {
+				'1':{
+					command:'osce/report/matchcurrentreport', //接口地址
+					examid:examid
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/osce/report/matchcurrentreport', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						//uselayer(3,base.errdesc);
+						style2();
+						return false;
+					}
+
+					var matchresult = base.matchresult.matchresult;
+					var is_pre_finished = 1;
+					for ( var i = 0; i < matchresult.length; i++ ){
+						if ( matchresult[i].finishstationcnt != 6 ){//还有没有完成的
+							is_pre_finished = 0;
+						}
+					}
+					if ( matchresult.length == 0 || is_pre_finished == 0 ){
+						style2();
+						return false;
+					}
+					clearData3();
+
+					showFour(examid3);
+					var matchObj = [];
+					for ( var i = 0; i < matchresult.length; i++ ){
+						for ( var j = 0; j < matchresult.length; j++ ){
+							if( matchresult[j].ranklist == (i+1) ){
+								matchObj.push(matchresult[j]);
+							}
+						}
+					}
+					var str = '';
+					for ( var i = 0; i < matchresult.length; i++ ){
+						$('.two span').eq(i).html(matchObj[i].examineeid+'队');
+					}
+
+				}
+			});
+			
+		}
+
+		function showFour(examid){//展示初赛和复赛和决赛和冠军的队伍编号 传决赛的examid
+			var json = {
+				'1':{
+					command:'osce/report/matchcurrentreport', //接口地址
+					examid:examid
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/osce/report/matchcurrentreport', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						//uselayer(3,base.errdesc);
+						style3();
+						return false;
+					}
+
+					var matchresult = base.matchresult.matchresult;
+					var is_pre_finished = 1;
+					for ( var i = 0; i < matchresult.length; i++ ){
+						if ( matchresult[i].totalscore == 0 ){//还有没有完成的
+							is_pre_finished = 0;
+						}
+					}
+					if ( matchresult.length == 0 || is_pre_finished == 0 ){
+						style3();
+						return false;
+					}
+					clearData4();
+
+					style4();
+					var matchObj = [];
+					for ( var i = 0; i < matchresult.length; i++ ){
+						for ( var j = 0; j < matchresult.length; j++ ){
+							if( matchresult[j].ranklist == (i+1) ){
+								matchObj.push(matchresult[j]);
+							}
+						}
+					}
+					var str = '';
+					$('.group').html(matchObj[0].examineeid+'队');
+
+				}
+			});
+			
+		}
+
+		function clearData2(){//刷新之前清空数据
+			for ( var i = 0; i < 12; i++ ){
+				$('.four span').eq(i).html('');
+				$('.three span').eq(i).html('');
+			}
+		}
+		function clearData3(){
+			for ( var i = 0; i < 3; i++ ){
+				$('.two span').eq(i).html('');
+			}
+		}
+		function clearData4(){
+			$('.group').html('');
+		}
+	</script>
+
+</html>

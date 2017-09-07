@@ -1,0 +1,240 @@
+*{
+    margin:0;
+    padding:0;
+    font-family: microsoft yahei;
+    color:#666;
+}
+#header{
+    font-size:16px;
+}
+#shadow{
+    font-size:16px;
+}
+#footer{
+    font-size:16px;
+}
+#questions{
+    font-size:13px;
+}
+ul,li{
+    list-style-type: none;
+}
+#container{
+    width:1024px;
+    margin:0 auto;
+    background-color: white;
+    border:1px solid #DBDBDB;
+    margin-bottom:20px;
+}
+html{
+    height:100%;
+}
+body{
+    background-color:#EFEFEF;
+    padding:20px 0;
+    height:100%;
+}
+#header>p{
+    text-align: center;
+    padding-top:48px;
+}
+#header>h1{
+    font-size:18px;
+    text-align: center;
+    padding-top:20px;
+}
+div.blueLine{
+    height:2px;
+    width:90%;
+    background-color:#3C9CCF;
+    margin:20px auto;
+}
+#header{
+    position: relative;
+}
+#groupNum{
+    position: absolute;
+    top:88px;
+    right:5%;
+}
+#content{
+    width:90%;
+    margin:0 auto;
+}
+ul.choice li{
+    padding:5px 50px;
+    position:relative;
+    cursor:pointer;
+}
+#questions>li{
+    padding:10px 0;
+}
+.btnBlue{
+    float:left;
+    width:106px;
+    height:40px;
+    background-color:#3C9CCF;
+    border-radius:5px;
+    color:white;
+    line-height:40px;
+    text-align:center;
+    margin:30px;
+    cursor:pointer;
+}
+.btnCenter{
+    width:180px;
+    height:40px;
+    background-color:#3C9CCF;
+    border-radius:5px;
+    color:white;
+    line-height:40px;
+    text-align:center;
+    margin:0 auto;
+    cursor:pointer;
+}
+.btnBlue:hover,p.btnCenter:hover{
+    background-color:#0378a2;
+}
+.btnLeft{
+    float:left;
+    width:40%;
+    padding:10px 0;
+    background-color:#3ccf7e ;
+    cursor: pointer;
+    color:white;
+    border-radius: 5px;
+    outline: none;
+    border:1px solid #ddd;
+}
+.btnLeft:hover{
+    background-color: #3ccf68;
+}
+.btnRight{
+    float:right;
+    width:40%;
+    padding:10px 0;
+    cursor: pointer;
+    background-color: #f7f7f7;
+    color:#444;
+    border-radius: 5px;
+    outline: none;
+    border:1px solid #ddd;
+}
+.btnRight:hover{
+    background-color: white;
+}
+#footer{
+    overflow:hidden;
+    width:90%;
+    margin:0 auto;
+}
+b.mulno{
+    position:absolute;
+    top:6px;
+    left:24px;
+    width:18px;
+    height:18px;
+    background-image: url("../../images/skillcontestweb/mulno.png");
+    background-size:cover;
+}
+b.mulyes{
+    background-image: url("../../images/skillcontestweb/mulyes.png");
+}
+i.optno{
+    position:absolute;
+    top:6px;
+    left:24px;
+    width:18px;
+    height:18px;
+    background-image: url("../../images/skillcontestweb/optno.png");
+    background-size:cover;
+}
+i.optyes{
+    background-image: url("../../images/skillcontestweb/optyes.png");
+}
+ul.choice li.notFinishedMsg{
+    color:#FF0000;
+    padding-left:24px;
+}
+#shadow{
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0.4);
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:99;
+}
+#shadowErrorBox,#confirmBox{
+    width:28%;
+    height:28%;
+    background-color: white;
+    border-radius: 10px;
+    position:absolute;
+    left:36%;
+    top:36%;
+}
+#shadowErrorBox>p.boxHead{
+    background-color:#E85B40;
+    color:white;
+    text-align:center;
+    height:40px;
+    line-height:40px;
+    position:relative;
+    border-radius: 10px 10px 0 0;
+}
+#confirmBox>p.boxHead{
+    background-color:#3C9CCF;
+    color:white;
+    text-align:center;
+    height:40px;
+    line-height:40px;
+    position:relative;
+    border-radius: 10px 10px 0 0;
+}
+#confirmBox>p.boxHead>span{
+    color:white;
+}
+#confirmBox>div{
+    width:70%;
+    margin:0 auto;
+    overflow:hidden;
+}
+p.boxHead>i{
+    position:absolute;
+    right:10px;
+    top:10px;
+    border:1px solid #aaa;
+    height:20px;
+    width:20px;
+    text-align:center;
+    line-height:20px;
+    font-style:normal;
+    border-radius:3px;
+    cursor:pointer;
+}
+p.errorMsg{
+    text-align:center;
+    color:#555;
+    padding:44px 0;
+}
+.show{
+    display:block;
+}
+.hide{
+    display:none;
+}
+.cha:hover{
+    background-color:white;
+}
+#questions>li>div{
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: pre-wrap
+}
+#questions>li>p{
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    padding-top:10px;
+}

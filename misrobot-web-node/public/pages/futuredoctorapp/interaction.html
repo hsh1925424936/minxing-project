@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<title>欢迎来到智能助教系统</title>
+	<script src="../../js/vue.js"></script>
+	<script src="../../js/jquery-1.11.3.js"></script>
+	<script src="../../layer/xie/layer1.js"></script>
+	<script src="../../js/futuredoctorapp/common.js"></script>
+	<script src="../../js/futuredoctorapp/vueComponent.js"></script>
+	<script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="../../css/futuredoctorapp/common.css">
+	<link rel="stylesheet" href="../../css/futuredoctorapp/vueComponent.css">
+	<link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+	<style>
+		body{background-color: #F0EFF4}
+		.container{ padding-left:0px;padding-right:0px}
+		#logo{
+			width:100%;
+			height:90%;
+		}
+	</style>
+</head>
+<body>
+	<div class="container" v-cloak id="container">
+		<headerbox :thistitle="headerTitle" :showback="showback" :showreload="showreload" :titlenum="titlenum" id="header"></headerbox>
+		<img id="logo" src="../../images/futuredoctorapp/wx_sign_in.jpg" />
+	</div>
+	<script>
+		window.onerror=function(a,b,c){
+			alert(a+b+c)
+		}
+		var urlparam=window.location.href.split('?')[1]
+		registerToNative('goBack', function (data) {
+			window.location.href='application.html'
+		});
+		var vm=new Vue({
+			el:'#container',
+			data:{
+				headerTitle:'互动课堂',
+				showback:true,
+				showreload:false,
+				titlenum:0
+				//以上是头部配置
+			},
+			methods:{
+
+			}
+		});
+			if(urlparam){
+			if(urlparam.indexOf('saoyisao')!=-1){//如果是扫码加入的，直接进入课堂
+				setCookie('gy_istudy_scid',urlparam.split('scheduleid=')[1])
+				var json={
+					command:'course/querycoursedetailinfo',
+					sessionid:getCookie('sid'),
+					loginid:getCookie('uid'),
+					scheduleid:getCookie('gy_istudy_scid')
+				};
+				function detailCallback(result){
+					setCookie('gy_istudy_course',result.coursename)
+					var teachername=''
+					for(index in result.teachers){
+						teachername+=result.teachers[index].name
+					}
+					setCookie('gy_istudy_teacher',teachername)
+					var cls = new Array();
+					var stus = result.students;
+					for(var i=0;i<stus.length;i++){
+						cls[i] = stus[i].clsname;
+					};
+					var norepeat = notRepeat(cls);
+					if(norepeat[0]){
+						setCookie('classname', norepeat[0])
+					}else{
+						setCookie('classname', '')
+					}
+
+				};
+				post('/course/querycoursedetailinfo',json,detailCallback,errcodefn,errfn);
+				setTimeout(function(){
+					window.location.href="startstu.html"
+				}, 500);
+			}
+		}
+		else{//否则，先查询课程信息
+			iscoursenow();
+		}
+		function goBack(){
+			window.location.href="application.html";
+		};
+		function iscoursenow(){
+			var _this = this;
+			var data={
+				command: "course/querycourseinfo",
+				uid: getCookie('uid'),
+				timetype: 0, //0 当前时间
+				sessionid: getCookie('sid'),
+				loginid:getCookie('uid')
+			};
+			function callback(res){
+				if(res.errcode!=0){
+					layer.msg(res.errdesc);
+					setTimeout(goBack,3000);
+					return;
+				};
+				if(res.schedules==null){
+					_this.checkClass();
+				}else if(res.schedules[0].issigned==1){//已签到
+					setCookie('gy_istudy_course',res.schedules[0].coursename);
+					setCookie('gy_istudy_teacher',res.schedules[0].teachers[0].name);
+					setCookie('gy_istudy_scid',res.schedules[0].scheduleid);
+					layer.load(1);
+					setTimeout(function(){
+						layer.closeAll('loading');
+						window.location.href="startstu.html"
+					}, 500);
+				}else{
+					layer.msg('您还没有签到，先去签到吧');
+					setTimeout(goBack,3000);
+				}
+			};
+			post('/course/querycourseinfo',data,callback,errcodefn,errfn)
+		}
+		function checkClass(){
+			var data={
+				command: "course/querystdnotclassinfo",
+				stdid: getCookie('uid'),
+				sessionid: getCookie('sid'),
+				loginid:getCookie('uid')
+			};
+			function callback(res){
+				if (res.schinfolist.length==0){
+					layer.msg('当前时间没有课程');
+					setTimeout(goBack,2000);
+				} else if (res.schinfolist[0].issign==0){
+					layer.msg('当前有课程提前上课了，请扫描二维码进入课堂');
+//					setTimeout(goBack,2000);
+				} else if (res.schinfolist[0].issign==1){
+					setCookie('gy_istudy_scid',res.schinfolist[0].scheduleid);
+					var json={
+						command:'course/querycoursedetailinfo',
+						sessionid:getCookie('sid'),
+						loginid:getCookie('uid'),
+						scheduleid:getCookie('gy_istudy_scid')
+					};
+					function detailCallback(result){
+						setCookie('gy_istudy_course',result.coursename)
+						var teachername=''
+						for(index in result.teachers){
+							teachername+=result.teachers[index].name
+						}
+						setCookie('gy_istudy_teacher',teachername)
+						var cls = new Array();
+						var stus = result.students;
+						for(var i=0;i<stus.length;i++){
+							cls[i] = stus[i].clsname;
+						}
+						var norepeat = notRepeat(cls);
+						if(norepeat[0]){
+							setCookie('classname', norepeat[0])
+						}else{
+							setCookie('classname', '')
+						}
+					}
+					post('/course/querycoursedetailinfo',json,detailCallback,errcodefn,errfn);
+					window.location.href="startstu.html"
+				}
+			}
+			post('/course/querystdnotclassinfo',data,callback,errcodefn,errfn)
+		}
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

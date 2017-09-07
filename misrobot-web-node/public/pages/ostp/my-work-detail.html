@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>训练</title>
+		<style type="text/css">
+			.top1Con{ position:fixed;}
+			.to-train { display: block; width: 1000px; margin:10px auto; height: 700px; border: 1px solid #ccc;}
+
+		</style>
+		<script>
+			window.onload = function () {
+				'use strict';
+				common();
+				Api.R({
+					url: "/learn/querylearninfo",
+					isShade: 1,
+					json: {
+						"1": {
+							command: "learn/querylearninfo",
+							type: 0,
+							sessionid: getCookie('gy_t'),
+							uid: getCookie('gy_u'),
+							loginid: getCookie('gy_u'),
+							learnid: findurl('train')
+						}
+					},
+					fn: function(result){
+						if(result["1"].errcode != 0){
+							uselayer(3, result["1"].errdesc);
+							return;
+						}
+
+						var  tasklog = 0;
+						if(findurl('tasklog')){
+							tasklog = findurl('tasklog');
+						}
+						setCookie('tasklog_id',tasklog);
+
+
+						if(result["1"].learnids.length > 0) {
+							$('.to-train').attr('src','../'+result["1"].learnids[0].url);
+						}
+					}
+				});		
+			};
+			
+			
+		</script>
+	</head>
+	<body>
+	
+		<div class="top1Con">
+			<div class="top1Outer clearfix">
+				<a href="index.html" class="top1Tit">临床技能中心</a>
+				<div class="top1Tit-right">
+					<img src="../../images/ostp/bell.png" class="bell" />
+					<img src="../../images/ostp/redCircle.png" class="redCircle" />
+					<img src="../../images/ostp/feifei.png" class="headImg" />
+					<div class="nameAndYear clearfix">
+						<div class="nameAndYearInner clearfix">
+							<div class="userName"></div>
+							<div class="year"></div>
+							<span class="arrow"></span>
+						</div>
+						<ul class="selectUl"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="top2Outer">
+			<div class="top2Con clearfix">
+				<a href="index.html" class="top2Con-index">
+					<img src="../../images/ostp/logo.png" class="logoPng" />
+					<div class="top2Tit">在线自主技能训练平台</div>					
+				</a>
+				<div class="navigateOuter clearfix">
+					<a href="index.html" class="navigate">
+						首页
+					</a>
+					<a href="my-work.html" class="navigate">
+						我的作业
+					</a>
+					<a href="self-train.html" class="navigate navigateOn">
+						自主训练
+					</a>
+					<a href="online-study.html" class="navigate">
+						自主学习
+					</a>
+					<div class="navigate">
+						成长中心
+						<ul>
+							<li><a href="grow-center.html">学习指数</a></li>
+							<li><a href="train-record.html">训练记录</a></li>
+						</ul>
+					</div>	
+					<!-- <a href="subscribe-train.html" class="navigate">
+						预约训练
+					</a> -->
+				</div>
+			</div>
+		</div>
+		
+		
+		<!--<iframe src="../online/Test/Test.html" height="" class="to-train">-->
+		<!--<iframe src="../online/GastrolavageWeb/GastrolavageWeb.html" height="" class="to-train">
+			
+			
+			
+		</iframe>-->
+		<iframe src="" height="" class="to-train" allowFullScreen></iframe>
+
+	</body>
+	
+</html>

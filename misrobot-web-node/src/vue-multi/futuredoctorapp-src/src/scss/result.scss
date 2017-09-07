@@ -1,0 +1,21 @@
+.result{
+    text-align: center;
+    padding-bottom: 0;
+    i {
+        display: inline-block;
+        position: relative;
+        left:0;
+        right:0;
+        margin:2.2rem auto 0.64rem;
+    }
+    p {
+        color: #333;
+        font-size: 0.36rem;
+    }
+    span {
+        padding:0.1rem 0.3rem;
+        color: #666;
+        line-height: 0.4rem;
+    }
+}
+

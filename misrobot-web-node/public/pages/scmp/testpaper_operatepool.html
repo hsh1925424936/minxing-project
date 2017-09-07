@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+		<title>新增试卷-操作题库</title>
+		<link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/scmp/testpaper_addnew.css">
+		
+	</head>
+
+	<body>
+		<div id="addnew" v-cloak>
+			<p id="addnewtestpaper">新增试卷-操作题库  <button class="btn btn-primary gobackbtn" @click="goback">返回</button> </p>
+			<div id="selectQ">
+				<div class="queNav">
+					<div class="question clickque" @click="allquestion">全部题目</div>
+					<div class="question" @click="selectedquestion">已选({{selectedtotalnum}})</div>
+				</div>
+				<!--*********************************按钮 搜索部分************************************-->
+				<div class="center search-wrap">
+					<form class="form-inline" style="float:none;">
+						<div class="form-group">
+							<label>题目名称：</label>
+							<input type="text" class="form-control" placeholder="题目名称" v-model="pageconf.name">
+						</div>
+						<div class="form-group">
+							<label>所属学科：</label>
+							<select class="form-control" v-model="pageconf.subject">
+								<option value=""> 全部</option>
+								<option v-for="(item,index) in courselist" :value="item.id"> {{item.name}} </option>
+							</select>
+						</div>
+						<!--<div class="form-group">
+							<label>标签：</label>
+							<input type="text" class="form-control" v-model="sno" placeholder="标签">
+						</div>
+						<div class="form-group">
+							<label>难度：</label>
+							<select class="form-control">
+								<option> 全部</option>
+								<option> 一星</option>
+								<option> 二星 </option>
+								<option> 三星</option>
+								<option> 四星 </option>
+								<option> 五星</option>
+							</select>
+						</div>-->
+						<div class="form-group">
+							<label>创建人：</label>
+							<input type="text" class="form-control" v-model="pageconf.person" placeholder="创建人">
+						</div>
+						<div class="form-group">
+							<button type="button"data-loading-text="Loading..." class="btn btn-primary" @click="search()">查询</button>
+						</div>
+						
+					</form>
+				</div>
+				<!--*********************************选择题目表格部分************************************-->
+				<div style="clear: both;">
+					<table class="table table-bordered table-hover">
+						<tr class="active">
+							<th  class="middle">序号</th>
+							<th  class="middle">题目名称</th>
+							<th  class="middle">题目类型</th>
+							<th  class="middle">所属学科</th>
+							<!--<th  class="middle">标签</th>
+							<th  class="middle">难度</th>-->
+							<th  class="middle">创建人</th>
+							<th  class="middle">操作</th>
+						</tr>
+						<tr v-for="(item,index) in questionlist">
+							<td class="middle">{{index+1}}</td>
+							<td class="middle">{{item.questionname}}</td>
+							<td class="middle">{{item.questiontypeid | typetransform}}</td>
+							<td class="middle">{{item.coursename}}</td>
+							<!--<td class="middle">{{item.tag}}</td>
+							<td class="middle">{{item.difficult}}</td>-->
+							<td class="middle">{{item.creator}}</td>
+							<td class="middle">
+								<button type="button" class="btn btn-primary btn-xs" @click="checkquestion(item.questionbaseid)">查看</button>
+								<button type="button" class="btn btn-primary btn-xs" @click="add_canceltopaper(item.questiontypeid,item.questionbaseid,item.ischoose)">{{item.ischoose | ischoosetransform}}</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<!--************************************************分页**************************************-->
+				<page_component :pageconf="pageconf" :pages="pages"></page_component>
+				
+				<div class="next"> 
+					<button type="button" class="btnBg btn btn-primary" @click="cancel">返回</button>
+				</div>
+			</div>
+		</div>
+
+	</body>
+	<script src="../../js/jquery-3.1.1.min.js"></script>
+	<script src="../../js/vue.js"></script>
+	<script src="../../js/element.js"></script>
+	<script src="../../layer/xie/layer1.js"></script>
+	<script src="../../js/scmp/common.js"></script>
+	<script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+	<script src="../../js/scmp/pageComponent1.js"></script>
+	<script>
+		Vue.filter('typetransform',function(value){
+			var name=value;
+			switch (value){
+				case 1: name="单选";
+					break;
+				case 2: name="多选";
+					break;
+				case 3: name="不定项选择题";
+					break;
+				case 4: name="判断题";
+					break;
+				case 5: name="问答题";
+					break;
+				case 6: name="组合题";
+					break;
+				case 7: name="osce操作题";
+					break;
+				case 8: name="learn训练操作题";
+					break;
+				default:
+					break;
+			}
+			return name;
+		})
+		Vue.filter('ischoosetransform',function(value){
+			if(value==0){
+				return "加入试卷";
+			}if(value==1){
+				return "取消加入";
+			}else{
+				return ' '
+			}
+		})
+		
+		var vm = new Vue({
+			el: '#addnew',
+			data: {
+				editpapershow:false,//编辑试卷btn
+				questionlist:[],//查询全部试题列表
+				selectedquestionlist:[],//筛选已选试题列表
+				selectedtotalnum:'',//已选题目总数
+				questionname:'',//题目名称
+				courseid:'',//学科id
+		//		tag:'',//标签
+		//		difficult:'',//难度等级
+				creator:'',//创建人
+				courselist:[],//所属学科列表
+				
+				pageconf: {
+					itemsPerPage:10,//默认显示10条
+					current: 1, //默认显示第一页
+					showItem: 10, //最多显示多少页，自己定义
+					allpage: '', //总共多少页，根据请求返回结果计算
+					totalnum: '', //总共条数，请求返回
+					name:'',//题目名称
+					type: 0,//已加入：1；全部：0 默认查询全部
+					person:'',//创建人
+					subject:'',//所属学科
+					onchange: function(index,itemsperpage,name,type,person,subject) { 
+						if(type==0){//查询全部
+							var data = {
+								command:"exampaper/queryquestionlist",
+								sessionid:getCookie('sid'),
+								loginid:getCookie('uid'),
+								page:index,
+								reqnum:itemsperpage,
+								paperid:location.href.split('=')[1],//试卷id
+								questiontypeid:7,
+								questionname:name,
+								courseid:subject,
+			//					tag:'',
+			//					difficult:'',
+								creator:person,
+							};
+							function callback(res) {
+								vm.questionlist=res.questionlist;
+								vm.pageconf.totalnum=res.allcount;
+								vm.pageconf.allpage = Math.ceil(res.allcount / itemsperpage);
+							};
+							post("/exampaper/queryquestionlist", data, callback, errcodefn, errfn)
+						}
+						if(type==1){//查询已加入
+							var data = {
+								command:"exampaper/queryselectedquestion",
+								sessionid:getCookie('sid'),
+								loginid:getCookie('uid'),
+								page:index,
+								reqnum:itemsperpage,
+								paperid:location.href.split('=')[1],//试卷id
+								questiontypeid:7,
+								questionname:name,
+								courseid:subject,
+			//					tag:'',
+			//					difficult:'',
+								creator:person,
+							};
+							function callback(res) {
+								vm.questionlist=res.questionlist;
+								vm.pageconf.totalnum=res.allcount;
+								vm.pageconf.allpage = Math.ceil(res.allcount / itemsperpage);
+							};
+							post("/exampaper/queryselectedquestion", data, callback, errcodefn, errfn)
+						}
+					}
+				},
+			},
+			mounted:function(){
+				$(".question").click(function(){
+					$(this).addClass("clickque").siblings().removeClass("clickque")
+				})
+				this.pageconf.onchange(1,10,this.pageconf.name,this.pageconf.type,this.pageconf.person,this.pageconf.subject);
+				this.queryCourse();
+				this.paperid=location.href.split('=')[1];
+				this.queryselectedtotalnum();
+			},
+			methods: {
+				goback:function(){//返回
+					window.history.go(-1)
+				},
+				queryselectedtotalnum:function(){//查询已选择题目总数
+					var data = {
+						command:"exampaper/queryselectedquestion",
+						sessionid:getCookie('sid'),
+						loginid:getCookie('uid'),
+						paperid:location.href.split('=')[1],//试卷id
+						questiontypeid:7,
+					};
+					function callback(res) {
+						vm.selectedtotalnum=res.allcount;
+					};
+					post("/exampaper/queryselectedquestion", data, callback, errcodefn, errfn)
+				},
+				queryCourse:function(){//查询学科列表
+					var self=this
+		            var data={
+		                command:"cls/selectCourses",
+		                sessionid:getCookie('sid'),
+		                loginid:getCookie('uid')
+		            }
+		            function callback(res){
+		            	self.courselist=res.courseslist;
+		            }
+		            post("/cls/selectCourses",data,callback,errcodefn,errfn)
+				},
+				allquestion:function(){//查询全部试题
+					this.pageconf.type=0;
+					this.pageconf.current=1;
+					this.pageconf.onchange(this.pageconf.current,this.pageconf.itemsPerPage,this.pageconf.name,this.pageconf.type,this.pageconf.person,this.pageconf.subject);
+				},
+				selectedquestion:function(){//查询已选试题
+					this.pageconf.type=1;
+					this.pageconf.current=1;
+					this.pageconf.onchange(this.pageconf.current,this.pageconf.itemsPerPage,this.pageconf.name,this.pageconf.type,this.pageconf.person,this.pageconf.subject);
+				},
+				search:function(){//筛选试题
+					this.pageconf.current=1;
+					this.pageconf.onchange(this.pageconf.current,this.pageconf.itemsPerPage,this.pageconf.name,this.pageconf.type,this.pageconf.person,this.pageconf.subject);
+				},
+				checkquestion:function(questionbaseid){//查看试题
+					layer.open({
+						type: 2,
+						title: '查看题目-操作题',
+						area: ['100%', '100%'],
+						shadeClose: true,
+						content: './look-caozuo.html?id=' + questionbaseid
+					})
+				},
+				add_canceltopaper:function(typeid,questionid,ischoose){//加入或者删除试卷
+					if (ischoose==0) {//加入试卷
+						var data={
+							command:"exampaper/joinpaperquestion",
+							sessionid:getCookie("sid"),
+							loginid:getCookie("uid"),
+							paperid:location.href.split('=')[1],
+							cateid:typeid,
+							questionid:questionid
+						}
+						function callback(res){
+							console.log(res)
+							if( res.errcode==0 ){
+								vm.pageconf.onchange(vm.pageconf.current,vm.pageconf.itemsPerPage,vm.pageconf.name,vm.pageconf.type,vm.pageconf.person,vm.pageconf.subject);
+								vm.queryselectedtotalnum();
+								layer.msg('添加试卷成功!');
+								return false;
+							}else{
+								layer.msg('添加试卷失败!');
+								return false;
+							}
+						}
+						post("/exampaper/joinpaperquestion",data,callback,errcodefn,errfn)
+					} else{//取消加入试卷
+						var data={
+							command:"exampaper/cancelpaperquestion",
+							sessionid:getCookie("sid"),
+							loginid:getCookie("uid"),
+							paperid:location.href.split('=')[1],
+							questionid:questionid
+						}
+						function callback(res){
+							console.log(res)
+							if( res.errcode==0 ){
+								vm.pageconf.onchange(vm.pageconf.current,vm.pageconf.itemsPerPage,vm.pageconf.name,vm.pageconf.type,vm.pageconf.person,vm.pageconf.subject);
+								vm.queryselectedtotalnum();
+								layer.msg('取消加入试卷成功!');
+								return false;
+							}else{
+									layer.msg('添加试卷失败!');
+									return false;
+								}
+						}
+						post("/exampaper/cancelpaperquestion",data,callback,errcodefn,errfn)
+					}
+					
+				},
+				cancel:function(){
+					window.location.assign("./testpaperManage.html")
+				}
+			},
+			computed: {
+				pages: function() {
+					var pag = [];
+					if(this.pageconf.current < this.pageconf.showItem) { //如果当前的激活的项 小于要显示的条数
+						//总页数和要显示的条数那个大就显示多少条
+						var i = Math.min(this.pageconf.showItem, this.pageconf.allpage);
+						while(i) {
+							pag.unshift(i--);
+						}
+					} else { //当前页数大于显示页数了
+						var middle = this.pageconf.current - Math.floor(this.pageconf.showItem / 2), //从哪里开始
+							i = this.pageconf.showItem;
+						if(middle > (this.pageconf.allpage - this.pageconf.showItem)) {
+							middle = (this.pageconf.allpage - this.pageconf.showItem) + 1
+						}
+						while(i--) {
+							pag.push(middle++);
+						}
+					}
+					return pag
+				}
+			},
+		});
+		
+
+	</script>
+</html>

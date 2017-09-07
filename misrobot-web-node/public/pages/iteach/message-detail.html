@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/iteach/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>老师通知详情</title>
+		<style type="text/css">
+			.box{
+				 padding-bottom:50px; 
+			}
+			.outer{
+				width:100%;
+			}
+
+			.msgOuter{
+				padding-left:15px; padding-right:15px;
+			}
+			.msgTit{
+				font-size:14px; font-weight:bold; margin-top:18px;
+			}
+			.msgCon{
+				font-size:14px; margin-top:22px;
+			}
+			.time{
+				font-size:9px; margin-top:62px;
+			}
+		</style>
+		<script>
+			window.onload = function () {
+				'use strict';
+				webcommon();				
+				var msgId = findurl('message')
+				if (!msgId) {
+					uselayer(1,'参数错误请重新进入');
+					return false;
+				}
+				
+				Api.R({
+					url: "/note/notedetail"
+					isShade:1,
+					json:{
+						"1": {
+							command: "note/notedetail",
+							noteid: msgId,
+							sessionid: getCookie('gy_t'),
+							uid: getCookie('gy_u')
+						}
+					},
+					fn:function (arr) {
+						$('.msgTit').html(arr["1"].notetitle);
+						$('.msgCon').html(arr["1"].notecontent);
+						$('.time').html(timetodate(arr["1"].notetime));
+					}
+				});
+			};
+			
+		</script>
+	</head>
+	<body>
+		
+		<div class="box clearfix">
+			<div class="outer clearfix">
+				<div class="topOuter">
+					<div class="return1">
+						
+					</div>
+					<div class="topTxt">
+						通知详情
+					</div>
+				</div>
+
+				<div class="msgOuter">
+					<div class="msgTit">
+						
+					</div>
+
+					<div class="msgCon">
+						
+					</div>
+
+					<div class="time">
+						
+					</div>
+
+				</div>
+
+				<div class="bottomOuter">
+					<a href="schedule.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/kebiao.png"/>
+						<span>课表</span>
+					</a>
+
+					<a href="report.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/baogao.png"/>
+						<span>报告</span>
+					</a>
+
+					<a href="message-list.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/messageon.png"/>
+						<span class="bottomItemOn">通知</span>
+					</a>
+
+					<a href="person-center.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/head2.png"/>
+						<span>我</span>
+					</a>
+				</div>
+
+			</div>
+
+		</div>
+
+	</body>
+	
+</html>

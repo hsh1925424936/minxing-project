@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/istudy/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>个人中心</title>
+		<style type="text/css">
+			.outer{
+				background: #F0EFF5;
+			}
+			
+			.topOuter{
+				height:53px;
+			}
+
+			.headImg{
+				width:33px; height:33px; display:block;
+				float:left; border-radius:40px; margin-top:10px; margin-left:15px;
+			}
+			.teacherOuter{
+				width:200px; height:40px; float:left;
+				margin-top:20px; margin-left:12px; color:white; text-align:left;
+			}
+			.name {
+				width:95px; height:25px; margin-left:0;
+				line-height:45px; font-size:15px;
+			}
+
+			.inpOuter{
+				width:100%;margin-top:8px; margin-bottom:170px;position:relative;top:-8px;
+			}
+
+			div.fa-icon{
+				width:16px; 
+				height:18px; 
+				float:left;
+				display:block; 
+				margin-top:10px; 
+				margin-left:14px;
+			}
+
+			.inpCon{
+				width:100%; height:45px; border-bottom:1px solid #F8F8F8; font-size:16px;
+				background-color:white;
+			}
+			.inp,.inp:hover{
+				width:100%; height:40px; line-height: 40px; text-indent: 1em; float:left; padding-left:30px;
+				padding-right:28px; margin-left:-30px; color:rgb(127,127,127);
+			}
+			
+			.tri{
+				width:28px; height:40px; float:left;
+				margin-left:-28px; color:#ccc;
+				text-align:center; line-height:40px; background-image:url('../../images/istudy/goon.png');
+				background-size:16px 16px; background-repeat:no-repeat; background-position:50%;
+			}
+
+			.profile, .qrcode {
+				cursor: pointer;
+			}
+
+			.exit{
+				display:block; width:178px; height:36px;
+				color:white; background-color:#0495CA;
+				font-size:15px; border-radius:3px; margin:0 auto;
+			}
+			#exit{
+				position:absolute;
+				top:15px;
+				right:15px;
+				font-size:20px;
+			}
+		</style>
+		<script>
+			window.onload = function () {
+				'use strict';
+				// webcommon();
+				if(navigator.userAgent.indexOf("iPhone")!=-1){
+					setTimeout(function(){
+						$('.name').html(getCookie('gy_name'));
+						$('.headImg').attr('src', getCookie('gy_u_imgurl') ? getCookie('gy_u_imgurl'):'../../images/istudy/feifei.png');
+					},1000)
+				}else{
+					$('.name').html(getCookie('gy_name'));
+					$('.headImg').attr('src', getCookie('gy_u_imgurl') ? getCookie('gy_u_imgurl'):'../../images/istudy/feifei.png');
+				}
+				$("#myInfo").click(function(){
+					window.location.href = "user-info.html";
+				});
+				$("#code2").click(function(){
+					window.location.href = "qrcode.html";
+				});
+			};
+		</script>
+	</head>
+	<body>
+		
+		<div class="box clearfix">
+			<div class="outer clearfix">
+				<div class="topOuter">
+					<img class='headImg' />
+					<div class="teacherOuter clearfix">
+						<div class="name"></div>
+					</div>
+					<span class="glyphicon glyphicon-off" id="exit" onclick="logout()"></span>
+				</div>
+				<div class="inpOuter clearfix">
+					<div class="inpCon" id="myInfo">
+						<div class="fa-icon">
+							<i class="fa fa-address-card-o fa-3" aria-hidden="true"></i>
+						</div>
+						<span class="inp">个人资料</span>
+						<div class="tri profile"></div>
+					</div>
+
+					<div class="inpCon" id="code2">
+						<div class="fa-icon">
+							<i class="fa fa-qrcode fa-3" aria-hidden="true"></i>
+						</div>
+						<span class="inp">二维码</span>
+						<div class="tri qrcode"></div>
+					</div>
+
+				</div>
+
+				<!--<button class="exit" type="button">退出登录</button>-->
+		</div>
+
+	</body>
+	
+</html>

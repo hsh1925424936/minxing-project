@@ -1,0 +1,120 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+}
+#container{
+    width: 95%;
+    height: 100%;
+    position: relative;
+    left: 2.5%;
+}
+#container > h2{
+    width: 100%;
+    line-height: 32px;
+    font-size: 16px;
+    text-align: center;
+    float: left;
+    border-bottom: 1px solid #666666;
+}
+.contentbox{
+    width: 100%;
+    float: left;
+}
+.userinfo{
+    width: 60%;
+    float: left;
+}
+.userinfo > ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.userinfo > ul > li{
+    display: block;
+    line-height: 28px;
+    font-size: 14px;
+}
+.fontstyle{
+    color: #aaaaaa;
+    padding-right: 8px;
+}
+.usenm{
+    color: #333333;
+    font-weight: bold;
+}
+.score{
+    width: 38%;
+    float: right;
+    border: 1px dotted #aaaaaa;
+}
+.score-classfiy{
+    width: 100%;
+    line-height: 28px;
+    text-indent: 8px;
+    text-align: center;
+    float: left;
+    color: #aaaaaa;
+}
+.score-numb{
+    font-size: 23px;
+    font-weight: bold;
+    text-align: center;
+    color: #fc4343;
+}
+.fontalgin{text-align: left;}
+.colorred{color: #fc4343;}
+.datalist{
+    border: 1px solid #aaaaaa;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 12px;
+}
+.datalist th{
+    border: 1px solid #aaaaaa;
+    font-weight: bold;
+    padding: 4px 12px 4px 12px;
+    text-align: center;
+}
+.datalist td{
+    padding: 4px 10px 4px 10px;
+    border: 1px solid #aaaaaa;
+    text-align: center;
+}
+/*考官报告*/
+.distrivution{
+    width: 100%;
+    line-height: 28px;
+    background-color: #cccccc;
+    text-align: center;
+    border: 1px solid #aaaaaa;
+    font-size: 13px;
+    margin-top: 12px;
+    float: left;
+}
+.mgbtm{ margin-bottom: 28px;}
+.chart{
+    width: 100%;
+    float: left;;
+}
+.covar{
+    width: 100%;
+    height: 180px;
+    position: absolute;
+    top: 290px;
+    left: 0;
+    z-index: 20;
+    opacity: 0;
+    background-color: #333333;
+}
+.difficulty{
+    width: 100%;
+    line-height: 26px;
+    float: left;
+    background-color: #2db2ff;
+    text-align: center;
+    border-left: 1px solid #aaaaaa;
+    border-right: 1px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
+}
+.bord{ border: 1px solid #aaaaaa;}

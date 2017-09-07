@@ -1,0 +1,109 @@
+body{
+	background-color:#F6F6F6;
+}
+
+.topOuter{
+	width:100%; height:84px; border-bottom:1px solid #E5E6EA;
+	background-color:white; position:fixed; top:0px;
+	z-index:5;
+}
+.topCon{
+	width:1024px; height:100%; margin:0 auto; line-height:84px;
+}
+.logoPng{
+	width:60px; height:60px; display:block;
+	float:left; margin-top:12px;
+}
+.top2Tit{
+	width:260px; height:100%; line-height:84px;
+	margin-left:15px; font-size:20px;
+	font-weight:bold; float:left;
+}
+.bell{
+	width:27px; height:32px;
+	display:block; float:left; margin-top:27px;
+}
+.redCircle{
+	width:13px; height:13px; float:left;
+	display:block; margin-top:27px; margin-left:-5px;
+}
+.headImg{
+	width:42px; height:42px; float:left; border-radius:30px;
+	margin-left:20px; margin-top:22px;
+}
+/*.userName{
+	width:100px; height:100%; float:left; margin-left:10px;
+}*/
+.year{
+	width:85px; height:100%; float:left; margin-left:0px;
+}
+.return1{
+	width:40px; height:100%; float:left; margin-left:20px;
+}
+
+.main{
+	width:1024px; background-color:white;
+	margin:10px auto; margin-bottom:50px;
+	margin-top:94px;
+}
+
+
+.leftOuter{
+	width:9.8%; float:left; min-height:700px; font-size:14px;
+}
+.leftItemCon{
+	width:100%; height:88px; font-size:14px; display: block;
+	color:#3398DC; background-color:#F3F7F8; position:relative;
+}
+
+.blueLine{
+	width:7%; height:100%; background-color:transparent;
+	float:left;
+}
+.blueLineTri{
+	width:0; height:0; float:left;
+	border: 5px solid transparent; margin-top:40%;
+}
+
+.leftItem{
+	width:100%; height:100%; position:absolute;
+}
+.leftItem img{
+	width:25px; height:25px;
+	display:block; margin:0 auto; margin-top:26px;
+}
+.leftItemSpan{
+	width:100%; color:rgb(184,196,206); line-height:40px;
+	text-align:center; margin:0 auto; display:block;
+}
+
+.leftItemConOn{
+	background-color:white;
+}
+.leftItemConOn .blueLine{
+	background-color:#3598DB;
+}
+.leftItemConOn .blueLineTri{
+	border-left:5px solid #3598DB;
+	border-left-color:#3598DB;
+}
+.leftItemConOn .leftItemSpan{
+	color:rgb(4,151,202);
+}
+
+.rightOuter{
+	width:90.2%; float:left; padding:60px;
+	padding-top:0;
+	
+}			
+
+
+.nameAndYear { height: 83px;}
+.nameAndYearInner { line-height: 76px; border-color:#fff;}
+.selectUl { top: 82px;}
+.arrow { margin-top: 33px;}
+
+
+
+
+

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>开放日历设置</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style>
+			html,body{
+				width: 100%;
+				height: 100%;
+				background-color:white;
+			}
+			.kalendar #title {
+				background-color: #E5E6E8;
+				height: 40px;
+				line-height: 40px;
+				padding-left: 20px;
+				margin-bottom: 20px;
+			}
+			
+			[v-cloak] {
+				display: none
+			}
+			.kalendar {
+				margin: 0 20px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="kalendar" v-cloak>
+			<p id="title">开放日历设置</p>
+			<div style="margin-bottom: 20px;">
+				<el-button type="primary" style="margin-right: 20px;" @click="add">新增</el-button>
+				<el-button type="primary" @click="refreshList">刷新列表</el-button>
+			</div>
+			<div>
+				<template>
+					<el-table :data="openList" border>
+						<el-table-column type="index" label="序号" width="80">
+						</el-table-column>
+						<el-table-column prop="room_num" label="开放场地" width="100">
+						</el-table-column>
+						<el-table-column label="训练项">
+							<template scope="scope">
+								<span v-for="value1 in openList[scope.$index].name">{{ value1.name }}--{{ value1.type | learntype }}&nbsp;&nbsp;&nbsp;</span>
+							</template>
+						</el-table-column>
+						<el-table-column label="操作">
+							<template scope="scope">
+								<el-button size="small" type="danger" @click="deleteBtn(scope.$index, scope.row)">删除</el-button>
+								<el-button size="small" type="primary" @click="handleLook(scope.$index, scope.row)">开放场地详情</el-button>
+								<el-button size="small" type="success" @click="handleEdit(scope.$index, scope.row)">设置训练项</el-button>
+								<el-button size="small" type="warning''" @click="handleTime(scope.$index, scope.row)">设置训练时间</el-button>
+							</template>
+						</el-table-column>
+					</el-table>
+				</template>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		Vue.filter('learntype', function(value) { //过滤训练项类型
+			if(value == "0") {
+				return "在线训练"
+			} else if(value == "1") {
+				return "模型"
+			} else if(value == "2") {
+				return "智能设备"
+			} else if(value == "3") {
+				return "出科训练"
+			} else {
+				return "其他";
+			}
+		});
+		var vm = new Vue({
+			el: '.kalendar',
+			data: {
+				openList: [], //训练项列表
+			},
+			mounted() {
+				this.refreshList();
+			},
+			methods: {
+				getList() { //查询训练项列表
+					let self = this;
+					var data = {
+						command: 'learn/queryplaceandlearn',
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						status: 0
+					};
+
+					function callback(res) {
+						if(res.learnplaces.length!=0){console.log(JSON.stringify(res.learnplaces))
+							self.openList = [];
+							var placeArr = []; //场地名称
+							for(index in res.learnplaces) {
+								placeArr.push(res.learnplaces[index].room_num)
+							};
+							placeArr = notRepeat(placeArr);
+							for(var i = 0; i < placeArr.length; i++) {
+								self.openList.push({
+									room_num: placeArr[i],
+									placeid: "",
+									name: []
+								})
+							};
+							for(var i = 0; i < self.openList.length; i++) {
+								for(var j = 0; j < res.learnplaces.length; j++) {
+									if(self.openList[i].room_num == res.learnplaces[j].room_num) {
+										self.openList[i].name.push({
+											name: res.learnplaces[j].name,
+											type: res.learnplaces[j].type
+										});
+										self.openList[i].placeid = res.learnplaces[j].placeid
+									}
+								}
+							};
+							var temList = [];
+							var flag = true;
+							for(var i = 0; i < self.openList.length; i++) {
+								for(var j = 0; j < self.openList[i].name.length; j++) {
+									for(var k = 0; k < temList.length; k++) {
+										if(temList[k].name == self.openList[i].name[j].name) {
+											flag = false;
+											break;
+										}
+									}
+									if(flag) {
+										temList.push(self.openList[i].name[j]);
+									}
+									flag = true;
+								}
+								self.openList[i].name = temList;
+								temList = [];
+							}
+						}
+					};
+					post('/learn/queryplaceandlearn', data, callback, errcodefn, errfn)
+				},
+				deleteBtn(index, row) {
+					var self = this;
+					layer.confirm('确定删除本训练场地的信息吗？', {
+						title: '删除',
+						btn: ['确定', '取消']
+					}, function() {
+
+						var data = {
+							command: 'learn/delopenplace',
+							sessionid: getCookie('sid'),
+							loginid: getCookie('uid'),
+							placeid: row.placeid
+						};
+
+						function callback(res) {
+							self.refreshList();
+							layer.msg('删除成功！', { icon: 1 });
+							//window.parent.vm.refreshList();
+							closeAll();
+						};
+						post('/learn/delopenplace', data, callback, errcodefn, errfn)
+					}, function() {
+						closeAll();
+					})
+				},
+				refreshList: function() { //刷新列表按钮
+					this.openList = [];
+					this.getList();
+				},
+				add() { //新增按钮
+					layer.open({
+						type: 2,
+						closeBtn: 0,
+						title: '',
+						area: ['100%', '100%'],
+						content: 'huaxi_addKalendar.html'
+					})
+				},
+				handleLook: function(index, row) {
+					var roomname = row.room_num;
+					var placeid = row.placeid;
+					layer.open({
+						type: 2,
+						title: roomname + '教室-开放训练时间详情',
+						shadeClose: true,
+						shade: 0.7,
+						area: ['70%', '60%'],
+						content: 'huaxi_handLook.html?placeid=' + placeid
+					});
+				},
+				handleEdit: function(index, row) {
+					var placeid = row.placeid;
+					layer.open({
+						type: 2,
+						title: '',
+						shadeClose: false,
+						closeBtn: 0,
+						shade: 0.7,
+						area: ['100%', '100%'],
+						content: 'huaxi_handEdit.html?placeid=' + placeid
+					});
+				},
+				handleTime: function(index, row) {
+					var placeid = row.placeid;
+					layer.open({
+						type: 2,
+						title: '',
+						shadeClose: false,
+						closeBtn: 0,
+						shade: 0.7,
+						area: ['100%', '100%'],
+						content: 'huaxi_handTime.html?placeid=' + placeid
+					});
+				}
+			}
+		})
+	</script>
+
+</html>

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/homepage/layout.js" ></script>
+		<script src="../../js/echarts.min.js" type="text/javascript"></script>
+		<script src="../../js/homepage/radialIndicator.min.js" type="text/javascript"></script>
+		<meta charset="UTF-8">
+		<title>首页-管理人员</title>
+		<style>
+			/*1920*1024*/
+			body{
+				font-size:calc(15.5vw * 100 / 1920);
+			}
+			#vue_control{
+				width:100%;
+			}
+			.blue_text{ color:#00a0e9; }
+			.yellow_text{ color:#ffa71f; }
+
+			.c-header{
+				width:100%; height:calc(72vw * 100 / 1920); background-color:#00A0EA; color:#ffffff;
+				display:flex; align-items:center;
+			}
+			.c-header h2{
+				font-size:calc(24vw * 100 / 1920); margin-left:calc(30vw * 100 / 1920);
+			}
+			/*.c-header ul{*/
+				/*margin-left:calc(420vw * 100 / 1920); display:flex; align-items:stretch;*/
+				/*align-self:stretch;*/
+			/*}*/
+			/*.c-header ul a{*/
+				/*margin:0 calc(20vw * 100 / 1920); padding:0 calc(30vw * 100 / 1920);*/
+				/*display:flex; align-items:center;*/
+			/*}*/
+			/*.c-header-a-active{*/
+				/*background-color:rgba(255,255,255,0.3);*/
+			/*}*/
+            /*退出按钮*/
+            .exit{
+                margin-left: 83vw;
+            }
+            .exit button:hover{
+                cursor: pointer;
+            }
+            .exit button{
+                border: 1px solid #fff;
+                background-color: #00a0ea;
+                padding: .3vw 1.2vw;
+                border-radius: .4vw;
+                color: #fff;
+                font-size: calc(16vw *100 / 1920);
+            }
+
+			.main{
+				width:100%; display:flex; align-items:stretch;
+			}
+			/*左边部分*/
+			.main .leftcon{
+				width:calc(448% * 100 / 1920); border-right:calc(1vw * 100 / 1920) solid #E5E8EF;
+			}
+			.leftcon .personinfo{
+				width:100%; border-bottom:calc(1vw * 100 / 1920) solid #E5E8EF;
+				padding:calc(30vw * 100 / 1920) 0 calc(20vw * 100 / 1920);
+			}
+			.personinfo img{
+				display:block; margin:auto; width:calc(120vw * 100 / 1920);
+				height:calc(120vw * 100 / 1920); border-radius:50%;
+			}
+			.personinfo ul{
+				width:100%; padding:0 calc(55vw * 100 / 1920);
+			}
+			.personinfo ul li{
+				width:100%; margin:calc(10vw * 100 / 1920) 0;
+			}
+			.personinfo ul li span{
+				color:#78909c;
+			}
+			/*右边部分*/
+			.main .rightcon{
+				flex:1;
+			}
+			.rightcon .right_top{
+				width:100%; padding:calc(25vw * 100 / 1920); display:flex;
+			}
+			.rightcon .right_top ul{
+				border-right:calc(1vw * 100 / 1920) solid #E5E8EF;
+				padding:0 calc(30vw * 100 / 1920); color:#333333;
+			}
+			.right_top ul:last-child{
+				border-right:0;
+			}
+			.right_top ul li{
+				margin-bottom:calc(30vw * 100 / 1920); display:flex;
+			}
+			.right_top ul li:last-child{
+				margin:0;
+			}
+			.right_top ul li a{
+				margin-left:calc(15vw * 100 / 1920);
+			}
+			.right_top ul li h5{
+				font-weight:bold; margin-right:calc(15vw * 100 / 1920);
+			}
+			.right_main{
+				width:100%; background-color:#E5E8EF;
+				padding:calc(20vw * 100 / 1920) calc(20vw * 100 / 1920) calc(10vw * 100 / 1920) calc(20vw * 100 / 1920);
+			}
+
+			/*统计图和表格*/
+			.chart_outer{
+				background-color:#ffffff; width:100%; margin-bottom:calc(20vw * 100 / 1920);
+				padding:calc(30vw * 100 / 1920); margin-bottom:0; padding-bottom:0;
+			}
+			.chart_outer .chartline{
+				width:100%; display:flex; justify-content:space-between; align-items:flex-start;
+				margin-bottom:calc(40vw * 100 / 1920);
+			}
+			.chart_outer .chartline:nth-of-type(2){
+				border-bottom:calc(1vw * 100 / 1920) solid #E5E8EF;
+			}
+			.chart_outer .chartline:last-child{
+				margin-bottom:0;
+			}
+			.chartline section:nth-of-type(1){
+				flex:840;
+			}
+			.chartline section:nth-of-type(2){
+				flex:490; margin-left:calc(35vw * 100 / 1920);
+			}
+			.chartline section>h3{
+				color:#00a0e9; font-size:calc(18vw * 100 / 1920); font-weight:bold;
+			}
+			.chartline section .competency_index{
+				display:flex; width:100%; justify-content:center; align-items:center;
+				padding:3vw 10vw 0 0;
+			}
+			.competency_index .competency_index_con{
+				width:calc(250vw * 100 / 1920); height:calc(250vw * 100 / 1920);
+				margin-right:calc(30vw * 100 / 1920);
+			}
+			.competency_index p{
+				font-size:calc(18vw * 100 / 1920); color:#333333; line-height:calc(30vw * 100 / 1920);
+				font-weight:bold;
+			}
+			/*胜任力模型雷达图*/
+			.competency_radar{
+				width:100%; height:calc(360vw * 100 / 1920);
+			}
+			/*教学态度月度趋势图和学生职业素养月趋势图*/
+			.bar_con{
+				width:100%; height:calc(390vw * 100 / 1920);
+			}
+			/*胜任力分析top5*/
+			.top5{
+				width:100%; height:calc(218vw * 100 / 1920); display:flex; flex-direction:column;
+				align-items:stretch; margin-top:calc(58vw * 100 / 1920);
+			}
+			.top5_tit{
+				height:calc(90vw * 100 / 1920); background-color:#00A0EA; color:#ffffff;
+				display:flex; align-items:center; font-size:calc(18vw * 100 / 1920);
+				font-weight:bold;
+			}
+			.top5_tit .top5_tit_img{
+				flex:1; display:flex; justify-content:center; align-items:center;
+			}
+			.top5_tit span{
+				flex:1;
+			}
+			.top5_tit_img img{
+				width:calc(32vw * 100 / 1920);
+			}
+			.top5_con{
+				flex:1; display:flex; flex-direction:column; justify-content:space-around;
+				align-items:stretch;
+				padding:calc(18vw * 100 / 1920) 0; background-color:#F3F5F9;
+			}
+			.top5_con ul{
+				color:#333333; display:flex;
+			}
+			.top5_con ul li{
+				flex:1;
+			}
+		</style>
+	</head>
+	<body>
+        <div id="vue_control" v-cloak>
+        	<div class="c-header">
+        		<h2>临床技能中心</h2>
+        		<!--<ul>-->
+        			<!--<a class="c-header-a-active" href="#"><span>首页</span></a>-->
+        		<!--</ul>-->
+                <a href="./login.html" class="exit"><button>退出</button></a>
+        	</div>
+        	<div class="main">
+        		<div class="leftcon">
+        			<div class="personinfo">
+        				<img src="../../images/homepage/face.png"/>
+	        			<ul>
+	        				<li>
+	        					<span>姓名：</span>{{name}}
+	        					<!-- <span style="cursor:pointer; float:right; color:#00a0e9;">编辑</span> -->
+	        				</li>
+	        				<li><span>单位：</span>{{workunit || deptname}}</li>
+	        				<li><span>手机号码：</span>{{mobile}}</li>
+	        			</ul>
+        			</div>
+
+        		</div>
+        		<div class="rightcon">
+        			<section class="right_top">
+        				<ul>
+        					<li><h5>报告</h5><a>周报</a><a>月报</a></li>
+        					<li><h5>通知</h5><a>公告</a><a>会议</a></li>
+        					<li><h5>来访</h5><a>日程</a><a>短信</a></li>
+        					<li><h5>执医</h5><a>通过率</a><a>分析</a></li>
+        				</ul>
+        				<ul>
+        					<li><h5>教室</h5><a>详图</a><a>分析</a></li>
+        					<li>
+                                <h5>人员</h5>
+                                <a>教师</a>
+                                <a>学生</a>
+                            </li>
+        					<li><h5>物品</h5><a>贵重</a><a>分析</a></li>
+        					<li><h5>监控</h5><a>区域</a><a>教室</a></li>
+        				</ul>
+        				<ul>
+        					<li><h5>资料</h5><a>分析</a></li>
+        					<li><h5>课程</h5><a>课表</a><a>分析</a></li>
+        					<li><h5>排行</h5><a>老师</a><a>学生</a></li>
+        					<li><h5>评价</h5><a>老师</a><a>学生</a></li>
+        				</ul>
+        				<ul>
+        					<li><h5>下载</h5><a>明日良医</a></li>
+        				</ul>
+        			</section>
+        			<section class="right_main">
+                        <!-- 任务和消息组件 -->
+        				<c-task-and-msg></c-task-and-msg>
+
+        				<!-- 各种统计图和表格 -->
+        				<div class="chart_outer">
+        					<div class="chartline">
+        						<section>
+        							<h3>教师胜任力指数</h3>
+        							<div class="competency_index">
+        								<div class="competency_index_con teacher_competency_index_con">
+
+        								</div>
+        								<p v-if="teacher">
+        									平均分：
+                                            <span class="yellow_text">{{parseInt(teacher.competence.avgScore)}}</span>分<br/>
+        									统计学时：<span class="blue_text">{{teacher.competence.courseHours}}</span>学时<br/>
+        									参与评价老师：<span class="blue_text">{{teacher.competence.evaluatedcount}}</span>人次<br/>
+        									参与评价学生：<span class="blue_text">{{teacher.competence.evaluatingcount}}</span>人<br/>
+        								</p>
+        							</div>
+        						</section>
+        						<section>
+        							<h3>教师胜任力模型雷达图</h3>
+        							<div class="competency_radar teacher_competency_radar">
+
+        							</div>
+        						</section>
+        					</div>
+        					<div class="chartline">
+        						<section>
+        							<h3 v-if="teacher_bar_arr.length>0">{{teacher_bar_arr[teacher_bar_index].name}}月度趋势图</h3>
+        							<div class="bar_con teach_attitude_bar">
+
+        							</div>
+        						</section>
+        						<section>
+        							<h3>教师胜任力分析TOP5</h3>
+        							<div class="top5">
+        								<div class="top5_tit">
+        									<div class="top5_tit_img">
+												<img src="../../images/homepage/icon_zuijia.png" />
+        									</div>
+                                            <span v-for="(item,i) in teacher.order">
+                                                NO.{{i+1}}
+                                            </span>
+        								</div>
+        								<div class="top5_con">
+        									<ul v-if="teacher">
+        										<li></li>
+        										<li v-for="(item,i) in teacher.order">
+                                                    {{item.name}}
+                                                </li>
+        									</ul>
+        									<ul>
+        										<li></li>
+        										<li v-for="(item,i) in teacher.order">
+                                                    {{parseFloat(item.score).toFixed(1)}}
+                                                </li>
+        									</ul>
+        								</div>
+        							</div>
+        						</section>
+        					</div>
+        					<div class="chartline">
+        						<section>
+        							<h3>学生胜任力指数</h3>
+        							<div class="competency_index">
+        								<div class="competency_index_con stu_competency_index_con">
+
+        								</div>
+        								<p v-if="student">
+                                            平均分：
+                                            <span class="yellow_text">{{parseInt(student.competence.avgScore)}}</span>分<br/>
+                                            统计学时：<span class="blue_text">{{student.competence.courseHours}}</span>学时<br/>
+                                            参与评价老师：<span class="blue_text">{{student.competence.evaluatedcount}}</span>人次<br/>
+                                            参与评价学生：<span class="blue_text">{{student.competence.evaluatingcount}}</span>人<br/>
+                                        </p>
+        							</div>
+        						</section>
+        						<section>
+        							<h3>学生胜任力模型雷达图</h3>
+        							<div class="competency_radar stu_competency_radar">
+
+        							</div>
+        						</section>
+        					</div>
+        					<div class="chartline">
+        						<section>
+        							<h3 v-if="stu_bar_arr.length>0">{{stu_bar_arr[stu_bar_index].name}}月度趋势图</h3>
+        							<div class="bar_con stu_attainment_bar">
+
+        							</div>
+        						</section>
+        						<section>
+        							<h3>学生胜任力分析TOP5</h3>
+        							<div class="top5">
+        								<div class="top5_tit">
+        									<div class="top5_tit_img">
+												<img src="../../images/homepage/icon_zuijia.png" />
+        									</div>
+        									<span v-for="(item,i) in student.order">
+                                                NO.{{i+1}}
+                                            </span>
+        								</div>
+        								<div class="top5_con">
+        									<ul>
+        										<li></li>
+        										<li v-for="(item,i) in student.order">
+                                                    {{item.name}}
+                                                </li>
+        									</ul>
+        									<ul>
+        										<li></li>
+        										<li v-for="(item,i) in student.order">
+                                                    {{parseFloat(item.score).toFixed(1)}}
+                                                </li>
+        									</ul>
+        								</div>
+        							</div>
+        						</section>
+        					</div>
+        				</div>
+        			</section>
+        		</div>
+        	</div>
+        </div>
+	</body>
+
+	<script type="text/javascript">
+		var vm;
+		window.onload = function(){
+			vm=new Vue({
+				el:"#vue_control",
+				data:{
+					name:'', mobile:'', deptname:'', workunit:'',
+                    teacher_bar_index:0,
+                    teacher_bar_arr:[
+                        // {
+                        //     name:'教学态度',data:[71,81,82,71,77,77,86,73],
+                        //     date:['2016年10月','2016年11月','2016年12月','2017年1月','2017年2月','2017年3月','2017年4月','2017年5月',]
+                        // }
+                    ],
+                    stu_bar_index:0,
+                    stu_bar_arr:[
+                        // {
+                        //     name:'无菌观念',data:[71,81,82,71,77,77,86,73],
+                        //     date:['2016年10月','2016年11月','2016年12月','2017年1月','2017年2月','2017年3月','2017年4月','2017年5月',]
+                        // },
+                    ],
+
+                    teacher:'',//教师数据
+                    student:'',//学生数据
+				},
+				methods:{
+
+				},
+				created:function(){
+					var self = this;
+					// 查询用户个人信息
+					Api.R({
+						isShade:1,
+						url:'/user/queryuserdetail',
+						data:{
+							command:"user/queryuserdetail",
+							sessionid:getCookie('sid'),
+	                        loginid:getCookie('uid'),
+	                        uid:getCookie('uid')
+						},
+						callback:function(data){
+							self.name=data.users[0].name;
+                           	self.deptname=data.users[0].deptname;
+                            self.mobile=data.users[0].mobile;
+                            self.workunit=data.users[0].workunit;
+						}
+					});
+
+				},
+				mounted:function(){
+                    var self = this;
+
+                    // 学生和老师胜任力查询
+                    Api.R({
+                        isShade:1,
+                        url:'/report/queryCompetence',
+                        data:{
+                            command:"report/queryCompetence",
+                            sessionid:getCookie('sid'),
+                            loginid:getCookie('uid'),
+                            schooljx:'gzyxy',
+                        },
+                        callback:function(data){
+                            self.teacher = data.teacher;
+                            self.student = data.student;
+                            if(self.teacher.evascore.length == 0){
+                                return false;
+                            }
+                            //教师胜任力指数
+                            circle_bar({
+                                element:$('.teacher_competency_index_con'),
+                                value:self.teacher.competence.avgScore,
+                                barColor:'#83EA13',
+                            });
+                            //学生胜任力指数
+                            circle_bar({
+                                element:$('.stu_competency_index_con'),
+                                value:self.student.competence.avgScore,
+                                barColor:'#FFA358'
+                            });
+
+                            !function(){
+                                //教师胜任力模型雷达图
+                                var name = [];
+                                var value = [];
+                                $(self.teacher.evascore).each(function(i,el) {
+                                    name.push({text:el.evaName,max:100,});
+                                    value.push(parseFloat(el.score).toFixed(1));
+                                });
+                                writeradar({
+                                    element:$('.teacher_competency_radar')[0],
+                                    data_tit:'教师胜任力',
+                                    name:name,
+                                    color:'#11F0B9',
+                                    value:value
+                                });
+                            }();
+                            !function(){
+                                //学生胜任力模型雷达图
+                                var name = [];
+                                var value = [];
+                                $(self.student.evascore).each(function(i,el) {
+                                    name.push({text:el.evaName,max:100,});
+                                    value.push(parseFloat(el.score).toFixed(1));
+                                });
+                                writeradar({
+                                    element:$('.stu_competency_radar')[0],
+                                    data_tit:'学生胜任力',
+                                    name:name,
+                                    color:'#8D4DE8',
+                                    value:value
+                                });
+                            }();
+
+                            // 教学态度月度趋势数据组装
+                            $(self.teacher.evascore).each(function(i,el) {
+                                var dataArr = [] , dateArr = [];
+                                $(el.scoredatedata.content).each(function(j,content) {
+                                    dataArr.push(content.score);
+                                    var date_str = content.date.split("-");
+                                    dateArr.unshift(date_str[0]+'年'+date_str[1]+'月');
+                                });
+                                self.teacher_bar_arr.push({
+                                    name:el.evaName,
+                                    data:dataArr,
+                                    date:dateArr,
+                                });
+                            });
+                            // 教学态度月度趋势柱状图
+                            var teacher_bar = single_bar({
+                                element:$('.teach_attitude_bar')[0],
+                                xAxis_data:self.teacher_bar_arr[self.teacher_bar_index].date,
+                                data:self.teacher_bar_arr[self.teacher_bar_index].data,
+                                bar_color:['#729FFF'],
+                            });
+                            self.teacher_bar_index++;
+                            setInterval(function(){
+                                single_bar({
+                                    my_chart:teacher_bar,
+                                    element:$('.teach_attitude_bar')[0],
+                                    xAxis_data:self.teacher_bar_arr[self.teacher_bar_index].date,
+                                    data:self.teacher_bar_arr[self.teacher_bar_index].data,
+                                    bar_color:['#729FFF'],
+                                });
+                                if(self.teacher_bar_index<self.teacher_bar_arr.length-1){
+                                    self.teacher_bar_index++;
+                                }else{
+                                    self.teacher_bar_index = 0;
+                                }
+                            },10000);
+
+                            //职业素养月度趋势数据组装
+                            $(self.student.evascore).each(function(i,el) {
+                                var dataArr = [] , dateArr = [];
+                                $(el.scoredatedata.content).each(function(j,content) {
+                                    dataArr.push(content.score);
+                                    var date_str = content.date.split("-");
+                                    dateArr.unshift(date_str[0]+'年'+date_str[1]+'月');
+                                });
+                                self.stu_bar_arr.push({
+                                    name:el.evaName,
+                                    data:dataArr,
+                                    date:dateArr,
+                                });
+                            });
+                            //职业素养月度趋势柱状图
+                            var stu_bar = single_bar({
+                                element:$('.stu_attainment_bar')[0],
+                                xAxis_data:self.stu_bar_arr[self.stu_bar_index].date,
+                                data:self.stu_bar_arr[self.stu_bar_index].data,
+                                bar_color:['#FFDA2B'],
+                            });
+                            self.stu_bar_index++;
+                            setInterval(function(){
+                                single_bar({
+                                    my_chart:stu_bar,
+                                    element:$('.stu_attainment_bar')[0],
+                                    xAxis_data:self.stu_bar_arr[self.stu_bar_index].date,
+                                    data:self.stu_bar_arr[self.stu_bar_index].data,
+                                    bar_color:['#FFDA2B'],
+                                });
+                                if(self.stu_bar_index<self.stu_bar_arr.length-1){
+                                    self.stu_bar_index++;
+                                }else{
+                                    self.stu_bar_index = 0;
+                                }
+                            },10000);
+
+                        }
+                    });
+
+
+
+				},
+				updated:function(){
+				},
+				watch:{
+
+				},
+				computed:{
+
+				},
+			})
+		}
+
+		function writeradar (opt) {
+	        var my_chart = echarts.init(opt.element);
+	        var option = {
+	            tooltip: {
+	                trigger: 'axis'
+	            },
+	            radar: [
+	                {
+	                    indicator : opt.name,
+	                    // center: ['25%','40%'],
+	                    radius: 80
+	                },
+	            ],
+	            series : [
+	                {
+	                    type: 'radar',
+	                    tooltip: {
+	                        trigger: 'item'
+	                    },
+	                    itemStyle: {
+	                        normal: {
+	                            lineStyle:{
+	                                width: 0,//数据区域的边框
+	                                color:'transparent'
+	                            },
+	                            areaStyle:{
+	                                color:opt.color,//数据区域的颜色
+	                                opacity:1
+	                            }
+	                        }
+	                    },
+	                    data : [
+	                        {
+	                            value : opt.value,
+	                            name : opt.data_tit,
+	                        }
+	                    ]
+	                }
+	            ]
+	        };
+	        function showchart(){
+	        	if($(opt.element).offset().top < $(window).scrollTop()+$(window).height()-100){
+					my_chart.setOption(option);
+					unbind_scroll();
+				}
+	        }
+	        function unbind_scroll(){
+	        	$(window).unbind('scroll',showchart);
+	        }
+	        showchart();
+	        $(window).scroll(showchart);
+	        $(window).resize(function(){
+	            my_chart.resize();
+	        });
+	        return my_chart;
+	    }
+	    function single_bar(opt){//绘制单个的柱状图
+            var option = {
+                textStyle: {
+                    color:'#78909c',
+                    fontWeight: 'normal',
+                    // fontSize:6
+                },
+                title :{
+                    show:false
+                },
+                color: opt.bar_color,//柱子的颜色
+                tooltip : {//提示框
+                    show:false,
+                    trigger: 'axis',
+                    axisPointer : {
+                        type : 'shadow'
+                    }
+                },
+                grid: {//控制图表的边距
+                    left: '0',
+                    right: '8%',
+                    top:'15%',
+                    containLabel: true,
+                    show:true,
+                    backgroundColor:'rgb(243,245,249)',
+                    borderColor:'transparent',
+                },
+                xAxis :{
+                    name : '时间',
+                    nameTextStyle:{color:'#56B2BA'},
+                    type : 'category',
+                    data : opt.xAxis_data,
+                    axisTick: {//x轴的刻度
+                        show: false
+                    },
+                    axisLabel:{
+                        // textStyle:{fontSize:6}
+                        interval:0,
+                        rotate:30
+                    },
+                    axisLine: {            // 坐标轴线
+                        show: true,        // 默认显示，属性show控制显示与否
+                        lineStyle:{
+                            color:'#DAE0EA'
+                        }
+                    },
+                },
+                yAxis :
+                {
+                    name : '分数',
+                    nameTextStyle:{color:'#EA4C8F'},
+                    type : 'value',
+                    max:100,
+                    axisTick: {//y轴的刻度
+                        show: false
+                    },
+                    axisLabel:{
+                        // textStyle:{fontSize:fontSize}
+                    },
+                    axisLine: {            // 坐标轴线
+                        show: true,        // 默认显示，属性show控制显示与否
+                        lineStyle:{
+                            color:'#DAE0EA'
+                        },
+                    },
+                    splitLine: {
+                        show: true,
+                        lineStyle:{
+                            color:'#DAE0EA'
+                        },
+                    },
+                    z:1,
+                },
+                series : [
+                    {
+                        name:'分数',
+                        type:'bar',
+                        barWidth: '50%',
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    textStyle: {
+                                        color: '#116FCB'
+                                    },
+                                    formatter:function(a){
+                                        return a.data.text;
+                                    },
+                                    show: false,
+                                    position: 'top',
+                                }
+                            }
+                        },
+                        data:opt.data
+                    }
+                ]
+            };
+            if(opt.my_chart){
+                opt.my_chart.setOption(option);
+                return false;
+            }
+			var my_chart = echarts.init(opt.element);
+			my_chart.setOption(option);
+			$(window).resize(function(){
+				my_chart.resize();
+			});
+			return my_chart;
+		}
+		function circle_bar(opt){//绘制环形柱状图
+			var radius = opt.element.width()/2.4;
+			var radialObj = radialIndicator(opt.element,{
+				radius:radius,
+				barBgColor:'#dae0ea',
+		        barColor: opt.barColor,
+		        barWidth: radius/5,
+		        initValue: 0,
+		        roundCorner : true,
+		        format: '  #分  ',
+		        fontWeight:'normal',
+		    });
+		    function showchart(){
+	        	if(opt.element.offset().top < $(window).scrollTop()+$(window).height()-100){
+					radialObj.animate(opt.value);
+					unbind_scroll();
+				}
+	        }
+	        function unbind_scroll(){
+	        	$(window).unbind('scroll',showchart);
+	        }
+	        showchart();
+	        $(window).scroll(showchart);
+		    $(window).resize(function(){
+		    	var _radius = opt.element.width()/2.4;
+		    	radialObj.option('radius',_radius);
+		    	radialObj.option('barWidth',_radius/4.5);
+	        });
+		}
+
+	</script>
+</html>

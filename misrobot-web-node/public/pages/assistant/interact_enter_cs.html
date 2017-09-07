@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/assistant/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>互动问答入口</title>
+		<style type="text/css">
+			body{
+				background-color:#ECECEC; overflow:hidden;
+			}
+			
+			.illustration{
+				width:440px; height:202px; margin:auto; padding-top:126px; margin-bottom:84px;
+			}
+			.illustration img{
+				width:88px; height:76px; display:block; float:left;
+			}
+			.illustration p{
+				font-size:21px; line-height:34px; color:rgb(51,51,51); float:left;
+				padding-left:10px;
+			}
+			
+			.btnCon{
+				width:340px; height:46px; margin:auto;
+			}
+			.btnCon button{
+				width:155px; height:42px; border-radius:3px;
+				float:left; font-size:18px;
+				text-align:center; line-height:42px; display:block;
+			}
+			.openBtn{
+				border:1px solid #0495CA; color:white; background-color:#0495CA;
+				margin-right:15px;
+			}
+			.newBtn{
+				border:1px solid #CCCCCC; color:block; background-color:white;
+			}
+		</style>	
+		
+		
+	</head>
+	<body>
+		<div class="illustration">
+			<img src="../../images/assistant/wenda.png">
+			<p>
+				本堂课还没有维护题目<br/>
+				请从题库中选择题目，或新建题目！
+			</p>
+		</div>
+
+		<div class="btnCon">
+			<button class="openBtn">从题库中选择题目</button>
+			<button class="newBtn">新建题目</button>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+
+		$('.openBtn').click(function() {//打开iframe
+			open_dialog('choose_problem_cs.html');//打开选择题目弹窗
+		});
+
+		$('.newBtn').click(function() {//打开iframe
+			open_dialog('create_problem_cs.html');//打开新建题目弹窗
+		});
+
+		function has_problem(){//查询是否有题目如果有就跳到互动问答主页面，如果没有题目留在本页面
+
+			var json = {
+				'1':{
+					command:'question/queryquestions', //接口地址
+					scheduleid:getCookie('scheduleid'),
+					sessionid:getCookie('sid'),
+					loginid:getCookie('loginid')
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/question/queryquestions', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+					if( base.questionsresult.length > 0 ){
+						window.location.href = 'interact_index_cs.html';//如果本堂课有题目就显示互动问答题目列表页面
+					}else{
+						// $('body').css('opacity', '1');//如果本堂课没有题目就显示本页面
+					}
+				}
+			});
+		}
+
+		gotC.init({
+            fn:function(){
+                has_problem();
+            },
+            current_course_info:true//是否需要获取课程信息
+        });
+	</script>
+
+</html>

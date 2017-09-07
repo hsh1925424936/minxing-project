@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>doorplate</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <script src="../../js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/layout.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/vue.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../css/reset.css">
+    <style>
+        [v-cloak] { display: none }
+        body {
+            font-size: 62.5%;
+        }
+        .flex {
+            display: -webkit-box; /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
+            display: -moz-box; /* Firefox 17- */
+            display: -webkit-flex; /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
+            display: -moz-flex; /* Firefox 18+ */
+            display: -ms-flexbox; /* IE 10 */
+            display: flex; /* Chrome 29+, Firefox 22+, IE 11+, Opera 12.1/17/18, Android 4.4+ */
+        }
+        .flex-full {
+            -webkit-box-flex: 1;
+            -moz-box-flex: 1;
+            -ms-flex: 1;
+            flex:1;
+        }
+        .flex-column {
+            -webkit-box-orient: vertical;
+            -moz-box-orient: vertical;
+            box-orient: vertical;
+            flex-direction: column;
+        }
+        .flex-w-center {
+            -webkit-justify-content:center;
+            justify-content:center;
+            -moz-box-pack:center;
+            -webkit--moz-box-pack:center;
+            box-pack:center;
+        }
+        .flex-h-center {
+            align-items:center;
+            -webkit-align-items:center;
+            box-align:center;
+            -moz-box-align:center;
+            -webkit-box-align:center;
+        }
+        #doorplate {
+            width:100vw;
+            height:100vh;
+        }
+        header {
+            width:100vw;
+            height:50vh;
+            color: #fff;
+            background: url("../../images/doorplate/bg.png") 0 0 no-repeat;
+            background-size: 100% 100%;
+        }
+        footer {
+            width:100vw;
+            height:13vh;
+        }
+        .photos {
+            width:56vw;
+            padding-left:4vw;
+            padding-top:10.2vh;
+        }
+        .photos img {
+            width:16.67vw;
+            height:16.67vw;
+            padding-right:1vw;
+        }
+        .statu span:first-child {
+            font-size: 2.5rem;
+            line-height: 5rem;
+        }
+        .statu span:first-child i:first-child {
+            font-size: 4rem;
+        }
+        .statu span:nth-child(2) {
+            font-size: 2.5rem;
+            padding:0.5rem;
+            background: #00c58c;
+            margin-left:2vw;
+            border-radius: 10px;
+        }
+        .descriptions {
+            width:25%;
+            height:100%;
+            position: relative;
+        }
+        .descriptions i{
+            position: absolute;
+            top:0;
+            left:0;
+            width:3rem;
+            height:3rem;
+            font-size: 2rem;
+            line-height: 3rem;
+            text-align: center;
+            background: #00c58c;
+            color: #fff;
+        }
+        .title {
+            font-size: 3rem;
+            color: #2e2f40;
+            line-height: 4rem;
+        }
+        .content {
+            font-size: 2rem;
+            color: #666;
+        }
+        footer {
+            font-size: 2.5rem;
+            color: #fff;
+        }
+        .starting {
+            background: #00c58c;
+        }
+        .waiting{
+            background: #9697a2;
+        }
+        #text span {
+            margin-right:2rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="doorplate" class="flex flex-column" v-cloak>
+        <header class="flex">
+            <div class="photos">
+                <img v-for="(value,index) in placeinfo.pictureurls" :src="value" alt="">
+            </div>
+            <div class="statu flex flex-full flex-w-center flex-h-center">
+                <span class="flex flex-column flex-w-center flex-h-center">
+                    <i>【{{placeinfo.room_num}}】</i>
+                    <i>{{placeinfo.name}}</i>
+                </span>
+                <span v-show="courseinfo.length>0&&(courseinfo[0].schedulestatus==1)">上课中</span>
+            </div>
+        </header>
+        <section class="flex flex-full flex-h-center flex-w-center">
+            <div class="descriptions flex flex-h-center flex-w-center flex-column" v-for="(item,index) in placeinfo.descriptions">
+                <i>{{index+1}}</i>
+                <p class="title">{{item.title}}</p>
+                <p class="content">{{item.content}}</p>
+            </div>
+        </section>
+        <footer class="flex flex-h-center" :class="{waiting:courseinfo.length>0&&(courseinfo[0].schedulestatus==0) , starting:courseinfo.length>0&&(courseinfo[0].schedulestatus==1)}">
+            <marquee behavior="scroll" direction="left" id="text">
+                <template v-if="courseinfo.length>0&&courseinfo[0].schedulestatus==0">
+                    <span>下节课预告：{{courseinfo[0].coursename}}&nbsp;&nbsp;&nbsp;{{courseinfo[0].starttime | sub(0,17)}}~{{courseinfo[0].endtime | sub(11,16)}}</span>
+                    <span>老师：{{courseinfo[0].teachername}}</span>
+                    <span>学生：{{courseinfo[0].classname}}</span>
+                </template>
+                <template v-if="courseinfo.length>0&&courseinfo[0].schedulestatus==1">
+                    <span>课程名称：{{courseinfo[0].coursename}}</span>
+                    <span>老师：{{courseinfo[0].teachername}}</span>
+                    <span>学生：{{courseinfo[0].classname}}</span>
+                </template>
+            </marquee>
+        </footer>
+    </div>
+</body>
+<script>
+var  _setupWebViewJavascriptBridge = function(callback){   //ios桥函数
+            if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+        };
+
+        var invokeNative = function(methodName, param, callback) {
+            _setupWebViewJavascriptBridge(function(bridge) {
+
+                bridge.callHandler(methodName, param, function responseCallback(responseData) {
+                    callback && callback(responseData);
+                });
+            });
+        };
+    var vm=new Vue({
+        el:'#doorplate',
+        data:{
+            timer:0,
+            code:'15',
+            placeinfo: {
+                /*"roomnum": "111",//教室编号
+                "pictureurls": [//图片列表
+                    "http://192.168.1.200/group1/M00/00/04/wKgByFl7ESWAQi8dABw4yTVxd3k426.JPG",
+                    "http://192.168.1.200/group1/M00/00/04/wKgByFl7ESiARyDlABonTkDLm04007.JPG",
+                    "http://192.168.1.200/group1/M00/00/04/wKgByFl7ESqAJ_ZrABdfJaUZ0rU611.JPG"
+                ],
+                "name": "逸夫楼-106教室",//教室名称
+                "descriptions"://描述
+                    [
+                        {
+                            "title": "111111",
+                            "content": "111111111111"
+                        },{
+                            "title": "22222",
+                            "content": "22222222222"
+                        },{
+                            "title": "333333",
+                            "content": "3333333333"
+                        },{
+                            "title": "4444444",
+                            "content": "4444444444"
+                        }
+                    ]*/
+            },
+            courseinfo: [
+                /*{
+                    "schedulestatus": 0,//课程状态
+                    "coursename": "儿内科学6666",//课程名称
+                    "classname": "梵蒂冈",//上课班级
+                    "teachername": "陈治",//上课老师
+                    "endtime": "2017-07-31 17:40",//结束时间
+                    "id": 1423,//课程ID
+                    "starttime": "2017-07-31 16:55"//开始时间
+                },
+                {
+                    "schedulestatus": 0,
+                        "coursename": "儿内科学6666",
+                        "classname": "扫码登陆上课班级",
+                        "teachername": "程义局",
+                        "endtime": "2017-08-01 09:40",
+                        "id": 1424,
+                        "starttime": "2017-08-01 08:00"
+                }*/
+            ]
+        },
+        filters:{
+            sub:function(value,start,end){
+                if(value&&typeof value === 'string'){
+                    return  value.substring(start, end);
+                }
+                return value
+            }
+        },
+        mounted:function(){
+            var self = this;
+            this.timer = setInterval(function(){
+                self.initcourseinfo();
+                self.initplaceinfo();
+            },300000);
+        //JSON.parse(data).place_id;
+               
+            
+            invokeNative('ConfigInfoList',{},this.getInfo);
+            //this.code = JSON.stringify(invokeNative('ConfigInfoList')).place_id;
+
+        },
+        destroyed:function(){
+            clearInterval(this.timer);
+        },
+        methods:{
+            getInfo(data){
+               this.code = JSON.parse(data).place_id;
+               this.initcourseinfo();
+                this.initplaceinfo();
+            },
+            initcourseinfo:function(){
+                var _this = this;
+                var _json = {
+                    "1": {
+                        command: "site/queryschedule",
+                        code:_this.code
+                    }
+                };
+                var json = JSON.stringify(_json);
+                $.ajax({
+                    url: "/site/queryschedule",
+                    type: "POST",
+                    data: json,
+                    contentType: "application/json",
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            _this.courseinfo=data.schedulelist;
+                        }
+                    }
+                })
+            },
+            initplaceinfo:function(){
+                var _this = this;
+                var _json = {
+                    "1": {
+                        command: "site/queryelecnameplate",
+                        code:_this.code
+                    }
+                };
+                var json = JSON.stringify(_json);
+                $.ajax({
+                    url: "/site/queryelecnameplate",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: json,
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            _this.placeinfo=data;
+                        }
+                    }
+                })
+            },
+
+        }
+    })
+</script>
+</html>

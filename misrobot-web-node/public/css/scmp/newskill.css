@@ -1,0 +1,106 @@
+* {
+  margin: 0;
+  padding: 0; }
+
+#addTeacher {
+  margin: 20px; }
+
+section {
+  overflow: hidden;
+  width: 400px;
+  margin: 0 auto;
+  padding: 10px; }
+  section .choose {
+    display: inline-block;
+    width: 370px; }
+    section .choose p {
+      display: inline-block;
+      width: 224px;
+      border: 1px solid #bfcbd9;
+      border-radius: 5px;
+      line-height: 35px;
+      background: #eee;
+      padding-left: 10px; }
+  section .btnA {
+    float: right;
+    margin-top: 10px;
+    padding-right: 30px; }
+
+.choose b {
+  display: inline-block;
+  width: 65px;
+  text-align: right;
+  margin: 15px auto; }
+
+div.remark {
+  width: 300px; }
+
+.choice {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 0;
+  width: 510px;
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%); }
+  .choice section {
+    width: 100%;
+    padding: 10px 0;
+    margin: 0 auto;
+    overflow: hidden; }
+  .choice header {
+    border-bottom: 1px solid #ddd; }
+    .choice header p {
+      margin: 0;
+      line-height: 35px;
+      padding: 0 15px; }
+
+.search-btn .el-input-group {
+  width: 200px;
+  margin-bottom: 20px; }
+
+.choose-right {
+  float: right;
+  cursor: pointer; }
+
+.list {
+  width: 200px;
+  height: 270px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: auto; }
+  .list li {
+    text-align: left;
+    padding-left:20px;
+    border-bottom: 1px solid #ddd;
+    line-height: 30px;
+    cursor: pointer; }
+    .list li:hover {
+      background: #eee; }
+
+.left-part {
+  float: left; }
+
+.btnB {
+  display: inline-block;
+  float:left;
+  margin: 130px 15px 0; }
+  .btnB .el-button {
+    margin-bottom: 10px; }
+
+.right-part {
+  float: left;
+  width: 200px; }
+  .right-part p {
+    text-align: left;
+    line-height: 36px;
+    padding-bottom: 20px; }
+
+.btnC {
+  margin-top: 15px;
+  clear:both;
+  text-align:right
+  }
+
+/*# sourceMappingURL=newTeacher.css.map    */

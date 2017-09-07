@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/iteach/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>找回密码</title>
+		<style type="text/css">
+
+			.infoOuter{
+				width:100%;
+			}
+
+			.infoCon{
+				width:100%; height:45px; padding:5px;
+				font-size:15px; padding-left:15px; padding-right:15px;
+				border-bottom:1px solid #F2F2F4; font-size:14px;
+				line-height:40px; position:relative;
+			}
+			.infoCon input,.infoCon input:active{
+				border:0px;
+				box-shadow: none;
+			}
+			.infoCon button{
+				position:absolute; right:15px; width:90px; height:34px;
+				border-radius:3px; cursor:pointer; background-color:transparent;
+				line-height:26px; display:block; margin-top:-17px;
+				text-align:center; top:50%; font-weight:bold;
+			}
+			.btn1{
+				width:90.62%; height:45px; color:white;
+				margin:50px auto; background-color:#0495CA; font-size:16px;
+				display:block;
+			}
+			.disabled{background-color:#D3D3D3;}
+			.getCode{
+				border:2px solid #6EC3E0; color:#6EC3E0;
+			}
+			.getCodeOn{
+				border:2px solid #AEAEAE; color:#AEAEAE;
+			}
+			.infoOuter2{
+				display:none;
+			}
+			.submit{
+				display:none;
+			}
+		</style>
+		<script>
+			//$('.bootstrap').remove();
+		</script>
+	</head>
+	<body>
+		
+		<div class="box clearfix">
+			<div class="outer clearfix">
+				<div class="topOuter">
+					<div class="return1">
+						
+					</div>
+					<div class="topTxt">
+						找回密码
+					</div>
+				</div>
+
+				<div class="infoOuter infoOuter1">
+
+					<div class="infoCon clearfix">
+						<input class="form-control phoneNum" placeholder="请输入你注册时的手机号" maxlength="15" />
+						<button class="getCode">获取验证码</button>
+					</div>
+
+					<div class="infoCon clearfix">
+						<input class="form-control code" placeholder="请输入短信验证码" maxlength="15" />
+					</div>
+
+				</div>
+
+				<div class="infoOuter infoOuter2">
+
+					<div class="infoCon clearfix">
+						<input type="password" class="form-control mima" placeholder="输入新密码(6位以上,英文,数字均可)" maxlength="15" />
+					</div>
+
+					<div class="infoCon clearfix">
+						<input type="password" class="form-control mima2" placeholder="再输一次新密码" maxlength="15" />
+					</div>
+
+				</div>
+
+				<button type="button" class="next disabled btn1" disabled="disabled">
+					下一步
+				</button>
+
+				<button type="button" class="submit disabled btn1" disabled="disabled">
+					提交
+				</button>
+
+			</div>
+
+		</div>
+
+	</body>
+	
+	<script type="text/javascript">
+		window.onload = function () {
+			'use strict';
+			webcommon();			
+		};
+		var t;
+		$('input').on('keyup',function() {
+			if( $('.code').val().trim()== '' || $('.phoneNum').val().trim() == '' ){
+				$('.next').addClass('disabled');
+				$('.next').attr('disabled', 'disabled');
+			}else{
+				$('.next').removeClass('disabled');
+				$('.next').removeAttr('disabled');
+			}
+
+			if( $('.mima').val().trim()== '' || $('.mima2').val().trim() == '' ){
+				$('.submit').addClass('disabled');
+				$('.submit').attr('disabled', 'disabled');
+			}else{
+				$('.submit').removeClass('disabled');
+				$('.submit').removeAttr('disabled');
+			}
+		});
+		
+		$('.getCode').click(function() {
+			var reg=/^1[3-578]\d{9}$/;
+			if(!reg.test($.trim($('.phoneNum').val()))){
+				uselayer(3,'请输入正确的手机号');
+				return false;
+			}			
+			Api.sendMobile({
+				isShade:1,
+				istoken:1,
+				json:{
+					mobile:$.trim($('.phoneNum').val())
+				},
+				fn:function (json) {
+					console.log(json);
+					if (json.code!=1) {
+						uselayer(1,json.message);
+					} else {
+						$('.phoneNum').attr('disabled','disabled');
+						$('.getCode').addClass('getCodeOn');
+						$('.getCode').html('5秒后重发');
+						$('.getCode').attr('disabled', 'disabled');
+						t = setInterval(function(){
+							var second = parseInt($('.getCode').html());
+							second--;
+							if(second < 0 ){
+								clearInterval(t);
+								$('.getCode').html('重新发送');
+								$('.getCode').removeClass('getCodeOn');
+								$('.getCode').removeAttr('disabled');
+							}else{
+								$('.getCode').html(second+'秒后重发');
+							}
+						},1000);						
+					}
+				}
+			});
+		});
+
+		$('.next').click(function() {
+			if ($('.phoneNum').attr('disabled')!='disabled') {
+				uselayer(3,'请先获取验证码');
+				return false;				
+			}
+			if ($.trim($('.code').val())=='') {
+				uselayer(3,'请输入收到的验证码');
+				return false;
+			}
+			$('.next').addClass('disabled');
+			$('.next').attr('disabled', 'disabled');
+			$('.code').attr('disabled','disabled');
+			Api.sureCode({
+				isShade:1,
+				istoken:1,
+				json:{
+					mobile:$.trim($('.phoneNum').val()),
+					code:$.trim($('.code').val())
+				},
+				fn:function (json) {
+					console.log(json);
+					$('.code').removeAttr('disabled');
+					if (json.code!=1) {
+						uselayer(1,json.message);
+					} else {
+						$('.infoOuter1').css('display', 'none');
+						$('.infoOuter2').css('display', 'block');
+			
+						$('.next').css('display', 'none');
+						$('.submit').css('display', 'block');						
+					}
+					
+				}
+			});
+			
+			
+			$('.submit').click(function () {
+				if ($.trim($('.mima').val()).length<6||$.trim($('.mima2').val()).length<6) {
+					uselayer(3,'密码长度不正确');
+					return false;					
+				}
+				if ($.trim($('.mima').val())!=$.trim($('.mima2').val())) {
+					uselayer(3,'两次输入密码不相同');
+					return false;					
+				}
+				$('.mima').attr('disabled','disabled');
+				$('.mima2').attr('disabled','disabled');
+				$('.submit').attr('disabled','disabled');
+				
+				Api.modifyPwd({
+					isShade:1,
+					istoken:1,
+					json:{
+						mobile:$.trim($('.phoneNum').val()),
+						code:$.trim($('.code').val()),
+						newpassword:$.trim($('.mima').val()),
+						type:1
+					},
+					fn:function (json) {
+						console.log(json);
+						uselayer(1,json.message,function () {
+							window.location.href="login.html";
+						});
+					}
+				});
+			});
+
+		});
+	</script>
+
+</html>

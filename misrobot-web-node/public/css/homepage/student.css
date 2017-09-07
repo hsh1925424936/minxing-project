@@ -1,0 +1,564 @@
+*{margin: 0;padding: 0;list-style: none;}
+
+/** 清除内外边距 **/
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, /* structural elements 结构元素 */
+dl, dt, dd, ul, ol, li, /* list elements 列表元素 */
+pre, /* text formatting elements 文本格式元素 */
+form, fieldset, legend, button, input, textarea, /* form elements 表单元素 */
+th, td /* table elements 表格元素 */ {
+    margin: 0;
+    padding: 0;
+}
+
+/** 设置默认字体 **/
+body,
+button, input, select, textarea /* for ie */ {
+    font-family:'Microsoft YaHei';
+}
+h1, h2, h3, h4, h5, h6 { font-size: calc(15.5vw * 100 / 1920); }
+address, cite, dfn, em, var { font-style: normal; } /* 将斜体扶正 */
+code, kbd, pre, samp { font-family: courier new, courier, monospace; } /* 统一等宽字体 */
+
+/** 重置列表元素 **/
+ul, ol { list-style: none; }
+
+/** 重置文本格式元素 **/
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+a,a:focus,a:visited,a:hover {
+    text-decoration:none; color:inherit;
+}
+
+/** 重置表单元素 **/
+legend { color: #000; } /* for ie6 */
+fieldset, img { border: 0; } /* img 搭车：让链接里的 img 无边框 */
+button, input, select, textarea { font-size: calc(15.5vw * 100 / 1920); } /* 使得表单元素在 ie 下能继承字体大小 */
+/* 注：optgroup 无法扶正 */
+
+/** 重置表格元素 **/
+table { border-collapse: collapse; border-spacing: 0; }
+button{ border: none; font-size: inherit;}
+
+body{
+    overflow-x: hidden;
+}
+.header{
+    background-color: #00A0EA;
+    height: calc(72vw * 100 / 1920);
+    line-height: calc(72vw * 100 / 1920);
+    padding: 0 2vw;
+    color: #ffffff;
+}
+h1{
+    float: left;
+    width: 20vw;
+    font-size: calc(24vw * 100 / 1920);
+    font-weight: normal;
+    display: inline-block;
+}
+.nav{
+    float: left;
+    height: calc(72vw * 100 / 1920);
+    font-size: calc(15.5vw * 100 / 1920);
+    display: inline-block;
+    text-align: center;
+
+}
+.nav li{
+    float: left;
+    padding: 0 1vw;
+    margin-left: 1vw;
+}
+.nav li:hover{
+    background-color: #4DBDEF;
+}
+/*.nav li.active{*/
+    /*background-color: #4DBDEF;*/
+/*}*/
+
+.exit{
+    float: right;
+}
+.exit button:hover{
+    cursor: pointer;
+}
+.exit button{
+    border: 1px solid #fff;
+    background-color: #00a0ea;
+    padding: .3vw 1.2vw;
+    border-radius: .4vw;
+    color: #fff;
+    font-size: calc(16vw *100 / 1920);
+}
+
+.container{
+    float: left;
+    width: 100vw;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+.left{
+    float: left;
+    width: calc(448vw * 100 / 1920);
+    background-color: #fff;
+}
+.right{
+    float: left;
+    width: 75vw;
+    background-color: #E5E8EF;
+}
+
+[v-cloak]{
+    display:none;
+}
+*{box-sizing:border-box; outline:none;}
+.clearfix:after { content: ''; display: block; clear: both;}
+.clearfix { zoom: 1;}
+
+/*--公共--*/
+[v-cloak]{
+    display: none;
+}
+.flex1{
+    flex: 1;
+}
+.flex2{
+    flex: 2;
+}
+.flex3{
+    flex: 3;
+}
+li:hover,.prev:hover,.next:hover{
+    cursor: pointer !important;
+}
+/*右布局*/
+.nav_detail{
+    background-color: #fff;
+    height: 6vw;
+    width: 75vw;
+    margin-left: .05vw;
+}
+.reminder{
+    background-color: #fff;
+    height: calc(430vw * 100 / 1920);
+    width: 73vw;
+    margin: 1vw;
+    font-size: calc(15.5vw * 100 / 1920);
+}
+.course{
+    text-align: center;
+    background-color: #fff;
+    height: 45vw;
+    width: 73vw;
+    margin: 1vw;
+}
+/*小导航*/
+.nav_detail .nav_container{
+    float: left;
+    width: 12vw;
+    height: 5vw;
+    border-right: 1px solid #E5E8EF;
+    margin: .5vw;
+    color: #333;
+}
+.nav_detail .nav_container ul{
+    float: left;
+    width: 12vw;
+    height: 1.8vw;
+    line-height: 1.8vw;
+    margin-left: .3vw;
+}
+.nav_detail .nav_container h2{
+    float: left;
+    margin-right: 1vw;
+    font-size: calc(15.5vw * 100 / 1920);
+    font-weight: bold;
+    color: #333;
+}
+.nav_detail .nav_container li{
+    float: left;
+    margin-right: .6vw;
+    font-size: calc(15.5vw * 100 / 1920);
+}
+.train{
+    width: 2vw;
+    height: 10vw;
+}
+/*任务、消息*/
+.left_task,.right_message{
+    float: left;
+    width: 35vw;
+    height: 20vw;
+    margin: 1vw 0 1vw 1vw;
+}
+.task_list, .msg_list{
+    width: 35vw;
+    height: 18.5vw;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-arrow-color: #E5E8EF; /*三角箭头的颜色*/
+    scrollbar-face-color: #E5E8EF; /*立体滚动条的颜色（包括箭头部分的背景色）*/
+    scrollbar-3dlight-color: #E5E8EF; /*立体滚动条亮边的颜色*/
+    scrollbar-highlight-color: #E5E8EF; /*滚动条的高亮颜色（左阴影？）*/
+    scrollbar-shadow-color: #E5E8EF; /*立体滚动条阴影的颜色*/
+    scrollbar-darkshadow-color: #E5E8EF; /*立体滚动条外阴影的颜色*/
+    scrollbar-track-color: #fff; /*立体滚动条背景颜色*/
+    scrollbar-base-color:#fff; /*滚动条的基色*/
+}
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+    width:12px;
+}
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow:rgba(0,0,0,0.3);
+    border-radius:10px;
+}
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+    border-radius:10px;
+    background:rgba(0,0,0,0.1);
+    -webkit-box-shadow:rgba(0,0,0,0.5);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background:rgba(255,0,0,0.4);
+}
+
+.load_more{
+    width: 30vw;
+    height: calc(40vw * 100 / 1920);
+    margin: 0 2vw;
+    border: 1px solid #E5E8EF;
+    border-radius: 4px;
+    background-color: #F3F5F9;
+    cursor: pointer;
+}
+.empty{
+    display: inline-block;
+    width: 35vw;
+    height: 18vw;
+    background-color: #F3F5F9;
+    padding: 8vw 15vw;
+}
+strong{
+    color: rgb(0,160,233);
+    font-size: calc(18vw * 100 / 1920);
+}
+.remind{
+    position: relative;
+    margin-left: .2vw;
+}
+.remind_img,.remind_num{
+    position: absolute;
+    width: 2vw;
+    font-size: calc(15.5vw * 100 / 1920);
+}
+.remind_num{
+    z-index: 2;
+    color: #fff;
+    text-align: center;
+}
+.scan_more{
+    float: right;
+    color: rgb(120,144,156);
+    font-size: calc(15.5vw * 100 / 1920);
+    margin-right: 2vw;
+}
+.scan_more img{
+    width: .5vw;
+    margin-left: .3vw;
+}
+/*.reminder p{*/
+    /*margin-bottom: 1vw;*/
+/*}*/
+.list{
+    margin: 0 0 .5vw 0;
+    color: #333;
+    background-color: #F3F5F9;
+    width: 34vw;
+    height: calc(48vw * 100 / 1920);
+    line-height: calc(48vw * 100 / 1920);
+    font-size: calc(15.5vw * 100 / 1920);
+}
+.list .mark{
+    float: left;
+    width: .3vw;
+    height: calc(48vw * 100 / 1920);
+    background-color: #00A0E9;
+}
+.list .day{
+    float: right;
+    font-size: calc(15.5vw * 100 / 1920);
+    color: #78909c;
+    margin-right: 1vw;
+}
+/*左布局*/
+.left_box{
+    width: 25vw;
+    height: calc(420vw * 100 / 1920);
+    border-bottom: 1px solid #F0F0F0;
+}
+.photo{
+    text-align: center;
+    margin: 0 -1vw;
+}
+.photo img{
+    border-radius: 50%;
+    width: calc(120vw * 100 / 1920);
+    height: calc(120vw * 100 / 1920);
+    line-height: calc(120vw * 100 / 1920);
+    margin: calc(30vw * 100 / 1920) 0;
+}
+.basic_msg, .eval{
+    height: calc(34vw * 100 / 1920);
+    line-height: calc(34vw * 100 / 1920);
+    font-size: calc(15.5vw * 100 / 1920);
+    margin: 0 calc(60vw * 100 / 1920);
+}
+.basic_msg span,.eval li{
+    font-size: calc(15.5vw * 100 / 1920);
+    color: #78909c;
+    padding-right: calc(15.5vw * 100 / 1920);
+}
+.eval{
+    margin-top: calc(75vw * 100 / 1920);
+}
+.eval .score{
+    color: #00a0e9;
+    font-size: calc(20vw * 100 / 1920);
+    margin-left: calc(15.5vw * 100 / 1920);;
+}
+.indicator{
+    color: #00a0ea;
+    font-size: calc(18vw * 100 / 1920);
+    font-weight: bold;
+    padding: calc(30vw * 100 / 1920) 0;
+    margin: 0 calc(60vw * 100 / 1920);
+}
+.student_tip{
+    display: inline-block;
+    width: 49%;
+}
+/*课程表*/
+.course_nav{
+    padding: 1vw;
+    width: 72vw;
+    height: 1.5vw;
+    position: relative;
+}
+.dims{
+    float: left;
+    border: .1vw solid #00a0ea;
+    border-radius: .4vw;
+    position: absolute;
+    left: 41%;
+}
+.dims li{
+    color: #00a0ea;
+    float: left;
+    width: 5.5vw;
+    height: calc(48vw * 100 / 1920);
+    line-height: calc(48vw * 100 / 1920);
+    font-size: calc(18vw * 100 / 1920);
+    border-right: .1vw solid #00a0ea;
+}
+.active_dims{
+    background-color: #00a0ea !important;
+    color: #fff !important;
+}
+.course_type{
+    float: left;
+    position: absolute;
+    right: 2vw;
+}
+.course_type li{
+    margin-left: .8vw;
+    float: left;
+    font-size: calc(15.5vw * 100 / 1920);;
+}
+.box{
+    float: left;
+    width: .8vw;
+    height: .8vw;
+    border-radius: 4px;
+    margin: .1vw .4vw;
+}
+.blue{
+    background-color: #049DEC;
+}
+.green{
+    background-color: #83EA14;
+}
+.orange{
+    background-color: #F5C525;
+}
+.gray{
+    background-color: #EBEBEB;
+    color: #78909c;
+}
+.now{
+    background: url(../../images/homepage/icon_jin.png) no-repeat;
+    background-size: 1.2vw;
+    background-position: 6vw 1vw;
+}
+.course_detail{
+    width: 70vw;
+    text-align: center;
+    height: 39.5vw;
+    border: 1px solid #ddd;
+    margin: 3vw 1vw 2vw;
+    box-sizing: border-box;
+}
+.course_detail span{
+    display: inline-block;
+    width: 10vw;
+    height: 1vw;
+    line-height: 1vw;
+    font-size: calc(18vw * 100 / 1920);
+    color: #049DEC;
+    margin: 1vw;
+}
+.prev,.next{
+    display: inline-block;
+    background-size: .6vw;
+    width: 1vw;
+    height: 1vw;
+    line-height: 1vw;
+}
+.prev {
+    background: url("../../images/homepage/btn_xiangzuo1.png") 0 0 no-repeat;
+}
+.next {
+    background: url("../../images/homepage/btn_xiangyou1.png") 0 0 no-repeat;
+}
+.show_box{
+    position: relative;
+}
+.show_box .week_title,.show_box .day_title,.show_box .month_title{
+    display: flex;
+    min-width: 69.9vw;
+    background-color: #dae0ea;
+    position: absolute;
+}
+.show_box .week_title li,.show_box .day_title li,.show_box .month_title li{
+    flex: 1;
+    border-left: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    font-size: calc(15.5vw * 100 / 1920);
+    padding: .8vw 0;
+    text-align: center;
+}
+.week_title li{
+    width: calc(68vw / 8);
+    position: relative;
+}
+.month_title li{
+    width: calc(68vw / 7);
+}
+.day_title li{
+    width: calc(68vw / 13);
+    background-color: #fff;
+    border-right: .05vw solid #ddd;
+}
+.day_title{
+    background-color: transparent !important;
+}
+/*每天---课程盒子*/
+.box_day{
+    position: relative;
+    top: 2.7vw;
+    display: flex;
+}
+.box_week{
+    width: 70vw;
+    height: 35vw;
+    padding-top: 3.8vw;
+    display: flex;
+}
+.day_double{
+    float: left;
+    color: #fff;
+    height: 5vw;
+    line-height: 5vw;
+    border: .05vw solid #ddd;
+    width: calc(68vw / 13 *2.03);
+}
+.day_double b{
+    font-size: calc(15.5vw * 100 / 1920);
+    text-align: center;
+}
+.day_single{
+    color: #fff;
+    height: 5vw;
+    border: .05vw solid #ddd;
+    width: calc(68vw / 13 );
+    background-color: #fff;
+}
+.week_time{
+    /*position: absolute;*/
+    font-size: calc(15.5vw * 100 / 1920);
+    /*top: 3.7vw;*/
+    background-color: #fff !important;
+    float: left;
+    display: flex;
+    flex-direction: column;
+    height: 30vw;
+    flex:1;
+    /*-webkit-justify-content:center;*/
+    /*justify-content:center;*/
+    align-items: center;
+}
+.week_time li{
+    flex: 1;
+    color: #78909c;
+    width: calc(68vw / 8);
+    /*height: calc(44vw * 100 / 1920);*/
+    /*line-height: calc(44vw * 100 / 1920);*/
+    border: .05vw solid #ddd;
+}
+.week_detail{
+    float: left;
+    display: flex;
+    flex:1;
+    flex-direction: column;
+    /*position: absolute;*/
+    /*top: 3.7vw;*/
+    left: calc(165vw * 100 /1920);
+    height: 30vw;
+}
+.week_double{
+    width: calc(165vw * 100 /1920);
+    height: calc(45vw * 100/ 1920);
+    line-height: calc(45vw * 100/ 1920);
+    float: left;
+    color: #fff;
+    border: .05vw solid #ddd;
+    font-size: calc(18vw * 100 / 1920);
+}
+.week_single{
+    float: left;
+    color: #fff;
+    /*height: calc(45vw * 100/ 1920);*/
+    border: .05vw solid #ddd;
+    width: calc(165vw * 100 /1920);
+    background-color: #fff;
+}
+/*今日无课程*/
+.course_detail .show_box .empty2{
+    display: inline-block;
+    width: 68vw;
+    height: 33vw;
+    background-color: #F3F5F9;
+    padding: 8vw 15vw;
+}
+.course_detail .show_box .empty2 span{
+    text-align: center;
+    margin: 9vw 0;
+}
+/*学生胜任力*/
+.student_ability{
+    width: 20vw;
+    height: 16vw;
+    margin: 0 1.5vw;
+}

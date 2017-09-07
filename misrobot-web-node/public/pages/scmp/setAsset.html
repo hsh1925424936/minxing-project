@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>资产批量设置</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style type="text/css">
+			.setAsset .oBtn {
+				text-align: center;
+				margin-top: 40px;
+			}
+			
+			.setAsset .oInput {
+				width: 170px;
+			}
+			
+			.setAsset .oLabel {
+				margin-right: 15px;
+				width: 150px;
+				display: inline-block;
+				text-align: right;
+			}
+			
+			.setAsset .oSelect {
+				margin-right: 15px;
+				width: 240px;
+				margin-bottom: 10px;
+				margin-top: 10px;
+			}
+			.setAsset .oSelect:nth-of-type(1){
+				margin-top:20px;
+			}
+			.setAsset .oInput {
+				width: 240px;
+			}
+			
+			.setAsset #oSelect {
+				margin-left: 77px;
+				width: 170px;
+				margin-bottom: 20px;
+				margin-top: 20px;
+				height: 200px;
+				overflow: auto;
+				border: 1px solid #F2F2F2;
+			}
+			
+			.setAsset #oSelect li {
+				margin-bottom: 5px;
+				margin-top: 5px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="setAsset">
+			<label class="oLabel"><span style="color:red;">*</span>楼栋：</label>
+			<el-select class="oSelect" v-model="build">
+				<el-option v-for="item in buildList" :key="item.build" :label="item.build" :value="item.build">
+			</el-select>
+			<br>
+			<label class="oLabel"><span style="color:red;">*</span>楼层：</label>
+			<el-select class="oSelect" v-model="floor">
+				<el-option v-for="item in floorList" :key="item.floor" :label="item.floor" :value="item.floor">
+			</el-select>
+			<br>
+			<label class="oLabel"><span style="color:red;">*</span>房间号：</label>
+			<el-select class="oSelect" v-model="roomNum">
+				<el-option v-for="item in roomNumList" :key="item" :label="item" :value="item">
+				</el-option>
+			</el-select>
+			<br>
+			<label class="oLabel">责任人：</label>
+			<!-- <el-input v-model="person" class="oInput" @focus="focusInput"></el-input>
+			<div v-show="oSelect" id="oSelect">
+				<ul>
+					<li v-for="(item,index) in personList" @click="choosePerson(index)">{{item.label}}</li>
+				</ul>
+			</div> -->
+			<el-select
+				class="oSelect"
+				v-model="person"	
+				filterable
+				remote
+				clearable
+				placeholder="请输入关键词"
+				:remote-method="remoteMethod"
+				:loading="loading">
+				<el-option
+				v-for="item in personList"
+				:key="item.value"
+				:label="item.label"
+				:value="item.value">
+				</el-option>
+			</el-select>
+			<div class="oBtn">
+				<el-button type="primary" @click="save">保存</el-button>
+				<el-button @click="cancel">取消</el-button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '.setAsset',
+			data: {
+				build: '',
+				floor: '',
+				roomNum: '',
+				buildList: [],
+				floorList: [],
+				roomNumList: [],
+				otherid: '',
+				personList: [],
+				teachers:[],
+				list: [],
+				person: '',
+				oSelect: false,
+				loading: false,
+			},
+			mounted() {
+				this.getBuildList();
+				this.getPersonList();
+				//				this.personal();
+				for(var i = 0; i < window.parent.vm.multipleSelection.length; i++) {
+					this.list.push({
+						id: window.parent.vm.multipleSelection[i].id
+					})
+				}
+			},
+			watch: {
+				'build': function(curVal) {
+					this.floor = '';
+					for(var i = 0; i < this.buildList.length; i++) {
+						if(this.buildList[i].build == curVal) {
+							this.floorList = this.buildList[i].floorRooms;
+						}
+					}
+				},
+				'floor': function(cur) {
+					this.roomNum = '';
+					for(var j = 0; j < this.floorList.length; j++) {
+						if(this.floorList[j].floor == cur) {
+							this.roomNumList = this.floorList[j].rommNums;
+						}
+					}
+				},
+				// 'person': function(val) {
+				// 	let self = this;
+				// 	self.personList = [];
+				// 	if(self.oSelect&&val!='') {
+				// 		var data = {
+				// 			command: 'assetsmanage/teacherlistbyname',
+				// 			sessionid: getCookie('sid'),
+				// 			loginid: getCookie('uid'),
+				// 			userName: ''
+				// 		}
+
+				// 		function callback(res) {
+				// 			if(res && res.errcode == 0) {
+				// 				for(var i = 0; i < res.studentlist.length; i++) {
+				// 					self.personList.push({
+				// 						value: res.studentlist[i].studentid,
+				// 						label: res.studentlist[i].allName
+				// 					})
+				// 				}
+				// 				for(var i = 0; i < res.teachers.length; i++) {
+				// 					self.personList.push({
+				// 						value: res.teachers[i].id,
+				// 						label: res.teachers[i].allName
+				// 					})
+				// 				}
+				// 				for(var i = 0; i < res.wxStudent.length; i++) {
+				// 					self.personList.push({
+				// 						value: res.wxStudent[i].wxstid,
+				// 						label: res.wxStudent[i].alllName
+				// 					})
+				// 				}
+				// 				console.log(self.personList)
+				// 			} else {
+				// 				layer.msg(res.errdesc)
+				// 			}
+				// 		}
+				// 		post('/assetsmanage/teacherlistbyname', data, callback, errcodefn, errfn)
+				// 	}
+
+				// }
+			},
+			methods: {
+				remoteMethod(query){
+					if (query !== '') {
+						this.loading = true;
+						setTimeout(() => {
+							this.loading = false;
+							this.personList = this.teachers.filter(item => {
+								return item.label.toLowerCase().indexOf(query.toLowerCase()) > -1;
+							});
+							}, 200);
+						} else {
+							this.personList = [];
+					}
+				},	
+				getPersonList(){
+					let self = this
+					var data = {
+							command: 'assetsmanage/teacherlistbyname',
+							sessionid: getCookie('sid'),
+							loginid: getCookie('uid'),
+							userName: ''
+						}
+						function callback(res) {
+							if(res && res.errcode == 0) {
+								// for(var i = 0; i < res.studentlist.length; i++) {
+								// 	self.personList.push({
+								// 		value: res.studentlist[i].studentid,
+								// 		label: res.studentlist[i].allName
+								// 	})
+								// }
+								for(var i = 0; i < res.teachers.length; i++) {
+									self.teachers.push({
+										value: res.teachers[i].id,
+										label: res.teachers[i].allName
+									})
+								}
+								// for(var i = 0; i < res.wxStudent.length; i++) {
+								// 	self.personList.push({
+								// 		value: res.wxStudent[i].wxstid,
+								// 		label: res.wxStudent[i].alllName
+								// 	})
+								// }
+								console.log(self.personList)
+							} else {
+								layer.msg(res.errdesc)
+							}
+						}
+						post('/assetsmanage/teacherlistbyname', data, callback, errcodefn, errfn)
+				},
+				getBuildList() {
+					var self = this;
+					var data = {
+						command: 'site/getbuildfloor',
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid')
+					}
+
+					function callback(res) {
+						if(res && res.errcode == 0) {
+							self.buildList = res.buildFloorInfo;
+						} else {
+							layer.msg(res.errdesc)
+						}
+					}
+					post('/site/getbuildfloor', data, callback, errcodefn, errfn)
+				},
+				save() {
+					if(this.list.length == 0) {
+						layer.msg('请先选择操作的资产信息')
+						return
+					}
+					if(this.build == '') {
+						layer.msg('楼栋不能为空')
+						return
+					}
+					if(this.floor == '') {
+						layer.msg('楼层不能为空')
+						return
+					}
+					if(this.roomNum == '') {
+						layer.msg('房间号不能为空')
+						return
+					}
+					// if(this.person == '') {
+					// 	layer.msg('责任人不能为空')
+					// 	return
+					// }
+					var data = {
+						command: 'assetsmanage/updateassetlist',
+						loginid: getCookie('uid'),
+						sessionid: getCookie('sid'),
+						build: this.build,
+						floor: this.floor,
+						room_num: this.roomNum,
+						other_id: this.person,
+						ids: this.list
+					}
+
+					function callback(res) {
+						if(res && res.errcode == 0) {
+							layer.msg('设置成功')
+							setTimeout(function() {
+								closeAll();
+								window.parent.vm.getTree();
+								window.parent.vm.getList('', '', '', '', '');
+								window.parent.vm.multipleSelection=[];
+							}, 300)
+						} else {
+							layer.msg(res.errdesc)
+						}
+					}
+					post('/assetsmanage/updateassetlist', data, callback, errcodefn, errfn)
+				},
+				cancel() {
+					closeAll()
+				},
+				choosePerson(index) {
+					this.person = this.personList[index].label;
+					this.otherid = this.personList[index].value;
+					this.oSelect = false;
+				},
+				focusInput(){
+					this.oSelect = true;
+				}
+			}
+		})
+	</script>
+
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/iteach/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>老师个人中心</title>
+		<style type="text/css">
+			.outer{
+				background: #F0EFF5;
+			}
+			
+			.topOuter{
+				height:90px; 
+			}
+
+			.headImg{
+				width:50px; height:50px; display:block;
+				float:left; border-radius:40px; margin-top:20px; margin-left:15px;
+			}
+			.teacherOuter{
+				width:200px; height:40px; float:left;
+				margin-top:20px; margin-left:12px; color:white; text-align:left;
+			}
+			.teacherName{
+				width:95px; height:25px; margin-left:0;
+				line-height:25px; font-size:15px;
+			}
+			.zhishuOuter{
+				width:280px; height:16px; font-size:12px;
+			}
+			.zhishuOuter>span{
+				width:55px; height:100%; display:block; float:left;
+			}
+			.starOuter{
+				width:170px; height:100%; float:left; text-align: left;
+			}
+			.starOuter>span{
+				display:block; float:left; width:16px; height:16px;
+				margin-left:10px; background-size:100% 100%; background-repeat:no-repeat;
+			}
+			.starOn{
+				background-image:url('../../images/iteach/star1.png');
+			}
+			.star{
+				background-image:url('../../images/iteach/star2.png');
+			}
+
+			.inpOuter{
+				width:100%; margin-top:8px; margin-bottom:170px;
+			}
+			.inpCon{
+				width:100%; height:40px; border-bottom:1px solid #F8F8F8; font-size:15px;
+				background-color:white;
+			}
+			.inpImg{
+				width:16px; height:18px; float:left;
+				display:block; margin-top:10px; margin-left:14px;
+			}
+			.inp,.inp:hover{
+				width:100%; height:40px; line-height: 40px; text-indent: 1em; float:left; padding-left:30px;
+				padding-right:28px; margin-left:-30px; color:rgb(127,127,127);
+			}
+			
+			.tri{
+				width:28px; height:40px; float:left;
+				margin-left:-28px; color:#ccc;
+				text-align:center; line-height:40px; background-image:url('../../images/iteach/goon.png');
+				background-size:16px 16px; background-repeat:no-repeat; background-position:50%;
+			}
+			.exit{
+				display:block; width:178px; height:36px;
+				color:white; background-color:#0495CA;
+				font-size:15px; border-radius:3px; margin:0 auto;
+			}
+
+		</style>
+		<script>
+			window.onload = function () {
+				'use strict';
+				webcommon();	
+				$('.teacherName').html(codetostr(getCookie('gy_n')));
+				$('.headImg').attr('src',getCookie('gy_a')!='null'?getCookie('gy_a'):'../../images/iteach/feifei.png');
+				
+				$('.exit').click(function () {
+					uselayer(2,'确定要退出吗?',function () {
+						removeCookie('gy_t');
+						window.location.href="login.html";
+					});
+				});
+				
+				$('.teacherOuter').click(function () {
+					window.location.href ="start.html";
+				});
+				
+				Api.teaCompetence({
+					isShade:1,
+					fn:function (json) {
+						console.log(json);
+						$('.starOuter').html(parseInt(json.score));
+					}
+				});
+				
+				
+				
+				
+				
+			};
+		</script>
+	</head>
+	<body>
+		
+		<div class="box clearfix">
+			<div class="outer clearfix">
+				<div class="topOuter">
+					<img class='headImg' />
+					<div class="teacherOuter clearfix">
+						<div class="teacherName"></div>
+						<div class="zhishuOuter clearfix">
+							<span>教学指数</span>
+							<div class="starOuter"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="inpOuter clearfix">
+					<div class="inpCon">
+						<img src="../../images/iteach/head.png" class="inpImg" />
+						<a href="teacher-p-info.html" class="inp">个人资料</a>
+						<div class="tri">
+							
+						</div>
+					</div>
+
+					<div class="inpCon">
+						<img src="../../images/iteach/suo.png" class="inpImg" />
+						<a href="change-pwd.html" class="inp">修改密码</a>
+						<div class="tri">
+							
+						</div>
+					</div>
+
+				</div>
+
+				<button class="exit" type="button">退出登录</button>
+
+				<div class="bottomOuter">
+					<a href="schedule.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/kebiao.png"/>
+						<span>课表</span>
+					</a>
+
+					<a href="report.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/baogao.png"/>
+						<span>报告</span>
+					</a>
+
+					<a href="message-list.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/message.png"/>
+						<span>通知</span>
+					</a>
+
+					<a href="person-center.html" class="bottomItem clearfix">
+						<img src="../../images/iteach/head3.png"/>
+						<span class="bottomItemOn">我</span>
+					</a>
+				</div>
+
+			</div>
+
+		</div>
+
+	</body>
+	
+</html>

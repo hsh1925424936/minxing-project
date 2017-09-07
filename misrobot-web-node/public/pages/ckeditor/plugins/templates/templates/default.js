@@ -1,0 +1,12 @@
+﻿/*
+ Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ For licensing, see LICENSE.md or http://ckeditor.com/license
+*/
+CKEDITOR.addTemplates("default",{imagesPath:CKEDITOR.getUrl(CKEDITOR.plugins.getPath("templates")+"templates/images/"),templates:[{title:"图片左边",image:"template1.gif",description:"平静的湖面只有呆板的倒映，奔腾的激流才有美丽的浪花！幸福不是靠别人来布施，而是要自我去赢取!生命的好处在不断挑战自我,战胜自我!",html:'\x3ch3\x3e\x3cimg src\x3d" " alt\x3d"" style\x3d"margin-right: 10px" height\x3d"100" width\x3d"100" align\x3d"left" /\x3e经典的模板\x3c/h3\x3e\x3cp\x3e平静的湖面只有呆板的倒映，奔腾的激流才有美丽的浪花！幸福不是靠别人来布施，而是要自我去赢取!生命的好处在不断挑战自我,战胜自我!\x3c/p\x3e'},
+
+{title:"图片右边",image:"template4.gif",description:"平静的湖面只有呆板的倒映，奔腾的激流才有美丽的浪花！幸福不是靠别人来布施，而是要自我去赢取!生命的好处在不断挑战自我,战胜自我!",html:'\x3ch3\x3e\x3cimg src\x3d" " alt\x3d"" style\x3d"margin-right: 10px" height\x3d"100" width\x3d"100" align\x3d"right" /\x3e漂亮的模板\x3c/h3\x3e\x3cp\x3e平静的湖面只有呆板的倒映，奔腾的激流才有美丽的浪花！幸福不是靠别人来布施，而是要自我去赢取!生命的好处在不断挑战自我,战胜自我!\x3c/p\x3e'},
+
+
+{title:"Strange Template",image:"template2.gif",description:"A template that defines two columns, each one with a title, and some text.",
+html:'\x3ctable cellspacing\x3d"0" cellpadding\x3d"0" style\x3d"width:100%" border\x3d"0"\x3e\x3ctr\x3e\x3ctd style\x3d"width:50%"\x3e\x3ch3\x3eTitle 1\x3c/h3\x3e\x3c/td\x3e\x3ctd\x3e\x3c/td\x3e\x3ctd style\x3d"width:50%"\x3e\x3ch3\x3eTitle 2\x3c/h3\x3e\x3c/td\x3e\x3c/tr\x3e\x3ctr\x3e\x3ctd\x3eText 1\x3c/td\x3e\x3ctd\x3e\x3c/td\x3e\x3ctd\x3eText 2\x3c/td\x3e\x3c/tr\x3e\x3c/table\x3e\x3cp\x3eMore text goes here.\x3c/p\x3e'},{title:"Text and Table",image:"template3.gif",description:"A title with some text and a table.",
+html:'\x3cdiv style\x3d"width: 80%"\x3e\x3ch3\x3eTitle goes here\x3c/h3\x3e\x3ctable style\x3d"width:150px;float: right" cellspacing\x3d"0" cellpadding\x3d"0" border\x3d"1"\x3e\x3ccaption style\x3d"border:solid 1px black"\x3e\x3cstrong\x3eTable title\x3c/strong\x3e\x3c/caption\x3e\x3ctr\x3e\x3ctd\x3e\x26nbsp;\x3c/td\x3e\x3ctd\x3e\x26nbsp;\x3c/td\x3e\x3ctd\x3e\x26nbsp;\x3c/td\x3e\x3c/tr\x3e\x3ctr\x3e\x3ctd\x3e\x26nbsp;\x3c/td\x3e\x3ctd\x3e\x26nbsp;\x3c/td\x3e\x3ctd\x3e\x26nbsp;\x3c/td\x3e\x3c/tr\x3e\x3ctr\x3e\x3ctd\x3e\x26nbsp;\x3c/td\x3e\x3ctd\x3e\x26nbsp;\x3c/td\x3e\x3ctd\x3e\x26nbsp;\x3c/td\x3e\x3c/tr\x3e\x3c/table\x3e\x3cp\x3eType the text here\x3c/p\x3e\x3c/div\x3e'}]});

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+
+		 <!-- 先引入 Vue -->
+		  <script src="../../js/vue.js"></script>
+		  <!-- 引入组件库 -->
+		  <script src="../../js/element.js"></script>
+		<meta charset="UTF-8">
+		<title>播放視頻</title>
+		
+		<style type="text/css">
+			.rightOuter{
+				position:relative; min-height:750px;
+				width:100%;
+			}
+
+			.loginOuter{
+				width:400px; margin-top:40px; margin-left:45px;
+			}
+			.loginTitle{
+				width:100%; height:30px; font-size:20px; line-height:30px;
+				font-weight:bold; margin-bottom:70px;
+			}
+
+			.selectOuter{
+				padding-bottom:19px; border-bottom:1px solid #CCCCCC;
+				margin-top:45px; line-height:34px;
+			}
+			.selectTxt{
+				font-size:16px; font-weight:bold;
+			}
+			.subscribe-train{
+				width:130px; float:right; border-radius:3px; font-size:14px;
+				background-color:#169BD5; color:white; text-align:center;
+			}
+
+			.module{
+				width:100%; height:55px; line-height:55px; display:block;
+				text-align:center;
+			}
+			.moduleOn{
+				background-color:#ccc;
+			}
+			.subscribeOuter{
+				width:100%; border-bottom:1px solid #CCCCCC;
+			}
+			.subscribeOuter .row{
+				height:30px;
+			}
+			.subscribelistTit{
+				font-size:14px; font-weight:bold;
+			}
+			.subscribelistTime{
+				font-size:10px; color:#B9C4CA;
+			}
+			.blue{
+				color:#6699FF; padding-right:40px;
+			}
+			.clear{
+				width:88px; height:28px; color:white; cursor: pointer;
+				border-radius:15px; background-color:#B7C4CD;
+				float:right; line-height:28px; text-align:center;
+			}
+			.row1{
+				margin-bottom:30px; margin-top:20px;
+			}
+			.row2{
+				font-size:14px; color:rgb(102,102,102);
+				margin-bottom:10px;
+			}
+
+			.fenyeCon{
+				width:700px; margin:auto; position:absolute;
+				left:120px; bottom:-10px;
+			}
+			.to-my-exam{
+				color:#0497cb;
+				cursor:pointer;
+			}
+			.exam-info{
+				font-size:16px;
+				height:80px;
+				width:100%;
+				padding:10px;
+				line-height: 30px;
+				border:1px solid  #cccccc;
+				margin-top:20px;
+			}
+			.upload-form{
+				position: relative;
+				font-size:16px;
+				height:280px;
+				width:100%;
+				padding:10px;
+				line-height: 30px;
+				border:1px solid  #cccccc;
+				margin-top:20px;
+			}
+			input[type=file]{
+				display: none !important;
+			}
+			.upload-form-btn{
+				position: absolute;
+				bottom:10px;
+
+			}
+			.rating-table{
+				margin-top:20px;
+				border:1px solid #cccccc;
+			}
+			.rating-info-top{
+				display: flex;
+				justify-content: space-between;
+				border-bottom:1px solid #cccccc;
+				padding: 10px;
+				align-items: center;
+			}
+			.rating-info-detail{
+				min-height: 300px
+			}
+			.question-item{
+				margin:10px 0;
+				padding:0 10px;
+			}
+			.question-item-title{
+				font-size: 18px;
+				font-weight: bold;
+
+			}
+			.question-item-detail{
+				display: inline-block;
+				width:80%;
+				margin:5px 0;
+			}
+			.question-item-grade{
+				display: inline-block;
+
+				float:right;
+			}
+		</style>
+		<script>
+			//$('.bootstrap').remove();
+		</script>
+	</head>
+	<body>
+	<div id = "app">
+		
+				<div class = "show-video" style="margin:20px 0 10px">
+					<video
+						style="width:100%; height:100%;"
+					    id="my-player"
+					    class="video-js"
+					    controls
+					    preload="auto"
+					    poster=""
+					    data-setup='{}'>
+					  <source :src="videoUri" type="video/mp4"></source>
+
+					  <p class="vjs-no-js">
+					    To view this video please enable JavaScript, and consider upgrading to a
+					    web browser that
+					    <a href="http://videojs.com/html5-video-support/" target="_blank">
+					      supports HTML5 video
+					    </a>
+					  </p>
+					</video>
+				</div>
+				
+	</div>
+	</body>
+	
+	<script type="text/javascript">
+		new Vue({
+	      el: '#app',
+	      data: function() {
+	        return { 
+
+	        	videoUri:'',
+
+	        }
+	      },
+	      mounted(){
+	      	this.videoUri = GetQueryString('path');
+
+	      },
+	      methods:{
+
+	      }
+    	})
+			
+
+
+		
+
+	</script>
+</html>

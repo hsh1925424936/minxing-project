@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>实习计划添加表</title>
+		<link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css" />
+		<script src="../../js/jquery-1.11.3.js"></script>
+	    <script src="../../layer/xie/layer1.js"></script>
+	    <script src="../../js/scmp/common.js"></script>
+	    <script src="../../js/laydate-v1.1/laydate/laydate.js"></script>
+	    <script src="../../js/vue.js"></script>
+	    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+	    <link rel="stylesheet" href="../../css/assistant/style.css">
+	    <link rel="stylesheet" href="../../css/scmp/scmpcommon.css">
+	    <link rel="stylesheet" href="../../css/scmp/newskill.css">
+	    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-default/index.css">
+	</head>
+	<style>
+	.praticeTop{
+		height: 40px;
+		border-bottom: 1px solid;
+		background-color: silver;
+	}
+	.praticeTop{
+		height: 40px;
+		border-bottom: 1px solid;
+		background-color: silver;
+	}
+	.praticeTop>p:nth-child(1){
+		position: absolute;
+		left: 10px;
+		top: 10px;
+	}
+	.praticeTop>p:nth-child(2){
+		height: 50px;
+		line-height: 50px;
+		position: absolute;
+		right: 10px;
+		font-size: 20px;
+		cursor: pointer;
+	}
+	.praticedetail{
+		width: 454px;
+	}
+	.pra_name{
+		margin-left: 52px;
+		margin-top: 32px;
+	}
+	.pra_time{
+		margin-left: 52px;
+		margin-top: 10px;
+	}
+	.pra_remarks{
+		margin-left: 52px;
+		margin-top: 10px;
+		text-align: center;
+	}
+	.remarks_text{
+		margin-left: 27px;
+		width: 320px;
+		height: 100px;
+		max-height: 100px;
+		max-width: 320px;
+	}
+	.pra_skill{
+		margin-left: 54px;
+		margin-top: 10px;
+	}
+	#shadow{
+		position:fixed;
+		top:0;
+		left:0;
+		width:100%;
+		height:100%;
+		background-color:rgba(0,0,0,0.3)
+	}
+	.bt_add{
+		margin-left: 160px;
+	}
+	</style>
+	<body>
+		<div id="add_pratice" v-cloak>
+			<div class="praticedetail">
+				<div class="pra_name">
+					<span class="name">计划名称 ：</span>
+					<input v-model='name' type="text" class="planname" size="41" />
+				</div>
+				<div class="pra_time">
+					<!--<span class="starttime">开始时间 ：</span>-->
+						<template>
+						  <div class="block">
+						    <span class="demonstration">开始时间：</span>
+						    <el-date-picker
+						      v-model="starttime"
+						      type="date"
+						      placeholder="选择日期"
+							  @change="dateChange"
+						      :picker-options="pickerOptions0">
+						    </el-date-picker>
+						  </div>
+						</template>
+						<template>
+						  <div class="block">
+						    <span class="demonstration2">结束时间：</span>
+						    <el-date-picker
+						      v-model="endtime"
+						      type="date"
+						      placeholder="选择日期"
+							  @change="dateChange1"
+						      :picker-options="pickerOptions1">
+						    </el-date-picker>
+						  </div>
+						</template>
+					<!--<span class="endtime">结束时间 ：</span>
+					<input v-model='endtime' type="text" class="planend" size="13"/>-->
+				</div>
+				<div class="pra_remarks">
+					<span class="remarks">备注 ：</span>
+					<textarea class="remarks_text" v-model='plancomment'></textarea>
+				</div>
+				<div class="pra_skill">
+                            <p class="inputTitle" style="height:33px;line-height: 33px;">
+                                技能：
+                            </p>
+                            <table id="skillMsg" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>序号</th>
+                                        <th>技能名称</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                	<tr v-for='(value,index) in finallychoosed'>
+                                		<td>{{ index+1 }}</td>
+                                		<td>{{ value.name }}</td>
+                                		<td @click='deleteonelearn(index)'>删除</td>
+                                	</tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr >
+                                        <td></td>
+                                        <td></td>
+                                        <td id="moreSkill" @click="skill()"><span class="glyphicon glyphicon-plus-sign"></span> 增加</td>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+             	<div style="clear:both;overflow:hidden;padding:25px 30px 0 0" class="bt_add">
+           			<button type="button" class="btn btn-primary" @click="save()">保存</button>
+					<button type="button" class="btn btn-primary" @click="geclose()">关闭</button>
+            	</div>
+			</div>
+			<div id='shadow' v-show='isshadow'>
+				<div id="addTeacher">
+			        <div class="choice">
+			            <header>
+			                <p>
+			                    <span>选择训练项</span>
+			                    <span class="choose-right" @click="closeArt()">X</span>
+			                </p>
+			            </header>
+			            <section>
+			                <div class="left-part search-btn">
+			                    <div>
+			                        <el-input placeholder="请输入技能项">
+			                            <el-button slot="append" icon="search"></el-button>
+			                        </el-input>
+			                    </div>
+			                    <ul class="list">
+			                        <el-checkbox-group v-model='leftchoosed'>
+			                            <li v-for='(value,index) in learnlist'>
+			                                <el-checkbox :label="value">
+			                                   {{value.name}}
+			                                </el-checkbox>
+			                            </li>
+			                        </el-checkbox-group>
+			                    </ul>
+			                </div>
+			                <div class="btnB">
+			                    <el-button @click='add()'><i class="el-icon-d-arrow-right"></i></el-button>
+			                    <br>
+			                    <el-button @click='remove()'><i class="el-icon-d-arrow-left"></i></el-button>
+			                </div>
+			                <div class="right-part">
+			                    <p>已选技能项：</p>
+			                    <ul class="list">
+			                        <el-checkbox-group v-model='deletelist'>
+			                            <li v-for='(value,index) in rightlist'>
+			                                <el-checkbox :label='value'>
+			                                    {{value.name}}
+			                                </el-checkbox>
+			                            </li>
+			                        </el-checkbox-group>
+			                    </ul>
+			                </div>
+			                <div class="btnC">
+			                    <button  @click="saveArt()" class='btn btn-primary'>保存</button>
+			                    <button  @click="closeArt()" class='btn btn-default'>取消</button>
+			                </div>
+			            </section>
+			        </div>
+			    </div>
+			</div>
+		</div>
+<script>
+	var vm=new Vue({
+		el:'#add_pratice',
+		data:{
+			isshadow:false,
+			learnlist:[],
+			leftchoosed:[],
+			rightlist:[],
+			deletelist:[],
+			finallychoosed:[],
+			name:'',
+			starttime:'',
+			endtime:'',
+			plancomment:'',
+			pickerOptions0: {},
+			pickerOptions1: {},
+		},
+		methods:{
+			dateChange(val) {
+				this.starttime=val;
+			},
+			dateChange1(val) {
+				this.endtime=val;
+			},
+			skill:function(){
+				var self=this
+				self.isshadow=true
+				var data={
+					command:'learn/querylearninfo',
+					sessionid:getCookie('sid'),
+					loginid:getCookie('uid'),
+					type:3
+				}
+				function callback(res){
+					self.learnlist=res.learnids
+				}
+				post('/learn/querylearninfo',data,callback,errcodefn,errfn)
+			},
+			closeArt:function(){
+				
+				this.isshadow=false
+			},
+			saveArt:function(){
+				for(var i=0;i<this.finallychoosed.length;i++){
+					for(var j=0;j<this.rightlist.length;j++){
+						if(this.finallychoosed[i].learnid==this.rightlist[j].learnid){
+							layer.msg('请勿重复添加哦')
+							return
+						}
+					}
+				}
+				this.finallychoosed=this.rightlist.concat(this.finallychoosed)
+				this.rightlist=[]
+				this.isshadow=false
+			},
+			add:function(){
+				for(var i=0;i<this.rightlist.length;i++){
+					for(var j=0;j<this.leftchoosed.length;j++){
+						if(this.rightlist[i]==this.leftchoosed[j]){
+							layer.msg('请勿重复添加哦')
+							return
+						}
+					}
+				}
+				this.rightlist=this.leftchoosed.concat(this.rightlist)
+				this.leftchoosed=[]
+			},
+			remove:function(){
+				var self=this
+				for(var i=0;i<self.rightlist.length;i++){
+					for(var j=0;j<self.deletelist.length;j++){
+						if(self.rightlist[i]==self.deletelist[j]){
+							self.rightlist.splice(i,1)
+						}else{
+							continue
+						}
+					}
+				}
+				
+				self.deletelist=[]
+			},
+			deleteonelearn:function(index){
+				this.finallychoosed.splice(index,1)
+			},
+			geclose:function(){
+				var index = parent.layer.getFrameIndex(window.name);
+				parent.layer.close(index)
+			},
+			save:function(){
+				if($(".planname").val().length==0){
+	    		layer.msg('请输入计划名称');
+	    		return
+	    		};
+//	    		if($(".planstart").val().length==0){
+//	    		layer.msg('请输入开始时间');
+//	    		return
+//	    		};
+//	    		if($(".planend").val().length==0){
+//	    		layer.msg('请输入结束时间');
+//	    		return
+//	    		};
+	    		if($(".remarks_text").val().length==0){
+	    		layer.msg('请输入备注');
+	    		return
+	    		};
+				var self=this
+				var data={
+					command:'plan/addplan',
+					sessionid:getCookie('sid'),
+					loginid:getCookie('uid'),
+					planname:self.name,
+					plancomment:self.plancomment,
+					starttime:self.starttime,
+					endtime:self.endtime,
+					learnitems:[]
+				}
+				for(var i=0;i<self.finallychoosed.length;i++){
+					data.learnitems.push({
+						learnid:self.finallychoosed[i].learnid,
+						name:self.finallychoosed[i].name
+					})
+				}
+				console.log(JSON.stringify(data))
+				function callback(res){
+					layer.msg('成功新建一条实习计划');
+					setTimeout(function(){
+						layer.closeAll()
+						window.parent.location.reload()
+					},1000)
+				}
+				post('/plan/addplan',data,callback,errcodefn,errfn)
+			}
+		}
+	})
+</script>
+	</body>
+</html>

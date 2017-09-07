@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>预约训练</title>
+		<style type="text/css">
+
+			.step{
+				padding-bottom:80px; display:none;
+			}
+			.step1{
+				display:block;
+			}
+			
+			.subscribeTxt1{
+				font-size:17px; font-weight:bold; text-align:center;
+				line-height:20px; padding-top:60px; padding-bottom:60px;
+			}
+			.subscribeTxt2{
+				font-size:17px; text-align:center;
+				line-height:20px;
+			}
+			.subscribeTxt3{
+				font-size:15px; text-align:center;color:#77787A;
+				line-height:20px; padding-top:26px; padding-bottom:50px;
+			}
+			.subscribeTxt3 span{
+				display:block; float:left; margin-left:30px;
+			}
+			.subscribeTxt3 span:nth-child(1){
+				margin-left:300px;
+			}
+			.subscribeTxt3 span:nth-child(3){
+				color:#0497CA; text-decoration:underline; cursor:pointer;
+			}
+			.formOuter{
+				width:340px; height:42px; margin:0 auto;
+			}
+			.formOuter2{
+				width:500px; height:42px; margin:0 auto; margin-bottom:30px;
+				line-height:34px;
+			}
+			.formOuter2 span{
+				float:left; display:block; margin-right:50px;
+			}
+			.formOuter2 select{
+				float:left; width:340px;
+			}
+			.subscribeTxt4{
+				font-size:15px; text-align:center;color:#77787A;
+				line-height:20px; padding-top:26px; padding-bottom:50px;
+			}
+			.nextBtn,.nextBtn:hover{
+				width:220px; height:42px; line-height:42px;
+				text-align:center; color:white; font-size:14px;
+				border-radius:30px; background-color:#0497CA;
+				display:block; margin:0 auto;
+			}
+
+			.step input,.step select{
+				border-radius:34px;
+			}
+
+			.friendInp{
+				text-align:center; border-radius: 34px;
+			}
+			.friendSelect{
+				position:absolute; z-index:2;
+			}
+
+			.subscribeBtnCon{
+
+			}
+			.subscribeBtn{
+				display:block; width:162px; height:42px;
+				font-size:14px; float:left;
+				background-color:white; line-height:40px;
+				text-align:center; border-radius:30px;
+				margin-top:40px; border:1px solid #999999;
+			}
+			.subscribeCancel{
+				margin-left:370px;
+			}
+			.subscribeDetail{
+				margin-left:44px;
+			}
+
+			.tipOuter{
+				border-top:1px solid #ABACAE;
+				color:#6E6F71; font-size:14px; line-height:35px;
+				padding-top:20px; margin-top:70px; margin-bottom:70px;
+			}
+			.tipOuter span{
+				font-weight:bold;
+			}
+
+			.friendOuter{
+				margin: 40px auto;
+			}
+			.friendCon{
+				width:200px; float:left; padding:18px;margin-left: -28px; border:2px solid #F6F6F6;
+			}
+			.friendConOn{
+				border-color:#0497CB;
+			}
+			.friendCon img{
+				width:55px; height:55px;
+				display:block; margin:0 auto;
+				border-radius:30px;
+			}
+			.friendInfo{
+				padding-top:10px;
+				text-align:center; font-size:14px; color:#6E6F71;
+				line-height:30px; width:100%;
+			}
+			.friendFormOuter{
+				position:relative;
+			}
+			.searchImg{
+				position:absolute; right:10px; display:block;
+				top:7px; width:22px; height:22px; z-index:5;
+			}
+			
+			.timeTable{
+				width:800px; background-color:white; display: none;
+				padding-top:22px; padding-bottom:30px;
+				padding-left:75px; padding-right:75px; font-size:14px;
+				margin:0 auto;position: absolute;left: 50%;top: 0;z-index: 10;margin-left: -400px;				
+			}
+			.YM{
+				width:100%; text-align:center; margin-bottom:15px;
+				margin-top:20px;
+			}
+			.dayOuter{
+				width:100%; border-bottom:1px solid #E1E1E1;
+				padding-bottom:10px;
+			}
+			.dayCon{
+				width:30px; height:30px; text-align:center;
+				float:left; line-height:30px;
+				border-radius:20px; margin-left:30px;
+				margin-right:30px;
+			}
+			.dayOn{
+				border:1px solid #0497CB; color:#0497CB;
+			}
+			.dateBtn{
+				width:220px; height:42px; line-height:42px;
+				text-align:center; color:white; border-radius:30px;
+				background-color:#0497CA; display:block;
+				margin:0 auto; margin-top:20px;
+			}
+			.timeCon{
+				border:1px solid #CCCCCC;
+			}
+			.timeConOn{
+				background-color:#0497CA; color:white;
+			}
+			.timeConNo{
+				background-color:#F3F7F8; color:#CFD1D0;
+			}
+			.timeOuter { min-height: 245px;}
+			.timeOuter li,.timeOuter h4{
+				width:126px; height:30px; margin-top:12px; float: left;
+				margin-left:44px; margin-right:44px;
+				margin-bottom:12px; border-radius:20px;
+				float:left; text-align:center; line-height:30px;
+			}
+			.timeTableTit{
+				font-size:18px; line-height:26px; text-align:center;
+				height:26px; font-weight:bold; position:relative;
+			}
+			.timeTableTit img{
+				width:25px; height:25px;
+				position:absolute; right:-30px;
+			}
+			.time-part { float: left; width: 214px;}
+			
+		</style>
+		<script>
+			//$('.bootstrap').remove();
+		</script>
+	</head>
+	<body>
+	
+		<div class="top1Con">
+			<div class="top1Outer clearfix">
+				<a href="index.html" class="top1Tit">临床技能中心</a>
+				<div class="top1Tit-right">
+					<img src="../../images/ostp/bell.png" class="bell" />
+					<img src="../../images/ostp/redCircle.png" class="redCircle" />
+					<img src="../../images/ostp/feifei.png" class="headImg" />
+					<div class="nameAndYear clearfix">
+						<div class="nameAndYearInner clearfix">
+							<div class="userName"></div>
+							<div class="year"></div>
+							<span class="arrow"></span>
+						</div>
+						<ul class="selectUl"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="top2Outer">
+			<div class="top2Con clearfix">
+				<a href="index.html" class="top2Con-index">
+					<img src="../../images/ostp/logo.png" class="logoPng" />
+					<div class="top2Tit">在线自主技能训练平台</div>					
+				</a>
+				<div class="navigateOuter clearfix">
+					<a href="index.html" class="navigate">
+						首页
+					</a>
+					<a href="my-work.html" class="navigate">
+						我的作业
+					</a>
+					<a href="self-train.html" class="navigate">
+						自主训练
+					</a>
+					<a href="online-study.html" class="navigate">
+						自主学习
+					</a>
+					<div class="navigate">
+						成长中心
+						<ul>
+							<li><a href="grow-center.html">学习指数</a></li>
+							<li><a href="train-record.html">训练记录</a></li>
+						</ul>
+					</div>					
+					<a href="subscribe-train.html" class="navigate navigateOn">
+						预约训练
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="mainOuter">
+			<!-- <div class="step step0">
+				<div class="subscribeTxt1">
+					你当前没可预约的技能：（
+				</div>
+				<div class="subscribeTxt2">
+					继续训练吧
+				</div>
+				<div class="subscribeTxt3" style="line-height:36px;">
+					<p style="color: rgb(4,151,203);">满足自主训练0次，最高分达到0分</p>
+					<span>即可预约训练，加油！</span>
+				</div>
+				
+				<a href="self-train.html" class="nextBtn ">我要修炼</a>
+							
+			</div> -->
+
+			<!-- 选择训练类型和训练项目 -->
+			<div class="step step1">
+				<div class="subscribeTxt1">
+					我要预约训练
+				</div>
+				<div class="formOuter2">
+					<span>训练类型:</span>
+					<select class="form-control trainMode">
+						<option value="2">智能模式(独自享受)</option>
+						<option value="0">在线训练(独自享受)</option>
+						<option value="1">模型人(需要1个小伙伴哦)</option>
+					</select>
+				</div>
+				<div class="formOuter2">
+					<span>训练项目:</span>
+					<select class="form-control applylist"></select>
+				</div>
+				<button class="nextBtn nextBtn1">
+					下一步
+				</button>
+			</div>
+
+			<!-- 选择训练位 -->
+			<div class="step step2">
+				<div class="subscribeTxt1">
+					选择训练位
+				</div>
+				<div class="subscribeTxt2">
+					
+				</div>
+				<div class="subscribeTxt3">
+					<span>训练位:</span>
+					<span>暂无训练位</span>
+					<span class="changeSeat">更改</span>
+				</div>
+				
+				<div class="subscribeTxt4">
+					
+				</div>
+				<button class="nextBtn nextBtn2">
+					下一步
+				</button>
+			</div>
+
+
+			<div class="step step3">
+				<div class="subscribeTxt1">
+					我要预约训练
+				</div>
+				<div class="subscribeTxt2">
+					你想要那一天训练？
+				</div>
+				<div class="subscribeTxt3">
+					查看开发训练日历表，选择时间：）
+				</div>
+				<div class="formOuter friendFormOuter">
+					<span class="form-control friendInp sel-date" >请选择时间</span>
+					<img src="../../images/ostp/person-center-7.png" class="searchImg"/>
+				</div>
+				<div class="subscribeTxt4"></div>
+				<button class="nextBtn nextBtn3">
+					下一步
+				</button>
+			</div>
+
+			<div class="timeTable">
+				<div class="timeTableTit">
+					选择训练时间段
+					<img src="../../images/ostp/search.png" class="timeTable-close" />
+				</div>
+				<div class="YM">
+				</div>
+				<div class="dayOuter clearfix">
+					<div class="week-list clearfix"></div>
+					<div class="date-list clearfix">
+					</div>
+				</div>
+				<div class="timeOuter clearfix">
+					<div class="time-part clearfix">
+						<h4>上午</h4>
+						<ul class="clearfix">
+						</ul>
+					</div>
+					<div class="time-part clearfix">
+						<h4>下午</h4>
+						<ul class="clearfix">
+						</ul>
+					</div>
+					<div class="time-part clearfix">
+						<h4>晚上</h4>
+						<ul class="clearfix">
+						</ul>
+					</div>
+					
+				</div>
+				<button class="dateBtn">确定</button>
+			</div>
+
+			<!-- 添加组员 -->
+			<div class="step step4">
+				<div class="subscribeTxt1">
+					选择伙伴
+				</div>
+				
+				<div class="formOuter friendFormOuter" style="position:relative;">
+					<input class="form-control friendInp" placeholder="输入伙伴姓名/学号快速选择" />
+					<img src="../../images/ostp/search.png" class="searchImg"/>
+				</div>
+				<div class="friendOuter clearfix">
+					<p class="no-data">请选择小伙伴</p>
+
+				</div>
+				<button class="nextBtn nextBtn4">
+					确认预约
+				</button>
+			</div>
+
+			<!-- 预约成功 -->
+			<div class="step step5">
+				<div class="subscribeTxt1">
+					我要预约训练
+				</div>
+				<div class="subscribeTxt2">
+					预约成功：）
+				</div>
+				<div class="subscribeTxt3" style="line-height:36px; text-align:left; padding-left:320px;">
+
+				</div>
+				
+				<div class="subscribeBtnCon clearfix">
+					<button class="subscribeBtn subscribeCancel">
+						取消预约
+					</button>
+					<a href="my-subscribe.html" class="subscribeBtn subscribeDetail">
+						查看预约
+					</a>
+				</div>
+
+				<div class="tipOuter">
+					<span>温馨提醒:</span>
+					<br/>
+					1.请提前15分钟前到领取器械<br/>
+					2.可提前4小时取消预约<br/>
+					3.赔偿条约:若器械忘归还，将被拉入黑名单，无权预约训练。超过3个月将扣除同等金额赔偿。<br/>
+				</div>
+			</div>
+
+		</div>
+
+	</body>
+	
+	<script src="../../js/ostp/subscribe-train.js"></script>
+
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>任务</title>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/futuredoctorapp/common.js"></script>
+    <script src="../../js/futuredoctorapp/vueGg.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../css/futuredoctorapp/common.css">
+    <link rel="stylesheet" href="../../css/futuredoctorapp/vueComponent.css">
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <style>
+      .container{ padding-left:0px;padding-right:0px;background-color:#F2F2F2;}
+        .tp{
+      	position:relative;
+    	top:-1px;
+    	height:18px;
+      }
+      #fabu{
+    	position:absolute;
+    	right:20px;
+    	top:0px;
+		font-weight: normal;
+		}
+      .ggqf{
+      	height: 52px;
+      	width: 100%;
+      	position:fixed;
+      	top:50px;
+      	left:0;
+		  z-index:99;
+      	background: #FFFFFF;
+		overflow:hidden;
+		border-bottom:1px solid #F2F2F2;
+      }
+      .weidu{
+      	position: relative;
+      	width: 34%;
+      	text-align: center;
+      	display:block;
+      	margin:0 auto;
+      	/*padding-top: 11px;*/
+      	height: 100%;
+		line-height: 52px;
+		border-bottom:2px solid transparent;
+		font-size:16px;
+		/*padding-bottom:7px;*/
+      }
+      .ggneirong{
+		  border-width:0 0 1px 0 ;
+		  border-style:solid ;
+		  border-color: #E8E8E8;
+		  background-color: #FFFFFF;
+		  overflow:hidden;
+		  padding:10px;
+		  display: flex;
+      }
+      .fbz{
+		  font-size:12px;
+		  width: 60%;
+		  text-overflow:ellipsis;
+		  white-space: nowrap;
+		  padding-left:10px;
+		  color:#999;
+      }
+      .fbsj{
+		  font-size:12px;
+		  color:#999;
+		  flex-grow: 1;
+		  text-align: right;
+		  margin-left:10px;
+      }
+      .fbbt{
+      	float: left;
+      	margin-left: 10px;
+      	margin-right: 10px;
+		  color:#333;
+		  font-size:16px;
+      }
+      .fbtx{
+		width:55px;
+		height:55px;
+      }
+ 	.shangbu{
+		overflow: hidden;
+		position:relative;
+		display:flex;
+		flex-direction: column;
+ 	}
+ 	.badge{
+		position:absolute;
+		text-align: left;
+		top:8px;
+		background-color: #FE0101;
+		font-size:10px;
+ 	}
+ 	.border-blue{
+ 		border-bottom:2px solid #3499db;
+		color: #3499db;
+ 	}
+ 	#header{
+ 		position:fixed;
+ 		top:0;
+ 		left:0;
+ 		width:100%;
+ 		z-index:99;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+ 	}
+	 #header b{
+		 font-size: 16px;
+	 }
+	 #header p{
+		 margin: 0;
+	 }
+ 	.toptab{
+ 		width:50%;
+		height: 100%;
+ 		float:left;
+		background-color: white;
+ 	}
+ 	.publicContent{
+ 		padding-top:102px;
+ 	}
+    </style>
+	</head>
+	<body>
+	<div id="container" class="container" v-cloak>
+        <headerbox :thistitle="headerTitle" :ispublic='ispublic' id="header"></headerbox>
+  		<div class="ggqf">
+  			<div class='toptab'>
+  				<span class="weidu" id="weidu" @click="show_weidu(1)">未读<b class='badge' v-show='msgnum!=0'>{{ msgnum }}</b></span>
+  			</div>
+  			<div class='toptab'>
+  				<span class="weidu" id="yidu" @click="show_yidu(1)">已读</span>
+  			</div>
+  		</div>
+  		<div class='publicContent'>
+  			<div v-for="(value,index) in announcelist" class="ggneirong" @click="ggnrtz(value)">
+  				<img src="../../images/futuredoctorapp/gonggao-default.png" class="fbtx" onerror="defaultSrc(this)"/>
+	  			<div class="shangbu">
+		  			<div class="fbbt">{{value.title | limitlength1}}</div>
+					<div class="fbz">{{value.author | limitlength}}</div>
+					<div class="fbsj">{{value.departtime | chmonthandday}}</div>
+				</div>
+				
+  			</div>
+  		</div>
+  		
+  	</div>
+  	 <script>
+		 registerToNative('goBack', function (data) {
+				window.location.href='application.html'
+		 })
+		 defaultSrc =function(dom){
+		 	dom.src = '../../images/futuredoctorapp/gonggao-default.png';
+		 }
+    	var vm=new Vue({
+        el:'#container',
+        data:{
+            headerTitle:'公告',
+            announcelist:[],
+            msgnum:0,
+            ispublic:getCookie('role')==0?false:true,
+            fdfsurl:'',
+		},
+			filters:{
+				chmonthandday:function(str){
+					var result=''
+					var arr1=str.slice(0,11).split('-')
+					var str2=str.slice(11,16)
+					var year = arr1[0]
+					var month=arr1[1]
+					var day=arr1[2]
+					result=year+'年'+month+'月'+day+'日'+' '+str2
+					return result
+				},
+				limitlength:function(str){
+					var shortstr=''
+					if(str.length>=10){
+						shortstr=str.slice(0,9)+'...'
+						return shortstr
+					}else{
+						return str
+					}
+				},
+				limitlength1:function(str){
+					var shortstr=''
+					if(str.length>=20){
+						shortstr=str.slice(0,19)+'...'
+						return shortstr
+					}else{
+						return str
+					}
+				}
+			},
+		mounted:function(){
+			this.show_weidu(1)
+		},
+        methods:{
+			show_weidu:function(page){
+				var self=this
+				$('#weidu').addClass('border-blue');
+				$('#yidu').removeClass('border-blue');
+				var data={
+					command:'announce/queryannouncelist',
+					sessionid:getCookie('sid'),
+					loginid:getCookie('uid'),
+					page:page,
+					reqnum:100,
+					status:0,//0表示未读
+					uid:getCookie('uid'),
+					type:0
+				}
+				function callback(res){
+					self.announcelist=res.announcelist;
+					self.msgnum=res.announcelist.length;
+					self.fdfsurl = res.fdfsurl;
+				};
+				post('/announce/queryannouncelist',data,callback,errcodefn,errfn)
+			},
+			show_yidu:function(page){
+				var self=this
+				$('#weidu').removeClass('border-blue');
+				$('#yidu').addClass('border-blue');
+				var data={
+					command:'announce/queryannouncelist',
+					sessionid:getCookie('sid'),
+					loginid:getCookie('uid'),
+					uid:getCookie('uid'),
+					page:page,
+					reqnum:100,
+					status:1,
+					type:0
+				}
+				function callback(res){
+					self.announcelist=res.announcelist;
+				};
+				post('/announce/queryannouncelist',data,callback,errcodefn,errfn)
+			},
+			ggnrtz:function(value){
+				window.location.href='ggxq.html?param='+encodeURIComponent(JSON.stringify(value))
+			}
+        }
+    })
+    function fabu(){
+    	window.location.href='ggfb.html';
+    }
+    </script>
+	</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>选择训练位</title>
+		<style type="text/css">
+			body{
+				padding-bottom:0;
+			}
+			.mainOuter{
+				width:870px; height:580px; padding-left:25px; padding-right:25px;
+			}
+			.topCon{
+				width:100%; height:60px;
+				color:rgb(51,51,51);
+			}
+			.topCon h2{
+				height:100%; float:left; line-height:60px; font-size:19px;
+			}
+			.topCon span{
+				width:22px; height:22px; float:right; display:block; position:relative;
+				top:50%; margin-top:-11px; cursor:pointer;
+				background-image:url('../../images/ostp/guanbi-tanchuang.png');
+				background-size:100% 100%;
+				background-repeat:no-repeat;
+			}
+			.topCon img{
+				width:100%; height:100%; display:none;
+			}
+			.topCon span:hover img{
+				display:block;
+			}
+
+			.seatTable{
+				width:100%; height:420px; overflow-y:auto; font-size:14px;
+			}
+			
+			.td{
+				float:left;
+			}
+			.td:nth-child(1){
+				width:17%;
+			}
+			.td:nth-child(2){
+				width:83%;
+			}
+			.th{
+				width:100%; height:30px; line-height:30px; text-align:center;
+				border-bottom:1px solid; border-right:1px solid;
+			}
+			.th .td{
+				border-top:1px solid; border-left:1px solid;
+			}
+			
+			.tr{
+				position:relative; border:1px solid; border-top:none;
+			}
+			.tr .td:nth-child(1){
+				text-align:center; height:20px; line-height:20px; position:absolute;
+				top:50%; margin-top:-10px;
+			}
+			.tr .td:nth-child(2){
+				padding-top:5px; padding-bottom:5px; margin-left:16.9%; border-left:1px solid;
+			}
+			.tr p{
+				float:left; width:25%; padding-left:50px; margin-top:3px; margin-bottom:3px;
+			}
+
+			.footerBtn{
+				width:100%; height:38px; margin-top:35px; 
+			}
+			.footerBtn button{
+				display:block; float:right; width:140px; height:38px; border-radius:3px;
+				font-size:16px; text-align:center; line-height:38px; box-sizing:border-box;
+			}
+			.closeBtn{
+				border:1px solid #c3c3c3; background-color:#ffffff;
+			}
+			.closeBtn:hover{
+				background-color:#f2f2f2; border:1px solid #999999;
+			}
+			.saveBtn{
+				background-color:#0496ca; margin-right:20px; color:white;
+			}
+			.saveBtn:hover{
+				background-color:#0487b5;
+			}
+		</style>
+		<script>
+			//$('.bootstrap').remove();
+		</script>
+	</head>
+	<body>
+
+		<div class="mainOuter">
+			<div class="topCon">
+				<h2>请选择训练位:</h2>
+				<span class="closeSpan">
+					<img src="../../images/ostp/guanbi-tanchuang-h.png">
+				</span>
+				
+			</div>
+
+			<div class="seatTable">
+				<div class="th">
+					<div class="td">
+						教室
+					</div>
+					<div class="td">
+						训练位
+					</div>
+				</div>
+
+				<!-- <div class="tr clearfix">
+					<div class="td">
+						310
+					</div>
+					<div class="td">
+						<p style="color:#ccc;"><input value="101" type="radio" name="1" id='h1' disabled=""><label for="h1">101</label></p>
+						<p><input value="101" type="radio" name="1" id='h2'><label for="h2">101</label></p>
+						<p><input value="101" type="radio" name="1" id='h3'><label for="h3">101</label></p>
+						<p><input value="101" type="radio" name="1" id='h4'><label for="h4">101</label></p>
+					</div>
+				</div>
+
+				<div class="tr clearfix">
+					<div class="td">
+						310
+					</div>
+					<div class="td">
+						<p><input value="101" type="radio" name="1" id='h5'><label for="h5">101</label></p>
+						<p><input value="101" type="radio" name="1" id='h6'><label for="h6">101</label></p>
+					</div>
+				</div> -->
+			</div>
+
+			<div class="footerBtn">
+				<button class="closeBtn">取消</button>
+				<button class="saveBtn">确定</button>
+			</div>
+
+		</div>
+
+	</body>
+	
+	<script type="text/javascript">
+		$(function() {
+			parent.show_seat_table();
+		});
+
+		function show_seat_table(workstations){//弹窗中展示座位表格
+			$('.tr').remove();
+
+			var json = {};
+			for ( var i = 0; i < workstations.length; i++ ){
+				var workstation = workstations[i];
+				if( !json[workstation.placeid] ){
+					json[workstation.placeid] = [];
+				}
+				json[workstation.placeid].push({
+					Workstationid:workstation.workstationcode,//工位编号
+					displayname:workstation.displayname,//教师名称
+					roomnum:workstation.room_num,
+					placeid:workstation.placeid,
+					openid:workstation.openid,
+					_id:workstation.id
+				});
+			}
+
+			for( var key in json ){
+				var str = 
+					'<div class="tr clearfix">'+
+						'<div class="td">'+
+							json[key][0].roomnum+
+						'</div>'+
+						'<div class="td">';
+				
+				for ( var i = 0; i < json[key].length; i++ ){
+					str += 
+						'<p Workstationid="'+json[key][i].Workstationid+'" displayname="'+json[key][i].displayname+'" placeid="'+key+'" roomnum="'+json[key][i].roomnum+'" openid="'+json[key][i].openid+'" id="'+json[key][i]._id+'">'+
+							'<input type="radio" name="seat" id="'+key+json[key][i].Workstationid+'">'+
+							'<label for="'+key+json[key][i].Workstationid+'">'+json[key][i].Workstationid+'</label>'+
+						'</p>';
+				}
+
+				str += '</div></div>';
+
+				$('.seatTable').append(str);
+			}
+		}
+
+		$('.saveBtn').click(function() {
+			if ( $('input:radio:checked').length == 0 ){
+				uselayer(3,'请选择训练位!');
+				return false;
+			}
+			var p = $('input:radio:checked').parent();//取到选中的座位号的p元素
+			var Workstationid = p.attr('Workstationid');
+			var displayname = p.attr('displayname');
+			var placeid = p.attr('placeid');
+			var roomnum = p.attr('roomnum');
+			var openid = p.attr('openid');
+			var id = p.attr('_id');
+			parent.show_selected_seat(Workstationid,displayname,placeid,roomnum,openid,id);
+			parent.close_iframe();
+		});
+
+	</script>
+
+</html>

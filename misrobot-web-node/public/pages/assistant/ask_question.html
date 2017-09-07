@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/assistant/layout.js" ></script>
+		<script type="text/javascript" src="../../js/echarts.min.js" ></script>
+		<script type="text/javascript" src="../../js/assistant/overTexts.js" ></script>
+		<meta charset="UTF-8">
+		<title>提问</title>
+		<style type="text/css">
+			body{
+				background-color:#ECECEC;
+			}
+			
+			.topBar {
+				width:100%; height:60px; background-color:#f5f5f5; border-top:1px solid #dcdcdc;
+				border-bottom:1px solid #dcdcdc; font-size:14px;
+			}
+			.topBarInner{
+				width:1024px; height:100%; margin:auto;
+			}
+			.topBar button {
+			    display:block; float:right; position:relative;
+			    top:50%; margin-top:-18px; height:38px; text-align:center; line-height:36px;
+			    border:1px solid #0496C9; box-sizing:border-box; border-radius:3px;
+			    
+			}
+			.return1{
+				width:118px; background-color:#0496ca; color:white;
+			}
+			.return1:hover{
+				background-color:#0487b5;
+			}
+
+			.mainCon{
+				width:1024px; height:620px; margin:auto; margin-top:20px;
+			}
+			.mainCon>div{
+				background-color:white;
+			}
+			.leftOuter{
+				width:49.5%; height:100%; float:left; padding-left:15px; padding-right:15px;
+			}
+			.problemOuter{
+				width:100%; height:55%; border-bottom:1px solid #EEEEEE; box-sizing:border-box;
+			}
+			.sub_tit{
+				width:100%; height:66px; font-size:18px; line-height:66px;
+			}
+			.problemCon{
+				width:100%; padding:10px;
+			}
+			.problemCon span{
+				display:block; border-radius:18px; width:28px; height:28px;
+				float:left; text-align:center; line-height:28px; font-size:12px;
+				color:white; margin-right:10px;
+			}
+			.judge_span{
+				background-color:#0495CA;
+			}
+			.choice_span{
+				background-color:#2CC877;
+			}
+			.essay_span{
+				background-color:#FFC928;
+			}
+			.problemCon p{
+				float:left; font-size:14px; line-height:20px; padding-top:5px;
+				width:410px;
+			}
+
+			.hidden_left{
+				width:100%; float:left; padding-left:50px;
+				color:rgb(51,51,51); max-height:225px; overflow-y:auto; 
+			}
+			.hidden_left>p{
+				width:100%; font-size:16px;
+				line-height:20px; padding-top:10px;
+			}
+			.hidden_left>h4{
+				width:100%; line-height:18px; font-size:14px; padding-top:5px; padding-bottom:5px;
+			}
+			.show_answer{
+				display:block; font-size:13px; margin-top:5px;
+			    height:28px; text-align:center; line-height:26px;
+			    border:1px solid #0496C9; box-sizing:border-box; border-radius:3px;
+			    width:68px; background-color:#0496ca; color:white;
+			}
+			.show_answer:hover{
+				background-color:#0487b5;
+			}
+			.answer_hidden{display:none;}
+
+			.timeOuter{
+				width:100%; height:45%;
+			}
+			.timeCon{
+				width:242px; height:108px; margin:auto; margin-top:10px;
+				text-align:center; line-height:108px; margin-bottom:25px;
+				font-size:60px; letter-spacing:20px; position:relative;
+			}
+			.timeBox{
+				width:100%; height:100%; position:absolute; z-index:3;
+				left:0; top:0;
+			}
+			.timebg_con{
+				width:100%; height:100%; position:absolute; z-index:1;
+				left:0; top:0;
+			}
+			.timebg_con>h4{
+				width:48px; height:100%; float:left; background-color:#cccccc;
+			}
+			.timebg_con>h4:nth-child(1){
+				margin-left:-6px;
+			}
+			.timebg_con>h4:nth-child(2){
+				margin-left:7px;
+			}
+			.timebg_con>h4:nth-child(3){
+				margin-left:40px;
+			}
+			.timebg_con>h4:nth-child(4){
+				margin-left:8px;
+			}
+			.status_txt{
+				text-align:center; font-size:16px; color:rgb(4,150,202);
+			}
+			.delayOuter1,.delayOuter2{
+				display:none;
+			}
+			.delayOuter1 button{
+				margin:auto;
+				display:block; font-size:18px; margin-top:5px;
+			    height:126px; text-align:center; line-height:126px;
+			    box-sizing:border-box; border-radius:100px;
+			    width:126px; background-color:#FF5641; color:white; margin-bottom:25px;
+			}
+			.delayOuter1 p{
+				text-align:center; font-size:16px;
+			}
+			.delay_btn_con{
+				width:100%; height:30px; margin-top:10px;
+			}
+			.delay_btn_con button{
+				display:block; font-size:16px; height:100%; text-align:center; line-height:28px;
+				box-sizing:border-box; border-radius:3px; width:70px; float:right;
+				margin-left:10px;
+			}
+			.sureBtn{
+			    background-color:#0496ca; color:white;
+			}
+			.sureBtn:hover{
+				background-color:#0487b5;
+			}
+			.cancelBtn{
+				background-color:white; border:1px solid #ccc;
+			}
+
+			.timeOuter2{
+				width: 100%; margin-top: -5px; border: 1px solid #ccc;
+			    padding-top: 5px; padding-bottom: 10px; border-radius: 5px;
+			    -moz-user-select:none; -webkit-user-select:none; 
+  				-ms-user-select:none; -khtml-user-select:none; 
+			}
+			.timeCon2{
+				width:240px; margin:auto;
+			}
+			.timeCon2>h4{
+				width:100%; font-size:15px; color:#676767; text-align:center;
+				margin-bottom:10px;
+			}
+			
+			.timeBox2{
+				width:100%; height:135px; text-align:center; line-height:135px;
+			}
+			.timeBox2>div{
+				height:100%; float:left; text-align:center;
+			}
+			.minOuter,.secondOuter{
+				width:95px; border:1px solid #ccc; cursor:pointer;
+			}
+			.minOuter:hover,.secondOuter:hover{
+				background-color:#CBCBCB;
+			}
+
+			.middle{
+				width:45px; font-size:56px;
+			}
+			.timeBox2>div>p{
+				width:100%; height:65px; font-size:56px; line-height:65px;
+			}
+			.timeBox2>div>span{
+				width:100%; height:33px; font-size:40px; line-height:25px;
+				display:block; color:white;
+			}
+
+			.rightOuter{
+				width:49.5%; height:100%; float:right; padding-left:15px; padding-right:15px;
+			}
+			.rightOuter>div{
+				width:100%; height:100%;
+			}
+			.switch_h5{
+				width:25%; color:#0495CA; text-align:right; font-size:14px;
+				cursor:pointer; margin-left:75%;
+			}
+			.chartOuter{
+				display:block;
+			}
+			.chartCon{
+				width:100%; height:530px;
+			}
+
+			.tableOuter{
+				display:none;
+			}
+			.tableTxt{
+				width:100%; font-size:14px; margin-bottom:10px;
+			}
+			.tableTxt span{
+				display:block;
+			}
+			.tableTxt span:nth-child(1){
+				float:left;
+			}
+			.tableTxt span:nth-child(2){
+				float:right; color:#0495CA; cursor:pointer;
+			}
+			.table1{
+				width:100%; height:490px; border:1px solid #ccc;
+				font-size:14px;
+			}
+			.th,.tr{
+				width:100%; border-bottom:1px solid #ccc;
+			}
+			.th{
+				height:36px; background-color:#F2F2F2; text-align:center; line-height:36px;
+			}
+			.tr_con{
+				width:100%; height:450px; overflow-y:auto;
+			}
+			.tr{
+				line-height:20px;
+			}
+			.tr:hover{
+				background-color:#EEEEEE;
+			}
+			.td{
+				float:left;
+			}
+			.td>a{
+				text-decoration:underline; color:black;
+			}
+			.td>a:link{color:black;}
+			.td>a:visited{color:black;}
+			.td>a:hover{color:#3AA3D2;}
+			.td>a:active{color:black;}
+
+			.tr .td{
+				padding-top:5px; padding-bottom:5px; text-align:center; position:relative;
+			}
+			.td:nth-child(1){
+				width:50%;
+			}
+			.td:nth-child(2){
+				width:50%;
+			}
+			.td:nth-child(3){
+				width:20%;
+			}
+			.td select{
+				position:absolute; width:100%; border-radius:3px;
+				z-index:1; border:1px solid #c3c3c3; font-size:14px;
+				display:none; text-align:center; left:0; top:35px;
+			}
+			.td select option{
+				padding-top:3px; padding-bottom:3px;
+			}
+			.td select option:hover{
+				background-color:#dcdcdc;
+			}
+			#td_essay{
+				text-align:left; width:68%;
+			}
+			#td_essay_th{
+				width:68%;
+			}
+			.myselect span{
+				background-image:url(../../images/assistant/sanjiao-xiala.png);
+				background-repeat:no-repeat; background-size:100% 100%;
+				width:16px; height:11px; display:none; position:absolute;
+				top:25px; left:50px; z-index:2;
+			}
+		</style>
+
+
+	</head>
+	<body>
+		<div class="topBar">
+			<div class="topBarInner">
+				<button type="button" class="return1">返回</button>
+			</div>
+		</div>
+
+		<div class="mainCon">
+			<div class="leftOuter">
+				<div class="problemOuter">
+					<h3 class="sub_tit">题目描述</h3>
+					<div class="problemCon clearfix">
+						<span class="choice_span">
+							选
+						</span>
+						<p>
+							疑为胸腔包虫病患者，穿刺可引起感染扩散，不宜穿刺。( )
+						</p>
+					</div>
+					<div class="hidden_left">
+						<h4>A、锁骨中线第2肋间</h4>
+						<h4>B、锁骨中线第2肋间</h4>
+						<h4>C、锁骨中线第2肋间</h4>
+						<h4>D、锁骨中线第2肋间</h4>
+						<h4>E、锁骨中线第2肋间</h4>
+						<button type="button" class="show_answer">标准答案</button>
+						<p class="answer answer_hidden">
+							正确答案内容
+						</p>
+					</div>
+				</div>
+
+				<div class="timeOuter">
+					<!-- 倒计时时钟 -->
+					<div class="count_dowmOuter">
+						<h3 class="sub_tit">倒计时</h3>
+						<div class="timeCon">
+							<div class="timeBox">
+								<span class="minute">00</span><span>:</span><span class="second">00</span>
+							</div>
+							<div class="timebg_con">
+								<h4></h4>
+								<h4></h4>
+								<h4></h4>
+								<h4></h4>
+							</div>
+						</div>
+
+						<h3 class="status_txt">答题中...</h3>
+					</div>
+
+					<!--延时答题按钮-->
+					<!-- <div class="delayOuter1">
+						<h3 class="sub_tit">延时答题</h3>
+						<button>延时答题</button>
+						<p>倒计时结束</p>
+					</div> -->
+
+					<!--延时答题设置时间-->
+					<div class="delayOuter2">
+						<h3 class="sub_tit">延时答题</h3>
+						<div class="timeOuter2">
+							<div class="timeCon2">
+								<h4>请选择时间</h4>
+								<div class="timeBox2">
+									<div class="minOuter">
+										<span class="minute_min">-</span>
+										<p class="minute2">01</p>
+										<span class="minute_add">+</span>
+									</div>
+									<div class="middle">
+										:
+									</div>
+									<div class="secondOuter">
+										<span class="second_min">-</span>
+										<p class="second2">00</p>
+										<span class="second_add">+</span>
+									</div>
+								</div>
+
+							</div>
+						</div>
+						<div class="delay_btn_con">
+							<button class="cancelBtn">取消</button>
+							<button class="sureBtn">确定</button>
+						</div>
+					</div>
+
+				</div>
+					
+			</div>
+			<div class="rightOuter">
+				<div class="chartOuter">
+					<h3 class="sub_tit">本题答案统计</h3>
+					<h5 class="switch_h5 show_table">查看答案详情</h5>
+					<div class="chartCon">
+						
+					</div>
+				</div>
+
+				<div class="tableOuter">
+					<h3 class="sub_tit">各组答案</h3>
+					<div class="tableTxt clearfix">
+						<span>共 组, 组已答, 组未答</span>
+						<span class="show_chart">查看答案统计</span>
+					
+					</div>
+					<!--选择题和判断题的table-->
+					<div class="table1">
+						<div class="th">
+							<div class="td">
+								组
+							</div>
+							<div class="td">
+								答案
+							</div>
+						</div>
+						<div class="tr_con">
+							<div class="tr clearfix">
+								<div class="td">
+									第1组
+								</div>
+								<div class="td">
+									A
+								</div>
+							</div>
+							<div class="tr clearfix">
+								<div class="td">
+									第1组
+								</div>
+								<div class="td">
+									B
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- 问答题的table -->
+					<!-- <div class="table1">
+						<div class="th">
+							<div class="td">
+								组
+							</div>
+							<div class="td" id='td_essay_th'>
+								答案
+							</div>
+							<div class="td">
+								老师评价
+							</div>
+						</div>
+						<div class="tr_con">
+							<div class="tr clearfix">
+								<div class="td">
+									第1组
+								</div>
+								<div class="td td_essay" id='td_essay'>
+									问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案
+								</div>
+								<div class="td myselect">
+									<a>老师评价</a>
+									<span></span>
+									<select size='3'>
+										<option>正确</option>
+										<option>部分正确</option>
+										<option>错误</option>
+									</select>
+								</div>
+							</div>
+							<div class="tr clearfix">
+								<div class="td myselect">
+									第1组
+								</div>
+								<div class="td td_essay" id='td_essay'>
+									问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案问答题答案
+								</div>
+								<div class="td myselect">
+									<a>老师评价</a>
+									<span></span>
+									<select size='3'>
+										<option>正确</option>
+										<option>部分正确</option>
+										<option>错误</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div> -->
+				</div>
+
+			</div>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		var t;//倒计时的定时器
+		var t2;//刷新学生答题情况的定时器
+		var scheduleid = GetQueryString('scheduleid');
+		var qid = GetQueryString('qid');
+		var questionbaseid = GetQueryString('questionbaseid');
+		var cateid = GetQueryString('cateid');
+		var answerNum = 0;//目前答题的人数/组数
+		var answerNum2 = 0;//目前答题的人数/组数 用来显示右上角共 组，组已答， 组未答
+		//自定义的select
+		// $('.myselect').click(function(event) {
+		// 	if( $(this).find('select').css('display') == 'none' ){
+		// 		$(this).find('select').css('display', 'block');
+		// 		$(this).find('span').css('display', 'block');
+		// 		$(this).children('a').css('color', '#3AA3D2');
+		// 	}else{
+		// 		$(this).find('select').css('display', 'none');
+		// 		$(this).find('span').css('display', 'none');
+		// 		$(this).children('a').css('color', 'black');
+		// 	}
+		// 	 event.stopPropagation();
+		// });
+		// $(document).click(function() {
+		// 	$('.myselect select').css('display', 'none');
+		// 	$('.myselect span').css('display', 'none');
+		// 	$('.myselect a').css('color', 'black');
+		// });
+		// $('.myselect select').change(function() {
+		// 	var text = $(this).find('option:selected').html();
+		// 	$(this).siblings('a').html(text);
+		// });
+
+		function show_hidden_answer(){//显示和隐藏答案
+			$('.show_answer').click(function() {
+				if( $('.answer').hasClass('answer_hidden') ){
+					$('.answer').removeClass('answer_hidden');
+				}else{
+					$('.answer').addClass('answer_hidden');
+				}
+			});
+		}
+
+		//设置倒计时时间
+		$('.minute_min').click(function() {
+			var minute = parseInt($('.minute2').html());
+			if( minute < 1 ){
+				minute = 5;
+			}else{
+				minute--;
+			}
+			$('.minute2').html(addzero(minute));
+		});
+
+		$('.second_min').click(function() {
+			var second = parseInt($('.second2').html());
+			if( second < 1 ){
+				second = 59;
+			}else{
+				second--;
+			}
+			$('.second2').html(addzero(second));
+		});
+		$('.minute_add').click(function() {
+			var minute = parseInt($('.minute2').html());
+			if( minute > 4 ){
+				minute = 0;
+			}else{
+				minute++;
+			}
+			$('.minute2').html(addzero(minute));
+		});
+		$('.second_add').click(function() {
+			var second = parseInt($('.second2').html());
+			if( second > 58 ){
+				second = 0;
+			}else{
+				second++;
+			}
+			$('.second2').html(addzero(second));
+		});
+
+		//滑动设置倒计时时间
+		$('.minOuter')[0].addEventListener("DOMMouseScroll", function(e) {
+			if ( e.detail < 0 ){//增加数值
+				var minute = parseInt($('.minute2').html());
+				if( minute > 4 ){
+					minute = 0;
+				}else{
+					minute++;
+				}
+				$('.minute2').html(addzero(minute));
+			}else{
+				var minute = parseInt($('.minute2').html());
+				if( minute < 1 ){
+					minute = 5;
+				}else{
+					minute--;
+				}
+				$('.minute2').html(addzero(minute));
+			}
+		});
+
+		$('.secondOuter')[0].addEventListener("DOMMouseScroll", function(e) {
+			if ( e.detail < 0 ){//增加数值
+				var minute = parseInt($('.second2').html());
+				if( minute > 58 ){
+					minute = 0;
+				}else{
+					minute++;
+				}
+				$('.second2').html(addzero(minute));
+			}else{
+				var minute = parseInt($('.second2').html());
+				if( minute < 1 ){
+					minute = 59;
+				}else{
+					minute--;
+				}
+				$('.second2').html(addzero(minute));
+			}
+		});
+
+		$('.minOuter')[0].onmouseover = function(){
+			$('body')[0].addEventListener("DOMMouseScroll", function(e) {
+				return false;
+			});
+		}
+
+		$('.minOuter')[0].onmouseout = function(){
+			$('body')[0].removeEventListener('DOMMouseScroll',function(){},false);
+		}
+
+		$('.secondOuter')[0].onmouseover = function(){
+			$('body')[0].addEventListener("DOMMouseScroll", function(e) {
+				return false;
+			});
+		}
+
+		$('.secondOuter')[0].onmouseout = function(){
+			$('body')[0].removeEventListener('DOMMouseScroll',function(){},false);
+		}
+
+		//倒计时结束查询还剩多少人/组没有打完 如果都答完了隐藏延时按钮，改变文字显示
+		function notDoneNumShow(){
+			var json = {
+				'1':{
+					command:'group/querygroupinfo', //接口地址
+					scheduleid:scheduleid,
+					sessionid:getCookie('sid'),
+					loginid:getCookie('loginid')
+				}
+			};
+			Api.dataToJava({
+				json:{
+					url:'/group/querygroupinfo', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+					//groupresult  signedlist
+					var str = '';
+					if( !base.groupresult || base.groupresult.length < 1 ){//没有分组
+						var stuNum;
+						if(!base.signedlist){
+							stuNum = 0;
+						}else{
+							stuNum = base.signedlist.length;//学生的总数
+						}
+						
+						
+						if ( stuNum == answerNum ){//所有学生都答完了
+							str = '倒计时结束,所有学生都已提交答案';
+							$('.delayOuter1').css('display', 'none');
+						}else{
+							str = '倒计时结束，还有'+(stuNum-answerNum)+'名学生没有提交答案';
+						}
+					}else{
+						var arr = base.groupresult.slice(0);
+						arr.sort(function (a,b) {
+							return b.sgindex - a.sgindex; 
+						});//按组号倒序排序查出最大的组,即共有几组
+						var groupNum = arr[0].sgindex;//组的总数
+
+						var str = '';
+						if ( groupNum == answerNum ){//所有组都答完了
+							str = '倒计时结束,所有组都已提交答案';
+							$('.delayOuter1').css('display', 'none');
+						}else{
+							str = '倒计时结束，还有'+(groupNum-answerNum)+'组没有提交答案';
+						}
+					}
+					$('.delayOuter1 p').html(str);
+					
+				}
+			});
+		}
+
+		function queryAnswerNum(){//目前答题的人数/组数
+			var json = {
+				'1':{
+					command:'question/querystudentanswer', //接口地址
+					qid:qid,
+					scheduleid:scheduleid,
+					sessionid:getCookie('sid'),
+					loginid:getCookie('loginid')
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/question/querystudentanswer', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+
+					answerNum = base.answerresult.length;
+					notDoneNumShow();
+				}
+			});
+		}
+
+		//倒计时的方法
+		function count_down(){
+			var minute = $('.minute').html();
+			var second = $('.second').html();
+			second--;
+			if(second < 0 && minute > 0){
+				second = 59;
+				minute--;
+			}else if(second < 0 && minute == 0){
+				clearInterval(t);
+				clearInterval(t2);//停止刷新显示学生的答题情况
+				$('.count_dowmOuter').css('display', 'none');
+				$('.delayOuter1').css('display', 'block');
+				queryAnswerNum();//显示还有多少人/组没有答题
+				return false;
+			}
+			minute = addzero(parseInt(minute));
+			second = addzero(parseInt(second));
+			$('.minute').html(minute);
+			$('.second').html(second);
+		}
+		
+		$('.delayOuter1 button').click(function() {//延时按钮点击
+			$('.delayOuter1').css('display', 'none');
+			$('.delayOuter2').css('display', 'block');
+		});
+
+		$('.cancelBtn').click(function() {//取消设置延时答题
+			$('.delayOuter1').css('display', 'block');
+			$('.delayOuter2').css('display', 'none');
+			$('.minute2').html('01');
+			$('.second2').html('00');
+		});
+
+		writeAnswer({obj:$('.chartCon')[0]});
+		var myChart;
+		function writeAnswer(opt) {//选择的答案统计图表
+			myChart = echarts.init(opt.obj);
+			var option = {
+			    color: ['#3398DB'],
+			    tooltip : {
+			        trigger: 'item',
+			        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+			            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+			        },
+					formatter:function (params,ticket,callback) {
+						var res = params.data.name+'<br/>';
+						setTimeout(function (){callback(ticket, res);}, 100);
+						return '';
+					}
+				},
+			    grid: {
+			        left: '3%',
+			        right: '4%',
+			        bottom: '3%',
+			        containLabel: true
+			    },
+			    xAxis : [
+			        {
+			            type : 'category',
+			            data : [' ', ' ', ' ', ' ', ' '],
+			            axisTick: {
+			                alignWithLabel: true
+			            },
+			            axisLine:{
+			            	lineStyle:{
+			            		color:'#ccc'
+			            	}
+			            },
+			            axisLabel:{
+			            	textStyle:{
+			            		color:'black'
+			            	}
+			            }
+			        }
+			    ],
+			    yAxis : [
+			        {
+			            type : 'value',
+			            axisLine:{
+			            	lineStyle:{
+			            		color:'#ccc'
+			            	}
+			            },
+			            axisLabel:{
+			            	textStyle:{
+			            		color:'black'
+			            	}
+			            },
+			            name:'组数',
+			            minInterval: 1
+			        }
+			    ],
+			    series : [
+			        {
+			            name:'答案统计',
+			            type:'bar',
+			            barWidth: '60%',
+			            data:[
+			            	{value:0, name:'章一星<br/>吴青峰'},
+			                {value:0, name:'吴青峰'},
+			                {value:0, name:'张杰'},
+			                {value:0, name:'梁静茹'},
+			                {value:0, name:'汪苏泷'}
+			            ]
+			        }
+			    ]
+			};
+
+			myChart.setOption(option);
+		};
+
+        // function pickup_txt(){
+        // 	$(".td_essay").each(function() {
+        // 		var texts = $(this).html();
+        // 		$(this).overTexts({
+	       //      	texts:texts,
+	       //          textLength: "60",
+	       //          overText: "显示全部",
+	       //          openText: "收起",
+	       //          ooType: "2"                  
+	       //      });
+	       //  });
+        // }
+
+        $('.show_table').click(function() {
+        	$('.chartOuter').css('display', 'none');
+        	$('.tableOuter').css('display', 'block');
+        });
+
+        $('.show_chart').click(function() {
+        	$('.chartOuter').css('display', 'block');
+        	$('.tableOuter').css('display', 'none');
+        });
+
+        $('.return1').click(function() {
+			closeProject();
+			history.go(-1);
+
+        });
+
+        $(function() {
+            //pickup_txt();收起和展开文字(在文字加入表格后调用)
+            $('.tr_con').html('');//清空表格中数据
+            
+	    	show_problem();//显示问题
+            start_count_down();//一开始的倒计时
+            delay_start();//延时的倒计时
+			openProject();//打开投影
+			
+        });
+
+
+        function show_problem(){//显示问题
+        	$('.problemOuter').html('');
+			var json = {
+				'1':{
+					command:'question/querysinglequestion', //接口地址
+					questionbaseid:questionbaseid,
+					sessionid:getCookie('sid'),
+					loginid:getCookie('loginid')
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/question/querysinglequestion', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+
+					var str = '<h3 class="sub_tit">题目描述</h3>';
+					if( cateid == 1 || cateid == 2 ){//单选或者多选
+						str +=
+						'<div class="problemCon clearfix">'+
+							'<span class="choice_span">'+
+								'选'+
+							'</span>'+
+							'<p>'+
+								base.name+'( )'+
+							'</p>'+
+						'</div>'+
+						'<div class="hidden_left">';
+							for ( var j = 0; j < base.questionitem.length; j++ ){
+								var name = base.questionitem[j].itemname;
+								var content = base.questionitem[j].content;
+								str +=
+								'<h4>'+name+'、'+content+'</h4>';
+							}
+							str += '<button type="button" class="show_answer">标准答案</button>';
+							str +=
+							'<p class="answer answer_hidden">'+base.answer+'</p>'+
+						'</div>';
+					}else if ( cateid == 5 ){//问答题
+						// str +=
+						// '<div class="problemCon clearfix">'+
+						// 	'<span class="essay_span">'+
+						// 		'问'+
+						// 	'</span>'+
+						// 	'<p>'+
+						// 		problem_list[0].name+
+						// 	'</p>'+
+						// '</div>'+
+						// '<div class="hidden_left">'+
+						// 	'<button type="button" class="show_answer">标准答案</button>'+
+						// 	'<p class="answer answer_hidden">'+problem_list[0].answer+'</p>'+
+						// '</div>';
+						// $('.radioOuter').css('display', 'block');
+						// $('.answer_area').removeClass('answer_area_1');
+						// $('.answer_area').addClass('answer_area_2');
+					}else if ( cateid == 4 ){//判断题
+						var answer = '正确';
+						if( base.answer == 0 ){
+							answer = '错误';
+						}
+						str +=
+						'<div class="problemCon clearfix">'+
+							'<span class="judge_span">'+
+								'判'+
+							'</span>'+
+							'<p>'+
+								base.name+
+							'</p>'+
+						'</div>'+
+						'<div class="hidden_left">'+
+							'<button type="button" class="show_answer">标准答案</button>'+
+							'<p class="answer answer_hidden">'+answer+'</p>'+
+						'</div>';
+					}
+					
+					$('.problemOuter').html(str);
+					// $('.problemOuter').attr('cateid',cateid);
+					show_hidden_answer();//显示和隐藏答案按钮的事件注册
+				}
+			});
+		}
+
+		function start_count_down(){//开始倒计时
+			var minute = GetQueryString('minute');
+			var second = GetQueryString('second');
+			$('.minute').html(minute);
+			$('.second').html(second);
+			t = setInterval(function(){count_down();},1000);
+			t2 = setInterval(function(){
+				show_answer(); queryAnswerNum2();//目前答题的人数/组数 轮询用来显示-共 组, 组已答, 组未答
+			},5000);
+		}
+
+		function delay_start(){//延时的倒计时
+			$('.sureBtn').click(function() {//确定开始延时答题
+				var minute = parseInt($('.minute2').html());
+				var second = parseInt($('.second2').html());
+				if( minute == 0 && second < 10 ){
+					uselayer(1,'倒计时时间不能小于10秒！');
+				}else if( minute > 4 ){
+					uselayer(1,'倒计时时间不能超过5分钟！');
+				}else{
+					//走发送试题的接口
+
+					minute = parseInt(minute);
+					second = parseInt(second);
+					var deadline = minute*60+second;
+					var json = {
+						'1':{
+							command:'question/questionsend', //接口地址
+							scheduleid:scheduleid,
+							qid:qid,
+							type:0,
+							deadline:deadline,
+							sessionid:getCookie('sid'),
+							loginid:getCookie('loginid')
+						}
+					};
+
+					Api.dataToJava({
+						json:{
+							url:'/question/questionsend', //一次性走几个接口
+							data:JSON.stringify(json)
+						},
+						fn:function (base) {
+							base = base[1]; //取接口的第一个返回值
+							
+							//判断接口是否走成功， errcode为0是成功
+							if (base.errcode!=0) {
+								uselayer(3,base.errdesc);
+								return false;
+							}
+							//成功了就执行倒计时
+							$('.delayOuter2').css('display', 'none');
+							$('.count_dowmOuter').css('display', 'block');
+							$('.minute').html(addzero(minute));
+							$('.second').html(addzero(second));
+							t = setInterval(function(){count_down();},1000);
+							t2 = setInterval(function(){
+								show_answer(); queryAnswerNum2();//目前答题的人数/组数 轮询用来显示-共 组, 组已答, 组未答
+							},5000);
+						}
+					});
+				
+				}
+				
+			});
+		}
+
+		function show_answer(){//表格和图表的答案显示
+			var json = {
+				'1':{
+					command:'question/querystudentanswer', //接口地址
+					qid:qid,
+					scheduleid:scheduleid,
+					sessionid:getCookie('sid'),
+					loginid:getCookie('loginid')
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/question/querystudentanswer', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+					if( base.answerresult.length < 1 ){
+						return false;
+					}
+					show_answer_table(base);//展示各组的答案列表
+					show_chart(base);//展现图表
+				}
+			});
+		}
+
+		function show_answer_table(base){//展示各组的答案列表
+			// var cateid = $('.problemOuter').attr('cateid');
+			if( !base.answerresult[0].sgindex ){
+				$('.th td:nth-child(1)').html('学生');
+			}
+
+			$('.tr_con').html('');
+			var str = '';
+			for( var i = 0; i < base.answerresult.length; i++ ){
+				var answer;
+				answer = base.answerresult[i].answer;//单选或多选
+				if( cateid == 4 ){//判断
+					answer = '正确';
+					if( base.answerresult[i].answer == 0 ){
+						answer = '错误';
+					}
+					$('.answer_area ').html(answer);
+				}
+				var name;
+				if( base.answerresult[0].sgindex ){
+					name = '第'+base.answerresult[i].sgindex+'组';
+				}else{
+					name = base.answerresult[i].name;
+				}
+				
+				str += 
+				'<div class="tr clearfix">'+
+					'<div class="td">'+
+						name+
+					'</div>'+
+					'<div class="td">'+
+						answer+
+					'</div>'+
+				'</div>';
+			}
+			$('.tr_con').html(str);
+		}
+
+		function show_chart(base){//展现图表
+			// var cateid = $('.problemOuter').attr('cateid');
+			if( !base.answerresult[0].sgindex ){
+				var yName = '人数';
+			}
+			var obj = {};
+			for ( var i = 0; i < base.answerresult.length; i++ ){
+				var answer = base.answerresult[i].answer;
+				if ( !obj[answer] ){
+					obj[answer] = [];
+				}
+				if( !base.answerresult[0].sgindex ){
+					obj[answer].push(base.answerresult[i].name);
+				}else{
+					obj[answer].push('第'+base.answerresult[i].sgindex+'组');
+				}
+			}
+			var option = myChart.getOption();
+			option.yAxis[0].name = yName;
+			if( cateid == 4 ){//判断
+				option.xAxis[0].data = ['正确','错误'];
+				var data = [];
+
+				var name = '';
+				if( obj[1] ){
+					for ( var i = 0; i < obj[1].length; i++ ){
+						name += obj[1][i]+' ';
+						if ( i%4 == 0 ){
+							name += '<br/>';
+						}
+					}
+				}else{
+					obj[1] = [];
+				}
+				
+				data.push({name:name,value:obj[1].length});
+
+				name = '';
+				if( obj[0] ){
+					for ( var i = 0; i < obj[0].length; i++ ){
+						name += obj[0][i]+' ';
+						if ( i%4 == 0 && i > 0 ){
+							name += '<br/>';
+						}
+					}
+				}else{
+					obj[0] = [];
+				}
+				
+				data.push({name:name,value:obj[0].length});
+
+				option.series[0].data = data;
+				
+			}else if( cateid == 1 || cateid == 2 ){//如果是单选题或多选题
+				var _arr = [];
+				for( x in obj ){
+					_arr.push({key:x,value:obj[x]});
+				}
+				function sort_arr(a,b){
+					return a.key.charCodeAt() - b.key.charCodeAt();
+				}
+				_arr.sort(sort_arr);
+				var xAxis = [];
+				var data = [];
+				_arr.map(function(el,i){
+					xAxis.push(el.key);
+					var name = '';
+					el.value.map(function(el2,j) {//遍历这个选项中的人
+						name += el2+' ';
+						if ( j%4 == 0 && j > 0 ){
+							name += '<br/>';
+						}
+					})
+					data.push({name:name,value:el.value.length});
+				});
+
+				option.xAxis[0].data = xAxis;
+				option.series[0].data = data;
+			}
+			myChart.setOption(option);
+		}
+
+		function notDoneNumShow2(){
+			var json = {
+				'1':{
+					command:'group/querygroupinfo', //接口地址
+					scheduleid:scheduleid,
+					sessionid:getCookie('sid'),
+					loginid:getCookie('loginid')
+				}
+			};
+			Api.dataToJava({
+				json:{
+					url:'/group/querygroupinfo', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+					//groupresult  signedlist
+					var str = '';
+					if( !base.groupresult || base.groupresult.length < 1 ){//没有分组
+						var stuNum = 0;
+						if(base.signedlist){
+							stuNum = base.signedlist.length;//学生的总数
+						}
+						str = '共'+stuNum+'名学生，'+answerNum2+'名学生已答，'+(stuNum-answerNum2)+'名学生未答';
+					}else{
+						var arr = base.groupresult.slice(0);
+						arr.sort(function (a,b) {
+							return b.sgindex - a.sgindex; 
+						});//按组号倒序排序查出最大的组,即共有几组
+						var groupNum = arr[0].sgindex;//组的总数
+
+						var str = '';
+						str = '共'+groupNum+'组，'+answerNum2+'组已答，'+(groupNum-answerNum2)+'组未答';
+					}
+					$('.tableTxt span:nth-child(1)').html(str);
+				}
+			});
+		}
+
+		function queryAnswerNum2(){//目前答题的人数/组数 轮询用来显示-共 组, 组已答, 组未答
+			var json = {
+				'1':{
+					command:'question/querystudentanswer', //接口地址
+					qid:qid,
+					scheduleid:scheduleid,
+					sessionid:getCookie('sid'),
+					loginid:getCookie('loginid')
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/question/querystudentanswer', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+
+					answerNum2 = base.answerresult.length;//已答的人数组数
+					notDoneNumShow2();
+				}
+			});
+		}
+
+	</script>
+
+</html>

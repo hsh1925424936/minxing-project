@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>考勤统计</title>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/futuredoctorapp/common.js"></script>
+    <script src="../../js/futuredoctorapp/vueComponent.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../css/futuredoctorapp/common.css">
+    <link rel="stylesheet" href="../../css/futuredoctorapp/vueComponent.css">
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <style>
+        body{
+            background-color: #F2F2F2;
+        }
+        .container{ padding-left:0;padding-right:0}
+        #userInfo{
+            background-color: white;
+            margin:0;
+            padding:6px 5px;
+        }
+        #userInfo dl{
+            padding-top:8px;
+        }
+        .dataBoxStyle{
+            background-color: white;
+            color:#868686;
+            margin-top:14px;
+        }
+        .dataBoxStyle>div:nth-child(2){
+            padding:8px 20px;
+        }
+        ul.chooseDate{
+            width:48%;
+            margin:0 auto;
+        }
+        ul.chooseDate>li.change{
+            padding:0;
+            width:12%;
+            text-align:center;
+            border-radius: 50%;
+        }
+        .onchange{
+            background-color:#efefef;
+        }
+        ul.chooseDate>li.date{
+            padding:0;
+            width:69%;
+            text-align:center;
+        }
+        .dataBoxHeader{
+            border-bottom: 1px solid #FAFAFA;
+            padding:8px 20px;
+        }
+        .totalSign{
+            overflow:hidden;
+        }
+        .totalSign>dl{
+            float:left;
+            width:32%;
+            text-align:center;
+        }
+        .ftitle{
+            font-size:14px;
+            color:#676767;
+            font-weight: normal;
+        }
+        .fsub{
+            font-size:12px;
+            color:#A7A7A7;
+        }
+        .fsubblue{
+            font-size:14px;
+            color:#5CA7D1;
+        }
+        b{font-weight:normal}
+        ul.signrecordlist{
+            padding:0px 20px 0 20px;
+        }
+        ul.signrecordlist li{
+            border-bottom:1px solid #FAFAFA;
+            padding-top:10px;
+        }
+        ul.signrecordlist p{
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" v-cloak id="container">
+        <headerbox :thistitle="headerTitle" :titlenum="titlenum" :showback="showback" :showreload="showreload" id="header"></headerbox>
+        <div id="userInfo" class="row">
+            <div class="col-xs-3">
+                <img src="../../images/futuredoctorapp/icon-wode-touxiang.png" alt="">
+            </div>
+            <div class="col-xs-8" style="padding-left:0">
+                <dl class="m0">
+                    <dt class="f14">{{ name }}</dt>
+                    <dd class="f12gray" v-show="danwei">
+                        <span>单位:</span>
+                        <span>{{ danwei }}</span>
+                    </dd>
+                    <dd class="f12gray" v-show="keshi">
+                        <span>当前科室:</span>
+                        <span>{{ keshi }}</span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+        <div class="dataBoxStyle">
+            <div class="dataBoxHeader">
+                <ul class="chooseDate list-inline">
+                    <li @touchend="back()" @touchstart="interaction1()" class="change" :class="{onchange:changetime[0]}"><img :src="back_forwardimg[0]"></li>
+                    <li class="date">
+                        <span>{{ year }}</span>年<span>{{ month }}</span>月
+                    </li>
+                    <li @touchend="forward()" @touchstart="interaction2()" class="change" :class="{onchange:changetime[1]}"><img :src="back_forwardimg[1]"></li>
+                </ul>
+            </div>
+            <div class="totalSign">
+                <dl class="m0">
+                    <dt class="ftitle">签到次数</dt>
+                    <dd class="fsubblue">
+                        <span>{{ signnum }}</span>次
+                    </dd>
+                </dl>
+                <dl class="m0">
+                    <dt class="ftitle">未签到次数</dt>
+                    <dd class="fsubblue">
+                        <span>{{ nosignnum }}</span>次
+                    </dd>
+                </dl>
+                <dl class="m0">
+                    <dt class="ftitle">迟到次数</dt>
+                    <dd class="fsubblue">
+                        <span>{{ latenum }}</span>次
+                    </dd>
+                </dl>
+            </div>
+        </div>
+        <div class="dataBoxStyle" v-show="latelist">
+            <div class="dataBoxHeader ftitle">
+                迟到记录
+            </div>
+            <ul class="signrecordlist">
+                <li v-for="value in latelist">
+                    <p>
+                        <span class="left ftitle">{{ value.starttime.slice(0,10) }}</span>
+                        <b class="ftitle right">{{ value.coursename }}</b>
+                    </p>
+                    <p>
+                        <span class="left fsub">应到时间:&nbsp;&nbsp;{{ value.starttime.slice(11,16 )}}</span>
+                        <b class="fsub right">签到时间:&nbsp;&nbsp;{{ value.signin.slice(11,16 )}}</b>
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <div class="dataBoxStyle" v-show="nosignlist">
+            <div class="dataBoxHeader ftitle">
+                未签到记录
+            </div>
+            <ul class="signrecordlist">
+                <li v-for="value in nosignlist">
+                    <p>
+                        <span class="left ftitle">{{ value.starttime.slice(0,10) }}</span>
+                        <b class="ftitle right">{{ value.coursename }}</b>
+                    </p>
+                    <p>
+                        <span class="left fsub">应到时间:&nbsp;&nbsp;{{ value.starttime.slice(11,16 )}}</span>
+                        <b class="fsub right">未签到</b>
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <p style="height:1px;margin-bottom:47px"></p>
+        <signfooter :signactive="signactive" :signnavimg="signnavimg" :tabsrc="tabsrc" v-show="showfooter"></signfooter>
+    </div>
+    <script>
+        var from=window.location.href.split('=')[1];
+        var vm=new Vue({
+            el:"#container",
+            data:{
+                headerTitle:"考勤统计",
+                titlenum:0,
+                showback:true,
+                showreload:false,
+                signactive:[false,true],
+                signnavimg:["../../images/futuredoctorapp/nav-daka.png","../../images/futuredoctorapp/nav-tongji-h.png"],
+                showfooter:true,
+                tabsrc:['tosign.html','signdata.html'],
+                //以上是头部和底部配置
+                year:new Date().getFullYear(),
+                month:new Date().getMonth()+1,
+                back_forwardimg:["../../images/futuredoctorapp/btn-zuojiantou.png","../../images/futuredoctorapp/btn-youjiantou.png"],
+                changetime:[false,false],
+                isforward:false,//是否能向右增加月份？
+                signnum:'',//签到次数
+                nosignnum:'',//未签到次数
+                latenum:'',//迟到次数
+                nosignlist:'',//未签到课程详情
+                latelist:'',//迟到课程详情
+                danwei:getCookie('danwei'),
+                keshi:getCookie('keshi'),
+                name:getCookie('name')
+            },
+            mounted:function(){
+                from=='application' && (this.showfooter=false);
+                this.querysigndata();
+            },
+            methods:{
+                back:function(){
+                    this.back_forwardimg=["../../images/futuredoctorapp/btn-shijian-zuo0.png","../../images/futuredoctorapp/btn-shijian-you0.png"];
+                    this.changetime=[false,false];
+                    this.isforward=true;
+                    this.month>0 && this.month--;
+                    this.month==0 && this.year-- && (this.month=12);
+                    this.querysigndata();
+                },
+                forward:function(){
+                    this.back_forwardimg=["../../images/futuredoctorapp/btn-shijian-zuo0.png","../../images/futuredoctorapp/btn-shijian-you0.png"];
+                    this.changetime=[false,false];
+                    if(new Date().getFullYear()==this.year){
+                        if(new Date().getMonth()+1==this.month) {
+                            layer.msg('已经是最新的记录');
+                            this.isforward=false;
+                            return
+                        }
+                    };
+                    this.month<12 && this.month++;
+                    this.month==12 && this.year++ && (this.month=1);
+                    this.querysigndata();
+                },
+                querysigndata:function(){//按月查询签到统计，输入2017-3-1 00:00:00-2017-4-1 00:00:00的整形时间
+                    var self=this;
+                    var end='';
+                    if(self.month==12){
+                        end=self.year+1+'-1-1 00:00:00'
+                    }else{
+                        end=self.year+'-'+self.month+1+'-1 00:00:00'
+                    };
+                    var data={
+                        command:'sign/querystusignbymonth',
+                        sessionid:getCookie('sid'),
+                        loginid:getCookie('uid'),
+                        stuid:getCookie('uid'),
+                        starttime:new Date(self.year+'-'+self.month+'-1 00:00:00').getTime(),
+                        endtime:end
+                    };
+                    function callback(res){
+                        self.signnum=res.signnum;
+                        self.nosignnum=res.nosignnum;
+                        self.latenum=res.latenum;
+                        self.notsignlist=res.notsignlist;
+                        self.latelist=res.latelist
+                    };
+                    post('/sign/querystusignbymonth',data,callback,errcodefn,errfn)
+                },
+                interaction1:function(){
+                    this.back_forwardimg=["../../images/futuredoctorapp/btn-shijian-zuo.png","../../images/futuredoctorapp/btn-shijian-you0.png"];
+                    this.changetime=[true,false]
+                },
+                interaction2:function(){
+                    this.back_forwardimg=["../../images/futuredoctorapp/btn-shijian-zuo0.png","../../images/futuredoctorapp/btn-shijian-you.png"];
+                    this.changetime=[false,true]
+                }
+            }
+        });
+        function goBack(){
+            if(from=='application'){
+                window.location.href='application.html'
+            }else{
+                window.location.href='todo.html';
+            }
+        }
+    </script>
+</body>
+</html>

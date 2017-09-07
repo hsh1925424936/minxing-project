@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>任务</title>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/futuredoctorapp/common.js"></script>
+    <script src="../../js/futuredoctorapp/vueXxxq.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../css/futuredoctorapp/common.css">
+    <link rel="stylesheet" href="../../css/futuredoctorapp/vueComponent.css">
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <style>
+		 .tp{
+			position:relative;
+			top:-1px;
+			height:18px;
+		  }
+		.container{ padding-left:0px;padding-right:0px;}
+		.title{
+			padding-left: 15px;
+		}
+		.autor{
+			float: left;
+			margin-left: 15px;
+			color:#ccc;
+		}
+		.zhongbu{
+			overflow: hidden;
+		}
+		.time{
+			float: left;
+			margin-left: 10px;
+			color:#ccc;
+		}
+		.neirong{
+			width: 90%;
+			margin-left: 15px;
+		}
+		.url{
+			width: 90%;
+			margin-left: 15px;
+			color:#00A0EA;
+		}
+		.url>span{
+			border-bottom:1px solid #00A0EA;
+		}
+		#header{
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+		}
+		.zhuti{
+			padding-top: 50px;
+		}
+    </style>
+    </head>
+	<body>
+		  <div id="container" class="container" v-cloak>
+				<headerbox :thistitle="headerTitle" id="header"></headerbox>
+				<div class="zhuti">
+					<h4 class="title">{{title}}</h4>
+					<p class="zhongbu">
+						<span class="autor">{{autor}}</span>
+						<span class="time">{{time}}</span>
+					</p>
+					<p class="neirong">{{content}}</p>
+					<p class="url" @click="tourl()" v-show="url">
+						<span v-if="urllabel">{{ urllabel }}</span>
+						<span v-else>{{ url }}</span>
+					</p>
+				</div>
+		  </div>
+		 <script>
+			 registerToNative('goBack', function (data) {
+				window.location.href='msg.html'
+			 })
+			var vm=new Vue({
+				el:'#container',
+				data:{
+					headerTitle:'消息详情',
+					title:'',
+					autor:'',
+					time:'',
+					content:'',
+					url:'',
+					type:'',
+					urlparam:'',
+					urllabel:'',
+					urltype:''
+				},
+				mounted:function(){
+					this.urlparam=JSON.parse(decodeURIComponent(window.location.href.split('=')[1]))
+					this.urllabel=this.urlparam.url_label
+					this.urltype=this.urlparam.url_type
+					console.log(JSON.stringify(this.urlparam))
+					this.show_gg()
+				},
+				methods:{
+					show_gg:function(){
+						var self=this
+						var data={
+							command:'announce/queryannouncedetail',
+							sessionid:getCookie('sid'),
+							loginid:getCookie('uid'),
+							announcementid:this.urlparam.id,
+							uid:getCookie('uid')
+						}
+						function callback(res){
+							self.title=res.announcelist[0].title;
+							self.autor=res.announcelist[0].author;
+							self.time=res.announcelist[0].departtime;
+							self.content=res.announcelist[0].content;
+							self.url=res.announcelist[0].url;
+						};
+						post('/announce/queryannouncedetail',data,callback,errcodefn,errfn)
+					},
+					tourl:function(){
+						if(this.urltype==1){//1表示目标页有返回按钮
+							window.location.href=this.url
+						}else{
+							setCookie('link',this.url)
+							window.location.href='xqurl2.html'
+						}
+					}
+				}
+			})
+		 </script>
+	</body>
+</html>

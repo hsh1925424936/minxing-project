@@ -1,0 +1,194 @@
+[v-cloak] { display: none }
+body {
+    font-size: 62.5%;
+    user-select: none;
+}
+.flex {
+    display: -webkit-box; /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
+    display: -moz-box; /* Firefox 17- */
+    display: -webkit-flex; /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
+    display: -moz-flex; /* Firefox 18+ */
+    display: -ms-flexbox; /* IE 10 */
+    display: flex; /* Chrome 29+, Firefox 22+, IE 11+, Opera 12.1/17/18, Android 4.4+ */
+}
+.flex-full {
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -ms-flex: 1;
+    flex:1;
+}
+.flex-column {
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    box-orient: vertical;
+    flex-direction: column;
+}
+.flex-w-center {
+    -webkit-justify-content:center;
+    justify-content:center;
+    -moz-box-pack:center;
+    -webkit--moz-box-pack:center;
+    box-pack:center;
+}
+.flex-h-center {
+    align-items:center;
+    -webkit-align-items:center;
+    box-align:center;
+    -moz-box-align:center;
+    -webkit-box-align:center;
+}
+@font-face {
+    font-family: describe;
+    src: url('../font/describe.ttf');
+}
+.font-describe {
+    font-family: describe;
+}
+@font-face {
+    font-family: name;
+    src: url('../font/name.ttf');
+}
+.name-font {
+    font-family: name;
+}
+.control {
+    width:100vw;
+    height:100vh;
+}
+header{
+    width:100vw;
+    height:8.5vh;
+    background: #68432a;
+}
+section{
+    width:100vw;
+    height:91.5vh;
+    background: #322622;
+}
+nav {
+    width:20vw;
+    height:91.5vh;
+    background: #68432a;
+    overflow: hidden;
+}
+aside {
+    width:80vw;
+    height:91.5vh;
+    background: #322622;
+    padding:0 2.5vw;
+}
+header i:first-child {
+    display: inline-flex;
+    width:92px;
+    height:30px;
+    background: url("../images/logo_misrobot.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+    margin-left: 6rem;
+}
+header span {
+    width:80%;
+    text-align: center;
+    color: #ffe5ad;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+nav ul {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+nav li,.active {
+    width:20vw;
+    height:70px;
+    line-height: 70px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+nav li {
+    background: url("../images/bg_aside.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+    color: #323232;
+}
+.active {
+    background: url("../images/bg_aside_active.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+    color: #fff;
+}
+nav ul::-webkit-scrollbar,aside ul::-webkit-scrollbar{
+    width: 0;
+}
+aside ul {
+    background: url("../images/bg.jpg") 0 0 no-repeat;
+    background-size: cover;
+    padding:2rem;
+    flex-wrap:wrap;
+    overflow-x: hidden;
+}
+aside li {
+    width: 25%;
+    cursor: pointer;
+}
+aside li img{
+    width:17vw;
+    height:12vw;
+    border:3px solid #bca36e;
+}
+aside li label {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #333;
+    font-weight: bold;
+    padding:0.5rem 0;
+}
+aside li label:before {
+    content: '';
+    background: url("../images/text_l.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+    width:22px;
+    height:2rem;
+    padding-right: 1rem;
+}
+aside li label:after {
+    content: '';
+    background: url("../images/text_r.png") 0 0 no-repeat;
+    background-size:  100% 100%;
+    width:22px;
+    height:2rem;
+    padding-left: 1rem;
+}
+aside span {
+    background: url("../images/pad-middle.png") 0 0 repeat-x;
+    background-size: 100% 100%;
+    font-size: 2rem;
+    color: #d7bf8b;
+    line-height: 3rem;
+    font-weight: bold;
+    position: relative;
+    width:16rem;
+    margin: 0.6rem 0;
+}
+.name:before {
+    position: absolute;
+    content: '';
+    background: url("../images/pad-left.png") 0 0 no-repeat;
+    background-size: contain;
+    width:2.5rem;
+    height:2.5rem;
+    bottom:0;
+}
+.name:after {
+    position: absolute;
+    content: '';
+    background: url("../images/pad-right.png") 0 0 no-repeat;
+    background-size: contain;
+    width:3rem;
+    height:3rem;
+    right:-3rem;
+}
+.name i {
+    display: inline-block;
+    width:13.5rem;
+    text-align: center;
+    margin-left: 2.5rem;
+}

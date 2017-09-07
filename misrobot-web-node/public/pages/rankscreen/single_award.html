@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/rankscreen/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>单项奖</title>
+		<style type="text/css">
+			body{
+				width:100%; height:100%; overflow:hidden;
+			}
+
+			.titOuter{
+				width:100vw; height:11vh; color:white; position:relative;
+				font-weight:bold;
+				background-image:url(../../images/rankscreen/paihang-top.png);
+				background-repeat:no-repeat; background-size:100% 100%;
+			}
+			.titOuter img{
+				width:7.3vh; height:7.3vh; float:left; display:block;
+				margin-left:3.9vw; position:relative; top:50%; margin-top:-3.65vh;
+			}
+			.titOuter h2{
+				height:100%; font-size:5.5vh; top:0; left:0; width:100%;
+				line-height:11.5vh; position:absolute; text-align:center;
+				font-weight:bold;
+			}
+			
+			.sub_tit{
+				width:100%; height:8.4vh; background-color:#0030AC; color:white;
+				font-size:4.7vh; line-height:8.4vh; text-align:center;
+			}
+
+			.mainOuter{
+				width:100%; height:74.3vh; background-color:#0069C4;
+				overflow:hidden;
+			}
+			
+			.single_box{
+				width:94vh; height:9.4vh; margin:auto; margin-top:3.2vh;
+				background-image:url(../../images/rankscreen/danxiang-bk.png);
+				background-size:100% 100%; background-repeat:no-repeat;
+				padding-left:8vw;
+			}
+			.single_box h2{
+				width:100%; font-size:3.3vh; color:white; text-align:center; line-height:4.5vh;
+				padding-top:0.5vh
+			}
+			.single_box h5{
+				width:100%; font-size:2.9vh; color:rgba(255,255,255,0.7); text-align:center; line-height:3.5vh;
+			}
+
+			.footCon{
+				width:100%; height:6.32vh; background-image:url(../../images/rankscreen/ranking_bottom.png);
+				background-size:100% 100%; background-repeat:no-repeat;
+			}
+		</style>	
+		
+		
+	</head>
+	<body>
+		<div class="titOuter">
+			<img src="../../images/rankscreen/wuda_logo.png">
+			<h2>武汉大学医学部第二届临床医学专业学生临床技能竞赛-初赛</h2>
+		</div>
+		
+		<div class="sub_tit">
+			单项奖
+		</div>
+
+		<div class="mainOuter">
+			<div class="single_box">
+				<h2></h2>
+				<h5></h5>
+			</div>
+			<div class="single_box">
+				<h2></h2>
+				<h5></h5>
+			</div>
+			<div class="single_box">
+				<h2></h2>
+				<h5></h5>
+			</div>
+			<div class="single_box">
+				<h2></h2>
+				<h5></h5>
+			</div>
+			<div class="single_box">
+				<h2></h2>
+				<h5></h5>
+			</div>
+			<div class="single_box">
+				<h2></h2>
+				<h5></h5>
+			</div>
+		</div>
+
+		<div class="footCon">
+			
+		</div>
+
+	</body>
+	
+	<script type="text/javascript">
+		$(function() {
+			showData();
+		});
+		function showData(){
+			var json = {
+				'1':{
+					command:'osce/report/individualawards' //接口地址
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/osce/report/individualawards', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						//uselayer(3,base.errdesc);
+						return false;
+					}
+
+					(function (){//单项奖数据
+						for ( var i = 0; i < 6; i++ ){
+							var stuArr = base.singleresult[i].student.split('@');
+							var str = 
+							base.singleresult[i].awardname+'奖项:'+
+							'&nbsp;&nbsp;'+stuArr[0]+(stuArr[1]?',&nbsp;&nbsp;'+stuArr[1]:'');
+							$('.single_box h2').eq(i).html(str);
+						}
+
+						for ( var i = 0; i < 6; i++ ){
+							var scoreArr = base.singleresult[i].scoredetail.split('@');
+							var str =
+								'本项评分:&nbsp;&nbsp;'+scoreArr[0];
+							$('.single_box h5').eq(i).html(str);
+						}
+					})();
+				}
+			});
+		}
+	</script>
+
+</html>

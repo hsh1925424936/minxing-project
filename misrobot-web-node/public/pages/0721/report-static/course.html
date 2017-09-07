@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>课件库</title>
+	<script type="text/javascript" src="../common/js/layout.js" ></script>
+	<style type="text/css">
+		body{
+			background: rgb(246,246,246);
+		}
+		.flex{
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		.nav{
+			background: rgb(246,246,246);
+			width: 100vw;
+			padding: 0.5rem 5rem;
+			font-size: 0.8rem;
+		}
+		.navRight img:nth-of-type(1){
+			width: 1.5rem;
+			height: 1.5rem;
+			margin-right: 1rem;
+		}
+		.navRight img:nth-of-type(2){
+			width: 2rem;
+			height: 2rem;
+			margin-right: 1rem;
+			border-radius: 50%;
+		}
+		.navRight img:nth-of-type(3){
+			width: 0.7rem;
+			height: 0.5rem;
+			margin-left: 5rem;
+		}
+		.header{
+			background:rgb(255,255,255);
+			/*border-bottom: solid 1px gray;*/
+			padding: 0.5rem 1rem;
+		}
+		.headerLeft img{
+			width: 5rem;
+			height: 2.8rem;
+			margin-right: 1rem;
+		}
+		.headerLeft span{
+			font-weight: 450;
+			font-size: 1rem;
+		}
+		.headerRight ul li{
+			font-size: 0.8rem;
+			/*width: 4rem;*/
+			padding: 0 0.3rem;
+			text-align: center;
+			height: 2rem;
+			line-height: 2rem;
+			border-radius: 0.2rem;
+		}
+		.headerRight ul li:nth-child(5){
+			color: rgb(0,141,196);
+		}
+		.search{
+			padding: 0.5rem 1rem;
+			font-size: 0.7rem;
+		}
+		.searchInput{
+			position: relative;
+		}
+		.searchInput input{
+			width: 20rem;
+			height: 1.8rem;
+			border: solid 1px lightgray;
+			border-radius: 1.2rem;
+			margin-left: 3rem;
+		}
+		.searchInput img{
+			width: 1rem;
+			height: 1rem;
+			position: absolute;
+			right: 1rem;
+			top:calc(50% - 0.5rem);
+		}
+		.select p:nth-child(1){
+			margin-right: 1rem;
+		}
+		.select p:nth-child(1),p:nth-child(2){
+			width: 5.5rem;
+			background: white;
+			border: solid 1px lightgray;
+			/*height: 1.2rem;*/
+			position: relative;
+			padding: 0.4rem 0.6rem 0.2rem;
+			border-radius: 0.2rem;
+		}
+		.select p:nth-child(1) img{
+			width: 0.7rem;
+			height: 0.5rem;
+		}
+		.select p:nth-child(2) img{
+			width: 0.7rem;
+			height: 0.5rem;
+		}
+		.main{
+			width: 100%;
+			padding:0 1rem 1rem;
+		}
+		.mainLeft ul li{
+			width: 9rem;
+			height: 2.2rem;
+			line-height: 2.2rem;
+			font-size: 0.8rem;
+			font-weight: 600;
+			background: white;
+			border-top: solid 1px rgb(240,240,240);
+			padding-left: 1rem;
+			box-sizing: border-box;
+		}
+		.mainLeft ul li:nth-of-type(1){
+			background: rgb(4,151,203);
+			color: white;
+			text-align: center;
+			border:none;
+			padding-left: 0;
+		}
+		.mainRight{
+			width: calc(100% - 10rem);
+			/*border: solid 1px lightgray;*/
+		}
+		.Flex{
+			display: flex;
+			justify-content: space-between;
+			flex-wrap: wrap;
+		}
+		.mainRight div{
+			width: 8.5rem;
+			font-size: 0.6rem;
+			background: rgb(255,255,255);
+			margin-bottom: 0.6rem;
+		}
+		.mainRight div img:nth-of-type(1){
+			width: 5rem;
+			height: 5rem;
+			margin-bottom: 1rem;
+			margin-top: 1.5rem;
+		}
+		.mainRight div:nth-of-type(5)>img,div:nth-of-type(6)>img,
+		div:nth-of-type(7)>img,div:nth-of-type(8)>img{
+			width: 8.5rem!important;
+			height: 6.5rem!important;
+			margin-top: 0!important;
+		}
+		.listTitle{
+			width: 100%!important;
+			border: none!important;
+			display: flex;
+			align-items: center;
+		}
+		.listTitle img{
+			width: 0.8rem!important;
+			height: 0.8rem!important;
+			margin-bottom: 0!important;
+			margin-top: 0!important;
+			margin-right: 0.2rem;
+		}
+		.flexCol{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding-bottom: 0.5rem;
+		}
+		.read{
+			width: 90%;
+			margin-top: 0.2rem;
+			color: gray;
+		}
+		.time{
+			border: none!important;
+			width: 90%!important;
+			color: gray;
+			padding-left: 0!important;
+			margin-top: 0.3rem;
+		}
+		.footer{
+			width: 100%;
+			height: 5rem;
+			font-size: 0.6rem;
+			position: relative;
+		}
+		.footer ul{
+			display: flex;
+			position: absolute;
+			top:1.6rem;
+			left:calc(50% - 3rem);
+		}
+		.footer ul li{
+			border: solid 1px lightgray;
+			padding:0.3rem 0.6rem;
+			border-left: none;
+			color: gray;
+			font-size: 0.6rem;
+		}
+		.footer ul li:nth-child(1){
+			border-left: solid 1px lightgray;
+			border-top-left-radius: 0.3rem;
+			border-bottom-left-radius: 0.3rem;
+		}
+		.footer ul li:nth-child(7){
+			border-top-right-radius: 0.3rem;
+			border-bottom-right-radius: 0.3rem;
+		}
+		.footer ul li:nth-child(3){
+			background: rgb(51,152,220);
+			color: white;
+			border: solid 1px rgb(51,152,220);
+		}
+	</style>
+</head>
+<body id='course'>
+	<div class="container">
+	<nav class="nav flex">
+		<div class="navLeft">
+			<span>临床技能中心</span>
+		</div>
+		<div class="navRight flex">
+			<img src="../../../images/ostp/bell.png">
+			<img src="../../../images/ostp/feifei.png">
+			<span>章一星</span>
+			<img src="../common/images/turnDown.png" alt="">
+		</div>
+	</nav>
+	<header class="header flex"> 
+		<div class="headerLeft flex">
+			<img src="../../../images/ostp/logo.png">
+			<span>在线自主技能训练平台</span>
+		</div>
+		<div class="headerRight">
+			<ul class="flex" class="flex">
+				<li v-for='(item,index) in menus'>{{item}}</li>
+			</ul>
+		</div>
+	</header>
+	<div class="search flex">
+			<div class="searchInput">
+				<span>自主学习</span>
+				<input type="text">
+				<img src="../common/images/sosuo.png" alt="">
+			</div>
+			<div class="select flex">
+				<p class="flex">
+					<span>全部类型</span>
+					<img src="../common/images/turnDown.png" alt="">
+				</p>
+				<p class="flex">		
+					<span>全部时间</span>
+					<img src="../common/images/turnDown.png" alt="">
+				</p>
+			</div>
+		</div>
+	<main class="main Flex">
+		<div class="mainLeft">
+			<ul>
+				<li v-for="item in course">{{item}}</li>
+			</ul>
+		</div>
+		<div class="mainRight Flex">
+			<div v-for='item in list' class="flexCol">
+				<img v-if='item.type == 1' src="../common/images/icon_w.png" alt="">
+				<img v-if='item.type == 3' src="../common/images/icon_p.png" alt="">
+				<img v-if='item.type == 21' src="../common/images/1.png" alt="">
+				<img v-if='item.type == 22' src="../common/images/2.png" alt="">
+				<img v-if='item.type == 23' src="../common/images/3.png" alt="">
+				<img v-if='item.type == 24' src="../common/images/4.png" alt="">
+				<p class="listTitle">
+					<img v-if="item.type == 1" src="../common/images/icon_word.png" alt="">
+					<img v-else-if="item.type == 3" src="../common/images/icon_ppt.png" alt="">
+					<img v-else src="../common/images/icon_mov.png" alt="">
+					<span>{{item.name}}</span>
+				</p>
+				<p class="flex read">
+					<span>阅读：{{item.read}}次</span>
+					<span>{{item.storage}}</span>
+				</p>
+				<p class="time">
+					{{item.time}}
+				</p>
+			</div>
+			</div>
+	</main>
+	<footer class="footer">
+		<ul>
+			<li><a>首页</a></li>
+			<li><a>上一页</a></li>
+			<li><a>1</a></li>
+			<li><a>2</a></li>
+			<li><a>3</a></li>
+			<li><a>下一页</a></li>
+			<li><a>末页</a></li>
+		</ul>
+	</footer>
+	</div>
+	<script>
+		// window.onerror=function (a,b,c){alert(a+' '+b+' '+c);}
+		// function resize(){
+		// 	let width = document.documentElement.clientWidth || document.body.clientWidth;
+		// 	let html = document.documentElement || document.body
+		// 	if(width > 1024){
+		// 		html.style.fontSize = '20px';
+		// 	}else{
+		// 		html.style.fontSize = width/50 + 'px';
+		// 	}
+		// }
+		// window.onresize = resize
+		// resize()
+		// $(document).ready(function(){
+		// 	$(window).resize(function(){
+		// 		let width = document.documentElement.clientWidth || document.body.clientWidth;
+		// 		let html = document.documentElement || document.body
+		// 		// let $width = $('html').
+		// 		// alert(width)
+		// 		if(width > 1024){
+		// 				html.style.fontSize = '20px';
+		// 		}else{
+		// 				html.style.fontSize = width/50 + 'px';
+		// 		}
+		// 	})
+		// 	$(window).resize()
+		// })
+		var vm = new Vue({
+			el:'.container',
+			data:{
+				menus:['首页','我的作业','自主训练','自主学习','课件库','在线试题','成长中心'],
+				course:['全部学科','内科学','外科学','妇产科学','儿科学','内科学','老年医学','神经病学'],
+				list:[
+					{type:1,name:'环甲膜穿刺操作指南',read:213,storage:'93KB',time:'2017-06-30 08:04'},
+					{type:1,name:'导尿术操作顺序',read:200,storage:'234KB',time:'2017-06-30 08:00'},
+					{type:1,name:'明日良医app操作手册',read:201,storage:'55KB',time:'2017-06-30 09:07'},
+					{type:1,name:'开放实验室注意事项',read:409,storage:'122KB',time:'2017-06-18 08:45'},
+
+					{type:21,name:'腹腔穿刺术视频教程',read:312,storage:'255.3MB',time:'2017-07-01 08:00'},
+					{type:22,name:'腹腔穿刺术演示视频',read:288,storage:'123.9MB',time:'2017-06-28 09:52'},
+					{type:23,name:'医患沟通第二讲',read:186,storage:'203.9MB',time:'2017-06-27 16:10'},
+					{type:24,name:'临床诊断学第五讲',read:200,storage:'188.7MB',time:'2017-06-19 07:56'},
+
+					{type:3,name:'鼻饲术操作课堂讲义',read:200,storage:'35.2MB',time:'2017-07-0115:00'},
+					{type:3,name:'法医学_20170315',read:109,storage:'33.2MB',time:'2017-07-01 15:10'},
+					{type:3,name:'妇科病史_体格检查',read:200,storage:'18.6MB',time:'2017-06-27 14:00'},
+					{type:3,name:'肺炎诊疗常规及病例分析',read:200,storage:'26.7MB',time:'2017-06-21 12:01'},
+				]
+			}
+		})
+	</script>
+</body>
+</html>

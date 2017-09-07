@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+		<title>新增试卷-操作考试</title>
+		<link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/scmp/testpaper_addnew.css">
+		
+	</head>
+
+	<body>
+		<div id="addnew" v-cloak>
+			<p id="addnewtestpaper">新增试卷-操作考试  <button class="btn btn-primary gobackbtn" @click="goback">返回</button> </p>
+			<div class="boxNav">
+				<div class="boxt boxSelected">选择题目</div>
+				<div class="boxb">分值设置</div>
+			</div>
+			
+			<div id="selectQ" v-show="showpageQ">
+				<div class="queNav">
+					<div class="question clickque" @click="allquestion">全部题目</div>
+					<div class="question" @click="selectedquestion">已选({{selectedtotalnum}})</div>
+				</div>
+				<!--*********************************按钮 搜索部分************************************-->
+				<div class="center search-wrap">
+					<form class="form-inline" style="float:none;">
+						<div class="form-group">
+							<label>题目名称：</label>
+							<input type="text" class="form-control" placeholder="题目名称" v-model="pageconf.name">
+						</div>
+						<div class="form-group">
+							<label>所属学科：</label>
+							<select class="form-control" v-model="pageconf.subject">
+								<option value=""> 全部</option>
+								<option v-for="(item,index) in courselist" :value="item.id"> {{item.name}} </option>
+							</select>
+						</div>
+						<!--<div class="form-group">
+							<label>标签：</label>
+							<input type="text" class="form-control" v-model="sno" placeholder="标签">
+						</div>
+						<div class="form-group">
+							<label>难度：</label>
+							<select class="form-control">
+								<option> 全部</option>
+								<option> 一星</option>
+								<option> 二星 </option>
+								<option> 三星</option>
+								<option> 四星 </option>
+								<option> 五星</option>
+							</select>
+						</div>-->
+						<div class="form-group">
+							<label>创建人：</label>
+							<input type="text" class="form-control" v-model="pageconf.person" placeholder="创建人">
+						</div>
+						<div class="form-group">
+							<button type="button"data-loading-text="Loading..." class="btn btn-primary" @click="search()">查询</button>
+						</div>
+						
+					</form>
+				</div>
+				<!--*********************************选择题目表格部分************************************-->
+				<div style="clear: both;">
+					<!--全部题目-->
+					<table class="table table-bordered table-hover">
+						<tr class="active">
+							<th  class="middle">序号</th>
+							<th  class="middle">题目名称</th>
+							<th  class="middle">题目类型</th>
+							<th  class="middle">所属学科</th>
+							<!--<th  class="middle">标签</th>
+							<th  class="middle">难度</th>-->
+							<th  class="middle">创建人</th>
+							<th  class="middle">操作</th>
+						</tr>
+						<tr v-for="(item,index) in questionlist">
+							<td class="middle">{{index+1}}</td>
+							<td class="middle">{{item.questionname}}</td>
+							<td class="middle">{{item.questiontypeid | typetransform}}</td>
+							<td class="middle">{{item.coursename}}</td>
+							<!--<td class="middle">{{item.tag}}</td>
+							<td class="middle">{{item.difficult}}</td>-->
+							<td class="middle">{{item.creator}}</td>
+							<td class="middle">
+								<button type="button" class="btn btn-primary btn-xs" @click="checkquestion(item.questiontypeid,item.questionbaseid)">查看</button>
+								<button type="button" class="btn btn-primary btn-xs" @click="add_canceltopaper(item.questiontypeid,item.questionbaseid,item.ischoose)">{{item.ischoose | ischoosetransform}}</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<!--************************************************分页**************************************-->
+				<page_component :pageconf="pageconf" :pages="pages"></page_component>
+				
+				<div class="next"> <button type="button" class="btn btn-primary" @click="nextEdit">下一步</button></div>
+			</div>		
+			
+				<!--************************************************设置分值**************************************-->		
+			<div id="testpaperoperate" v-show="showpageT">
+				<form class="form-inline" style="float:none;">
+					<div class="form-group">
+						<label>总分设置：</label><br />
+						<span>总分：</span> 
+						<input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" type="text" class="form-control" placeholder="填写总分" v-model="grade">
+					</div>
+					<div class="form-group setscore">
+						<label>设置分值：</label>
+					</div>
+				</form>
+				<table class="table table-bordered table-hover">
+					<tr class="active">
+						<th  class="middle">序号</th>
+						<th  class="middle">题目名称</th>
+						<th  class="middle">题目类型</th>
+						<th  class="middle">所属学科</th>
+						<!--<th  class="middle">标签</th>-->
+						<th  class="middle">分值</th>
+					</tr>
+					<tr v-for="(item,index) in selectedquestionlist">
+						<td class="middle">{{index+1}}</td>
+						<td class="middle">{{item.questionname}}</td>
+						<td class="middle">{{item.questiontypeid | typetransform}}</td>
+						<td class="middle">{{item.coursename}}</td>
+						<!--<td class="middle">{{item.tag}}</td>-->
+						<td class="middle">
+							<input  onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" class="form-control score" v-on:input="inputFn(item.score,item.id,item.questionbaseid)" v-model="item.score"/>
+						</td>
+					</tr>
+				</table>
+				<p class="scoreseted">当前已设置总分值：{{updatescore}}</p>
+				<div class="next"> 
+					<button type="button" class="btnBg btn btn-primary" @click="backSelect">上一步</button>
+					<button type="button" class="btn btn-primary" @click="save">保存</button>
+					<button type="button" class="btnBg btn btn-primary" @click="cancel">取消</button>
+				</div>
+			</div>
+
+		</div>
+
+	</body>
+	<script src="../../js/jquery-3.1.1.min.js"></script>
+	<script src="../../js/vue.js"></script>
+	<script src="../../js/element.js"></script>
+	<script src="../../layer/xie/layer1.js"></script>
+	<script src="../../js/scmp/common.js"></script>
+	<script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+	<script src="../../js/scmp/pageComponent1.js"></script>
+	<script src="../../js/scmp/testpaper_operatepaper.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		$(".question").click(function(){
+			$(this).addClass("clickque").siblings().removeClass("clickque")
+		})
+	</script>
+</html>

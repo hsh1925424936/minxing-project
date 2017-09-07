@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/istudy/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			.kt-write-head {height: 50%; color: rgb(127,127,127); font-weight: normal; padding: 0 5%;}
+			.kt-write-title { height: 18%; line-height: 200%;font-size: 20px; position: relative; }
+			.kt-write-head-con {padding-top: 1%; font-size: 18px; line-height: 200%; height:82%; width:100%; overflow:auto; word-break:break-all; word-wrap:break-word;   }
+			.kt-write-head-con p i { font-size: 14px;}
+			.kt-write-head-con li { display: block; font-size: 16px;}
+			.kt-write-head-con li strong { font-weight: normal}
+			.kt-write-head-con li.active { color: green}
+			.kt-write-con { height: 20%;}
+			.kt-write-con p { background: #F1F1F1;  text-indent: 1em; font-size: 18px;}
+			.kt-write-con textarea { height: 80%; width: 90%; margin: 3% auto; display: block; resize: none; border: none; border-radius: 6px;}
+			.kt-write-foot { height: 20%; padding: 6% 0 0%;}
+			.kt-write-foot div { height: 36%; line-height: 200%; text-align: center; width: 56%; display: block; margin: 0 auto; background: #687ead; border: none; border-radius: 4px; color: #fff; font-size: 18px;}
+			.kt-write-foot div img { height: 18px;}
+		</style>	
+	</head>
+	<body>
+		<div class="sign_bg"></div>
+		<div id="header">
+			<headerbox thistitle="写答案"></headerbox>
+		</div>
+		<h4 class="kt-write-head">
+			<div class="kt-write-title">查看问题</div>
+			<div class="kt-write-head-con">
+				<p></p>
+				<ul>
+				</ul>
+			</div>
+		</h4>
+		<div class="kt-write-con">
+			<p>
+				<span></span>
+				<b></b>
+			</p>
+		</div>
+		<div class="kt-write-foot">
+			<div class="subBtn">
+				<span>上传答案</span>
+			</div>
+		</div>
+		<script src="../../js/istudy/vueComponent.js"></script>
+		<script type="text/javascript">
+			var cateid="";
+			window.onload = function() {
+				'use strict';
+				wxcommon(1);
+				Api.R({
+					isShade: 1,
+					url: "/question/queryclassquestioninfo",
+					json: {
+						"1": {
+							command: "question/queryclassquestioninfo",
+							scheduleid: getCookie("gy_istudy_scid"),
+							sessionid: getCookie("gy_t"),
+							loginid: getCookie('gy_u')
+						}
+					},
+					fn: function(result) {
+						if(result["1"].errcode!=0){
+							uselayer(3, result["1"].errdesc);
+							setTimeout(function(){
+								window.history.go(-1);
+							},2000);
+							return;
+						}
+						if(!result["1"].questionsresult) {
+							uselayer(3,'暂无题目！');
+							setTimeout(function(){
+								window.history.go(-1);
+							},2000);
+							return;
+						}
+						cateid=result["1"].questionsresult[0].cateid;
+						$('.subBtn').attr('qid', result["1"].questionsresult[0].qid);
+						$('.subBtn').attr('_type', result["1"].questionsresult[0].cateid);
+						$('.kt-write-head-con p').html(result["1"].questionsresult[0].name);
+						switch (result["1"].questionsresult[0].cateid){
+							case 1:$('.kt-write-head-con p').append('<i>（请点击选项选择答案）</i>');
+									$('.kt-write-con p span').html('你的选择');
+									var arr = result["1"].questionsresult[0].questionitem;
+									$('.kt-write-head-con ul').html('');
+									for (var i = 0 ; i < arr.length; i++) {
+										var str = 
+											'<li><strong _value="'+arr[i].itemname+'">'+arr[i].itemname+'</strong>.'+arr[i].content+'</li>';
+										$('.kt-write-head-con ul').append(str);
+									}								
+								break;
+							case 4:$('.kt-write-head-con p').append('<i>（请点击选项选择答案）</i>');
+									$('.kt-write-con p span').html('你的选择');
+									var str = 
+										'<li><strong _value="1">对</strong></li>'
+										+'<li><strong _value="0">错</strong></li>'
+									$('.kt-write-head-con ul').html(str);
+								break;
+							case 5:$('.kt-write-head-con p').append('<i>（请在编辑答案处填写答案或使用拍照上传答案）</i>');
+									$('.kt-write-con p').html('编辑答案');
+									$('.kt-write-foot div').eq(1).css('display','block');
+									$('.kt-write').removeAttr('readonly');
+								break;
+						}
+						$('.kt-write-head-con ul li').click(function () {
+							$('.kt-write-head-con ul li').removeClass('active');
+							$(this).addClass('active');
+							$('.kt-write-con p b').html($(this).children('strong').html());
+						});	
+
+						$('.subBtn').click(function () {
+							uselayer(2,'确定要提交答案吗？',function () {
+								var con = $.trim($('.kt-write-con p b').html());
+								if (con=='') {
+									uselayer(3,'答案不能为空');
+									return false;
+								}
+								
+								if ($('.subBtn').attr('_type')==4) {
+									if (con=='对') {
+										con = 1;
+									} else {
+										con = 0;
+									}
+								}
+								Api.R({
+									isShade: 1,
+									url: "/question/submitanswer",
+									json: {
+										"1": {
+											command: "/question/submitanswer",
+											scheduleid: getCookie('gy_istudy_scid'),
+											sessionid: getCookie('gy_t'),
+											uid: getCookie('gy_u'),
+											qid: $('.subBtn').attr('qid'),
+											answer: con,
+											loginid: getCookie('gy_u'),
+											cateid:cateid
+										}
+									},
+									fn: function(result) {
+										if(result["1"].errcode!=0) {
+											uselayer(3, result["1"].errdesc);
+											return;
+										}
+										setTimeout(function(){
+											window.history.go(-1);
+										},2000);
+									},
+									error: function(str){
+										uselayer(3,'提交题目答案失败！');
+									}
+								});
+							});
+						});
+					},
+					error: function(err){
+						uselayer(3,'获取题目信息失败！');
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

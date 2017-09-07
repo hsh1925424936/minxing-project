@@ -1,0 +1,41 @@
+/*.test {
+  margin-top: 0.1rem; }*/
+  .test ul {
+    background: #fff;
+    margin-bottom: 0.2rem;
+    overflow: hidden; 
+  }
+  .test ul li:nth-of-type(1){
+    margin-top: .4rem;
+  }
+    .test ul li {
+      line-height: 0.3rem;
+      margin-bottom: 0.2rem;
+      padding-left: .3rem;
+  }
+    .test ul li span {
+        color: #8D8D8D;
+        width: 1.4rem;
+        text-align: left;
+  }
+    .test ul li a {
+        float: right;
+        display: inline-block;
+        border: 1px solid #000;
+        border-radius: 0.1rem;
+        padding: 0.1rem; 
+    }
+    .test ul li i {
+        font-style: normal;
+    }
+    .detail{
+      line-height: 1rem;
+      height:1rem;
+      margin-top: 0.4rem!important;
+      margin-bottom: 0!important;
+      padding: 0.23rem 0;
+      margin-left:.3rem;
+      margin-right: .3rem;
+      border-top: solid 0.01rem #c3c3c3;
+    }
+/*# sourceMappingURL=studentTest.css.map */

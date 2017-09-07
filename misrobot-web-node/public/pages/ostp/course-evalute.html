@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>课程评价表</title>
+		<link rel="stylesheet" type="text/css" href="../../css/ostp/person-center.css"/>
+		<style type="text/css">
+			.box{
+				width:100%; height:100%; padding-bottom: 20px;
+			}
+			@media screen and (min-width:450px) {
+				.box{
+					width:450px; margin:0 auto;padding-bottom: 20px;
+				}
+			}
+
+			.topOuter2{
+				width:100%; color:#9DD3ED; background-color:#0495CA;
+				font-size:14px; height:170px;
+			}
+			.topCon{
+				width:100%; margin-top:26px; height:18px;
+				text-align:center; position:relative; line-height:18px;
+			}
+			.cancle {
+				width:10px; height:100%; position:absolute; left:12px;
+			}
+			.cancle img{
+				display: block; width: 100%; height: 100%;
+			}
+			.topTxt{
+				width:100%; padding-left:35px; margin-top:20px;
+				padding-right:35px; line-height:30px;
+			}
+
+			.evaluteOuter{
+				width:100%; height:120px; padding:30px; font-size:12px;
+			}
+			.evaluteTxt{
+				color:#767676; padding-bottom:30px;
+			}
+			.starOuter{
+				width:220px; height:26px; float:left;
+			}
+			.starOuter span{
+				display:block; float:left; width:26px; height:100%;
+				background-size:100%; background-repeat:no-repeat;
+				margin-right:18px;
+			}
+			.starNot{
+				background-image:url('../../images/ostp/star2.png');
+			}
+			.starOn{
+				background-image:url('../../images/ostp/star3.png');
+			}
+			.level{
+				width:40px; height:26px; float:right;
+				line-height:26px; color:#FD7004;
+			}
+			.sub-btn {
+				margin: 60px auto; display: none;
+			}
+
+		</style>
+		<script>
+			//$('.bootstrap').remove();
+		</script>
+	</head>
+	<body>
+		<div class="box clearfix">
+			<div class="topOuter2 clearfix">
+				<div class="topCon">
+					<!--<div class="cancle"><img src="../img/return2.png" /></div>-->
+					</div>
+				<div class="topTxt">
+
+				</div>
+			</div>
+			
+			<div class="evaluateList">
+				
+				
+			</div>
+			
+			<input type="button" class="btn btn-success sub-btn" value=" 提交 " />
+
+
+
+
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		window.onload = function () {
+			'use strict';
+			var oEid = findurl('estu_id');
+			var oId = findurl('id');//评价对应id
+			
+			Api.R({ //未评价
+				url: "/evt/evtdetail",
+				isShade: 1,
+				istoken:1,
+				json:{
+					"1": {
+						command: "evt/evtdetail",
+						evtid: oEid,
+						uid: oId,
+						sessionid: getCookie('gy_t'),
+						loginid: getCookie('gy_u')
+					}
+				},
+				fn:function (base) {
+					base = base[1];
+					console.log(base);
+					if(base.errcode != 0){
+						uselayer(3, base.errdesc);
+						return false;
+					}
+
+					if(base.evtstatus == 1){
+						uselayer(3,'此评价项您已评价！');
+						showview();//展示已评价的结果
+						return false;
+					}
+
+					$('.topCon').html(base.coursename+'课程评价表');
+					var str = 
+						'上课老师：'+base.teachername+'<br/>'
+						+'上课时间：'+timetodate( datetotime(base.starttime) )+'<br/>'
+						+'上课地点：'+base.placename+'<br/>';			
+					$('.topTxt').html(str);
+					
+					var arr = base.evtitems;
+					$('.evaluateList').html('');
+					for (var i = 0 ; i < arr.length; i++) {
+						var str = 
+							'<div class="evaluteOuter clearfix">'
+								+'<div class="evaluteTxt">'+(i+1)+'.'+arr[i].evtcontent+'</div>'
+								+'<div class="starOuter clearfix" _id="'+arr[i].evtitemid+'" content="'+arr[i].evtcontent+'">'
+									+'<span class="starNot"></span>'
+									+'<span class="starNot"></span>'
+									+'<span class="starNot"></span>'
+									+'<span class="starNot"></span>'
+									+'<span class="starNot"></span>'
+								+'</div>'
+								+'<div class="level"></div>'
+							+'</div>';								
+						$('.evaluateList').append(str);
+					}				
+					$('.starOuter span').click(function () {
+						$(this).parent().find('span').removeClass('starOn');
+						$(this).parent().find('span:lt('+($(this).index()+1)+')').addClass('starOn');
+					});
+					$('.sub-btn').css('display','block');
+					$('.sub-btn').click(function () {
+						// var aId = [];
+						// var aScore = [];
+						var evtitems = [];//评估项数组
+						var ok = true;
+						$('.starOuter').each(function () {
+							if ($(this).find('.starOn').length==0) {
+								ok=false;
+								return true;
+							} else {
+								// aId.push($(this).attr('_id'));
+								// aScore.push($(this).find('.starOn').length);
+								evtitems.push({
+									evtcontent:$(this).attr('content'),
+									evtitemid:$(this).attr('_id'),
+									evtitemscore:$(this).find('.starOn').length
+								});
+
+							}
+						});
+						if (!ok) {
+							uselayer(3,'你还有未评价项');
+							return false;
+						}														
+						uselayer(2,'确认无误，提交评价？',function () {
+							istoken:1,
+							Api.R({
+								url: "/evt/evtsubmit",
+								istoken:1,
+								json:{
+									"1": {
+										command: "evt/evtsubmit",
+										sessionid: getCookie('gy_t'),
+										uid: oId,
+										loginid: getCookie('gy_u'),
+										evtid: oEid,
+										evtitems: evtitems
+									}
+								},
+								fn:function (json) {
+									console.log(json);
+
+									if(json["1"].errcode != 0){
+										uselayer(3, json["1"].errdesc);
+										return false;
+									}
+									uselayer(1, '提交评价成功！', function () {
+										window.location.reload();
+									});
+
+								}
+							});								
+						});							
+					});													
+				}
+			});
+			
+			
+			function showview() {//如果已评价
+				Api.R({
+					url: "/evt/evtdetail",
+					isShade: 1,
+					istoken:1,
+					json:{
+						"1": {
+							command: "evt/evtdetail",
+							evtid: oEid,
+							uid: oId,
+							sessionid: getCookie('gy_t'),
+							loginid: getCookie('gy_u')
+						}
+					},
+
+					fn:function (base) {
+						var base = base[1];
+						console.log(base);
+						$('.topCon').html(base.coursename+'课程评价表');
+						var str = 
+							'上课老师：'+base.teachername+'<br/>'
+							+'上课时间：'+timetodate( datetotime(base.starttime) )+'<br/>'
+							+'上课地点：'+base.placename+'<br/>';			
+						$('.topTxt').html(str);				
+						
+						var arr = base.evtitems;
+						$('.evaluateList').html('');
+						for (var i = 0 ; i < arr.length; i++) {
+							var _str = '优秀';
+							switch (arr[i].evtitemscore){
+								case 1:_str = '极差';
+									break;
+								case 2:_str = '差';
+									break;
+								case 3:_str = '合格';
+									break;
+								case 4:_str = '良好';
+									break;
+								case 5:_str = '优秀';
+									break;
+							}
+							var str =
+								'<div class="evaluteOuter clearfix">'
+									+'<div class="evaluteTxt">'+(i+1)+'.'+arr[i].evtcontent+'</div>'
+									+'<div class="starOuter clearfix" _id="'+arr[i].evtitemid+'" _score="'+arr[i].evtitemscore+'">'
+										+'<span class="starNot"></span>'
+										+'<span class="starNot"></span>'
+										+'<span class="starNot"></span>'
+										+'<span class="starNot"></span>'
+										+'<span class="starNot"></span>'
+									+'</div>'
+									+'<div class="level">'+_str+'</div>'
+								+'</div>';							
+							$('.evaluateList').append(str);
+						}								
+						$('.starOuter').each(function () {							
+							$(this).find('span:lt('+$(this).attr('_score')+')').addClass('starOn');
+						});					
+						
+					}
+				})
+				
+				
+			};
+			
+			
+			
+		};		
+	</script>
+
+</html>

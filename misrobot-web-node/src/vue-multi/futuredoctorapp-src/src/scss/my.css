@@ -1,0 +1,118 @@
+body{
+    background-color:#EDEDED;
+}
+.xiebottomHandlers{
+    margin-top:.20rem;
+    overflow: hidden;
+    border-top:1px solid #D7D7D7;
+    padding-top:.14rem;
+    margin-bottom:0;
+}
+.left{
+    float:left;
+}
+.right{
+    float:right;
+}
+.xiecontentBox{
+    padding:.20rem .22rem .14rem .22rem;
+    margin-bottom:.08rem;
+    background-color:white;
+}
+.xieboxTitle{
+    margin-bottom:22px;
+}
+.shadow{
+    width:100%;
+    height:100%;
+    background-color: rgba(0,0,0,0.5);
+    position:fixed;
+    top:0;
+    left:0;
+}
+.xieconfirmBox{
+    width:80%;
+    margin:140px auto;
+    border-radius: 10px;
+    padding-bottom:16px;
+    background-color:white;
+}
+.xieconfirmText{
+    padding:16px 26px;
+    margin:0;
+    border-bottom:1px solid #dedede;
+}
+.xiecontentBox dd{
+    padding:.07rem 0;
+    color:#7C7C7C;
+    font-weight:normal;
+    overflow:hidden;
+}
+.areaStyle{
+    min-height: 60px;
+    padding:10px;
+    display:block;
+    width:100%;
+}
+.xieconfirmContent{
+    padding:16px 30px 0 26px;
+}
+.clearF{
+    overflow: hidden;
+}
+.blueLink{
+    font-size:.24rem;
+    color:dodgerblue;
+    border-bottom: 1px solid dodgerblue;
+    padding-bottom: 3px;
+}
+.pt10{
+    padding-top:10px;
+}
+.m0{
+    margin:0;
+}
+.xieitemtitle{
+
+}
+.xieitemcontent{
+
+}
+.xiecontentBox>dl>dd>span{
+    width:36%;
+    float:left;
+}
+.xiecontentBox>dl>dd>b{
+    width:64%;
+    font-weight:normal;
+    color:#3E3E3E;
+    word-wrap: break-word;
+    word-break: normal;
+    float:left;
+}
+.xiecontentBox>dl>dd>b>i{
+    font-style: normal;
+}
+.xiebtn{
+    border-radius: .10rem;
+    font-size:.24rem;
+    padding:.10rem 0;
+    text-align: center;
+    width:1.4rem;
+    margin-bottom: .01rem;
+}
+.xiebtn-default{
+    border:1px solid #D7D7D7;
+    background-color: white;
+    color:#7C7C7C
+}
+.xiebtn-yellow{
+    background-color: #FFA51C;
+    color:white;
+    border:1px solid #FFA51C;
+}
+.xiebtn-blue{
+    background-color: #3499DB;
+    color:white;
+    border:1px solid #3499DB;
+}

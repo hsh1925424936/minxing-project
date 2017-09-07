@@ -1,0 +1,285 @@
+.btn {
+	display: inline-block;
+	zoom: 1;
+	line-height: normal;
+	white-space: nowrap;
+	vertical-align: middle;
+	text-align: center;
+	cursor: pointer;
+	-webkit-user-drag: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	font-family: inherit;
+	/*font-size: 0.16rem;*/
+	/*font-size: 100%;*/
+	font-size: .22rem;
+	padding: .4em .8em;
+	line-height: 1.1;
+	color: #444;
+	/* rgba not supported (IE 8) */
+	color: rgba(0, 0, 0, 0.80);
+	/* rgba supported */
+	border: 1px solid #C9CACA;
+	/*IE 6/7/8*/
+	/*border: none rgba(0, 0, 0, 0);*/
+	/*IE9 + everything else*/
+	background-color: #E6E6E6;
+	text-decoration: none;
+	border-radius: .3em;
+	height: auto;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+/* Firefox: Get rid of the inner focus border */
+
+.btn::-moz-focus-inner {
+	padding: 0;
+	border: 0;
+}
+
+
+/*.btn-hover,
+.btn:hover,
+.btn:focus{
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#1a000000',GradientType=0);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(transparent), color-stop(40%, rgba(0,0,0, 0.05)), to(rgba(0,0,0, 0.10)));
+    background-image: -webkit-linear-gradient(transparent, rgba(0,0,0, 0.05) 40%, rgba(0,0,0, 0.10));
+    background-image: -moz-linear-gradient(top, rgba(0,0,0, 0.05) 0%, rgba(0,0,0, 0.10));
+    background-image: -o-linear-gradient(transparent, rgba(0,0,0, 0.05) 40%, rgba(0,0,0, 0.10));
+    background-image: linear-gradient(transparent, rgba(0,0,0, 0.05) 40%, rgba(0,0,0, 0.10));
+}*/
+
+.btn:focus {
+	outline: 0;
+}
+
+.btn-active,
+.btn:active {
+	/*box-shadow: 0 0 0 1px rgba(0,0,0, 0.15) inset, 0 0 6px rgba(0,0,0, 0.20) inset;
+    border-color: #000\9;*/
+}
+
+.btn[disabled],
+.btn-disabled,
+.btn-disabled:hover,
+.btn-disabled:focus,
+.btn-disabled:active {
+	border: none;
+	background-image: none;
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+	filter: alpha(opacity=40);
+	-khtml-opacity: 0.40;
+	-moz-opacity: 0.40;
+	opacity: 0.40;
+	cursor: not-allowed;
+	box-shadow: none;
+}
+
+.btn-hidden {
+	display: none;
+}
+
+.btn-primary,
+.btn-selected,
+a.btn-primary,
+a.btn-selected {
+	background-color: rgb(0, 120, 231);
+	color: #fff;
+}
+
+.btn-block {
+	display: block;
+}
+
+.btn-sm {
+	font-size: 0.12rem;
+	line-height: 0.26rem;
+	padding: 0.02rem 0.04rem 0.01rem;
+}
+.btn-md{
+    font-size: .24rem;
+    padding: 0.10rem 0.26rem;
+}
+.btn-lg {
+	font-size: .26rem;
+	padding: 0.18rem 0.3rem;
+}
+
+.btn i.iconfont {
+	font-size: 1em;
+	line-height: 0.75em;
+	vertical-align: 10%;
+	padding-right: 0.2em;
+}
+
+.btn-white {
+	color: #333;
+	background: #FFF;
+	border-color: #C9CACA;
+}
+.btn-yellow{
+    background-color: #FFA51C;
+    color:white;
+    border-color:#FFA51C
+}
+.btn-grey {
+	color: #666;
+	background: #FFF;
+	border-color: #C9CACA;
+}
+
+.btn-blue {
+	color: #FFF;
+	background: #3499db;
+	border-color: #3499db;
+}
+
+.btn-red {
+	color: white;
+	/*text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);*/
+	background: #FE434C;
+	border-color: #FE434C;
+	border-width: 1px;
+}
+
+.btn.btn-outline,
+.btn-bar .btn.btn-outline {
+	background: transparent;
+}
+
+.btn-red.btn-outline,
+.btn-bar-red .btn.btn-outline {
+	color: #FE434C;
+}
+
+.btn-blue.btn-outline,
+.btn-bar-blue .btn.btn-outline {
+	color: #3499db;
+}
+
+.btn-clear,
+.btn-bar .btn.btn-clear {
+	-webkit-transition: opacity 0.1s;
+	transition: opacity 0.1s;
+	border-color: transparent;
+	background: none;
+	box-shadow: none;
+}
+
+.btn-red.btn-clear,
+,
+.btn-bar-red .btn.btn-clear {
+	color: #FE434C;
+}
+
+.btn-blue.btn-clear,
+.btn-bar-bule .btn.btn-clear {
+	color: #3499db;
+}
+
+.btn-bar {
+	display: -webkit-box-inline;
+	display: -webkit-inline-flex;
+	display: -moz-box-inline;
+	display: -moz-inline-flex;
+	display: -ms-inline-flexbox;
+	display: inline-flex;
+}
+
+.btn-bar:after {
+	clear: both;
+}
+
+.btn-bar>.btn {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	-moz-box-flex: 1;
+	-moz-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+	float: left;
+	display: inline-block;
+	overflow: hidden;
+	border-width: 1px 0px 1px 1px;
+	border-radius: 0;
+	text-align: center;
+	/*text-overflow: ellipsis;*/
+	white-space: nowrap;
+}
+
+.btn-bar-full {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -moz-box;
+	display: -moz-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	-moz-box-flex: 1;
+	-moz-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+	width: 100%;
+}
+
+.btn-bar-full>.btn {
+	text-overflow: ellipsis;
+	float: none;
+}
+
+.btn-bar-auto>.btn {
+	-webkit-box-flex: auto;
+	-webkit-flex: auto;
+	-moz-box-flex: auto;
+	-moz-flex: auto;
+	-ms-flex: auto;
+	flex: auto;
+}
+
+.btn-bar>.btn:first-child {
+	border-radius: .3em 0 0 .3em;
+}
+
+.btn-bar>.btn:last-child {
+	border-right-width: 1px;
+	border-radius: 0 .3em .3em 0;
+}
+
+.btn-bar-sm>.btn {
+	font-size: 0.12rem;
+	line-height: 0.26rem;
+	padding: 0.02rem 0.04rem 0.01rem;
+}
+
+.btn-bar-lg>.btn {
+	font-size: .28rem;
+	padding: 0.18rem 0.3rem;
+}
+
+.btn-bar-white>.btn {
+	color: #333;
+	background: #FFF;
+	border-color: #C9CACA;
+}
+
+.btn-bar-blue>.btn {
+	color: #FFF;
+	background: #3499db;
+	border-color: #3499db;
+}
+
+.btn-bar-red>.btn {
+	color: white;
+	/*text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);*/
+	background: #FE434C;
+	border-color: #FE434C;
+	border-width: 1px;
+}

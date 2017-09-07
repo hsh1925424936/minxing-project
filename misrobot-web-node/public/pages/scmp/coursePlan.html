@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../js/jquery-1.11.3.js"></script>
+     <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/element.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+     <script src="../../js/base.js"></script>
+     <script src="../../js/scmp/pageComponent.js"></script>
+    <link rel="stylesheet" href="../../css/element.css">
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/scmp/scmpcommon.css">
+</head>
+<style>
+    [v-cloak] {
+        display:none;
+    }
+    #title{
+        background-color: #E5E6E8;
+        height:40px;
+        line-height: 40px;
+        padding-left:20px;
+    }
+    #search>input{
+        font-size:12px;
+        float:left;
+        height:34px;
+        line-height: 34px;
+        width:71%;
+        border-radius: 5px 0 0 5px;
+        padding-left:5%;
+        outline: none;
+    }
+    #search>button{
+        float:left;
+        display: block;
+        width:22%;
+    }
+    #search{
+        overflow: hidden;
+        width:30%;
+        margin-left: 35%;
+    }
+    #header>p{
+        position: absolute;
+        top:0;
+        left:0;
+    }
+    .header{
+        position: relative;
+        overflow: hidden;
+        margin-top:20px;
+        height:44px;
+    }
+    #courseTable{
+        margin-top:20px;
+    }
+    div.pageInfo{
+        float:left
+    }
+    div.pageNumBox{
+        float:right;
+    }
+    #doorUserFooter{
+        overflow: hidden;
+        padding:10px 20px 20px 20px;
+    }
+    div.pageInfo>p{
+        margin-left:10px;
+    }
+    .pagination{
+        width:100%;
+        text-align:right;
+    }
+    .flex-between{
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+<body>
+    <div class="container-fluid" v-cloak>
+        <div id="title">{{ title }}</div>
+        <div id="content">
+            <div class="header flex-between">
+                <div>
+                    <el-button type="primary" @click="linkToNewcourse">新建课程</el-button>
+                    <el-button type="primary" @click="refreshCourseTable">刷新课表</el-button>
+                    <!-- <button class="btn btn-primary" onclick="linkToNewcourse()">新建课程</button>
+                    <button class="btn btn-primary" onclick="refreshCourseTable()">刷新课表</button> -->
+                </div>
+                <div>
+                    <el-input placeholder="课程名称/授课地点/授课老师名称" v-model="searchName" style="width:280px;">
+                        <el-button slot="append" icon="search" @click="search"></el-button>
+                    </el-input>
+                </div>
+            </div>
+            <div id="courseTable">
+                <table class=" table table-bordered table-striped table-hover f12">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>课程名称</th>
+                            <th>授课地点</th>
+                            <th>授课时间</th>
+                            <th>授课老师</th>
+                            <th>辅教老师</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(value1,index1) in schedules" :data-scheduleid="value1.scheduleid">
+                            <td>{{ index1+1 }}</td>
+                            <td>{{ value1.coursename }}</td>
+                            <td>{{ value1.displayname }}</td>
+                            <td>{{ value1.starttime.slice(0,16) }}~{{ value1.endtime.slice(11,16) }}</td>
+                            <td><span v-for="value2 in schedules[index1].teachers" v-show="value2.role==3">{{ value2.name }}&nbsp;</span></td>
+                            <td><span v-for="value2 in schedules[index1].teachers" v-show="value2.role==4">{{ value2.name }}&nbsp;</span></td>
+                            <td>
+                                <i class="glyphicon glyphicon-pencil btn btn-info btn-xs" v-if="value1.applyteacherflag != 1" title="修改" onclick="toResetCourse(this)" v-show="value1.isUpdate"></i>
+                                <b class="	glyphicon glyphicon-remove btn btn-warning btn-xs" v-if="value1.applyteacherflag != 1"  title="删除" onclick="deleteCourse(this)"></b>
+                                <span class="glyphicon glyphicon-list-alt btn btn-info btn-xs" title="课程详情" onclick="showDetail(this)"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+             <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-sizes="[10, 20, 30, 50]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="totalNum"
+                class="pagination">
+             </el-pagination>
+        </div>
+    </div>
+    <script>
+        var vm=new Vue({
+            el:'.container-fluid',
+            data:{
+            	num:0,
+            	flag:true,//记录状态
+                title:decodeURIComponent(window.location.href).split("=")[1],
+                schedules:[],//查询课程信息后台返回数组
+                currentPage:1,
+                pageSize:10,
+                totalNum:0,
+                searchName:'',
+                url:'',
+            },
+            computed: {
+                pages: function() {
+                    var pag = [];
+                    if(this.pageconf.current < this.pageconf.showItem) { //如果当前的激活的项 小于要显示的条数
+                        //总页数和要显示的条数那个大就显示多少条
+                        var i = Math.min(this.pageconf.showItem, this.pageconf.allpage);
+                        while(i) {
+                            pag.unshift(i--);
+                        }
+                    } else { //当前页数大于显示页数了
+                        var middle = this.pageconf.current - Math.floor(this.pageconf.showItem / 2), //从哪里开始
+                                i = this.pageconf.showItem;
+                        if(middle > (this.pageconf.allpage - this.pageconf.showItem)) {
+                            middle = (this.pageconf.allpage - this.pageconf.showItem) + 1
+                        }
+                        while(i--) {
+                            pag.push(middle++);
+                        }
+                    }
+                    return pag
+                }
+            },
+            mounted(){
+                this.init(this.currentPage,this.pageSize)
+            },
+            methods:{
+                search(){
+                    this.init(this.currentPage,this.pageSize)
+                },
+                handleSizeChange(val){
+                    this.pageSize = val
+                    this.init(this.currentPage,this.pageSize)
+                },
+                handleCurrentChange(val){
+                    this.currentPage = val
+                    this.init(this.currentPage,this.pageSize)
+                },
+                init(pagenum,perpagenum){
+                    let self = this
+					var data = {
+						command:"course/querycourseinfo",
+                        loginid:getCookie('uid'),
+                        sessionid:getCookie('sid'),
+                        timetype:4,
+                        searchinfo:self.searchName,
+                        page:pagenum,
+                        reqnum:perpagenum
+					};
+					function callback(data) {
+						if(data && data.errcode == 0){
+                            var now=Date.parse(new Date());
+                            self.totalNum = data.totalnum
+                            self.schedules=[];
+                            self.schedules=data.schedules;
+                            self.schedules.forEach(function(value){
+                                if(new Date(value.endtime).getTime()>now){
+                                    value.isUpdate=true
+                                }else{
+                                    value.isUpdate=false
+                                };
+                            });
+                        }
+					};
+                    post(self.url+"/course/querycourseinfo", data, callback, errcodefn, errfn)
+                    // let data = {
+                    //     '1':{
+                    //     command:"course/querycourseinfo",
+                    //     loginid:getCookie('uid'),
+                    //     sessionid:getCookie('sid'),
+                    //     timetype:4,
+                    //     searchinfo:self.searchName,
+                    //     page:pagenum,
+                    //     reqnum:perpagenum
+                    // }
+                    // }
+                    // $.post('/course/querycourseinfo',JSON.stringify(data)).then((data)=>{
+                    //     alert('success')
+                    // }).fail((error)=>{
+                    //     alert('error')
+                    // })
+                },
+                // 新建课程
+                linkToNewcourse(){
+                    layer.open({
+                        type: 2,
+                        title: '新建课程',
+                        shadeClose: true,
+                        shade: 0.7,
+                        area: ['84%', '90%'],
+                        content: 'newCourse.html'
+                    });
+                },
+                // 刷新课程
+                refreshCourseTable(){
+                    this.schedules=[]
+                    this.init(this.currentPage,this.pageSize)
+                },
+            }
+        });
+        // getCourseInfo(1,10);
+        function info(txt){//tips
+            (txt=="修改") && (layer.tips(txt,'.glyphicon-pencil',{tips:1}));
+            (txt=="删除") && (layer.tips(txt,'.glyphicon-remove',{tips:1}));
+            (txt=="课程详情") && (layer.tips(txt,'.glyphicon-list-alt',{tips:1}));
+        };
+        // function linkToNewcourse(){//点击蓝色“新建课程”按钮
+        //     layer.open({
+        //         type: 2,
+        //         title: '新建课程',
+        //         shadeClose: true,
+        //         shade: 0.7,
+        //         area: ['84%', '90%'],
+        //         content: 'newCourse.html'
+        //     });
+        // };
+        function toResetCourse(elem){
+            var sche=$(elem).parents("tr").data("scheduleid");
+            layer.open({
+                type: 2,
+                title: '修改课程',
+                shadeClose: true,
+                shade: 0.7,
+                area: ['84%', '90%'],
+                content: 'resetCourse.html?id='+sche
+            });
+        };
+        function showDetail(elem){
+        	vm.num++;
+            var sche=$(elem).parents("tr").data("scheduleid");
+            var courseName=$(elem).parents("tr").children("td").eq(1).text();
+            if (vm.num==1) {
+            	layer.open({
+	                type: 2,
+	                title: courseName+'-课程详情',
+	                shadeClose: true,
+	                shade: 0,
+	                area: ['50%', '60%'],
+	                content: 'courseDetail.html?id='+sche,
+
+	            });
+            } else{
+            	layer.closeAll();
+            	setTimeout(function(){
+            		layer.open({
+		                type: 2,
+		                title: courseName+'-课程详情',
+		                shadeClose: true,
+		                shade: 0,
+		                area: ['50%', '60%'],
+		                content: 'courseDetail.html?id='+sche,
+
+		            });
+            	},100)
+
+            }
+
+        }
+        function getCourseInfo(pagenum,perpagenum){
+            var data={
+                command:"course/querycourseinfo",
+                loginid:getCookie('uid'),
+                sessionid:getCookie('sid'),
+                timetype:4,
+                page:pagenum,
+                reqnum:perpagenum
+            };
+            function callback(res){
+                var now=Date.parse(new Date());
+//                vm.pageList=[];
+                // vm.pageconf.totalnum = res.totalnum;
+                // vm.pageconf.allpage = Math.ceil(res.totalnum/perpagenum);
+//                for(var i=1;i<=totalPageNum;i++){
+//                    vm.pageList.push(i);
+//                };
+                vm.schedules=[];
+                vm.schedules=res.schedules;
+                vm.schedules.forEach(function(value){
+                    if(new Date(value.endtime).getTime()>now){
+                        value.isUpdate=true
+                    }else{
+                        value.isUpdate=false
+                    };
+                });
+//                $("#pageList button").each(function(){
+//                    $(this).attr("class","btn btn-default btn-sm");
+//                });
+//                $("#pageList button:eq("+(pagenum-1)+")").attr("class","btn btn-primary btn-sm");
+            };
+            post("/course/querycourseinfo",data,callback,errcodefn,errfn);
+        };
+        function deleteCourse(elem){
+            var courseName=$(elem).parents("tr").children("td").eq(1).text();
+            var L=layer.confirm('确定删除'+courseName+'吗？', {
+                btn: ['确定','取消'], //按钮
+                icon: 0,
+                title:"删除课程"
+            }, function(){//调删除接口
+                var sche=$(elem).parents("tr").data("scheduleid");//要删除的课程的scheduleid
+                var data={
+                    command:"course/deletecourseinfo",
+                    loginid:getCookie('uid'),
+                    sessionid:getCookie('sid'),
+                    scheduleid:sche
+                };
+                function callback(res){
+                    if(res && res.errcode == 0){
+                        setTimeout(function() {
+                             layer.msg('已删除'+courseName, {icon: 1});
+                             vm.init(vm.currentPage,vm.pageSize)
+                        },300);
+                    }
+                    
+                    // vm.schedules=[];
+                    // if (vm.flag) {
+                    // 	vm.pageconf.onchange(1, 10);
+                    // } else{
+                    // 	vm.pageconf.onchange(findurltype('page'), findurltype('number'));
+                    // }
+                };
+                post("/course/deletecourseinfo",data,callback,errcodefn,errfn)
+            }, function(){
+                layer.close(L);
+            });
+        };
+        // function refreshCourseTable(){//刷新课程表
+        //     vm.schedules=[];
+        //     getCourseInfo(1,10)
+        // }
+//        function setPerPage(elem){//用户选择每页显示多少条
+//            var perPageNum=$(elem).val();
+//            getCourseInfo(1,perPageNum)
+//        };
+//        function firstPage(){//看首页
+//            var numPerPage=$("#onePage").val();
+//            getCourseInfo(1,numPerPage);
+//        };
+//        function lastPage(){//看尾页
+//            var numPerPage=$("#onePage").val();
+//            var totalPage=$("#pageList button").length;
+//            getCourseInfo(totalPage,numPerPage);
+//        };
+//        function toPage(elem){//用户要看哪一页的数据
+//            var pageNum=$(elem).text();//页数
+//            var perPageNum=$("#onePage").val();//每页条数
+//            getCourseInfo(pageNum,perPageNum);
+//        };
+    </script>
+</body>
+</html>

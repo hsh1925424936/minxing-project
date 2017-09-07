@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>门禁管理</title>
+    <link rel="stylesheet" href="../../css/scmp/doorControl.css">
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="../../js/scmp/jquery-ui.js"></script>
+    <link rel="stylesheet" href="../../css/assistant/style.css">
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/scmp/scmpcommon.css">
+</head>
+<body>
+<div class="container-fluid" v-cloak>
+    <div id="title">{{ title }}</div>
+    <p class="addGroupUser">
+        <button class="btn btn-primary" onclick="addGroupUser()">批量增加门禁用户</button>
+    </p>
+    <div id="content">
+       <p class="shadowTitle">门禁列表</p>
+        <div class="oneFloor" v-for="(value1,index1) in doorList">
+            <p><b></b><span>{{ value1.floor | floor }}</span></p>
+            <ul class="allDoors">
+                <li onmouseover="showHandlers(this)" onmouseout="hideHandlers(this)" v-for="(value2,index2) in doorList[index1].doorInfo">
+                    <div :data-doorid="value2.door_id" :data-doornum="value2.door_num" :data-doorctrlid="value2.doorctrl_id" :data-doorctrlsn="value2.doorctrl_sn">
+                        <img src="../../images/scmp/doorClose.png" alt="" v-show="value2.door_status==0||value2.door_status==3">
+                        <img src="../../images/scmp/doorOpen.png" alt="" v-show="value2.door_status==1||value2.door_status==2">
+                        <div class="doorIcon">
+                            <i class="mulno invisible" onclick="chooseDoor(this)"></i>
+                            <span>{{ value2.door_name }}</span>
+                        </div>
+                    </div>
+                    <ul class="doorHandlers hide">
+                        <li>
+                            <span>场地:</span>
+                            <span>{{ value2.door_name }}</span>
+                        </li>
+                        <li>
+                            <span>状态:</span>
+                            <span>{{ value2.door_status | doorStatus }}</span>
+                        </li>
+                        <li onclick="toUserList(this)" :data-doorid="value2.door_id" :data-doorname="value2.door_name"><i class="glyphicon glyphicon-th-list f12"></i><span> &nbsp;门禁用户列表</span></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="shadow" class="hide">
+
+    </div>
+</div>
+<script>
+    var vm=new Vue({
+        el:'.container-fluid',
+        data:{
+            title:decodeURIComponent(window.location.href).split("=")[1],
+            floorList:[],
+            doorList:[]
+        },
+        methods:{
+
+        }
+    });
+    Vue.filter('doorStatus',function(value){//过滤训练项类型
+        if(value=="0"){
+            return "关闭"
+        }else if(value=="1"){
+            return "开启"
+        }else if(value=="2"){
+            return "常开"
+        }else{
+            return "常关"
+        }
+    });
+    Vue.filter('floor',function(value){//楼层文本过滤
+        if(value==null){
+            return '未分配场地的门禁'
+        }else{
+            return value+' F '
+        }
+    });
+    getDoors();
+    function getDoors(){
+        var data={
+            command:"dooraccesscontrol/finddooraccess",
+            loginid:getCookie('uid'),
+            sessionid:getCookie('sid')
+        };
+        function callback(res){
+            var floorList=[];
+            for(index in res.resultlist){//获取楼层数组（不包含null）
+                if(res.resultlist[index].floor!=null){
+                    floorList.push(res.resultlist[index].floor)
+                }
+            };
+            floorList.sort(function(a,b){//楼层数组排序
+                return a-b
+            });
+            var noRepeat=[floorList[0]];//noRepeat是去重后的楼层数组
+            for(var i=0;i<floorList.length;i++){
+                if(floorList[i]!=floorList[i+1] && floorList[i+1]!=undefined){
+                    noRepeat.push(floorList[i+1])
+                }
+            };
+            noRepeat.push(null);
+            vm.floorList=noRepeat;
+            for(var i=0;i<vm.floorList.length;i++){
+                vm.doorList.push({
+                    floor:vm.floorList[i],
+                    doorInfo:[]
+                });
+            };
+            for(var i=0;i<vm.doorList.length;i++){
+                for(var j=0;j<res.resultlist.length;j++){
+                    if(res.resultlist[j].floor==vm.doorList[i].floor){
+                        vm.doorList[i].doorInfo.push({
+                            door_id:res.resultlist[j].door_id,
+                            door_name:res.resultlist[j].door_name,
+                            door_num:res.resultlist[j].door_num,
+                            door_status:res.resultlist[j].door_status,
+                            doorctrl_id:res.resultlist[j].doorctrl_id,
+                            doorctrl_sn:res.resultlist[j].doorctrl_sn
+                        })
+                    }
+                }
+                console.log(JSON.stringify(vm.doorList[i]));
+            };
+        };
+        post("/dooraccesscontrol/finddooraccess",data,callback,errcodefn,errfn)
+    };
+    function showHandlers(elem){
+        $(elem).children("ul").removeClass("hide");
+        $(elem).children("div").addClass("grayBg");
+        $(elem).find("div.doorIcon").children("i").removeClass("invisible")
+    };
+    function hideHandlers(elem){
+        $(elem).children("ul").addClass("hide");
+        if(!$(elem).find("div.doorIcon").children("i").hasClass("mulyes")){
+            $(elem).children("div").removeClass("grayBg");
+            $(elem).find("div.doorIcon").children("i").addClass("invisible")
+        }
+    };
+    function chooseDoor(elem){
+        $(elem).toggleClass("mulyes");
+    };
+    function toDoorEdit(){
+        $("#shadow").removeClass("hide");
+        $("#doorEdit").removeClass("hide");
+    };
+    function closeDoorEdit(){
+        $("#shadow").addClass("hide");
+        $("#doorEdit").addClass("hide");
+    };
+    function toUserList(elem){
+        var doorId=$(elem).data("doorid");
+        var doorName=$(elem).data("doorname");
+        setCookie("doorid",$(elem).parent().prev().data("doorid"));
+        setCookie("doornum",$(elem).parent().prev().data("doornum"));
+        setCookie("doorctrlid",$(elem).parent().prev().data("doorctrlid"));
+        setCookie("doorctrlsn",$(elem).parent().prev().data("doorctrlsn"));
+        setCookie("doorname",doorName);
+        layer.open({
+            type: 2,
+            title: doorName+'-门禁用户列表',
+            shadeClose: true,
+            shade: 0.7,
+            area: ['80%', '90%'],
+            content: 'doorUserList.html?doorId='+doorId
+        });
+    };
+    function openDoor(elem){
+        var L=layer.confirm('确定要开门吗？', {
+            btn: ['确定','取消'], //按钮
+            icon: 0,
+            title:"开门"
+        }, function(){//调开门接口
+            layer.msg('已开门', {icon: 1});
+        }, function(){
+          layer.close(L);
+        });
+    };
+    function openAlways(elem){
+        var L=layer.confirm('确定设置为常开吗？', {
+            btn: ['确定','取消'], //按钮
+            icon: 0,
+            title:"设置常开"
+        }, function(){//调开门接口
+            layer.msg('已设置常开', {icon: 1});
+        }, function(){
+            layer.close(L);
+        });
+    };
+    function closeAlways(elem){
+        var L=layer.confirm('确定设置为常关吗？', {
+            btn: ['确定','取消'], //按钮
+            icon: 0,
+            title:"设置常关"
+        }, function(){//调开门接口
+            layer.msg('已设置常关', {icon: 1});
+        }, function(){
+            layer.close(L);
+        });
+    };
+    function addGroupUser(){
+        var choosedDoorInfo=[];
+        $("div.doorIcon i").each(function(){
+            if($(this).hasClass('mulyes')){
+                choosedDoorInfo.push(JSON.stringify({
+                    doorctrl_id:$(this).parent().parent().data('doorctrlid'),
+                    doorctrl_sn:$(this).parent().parent().data('doorctrlsn'),
+                    door_id:$(this).parent().parent().data('doorid'),
+                    door_num:$(this).parent().parent().data('doornum')
+                }))
+            }
+        });
+        var str=choosedDoorInfo.join('-');
+        if(choosedDoorInfo.length!=0){
+            setCookie('choosedDoorInfo',str);
+            layer.open({
+                type: 2,
+                title: '批量增加门禁用户',
+                shadeClose: true,
+                shade: 0.7,
+                area: ['730px', '490px'],
+                content: 'addGroupUser.html'
+            });
+        }else{
+            layer.msg('请选择需要添加用户的门')
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>班级管理</title>
+	 <script src="../../js/jquery-1.11.3.js"></script>
+     <script src="../../layer/xie/layer1.js"></script> 
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script> 
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/element.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+     <script src="../../js/base.js"></script> 
+     <!-- <script src="../../js/scmp/pageComponent.js"></script>  -->
+    <link rel="stylesheet" href="../../css/element.css">
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/scmp/scmpcommon.css">
+	<style>
+		[v-cloak] {
+			display: none;
+		}
+		.message-student{
+			padding-left:15px;
+			padding-right:15px;
+			margin-left:auto;  
+			margin-right:auto; 
+		}
+		.title{
+			background-color: #E5E6E8;
+			height:40px;
+			line-height: 40px;
+			padding-left:20px;
+		}
+		.flex-between{
+			display:flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		.center{
+			position: relative;
+			overflow: hidden;
+			margin-top:20px;
+			margin-bottom:20px;
+			height:44px;
+		}
+		.pagination{
+			width:100%;
+			text-align:right;
+			margin-top:20px;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="message-student" v-cloak>
+		<p class="title">班级管理</p>
+		<!--*********************************按钮  搜索部分************************************-->
+		<div class="center flex-between">
+			<el-button type="primary" @click="add">新增</el-button>
+			<el-input placeholder="班级名称/专业/年级" v-model="search_text" style="width:280px;">
+				<el-button slot="append" icon="search" @click="searchClass" @keyup="enter_to_search()"></el-button>
+			</el-input>
+		</div>
+		<!--************************************************表格   学生信息**************************************-->
+		<div class="table-responsive">
+			 <!-- <table class="table   table-bordered table-striped">
+				<tr>
+					<th>序号</th>
+					<th>班级名称</th>
+					<th>专业</th>
+					<th>学生数</th>
+					<th @click="list_sort(1)" :class="classArr[0]">
+						年级
+						<span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+					</th>
+					<th @click="list_sort(0)" :class="classArr[1]">
+						修改时间
+						<span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+					</th>
+					<th>操作</th>
+				</tr>
+				<tr v-for="(index,item) in classlist">
+					<td>{{index+1}}</td>
+					<td>{{item.name}}</td>
+					<td>{{item.majorname}}</td>
+					<td>{{item.studentcount}}</td>
+					<td>{{item.grade}}</td>
+					<td>{{item.updated_at}}</td>
+					<td class="message-btn">
+						<div class="btnCon clearfix">
+							<button type="button" class="btn btn-primary" @click="edit" :classId="item.id" :name="item.name" :majorid="item.majorid"
+							 :majorname="item.majorname" :grade="item.grade">
+									编辑
+								</button>
+							<button type="button" class="btn btn-warning" @click="delete_message(event)" :classId="item.id">
+									刪除
+								</button>
+						</div>
+					</td>
+				</tr>
+			</table>  -->
+			<el-table
+				ref="singleTable"
+				:data="classlist"
+				border
+				highlight-current-row
+				style="width: 100%">
+				<el-table-column
+				type="index"
+				width="80">
+				</el-table-column>
+				<el-table-column
+				property="name"
+				label="班级名称"
+				width="280">
+				</el-table-column>
+				<el-table-column
+				property="majorname"
+				label="专业"
+				width="280">
+				</el-table-column>
+				<el-table-column
+				property="studentcount"
+				width="150"
+				label="学生数">
+				</el-table-column>
+				<el-table-column
+				property="grade"
+				label="年级"
+				width="150">
+				</el-table-column>
+				<!-- <el-table-column
+				property="updated_at"
+				width="200"
+				label="修改时间">
+				</el-table-column> -->
+				<el-table-column
+					label="操作"
+					>
+					<template scope="scope">
+						<el-button
+						@click.native.prevent="edit(scope.$index,scope.row)"
+						type="info"
+						size="mini">
+						编辑
+						</el-button>
+						<el-button
+						@click.native.prevent="delete_message(scope.$index,scope.row)"
+						type="danger"
+						size="mini">
+						删除
+						</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+			<el-pagination
+				@size-change="handleSizeChange"
+				@current-change="handleCurrentChange"
+				:current-page="currentPage"
+				:page-sizes="[10, 20, 30, 50]"
+				:page-size="pageSize"
+				layout="total, sizes, prev, pager, next, jumper"
+				:total="totalNum"
+				class="pagination">
+			</el-pagination>
+		</div>
+		<el-dialog
+			:title="is_add?'新增班级':'修改班级'"
+			:visible.sync="dialogVisible"
+			size="tiny"
+			:before-close="handleClose">
+			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+				<el-form-item label="班级名称" prop="name">
+					<el-input v-model="ruleForm.name" placeholder="请输入班级名称"></el-input>
+				</el-form-item>
+				<el-form-item label="专业" prop="major">
+					<el-select v-model="ruleForm.major" placeholder="请选择专业">
+						<el-option v-for="item in majorlist" :value="item.id" :label="item.name"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="年级" prop="grade" placeholder="请选择年级">
+					<el-select v-model="ruleForm.grade">
+						<el-option v-for="item in gradelist" :value="item.id" :label="item.id"></el-option>
+					</el-select>
+				</el-form-item>
+			</el-form>
+			<span slot="footer" class="dialog-footer">
+				<el-button @click="dialogVisible = false">取 消</el-button>
+				<el-button type="primary" @click="save('ruleForm')">保存</el-button>
+				<el-button @click="reset('ruleForm')" style="display:none;"></el-button>
+			</span>
+		</el-dialog>
+		</div>
+</body>
+<script>
+	var vm = new Vue({
+		el: ".message-student",
+		data: {
+			url:'',
+			dialogVisible:false,
+			is_add:true,
+			willShow: false,
+			classShow: false,
+			deleteShow: false,
+			deleteId:'',
+			classlist: [],//班级列表
+			majorlist: [],//专业列表
+			gradelist: [],//年级列表
+			now_info: {//存放当前操作的班级信息
+				id: '',//当前操作的班级id
+				name: '',//班级名称
+				majorid: '',//专业id
+				majorname: '',//专业
+				grade: ''//年级
+			},
+			search_text: '',//搜索的字段
+			sort_type: 0,//当前的排序规则
+			classArr: [
+				{ 'th_active': false },
+				{ 'th_active': true }
+			],
+			currentPage:1,
+			pageSize:10,
+			totalNum:0,
+			ruleForm:{
+				name:'',
+				major:'',
+				grade:''
+			},
+			editId:'',
+			rules:{
+				name:[
+					{required:true,message:'请输入班级名称！',trigger:'blur'}
+				],
+				major:[
+					{required:true,message:'请选择专业！'}
+				],
+				grade:[
+					{required:true,message:'请选择年级！'}
+				]
+			}
+		},
+		mounted() {
+			this.showlist();
+			this.major_select();
+			this.grade_select();
+		},
+		methods: {
+			handleClose(){
+				this.dialogVisible = false
+			},
+			handleSizeChange(val){
+				this.pageSize = val
+				this.showlist();
+			},
+			handleCurrentChange(val){
+				this.currentPage = val
+				this.showlist();
+			},
+			add() {
+				this.ruleForm.name = ''
+				this.ruleForm.major = ''
+				this.ruleForm.grade = ''
+				this.dialogVisible = true
+				this.is_add = true
+			},
+			remove: function () {
+				this.willShow = false;
+				this.classShow = false;
+				this.deleteShow = false;
+			},
+			cancel: function () {
+				this.willShow = false;
+				this.classShow = false;
+				this.deleteShow = false;
+			},
+			edit(index,row) {
+				// console.log(row)
+				this.ruleForm.name = row.name
+				this.ruleForm.major = row.majorid
+				this.ruleForm.grade = row.grade
+				this.dialogVisible = true
+				this.is_add = false
+				this.editId = row.id
+				// this.classShow = true;
+				// this.now_info.id = $(event.target).attr('classId');
+				// this.now_info.name = $(event.target).attr('name');
+				// this.now_info.majorid = $(event.target).attr('majorid');
+				// this.now_info.majorname = $(event.target).attr('majorname');
+				// this.now_info.grade = $(event.target).attr('grade');
+			},
+			reset(ruleForm){
+				this.$refs[ruleForm].resetFields()
+			},
+			save(ruleForm){
+				let self = this
+				let url = self.url + '/cls/addclasses'
+				let data = {
+					command: "cls/addclasses",
+					sessionid: getCookie('sid'),
+					loginid: getCookie('uid'),
+					name: this.ruleForm.name,
+					majorid: this.ruleForm.major,
+					grade: this.ruleForm.grade,
+				}
+				if(!self.is_add){
+					data.id = self.editId
+					data.command = "cls/updateclasses"
+					url = self.url + "/cls/updateclasses"				
+				}
+				 this.$refs[ruleForm].validate((valid) => {
+					if (valid) {
+						// alert('submit!');
+						my_require.R({
+							isShade: 1,
+							url:url,
+							data: data,
+							callback: function (base) {
+								self.dialogVisible = false
+								if(self.is_add){
+									self.$message({
+										type:'success',
+										message:'新增班级成功！'
+									})
+								}else{
+									self.$message({
+										type:'success',
+										message:'修改班级成功!'
+									})
+								}
+								self.showlist()
+							}
+						});
+					} else {
+						// console.log('error submit!!');
+						return false;
+					}
+				});
+				
+			},
+			delete_message(index,row) {//删除班级
+				this.deleteId = row.id
+				 this.$confirm('此操作将永久删除该班级, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+					}).then(() => {
+					this.sure()
+					}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除'
+					});          
+				});
+			},
+			sure() {//确认删除班级
+				let self　= this
+				my_require.R({
+					isShade: 1,
+					url: self.url+'/cls/deleteclasses',
+					data: {
+						command: "cls/deleteclasses",
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						id:self.deleteId
+					},
+					callback: function (base) {
+						if(base){
+							self.$message({
+								type:"success",
+								message:'删除成功了！'
+							})
+							self.showlist()
+						}
+					}
+				});
+
+			},
+			searchClass: function () {//搜索班级列表
+				this.classlist = []
+				this.totalNum = 0
+				this.currentPage = 1
+				this.pageSize = 10
+				this.showlist();
+			},
+			enter_to_search: function () {//回车键搜索班级列表
+				if (event.keyCode == 13) {
+					this.searchClass();
+				}
+			},
+			new_class: function () {//新增班级
+				if (!this.new_name) {
+					layer.msg('请填写班级名称!');
+					return false;
+				}
+				if (!this.new_major) {
+					layer.msg('请选择专业!');
+					return false;
+				}
+				if (!this.new_grade) {
+					layer.msg('请选择年级!');
+					return false;
+				}
+
+				my_require.R({
+					isShade: 1,
+					url: '/cls/addclasses',
+					data: {
+						command: "cls/addclasses",
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						name: this.new_name,
+						majorid: this.new_major,
+						grade: this.new_grade
+					},
+					callback: function (base) {
+						console.log(base);
+						layer.msg('新增班级成功!');
+						showlist({ type: vm.sort_type, query: vm.search_text });
+						vm.cancel();
+						vm.new_code = '';
+						vm.new_name = '';
+					}
+				});
+
+			},
+			update_class: function () {//提交修改班级信息
+				if (!vm.now_info.name) {
+					layer.msg('请填写班级名称!');
+					return false;
+				}
+				if (!vm.now_info.majorid) {
+					layer.msg('请选择专业!');
+					return false;
+				}
+				if (!vm.now_info.grade) {
+					layer.msg('请选择年级!');
+					return false;
+				}
+
+				my_require.R({
+					isShade: 1,
+					url: '/cls/updateclasses',
+					data: {
+						command: "cls/updateclasses",
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						id: this.now_info.id,
+						name: this.now_info.name,
+						majorid: this.now_info.majorid,
+						grade: this.now_info.grade
+					},
+					callback: function (base) {
+						console.log(base);
+						layer.msg('更新班级信息成功!');
+						showlist({ type: vm.sort_type, query: vm.search_text });
+						vm.cancel();
+					}
+				});
+
+			},
+			list_sort: function (type) {//根据年级或修改时间排序
+				//样式切换
+				if (type == 1) {
+					this.classArr[0].th_active = true;
+					this.classArr[1].th_active = false;
+				} else {
+					this.classArr[0].th_active = false;
+					this.classArr[1].th_active = true;
+				}
+
+				this.sort_type = type;
+			},
+			showlist(){
+				let self = this
+				// self.classlist = []
+				// self.totalNum = 0
+				let data = {
+					command: "cls/listclasses",
+					sessionid: getCookie('sid'),
+					loginid: getCookie('uid'),
+					query:self.search_text,
+					pagenum:self.currentPage,
+					pagepersize:self.pageSize
+				};
+				my_require.R({
+					isShade: 1,
+					url: self.url+'/cls/listclasses',
+					data: data,
+					callback: function (base) {
+						if(base && base.classes.length != 0){
+							self.classlist = base.classes;
+							self.totalNum = base.totalcount
+						}
+						
+					}
+				});
+			},
+			major_select(){
+				my_require.R({
+				url:'/major/majorlist',
+				data: {
+					command: "major/majorlist",
+					sessionid: getCookie('sid'),
+					loginid: getCookie('uid')
+				},
+				callback: function (base) {
+					console.log(base);
+					if(base.major){
+						vm.majorlist = base.major;
+					}
+				}
+			});
+			},
+			grade_select(){
+				my_require.R({
+				url:'/system/querysetlist',
+				data: {
+					command: "system/querysetlist",
+					sessionid: getCookie('sid'),
+					loginid: getCookie('uid'),
+					paramcode:"gradelist",
+				},
+				callback: function (base) {
+					console.log(base);
+					if(base.setlist){
+						vm.gradelist = base.setlist
+					}
+				}
+			});
+			}
+		},
+	
+	})
+</script>
+
+</html>

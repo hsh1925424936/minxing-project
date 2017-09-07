@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/assistant/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>排行榜</title>
+		<style type="text/css">
+			body{
+				background-color:#ECECEC;
+			}
+			
+			.topBar {
+				width:100%; height:60px; background-color:#f5f5f5; border-top:1px solid #dcdcdc;
+				border-bottom:1px solid #dcdcdc; font-size:14px;
+			}
+			.topBarInner{
+				width:1024px; height:100%; margin:auto;
+			}
+			.topBar button {
+			    display:block; float:right; position:relative;
+			    top:50%; margin-top:-18px; height:38px; text-align:center; line-height:36px;
+			    border:1px solid #0496C9; box-sizing:border-box; border-radius:3px;
+			    
+			}
+			.return1{
+				width:118px; background-color:#0496ca; color:white;
+			}
+			.return1:hover{
+				background-color:#0487b5;
+			}
+
+			.mainCon{
+				width:1024px; height:480px; margin:auto; margin-top:20px;
+			}
+			.navigate{
+				width:134px; height:100%; float:left; background-color:white;
+				font-size:14px; border-radius:5px; padding-top:10px; overflow-y:auto;
+				margin-right:10px; padding-left:1px; padding-right:1px;
+			}
+			.navigate li{
+				width:100%; height:38px; line-height:38px;
+				text-align:center; cursor:pointer;
+			}
+			.li_on{
+				color:#0496C9; background-color:#DBEFF6;
+			}
+			.li_not_on{
+				color:rgb(51,51,51);
+			}
+			.rightCon{
+				width:875px; height:100%; float:right;
+				background-color:white; border-radius:5px; padding-top:10px;
+				padding-left:30px; padding-right:30px;
+			}
+			.rightCon>div{
+				width:100%; height:100%; overflow-y:auto;
+			}
+			.groupOuter{
+				display:none;
+			}
+			.rankingOuter{
+				width:100%; height:88px; padding-top:15px; position:relative;
+				padding-bottom:18px; border-bottom:1px solid #E5E5E5;
+			}
+			.rankingOuter>img{
+				width:36px; height:58px; display:block; position:absolute; left:0; top:15px;
+			}
+			.rankingOuter>span{
+				width:50px; height:50px; display:block; float:left;
+				margin-left:50px; background-image:url(../../images/assistant/default_head.png);
+				background-size:100% 100%; background-repeat:no-repeat; margin-top:5px;
+			}
+			.rankingCon{
+				height:100%; float:left; margin-left:10px;
+			}
+			.rankingCon h3{
+				font-size:16px; line-height:34px;
+			}
+			.rankingCon p{
+				font-size:14px; color:rgb(102,102,102);
+			}			
+		</style>	
+		
+		
+	</head>
+	<body>
+		<div class="topBar">
+			<div class="topBarInner">
+				<button type="button" class="return1">返回</button>
+			</div>
+		</div>
+
+		<div class="mainCon">
+			<ul class="navigate">
+				<li class="li_on personal">个人排名</li>
+				<li class="li_not_on group">小组排名</li>
+			</ul>
+
+			<div class="rightCon">
+				<div class="personalOuter">
+					<div class="rankingOuter">
+						<img src="../../images/assistant/paihang01.png">
+						<span></span>
+						<div class="rankingCon">
+							<h3>彭仓旭</h3>
+							<p>答题总数&nbsp;:&nbsp;10题&nbsp;回答正确&nbsp;:&nbsp;7&nbsp;回答错误&nbsp;:&nbsp;3&nbsp;正确率&nbsp;:&nbsp;70%</p>
+						</div>
+					</div>
+					<div class="rankingOuter">
+						<img src="../../images/assistant/paihang02.png">
+						<span></span>
+						<div class="rankingCon">
+							<h3>彭仓旭</h3>
+							<p>答题总数&nbsp;:&nbsp;10题&nbsp;回答正确&nbsp;:&nbsp;7&nbsp;回答错误&nbsp;:&nbsp;3&nbsp;正确率&nbsp;:&nbsp;70%</p>
+						</div>
+					</div>
+					<div class="rankingOuter">
+						<img src="../../images/assistant/paihang03.png">
+						<span></span>
+						<div class="rankingCon">
+							<h3>彭仓旭</h3>
+							<p>答题总数&nbsp;:&nbsp;10题&nbsp;回答正确&nbsp;:&nbsp;7&nbsp;回答错误&nbsp;:&nbsp;3&nbsp;正确率&nbsp;:&nbsp;70%</p>
+						</div>
+					</div>
+					<div class="rankingOuter">
+						<span></span>
+						<div class="rankingCon">
+							<h3>彭仓旭</h3>
+							<p>答题总数&nbsp;:&nbsp;10题&nbsp;回答正确&nbsp;:&nbsp;7&nbsp;回答错误&nbsp;:&nbsp;3&nbsp;正确率&nbsp;:&nbsp;70%</p>
+						</div>
+					</div>
+				</div>
+				<div class="groupOuter">
+					<div class="rankingOuter">
+						<img src="../../images/assistant/paihang01.png">
+						<span></span>
+						<div class="rankingCon">
+							<h3>第1组&nbsp;组长&nbsp;:&nbsp;彭仓旭&nbsp;记录员&nbsp;:&nbsp;刘贵阳</h3>
+							<p>答题总数&nbsp;:&nbsp;10题&nbsp;回答正确&nbsp;:&nbsp;7&nbsp;回答错误&nbsp;:&nbsp;3&nbsp;正确率&nbsp;:&nbsp;70%</p>
+						</div>
+					</div>
+					<div class="rankingOuter">
+						<img src="../../images/assistant/paihang02.png">
+						<span></span>
+						<div class="rankingCon">
+							<h3>第1组&nbsp;组长&nbsp;:&nbsp;彭仓旭&nbsp;记录员&nbsp;:&nbsp;刘贵阳</h3>
+							<p>答题总数&nbsp;:&nbsp;10题&nbsp;回答正确&nbsp;:&nbsp;7&nbsp;回答错误&nbsp;:&nbsp;3&nbsp;正确率&nbsp;:&nbsp;70%</p>
+						</div>
+					</div>
+					<div class="rankingOuter">
+						<img src="../../images/assistant/paihang03.png">
+						<span></span>
+						<div class="rankingCon">
+							<h3>第1组&nbsp;组长&nbsp;:&nbsp;彭仓旭&nbsp;记录员&nbsp;:&nbsp;刘贵阳</h3>
+							<p>答题总数&nbsp;:&nbsp;10题&nbsp;回答正确&nbsp;:&nbsp;7&nbsp;回答错误&nbsp;:&nbsp;3&nbsp;正确率&nbsp;:&nbsp;70%</p>
+						</div>
+					</div>
+					<div class="rankingOuter">
+						<span></span>
+						<div class="rankingCon">
+							<h3>第1组&nbsp;组长&nbsp;:&nbsp;彭仓旭&nbsp;记录员&nbsp;:&nbsp;刘贵阳</h3>
+							<p>答题总数&nbsp;:&nbsp;10题&nbsp;回答正确&nbsp;:&nbsp;7&nbsp;回答错误&nbsp;:&nbsp;3&nbsp;正确率&nbsp;:&nbsp;70%</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		//左边导航栏点击的效果
+		$('.navigate li').click(function() {
+			$('.navigate li').removeClass('li_on');
+			$('.navigate li').addClass('li_not_on');
+			$(this).removeClass('li_not_on');
+			$(this).addClass('li_on');
+
+		});
+
+		$('.personal').click(function() {
+			$('.groupOuter').css('display', 'none');
+			$('.personalOuter').css('display', 'block');
+		});
+
+		$('.group').click(function() {
+			$('.personalOuter').css('display', 'none');
+			$('.groupOuter').css('display', 'block');
+		});
+
+		$('.return1').click(function() {
+			history.go(-1);
+		});
+
+		function show_ranking_personal(){//展示个人的排行
+			var json = {
+				'1':{
+					command:'question/personalranking', //接口地址
+					scheduleid:scheduleid,
+					sessionid:getCookie('sid'),
+					loginid:getCookie('loginid')
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/question/personalranking', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+
+					var str = '';
+					for( var i = 0; i < base.sortresult.length; i++ ){
+						var result = base.sortresult[i];
+						var wrongcount = parseInt(result.total) - parseInt(result.truecount);
+						var true_rate = parseInt(result.truecount)/parseInt(result.total)*100;
+						true_rate = true_rate.toFixed(2);
+						var img = '';
+						if( i < 3 ){//判断是否前三，如果是放图片
+							img = '<img src="../../images/assistant/paihang0'+(i+1)+'.png">';
+						}
+						str+=
+						'<div class="rankingOuter">'+
+							img+
+							'<span></span>'+
+							'<div class="rankingCon">'+
+								'<h3>'+result.name+'</h3>'+
+								'<p>答题总数&nbsp;:&nbsp;'+result.total+'题&nbsp;回答正确&nbsp;:&nbsp;'+result.truecount+'&nbsp;回答错误&nbsp;:&nbsp;'+wrongcount+'&nbsp;正确率&nbsp;:&nbsp;'+true_rate+'%</p>'+
+							'</div>'+
+						'</div>';
+					}
+					$('.personalOuter').html(str);
+					
+				}
+			});
+		}
+
+		function show_ranking_group(){//展示小组的排行
+			var json = {
+				'1':{
+					command:'question/groupranking', //接口地址
+					scheduleid:scheduleid,
+					sessionid:getCookie('sid'),
+					loginid:getCookie('loginid')
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/question/groupranking', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+
+					var str = '';
+					for( var i = 0; i < base.sortresult.length; i++ ){
+						var result = base.sortresult[i];
+						var wrongcount = parseInt(result.total) - parseInt(result.truecount);
+						var true_rate = parseInt(result.truecount)/parseInt(result.total)*100;
+						true_rate = true_rate.toFixed(2);
+						var img = '';
+						if( i < 3 ){//判断是否前三，如果是放图片
+							img = '<img src="../../images/assistant/paihang0'+(i+1)+'.png">';
+						}
+						str+=
+						'<div class="rankingOuter">'+
+							img+
+							'<span></span>'+
+							'<div class="rankingCon">'+
+								'<h3>第'+result.sgindex+'组&nbsp;组长&nbsp;:&nbsp;'+result.groupleader+'&nbsp;记录员&nbsp;:&nbsp;'+result.grouprecorder+'</h3>'+
+								'<p>答题总数&nbsp;:&nbsp;'+result.total+'题&nbsp;回答正确&nbsp;:&nbsp;'+result.truecount+'&nbsp;回答错误&nbsp;:&nbsp;'+wrongcount+'&nbsp;正确率&nbsp;:&nbsp;'+true_rate+'%</p>'+
+							'</div>'+
+						'</div>';
+					}
+					$('.groupOuter').html(str);
+					
+				}
+			});
+		}
+
+		var scheduleid;//课程表id
+		function get_starttime(){//查询授课开始时间和课程名称
+			scheduleid = getCookie('scheduleid');//课程表id
+			$('.personalOuter').html('');
+			$('.groupOuter').html('');
+			show_ranking_personal();//显示个人排名
+			show_ranking_group();//显示小组排名
+		}
+
+		$('.personalOuter').html('');
+		$('.groupOuter').html('');
+
+		get_starttime();
+	</script>
+
+</html>

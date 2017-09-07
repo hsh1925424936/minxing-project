@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<title>实习计划详情</title>
+	<script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/scmp/common.js"></script>
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+	</head>
+	<style>
+	.add_pratice{
+		width: 520px;
+		height: 585px;
+		border: 1px solid;
+		position: fixed;
+		left: 100px;
+		background-color: white;
+	}
+	.praticeTop{
+		height: 40px;
+		border-bottom: 1px solid;
+		background-color: silver;
+	}
+	.praticeTop{
+		height: 40px;
+		border-bottom: 1px solid;
+		background-color: silver;
+	}
+	.praticeTop>p:nth-child(1){
+		position: absolute;
+		left: 10px;
+		top: 10px;
+	}
+	.praticeTop>p:nth-child(2){
+		height: 50px;
+		line-height: 50px;
+		position: absolute;
+		right: 10px;
+		font-size: 20px;
+		cursor: pointer;
+	}
+	.praticedetail{
+		width: 454px;
+	}
+	.pra_name{
+		margin-left: 52px;
+		margin-top: 32px;
+	}
+	.pra_time{
+		margin-left: 52px;
+		margin-top: 10px;
+	}
+	.pra_remarks{
+		margin-left: 52px;
+		margin-top: 10px;
+		text-align: center;
+	}
+	.remarks_text{
+		margin-left: 27px;
+		width: 320px;
+		height: 100px;
+		max-height: 100px;
+		max-width: 320px;
+	}
+	.pra_skill{
+		margin-left: 54px;
+		margin-top: 10px;
+	}
+	</style>
+	<body>
+		<div class="detail_pratice" id="detail_pratice" v-cloak>
+			<div class="praticedetail" id="praticedetail">
+				<div class="pra_name">
+					<span class="name">计划名称 ：</span>
+					<!--<span>{{planname}}</span>-->
+					<input v-model='planname' type="text" class="planstart" size="11" readonly="true"/>
+				</div>
+				<div class="pra_time">
+					<span class="starttime">开始时间 ：</span>
+					<!--<span>{{starttime}}</span>-->
+					<input v-model='starttime.slice(0,10)' type="text" class="planstart" size="11" readonly="true"/>
+					<span class="endtime">结束时间 ：</span>
+					<input v-model='endtime.slice(0,10)' type="text" class="planend" size="13" readonly="true"/>
+					<!--<span>{{endtime}}</span>-->
+				</div>
+				<div class="pra_remarks">
+					<span class="remarks">备注 ：</span>
+					<textarea class="remarks_text" v-model='plancomment' readonly="ture"></textarea>
+					<!--<span>{{plancomment}}</span>-->
+				</div>
+				<div class="pra_skill">
+                    <p class="skill">技能选项:</p>
+                    <table id="stuMsg" class="table table-bordered">
+                        <thead>
+                            <tr>
+                              <th>序号</th>
+                              <th>技能名称</th>
+                            </tr>
+                            <tr v-for="(value,index) in learnlist">
+                               <td>{{index+1}}</td>
+                               <td>{{value.name}}</td>
+                        	</tr>
+                        </thead>
+                	</table>
+             </div>
+			</div>
+		</div>
+<script>
+  var vm=new Vue({
+        el:"#detail_pratice",
+        data:{
+           planname:'',
+           starttime:'',
+           endtime:'',
+           plancomment:'',
+           learnlist:[]
+           
+           
+        },
+        methods:{
+			remove:function(){
+				alert('remove')
+			}
+        }
+    });
+    show_detail();
+	function show_detail(){
+	var data={
+            command:"plan/findplan",
+            sessionid:getCookie('sid'),
+    		loginid:getCookie('uid'),
+            id:window.location.href.split('=')[1],
+       };
+    function callback(res){
+    		console.log(JSON.stringify(res))
+    		vm.planname=res.plan.planname;
+    		vm.starttime=res.plan.starttime;
+    		vm.endtime=res.plan.endtime;
+    		vm.plancomment=res.plan.plancomment;
+    		vm.learnlist=res.plan.learnitems
+    		//console.log(this.plans);
+    	};
+    post('/plan/findplan',data,callback,errcodefn,errfn)
+};
+</script>
+</body>
+</html>

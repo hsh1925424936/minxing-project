@@ -1,0 +1,95 @@
+{{#extend "layout/layout" menu="index"}}
+    {{#replace "header"}}{{/replace}}
+    {{#replace "footer"}}{{/replace}}
+    {{#replace "content"}}
+        <div id="container">
+            <div> 选择分组：
+                {{#each groups}}
+                    <label><input type="radio" name="group" v-model="group" data-role="group" value="{{this}}" />{{this}} </label>
+                {{/each}}
+            </div>
+            <div class="item" v-for="it in list" @click="select(it)">
+                <h1 v-text="it.name"></h1>
+            </div>
+        </div>
+    {{/replace}}
+    {{#append "css"}}
+        <style>
+            .item{
+                float: left;
+                width:120px;
+                height:100px;
+                margin-right:10px;
+                margin-bottom:10px;
+                border:1px solid red;
+                text-align: center;
+                line-height: 100px;
+                cursor:pointer;
+            }
+        </style>
+    {{/append}}
+    {{#append "js"}}
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script src="https://cdn.bootcss.com/vue/2.4.1/vue.js"></script>
+        <script type="text/javascript">
+
+            var mlist = {{json mlist}};
+
+            // test
+            if(!mlist || mlist.length <= 0) {
+                mlist = [{
+                    name: '产品1',
+                    title1: '第一个名字',
+                    content1: '第一个描述',
+                    title2: '第二个名字',
+                    content2: '第二个描述',
+                    title3: '第三个名字',
+                    content3: '第三个描述',
+                    title4: '第四个名字',
+                    content4: '第四个描述'
+                }, {
+                    name: '产品2',
+                    title1: 'Hello',
+                    content1: '1111111111',
+                    title2: 'World',
+                    content2: '2222222',
+                    title3: 'Very',
+                    content3: '333333333',
+                    title4: 'Good',
+                    content4: '444444444'
+                }];
+            }
+
+            new Vue({
+                el: '#container',
+                data: {
+                    group: '',
+                    list: mlist
+                },
+                methods: {
+                    select: function(it) {
+
+                        var self = this;
+                        var data = {
+                            group: self.group,
+                            data: it.id
+                        };
+
+                        $.ajax({
+                            url: '/medicine/show',
+                            type: 'POST',
+                            contentType: 'application/json;charset=utf-8',
+                            data: JSON.stringify(data)
+                        }).done(function (data) {
+                            if(data && data.data) {
+
+                            }
+                        }).fail(function () {
+                            alert('显示失败！');
+                        });
+                    }
+                }
+            });
+        </script>
+    {{/append}}
+{{/extend}}

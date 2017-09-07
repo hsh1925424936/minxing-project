@@ -1,0 +1,69 @@
+/*用户管理和请求管理公共样式*/
+.blue_btn{/*pc按钮样式*/
+	width:128px; height:42px; background-color:#2088CA;
+	color:white; line-height:42px; border-radius:5px;
+	cursor:pointer; display:block;
+}
+.grey_background{/*按钮置灰颜色*/
+	background-color:#CCCCCC !important;
+}
+.phone_blue_btn{/*phone按钮样式*/
+	width:90%; height:39px; background-color:#2088CA;
+	color:white; line-height:39px; border-radius:5px;
+	cursor:pointer; position:absolute;
+	left:50%; margin-left:-45%; bottom:12px; display:none;
+}
+.usertable{
+	width:100%; border:1px solid #CCCCCC; text-align:center; color:#333333;
+}
+.usertable tr:nth-child(1){
+	background-color:#ECECEC;
+}
+.usertable td,.usertable th{
+	height:52px;
+}
+.usertable tr{
+	border-bottom:1px solid #CCCCCC;
+}
+.usertable .edit span{
+	display:inline-block; padding-left:0.2em; padding-right:0.2em;
+	color:#2088CA; cursor:pointer;
+}
+.usertable .edit i{
+	font-style:normal;
+}
+
+/*适配手机端*/
+@media screen and (max-width: 800px) {
+	/*按钮*/
+	.blue_btn{
+		display:none;
+	}
+	.phone_blue_btn{
+		display:block;
+	}
+
+	.usertable .edit i{display:none;}
+	.usertable .usertable tr{
+		border:none;
+	}
+	.usertable td,.usertable th{
+		border:1px solid #cccccc; height:39px;
+	}
+	.table_con{
+		height:100%; padding-bottom:59px; position:relative;
+	}
+	.table_inner{
+		height:100%; overflow-y:auto;
+	}
+	.usertable .edit span{
+		padding-left:0; padding-right:0;
+	}
+}
+
+/*表格外框最小高度*/
+@media screen and (min-width: 800px){
+	.table_inner{
+		min-height:calc(100vh - 180px);
+	}
+}

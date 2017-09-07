@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>资产管理</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style type="text/css">
+			html,
+			body {
+				background-color: white;
+			}
+			[v-cloak]{
+				display:none;
+			}
+			.assetManage {
+				margin: 0 20px;
+			}
+			
+			.assetManage .el-table .cell,
+			.el-table th>div {
+				padding-left: 10px;
+				padding-right: 10px;
+				text-align: center;
+			}
+			
+			.assetManage .el-table th {
+				text-align: center;
+			}
+			
+			.assetManage .op {
+				background-color: #E5E6E8;
+				height: 40px;
+				line-height: 40px;
+				padding-left: 20px;
+				margin-bottom: 20px;
+			}
+			
+			.assetManage .searchInput {
+				width: 250px;
+				float: right;
+			}
+			
+			.assetManage .btn {
+				margin-bottom: 20px;
+			}
+			
+			.assetManage .look {
+				float: right;
+			}
+			
+			.assetManage #app {
+				clear: both;
+			}
+			
+			.assetManage .search {
+				margin-bottom: 20px;
+			}
+			
+			.assetManage .goods {
+				text-align: center;
+				margin: 20px;
+			}
+			
+			.assetManage .tree {
+				border: 1px solid #F2F2F2;
+				padding: 0 !important;
+			}
+			.assetManage .all{
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="assetManage" v-cloak>
+			<p class="op">资产信息</p>
+			<div class="btn">
+				<el-button type="primary" @click="newAsset">新增</el-button>
+				<el-button type="primary" @click="setAsset">批量设置</el-button>
+				<el-button type="primary" class="look" @click="look">查看</el-button>
+				<el-input placeholder="输入资产编码和名称进行查看" class="searchInput" v-model="searchInput"></el-input>
+			</div>
+			<div class="search">
+				<el-button type="primary" @click="all">全部</el-button>
+				<label>楼栋</label>
+				<el-select v-model="build">
+					<!-- <el-option :key="" :label="全部"></el-option> -->
+					<el-option v-for="item in buildList" :key="item.build" :label="item.build" :value="item.build">
+					</el-option>
+				</el-select>
+				<label>楼层</label>
+				<el-select v-model="floor">
+					<el-option v-for="item in floorList" :key="item.floor" :label="item.floor" :value="item.floor">
+					</el-option>
+				</el-select>
+				<label>房间号</label>
+				<el-select v-model="roomNum">
+					<el-option v-for="item in roomNumList" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+				<el-button type="primary" @click="search">查看</el-button>
+			</div>
+			<div id="app">
+				<el-row class="tac" :gutter="24">
+					<el-col :span="3" class="tree">
+						<div class="goods">物品类别</div>
+						<el-tree :data="treeList" :props="defaultProps" @node-click="handleNodeClick" default-expand-all></el-tree>
+					</el-col>
+					<el-col :span="21">
+						<el-table :data="openList" border @selection-change="handleSelectionChange">
+							<el-table-column type="selection" width="55">
+							</el-table-column>
+							<el-table-column type="index" label="序号" width="50">
+							</el-table-column>
+							<el-table-column prop="code" label="资产编码" >
+							</el-table-column>
+							<el-table-column prop="name" label="资产名称" >
+							</el-table-column>
+							<el-table-column prop="cateName" label="物品类别">
+							</el-table-column>
+							<el-table-column prop="build" label="楼栋">
+							</el-table-column>
+							<el-table-column prop="floor" label="楼层" width="50">
+
+							</el-table-column>
+							<el-table-column prop="roomNum" label="房间号" width="70">
+							</el-table-column>
+							<el-table-column prop="status" label="状态" width="70">
+							</el-table-column>
+							<el-table-column prop="userName" label="操作人" width="70">
+							</el-table-column>
+							<el-table-column prop="createTime" label="操作时间" width="100">
+							</el-table-column>
+							<el-table-column label="操作" width="180">
+								<template scope="scope">
+									<el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+									<el-button size="small" type="danger" @click="deleteBtn(scope.$index, scope.row)">删除</el-button>
+									<el-button size="small" type="info" @click="handleLook(scope.$index, scope.row)">查看</el-button>
+								</template>
+							</el-table-column>
+						</el-table>
+						<template>
+							<div class="block" style="margin-top: 20px;text-align: right;">
+								<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageno" :page-sizes="[10, 20, 30, 50]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="totalCount">
+								</el-pagination>
+							</div>
+						</template>
+					</el-col>
+				</el-row>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '.assetManage',
+			data: {
+				openList: [],
+				pageno:1,
+				pagesize:10,
+				totalCount:0,
+				value: '',
+				treeList: [], //树形结构
+				defaultProps: {
+					children: 'children',
+					label: 'label'
+				},
+				buildList:[],//楼栋数组
+     	 		floorList:[],//楼层数组
+     	 		roomNumList:[],//房间号数组
+     	 		build:'',//楼栋
+     	 		floor:'',//楼层
+     	 		roomNum:'',//房间号
+     	 		searchInput:'',//按名称或者编号进行搜索
+     	 		id:'',
+     	 		pid:'',
+     	 		multipleSelection:[]
+			},
+			mounted() {
+				this.getTree();
+				this.getList(this.pid, this.searchInput,this.build,this.floor, this.roomNum);
+				this.getBuildList();
+			},
+			watch:{
+     	 		'build':function(curVal){
+     	 			this.floor='';
+     	 			for(var i=0;i<this.buildList.length;i++){
+     	 				if (this.buildList[i].build==curVal) {
+     	 					this.floorList=this.buildList[i].floorRooms;
+     	 				}
+     	 			}
+     	 		},
+     	 		'floor':function(cur){
+     	 			this.roomNum='';
+     	 			for (var j=0;j<this.floorList.length;j++) {
+     	 				if (this.floorList[j].floor==cur) {
+     	 					this.roomNumList=this.floorList[j].rommNums;
+     	 				}
+     	 			}
+     	 		}
+     	 	},
+			methods: {
+				handleSelectionChange(val) {
+					this.multipleSelection = val;
+				},
+				getBuildList(){
+     	 			var self=this;
+     	 			var data={
+     	 				command:'site/getbuildfloor',
+     	 				sessionid:getCookie('sid'),
+     	 				loginid:getCookie('uid')
+     	 			}
+     	 			function callback(res){
+     	 				if(res && res.errcode==0){
+     	 					self.buildList=res.buildFloorInfo;
+							  console.log(self.buildList)
+     	 				}else{
+     	 					layer.msg(res.errdesc)
+     	 				}
+     	 			}
+     	 			post('/site/getbuildfloor',data,callback,errcodefn,errfn)
+     	 		},
+				handleSizeChange(size){
+					this.pagesize = size;
+					this.pageno=1;
+					this.getList(this.pid, this.searchInput,this.build,this.floor, this.roomNum);
+				},
+				handleCurrentChange(currentPage){
+					this.pageno = currentPage;
+					this.getList(this.pid, this.searchInput,this.build,this.floor, this.roomNum);
+				},
+				handleNodeClick(data,event) {
+					// console.log(data);
+					// console.log(event)
+					// alert(data.id)
+					if(data.id == 1){
+						this.pid = ''
+					}else{
+						this.pid=data.id;
+					}
+					this.getList(this.pid,this.searchInput,this.build,this.floor, this.roomNum)
+				},
+				newAsset() { //新增按钮
+					layer.open({
+						type: 2,
+						title: '新增资产',
+						shadeClose: true,
+						shade: 0.7,
+						area: ['1100px', '80%'],
+						content: 'newAsset.html?pram=0'
+					});
+				},
+				getTree() {
+					var self = this;
+					var data = {
+						command: 'assetcate/getallassetcates',
+						sessionid:getCookie('sid'),
+     	 				loginid:getCookie('uid')
+					}
+
+					function callback(res) {
+						if(res && res.errcode == 0) {
+							self.treeList = res.children;
+						} else {
+							layer.msg(res.errdesc)
+						}
+					}
+					post('/assetcate/getallassetcates', data, callback, errcodefn, errfn)
+				},
+				getList(id, name, build, floor, roomNum) {
+					var self = this;
+					var data = {
+						command: 'assetsmanage/queryallassets',
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						requestpage: self.pageno,
+						sizeperpage: self.pagesize,
+						cateId: id,
+						keyWord:name,
+						build: build,
+						floor: floor,
+						roomNum: roomNum
+					}
+
+					function callback(res) {
+						if(res && res.errcode == 0) {
+							self.openList = res.list;
+							for(var i=0;i<self.openList.length;i++){
+								if(self.openList[i].status==0){
+									self.openList[i].status='在库';
+								}else{
+									self.openList[i].status='使用中';
+								}
+							}
+							self.totalCount=res.count;
+						} else {
+							layer.msg(res.errdesc)
+						}
+					}
+					post('/assetsmanage/queryallassets', data, callback, errcodefn, errfn)
+				},
+				setAsset() {
+					console.log(this.multipleSelection)
+					if(this.multipleSelection.length == 0){
+						this.$message({
+							type:'warning',
+							message:'请先至少选择一条！'
+						})
+					}else{
+						layer.open({
+							type: 2,
+							title: '批量设置',
+							shadeClose: true,
+							shade: 0.7,
+							area: ['55%', '60%'],
+							content: 'setAsset.html'
+						});
+					}
+				},
+				handleLook(index,row) {
+					layer.open({
+						type: 2,
+						title: '查看资产',
+						shadeClose: true,
+						shade: 0.7,
+						area: ['60%', '90%'],
+						content: 'assetLook.html?id='+row.id
+					});
+				},
+				handleEdit(index,row) {
+					this.id=row.id;
+					// console.log(this.id)
+					layer.open({
+						type: 2,
+						title: '修改资产',
+						shadeClose: true,
+						shade: 0.7,
+						area: ['1100px', '80%'],
+						content: 'newAsset.html?pram=1'
+					});
+				},
+				deleteBtn(index,row) {
+					let self = this
+					let data = {
+						command: 'assetsmanage/deleteasset',
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						id: row.id
+					};
+					 this.$confirm('此操作将永久删除该资产, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+						}).then(() => {
+						function callback(res) {
+							// layer.msg('删除成功！', { icon: 1 });
+							// setTimeout(function(){
+							// 	window.parent.vm.getList('','','','','');
+							//     closeAll();
+							// },300)
+						if(res.errcode == 0){
+							self.getList(self.pid,self.searchInput,self.build,self.floor,self.roomNum);
+							self.$message({
+								type: 'success',
+								message: '删除成功!'
+							});
+						}
+						};
+						post('/assetsmanage/deleteasset', data, callback, errcodefn, errfn)
+							
+						}).catch(() => {
+							this.$message({
+								type: 'info',
+								message: '已取消删除'
+							});          
+					});
+				},
+				all(){
+					this.searchInput = ''
+					this.build = ''
+					this.floor = ''
+					this.roomNum = ''
+					this.getList('','','','','');
+				},
+				look(){
+					this.build='';
+					this.floor='';
+					this.roomNum='';
+					this.getList('', this.searchInput,this.build,this.floor, this.roomNum);
+				},
+				search(){
+					this.searchInput='';
+					this.getList('',this.searchInput,this.build,this.floor, this.roomNum);
+				}
+			}
+		})
+	</script>
+
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>自主学习</title>
+		<style type="text/css">
+			.mainOuter { margin-top: 55px; position: relative;}
+			.mainOuter-title { text-align: center; height: 60px; line-height: 60px;}
+			.cancle { position: absolute; left: 0; top: 0; width: 120px; height: 60px;
+					line-height: 60px; text-align: center;
+			}
+
+			.mainOuter-con {margin: 0 auto; width: 100%;}
+			.videoBox {width: 1024px;height: auto;float: left;background-color: #FFF;border: 1px solid #eaeaea;}
+			.videoContainer{width:1004px;height:600px;position:relative;overflow:hidden;background:#000;color:#ccc;left: 10px;top: 10px;border-right: 1px solid #eaeaea;}
+			.videoNote {width: 1024px;height: auto;line-height: 26px;font-family: "宋体";font-size: 12px;color: #7c7c7c;float: left;background-color: #FFF;padding: 12px; border: 1px solid #e5e5e5;}
+			.hintBox {position: relative; top: -10px; float: right; color: #0497CB; font-size: 14px;}
+		</style>
+		<script>
+			function GetQueryString(name){
+				var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+				var r = window.location.search.substr(1).match(reg);
+				if(r!=null)return  unescape(r[2]); return null;
+			}
+			var srcid = "";       //资源id
+			var addviews = 0;    //是否增加浏览量(0不增加，1增加)
+			var existeddiscipline = {
+				command: "onlinesrc/resourceinfo",  //资源详情
+				uid: getCookie('gy_u'),
+				loginid: getCookie('gy_u'),
+				sessionid: getCookie('gy_t'),
+				srcid: GetQueryString("file"),
+				addviews: 1
+			};
+			videoDetails();
+			function videoDetails(){
+				$.ajax({
+					type: "POST",
+					url: "/onlinesrc/resourceinfo", //资源详情
+					dataType: "json",
+					data: JSON.stringify({
+						"1": existeddiscipline
+					}),
+					contentType: "application/json; charset=utf-8",
+					success : function(result){
+						if(result["1"].errcode == 9904){
+	                        //alert("登录信息过期，请重新登录");
+							window.location.href="login.html";
+							return;
+						}else if(result["1"].errcode != 0){
+	                        alert(result["1"].errdesc);
+							return;
+						}else{
+							console.log(result);
+							$(".mainOuter-title").html(result["1"].resource_name); //详情标题
+							$('.videoNote').html(result["1"].resource_desc);       //详情备注
+							var arr = result["1"];
+							var documentation = "";  //学科教程详细[word，excel， ppt，pdf]
+							var videoCourse = "";    //学科视频
+							var pintBrowse = document.getElementById("pintBrowse");
+							switch (arr.resource_class){
+								case 1:
+									pintBrowse.innerHTML = "点击右下角，选择易访问模式可切换访问模式";
+								case 2:
+								case 3:
+									documentation += "<iframe src='' class='file' frameborder='0' width='1022' height='630'>"
+											+"<a target='_blank' href='http://office.com'>"
+											+'Microsoft Office'
+											+ "</a>"
+											+'document, powered by'
+											+"<a target='_blank' href='http://office.com/webapps'>"
+											+'Office Online'
+											+"</a>"
+											+"</iframe>";
+									document.getElementById("documentation").innerHTML = documentation;
+									$('.file').attr('src', 'https://view.officeapps.live.com/op/embed.aspx?src=' + result["1"].resource_filepath);
+									break;
+								case 4:
+									documentation += "<iframe src='' class='file' frameborder='0' width='1022' height='630'>"
+											+"</iframe>";
+									document.getElementById("documentation").innerHTML = documentation;
+									$('.file').attr('src', arr.resource_filepath);
+									break;
+								case 5:
+									videoCourse += "<video controls='controls' class='mainOuter-con video'  width='1024' height='580'>"
+											+ "<source src="+  arr.resource_filepath + " type='video/mp4'>"
+											+ ""
+											+ "浏览器不支持</video>";
+									document.getElementById("videobox").innerHTML = videoCourse;
+									break;
+							}
+						}
+					}
+				})
+			}
+			function lean(){
+				window.location="online-study.html";
+			}
+			
+			 window.onload = function () {
+					'use strict';
+					common();
+				};
+		</script>
+	</head>
+	<body>
+		<div class="top1Con">
+			<div class="top1Outer clearfix">
+				<a href="index.html" class="top1Tit">临床技能中心</a>
+				<div class="top1Tit-right">
+					<img src="../../images/ostp/bell.png" class="bell" />
+					<img src="../../images/ostp/redCircle.png" class="redCircle" />
+					<img src="../../images/ostp/feifei.png" class="headImg" />
+					<div class="nameAndYear clearfix">
+						<div class="nameAndYearInner clearfix">
+							<div class="userName"></div>
+							<div class="year"></div>
+							<span class="arrow"></span>
+						</div>
+						<ul class="selectUl"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="top2Outer" style="display: none;">
+			<div class="top2Con clearfix">
+				<a href="index.html" class="top2Con-index">
+					<img src="../../images/ostp/logo.png" class="logoPng" />
+					<div class="top2Tit">在线自主技能训练平台</div>					
+				</a>
+				<div class="navigateOuter clearfix">
+					<a href="index.html" class="navigate">
+						首页
+					</a>
+					<a href="my-work.html" class="navigate">
+						我的作业
+					</a>
+					<a href="self-train.html" class="navigate">
+						自主训练
+					</a>
+					<a href="online-study.html" class="navigate navigateOn">
+						自主学习
+					</a>
+					<div class="navigate">
+						成长中心
+						<ul>
+							<li><a href="grow-center.html">学习指数</a></li>
+							<li><a href="train-record.html">训练记录</a></li>
+						</ul>
+					</div>	
+					<!-- <a href="subscribe-train.html" class="navigate">
+						预约训练
+					</a> -->
+				</div>
+			</div>
+		</div>
+
+		<div class="mainOuter">
+			<div class="cancle" onclick="lean();">返回学习中心</div>
+			<h3 class="mainOuter-title">在线自主学习</h3>
+			<div class="hintBox" id="pintBrowse"></div>
+			<!--word、excel、ppt、pdf-->
+			<div id="documentation"></div>
+			<!--视频-->
+			<div id="videobox">
+
+			</div>
+			<div class="videoNote">备注：敏行医学致力于医学教育信息化、智能化。携手医学教育界，构建智慧医学教育平台，推动医学教育模式的革新与革命。利用医学现代教育技术来优化、改进现有医学教学方法，尤其是临床技能教学方法，不断追求更高的临床教学训练效果，提升教学质量。
+			</div>
+
+		</div>
+	</body>
+</html>

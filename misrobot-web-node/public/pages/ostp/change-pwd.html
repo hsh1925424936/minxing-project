@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>修改密码</title>
+		<link rel="stylesheet" type="text/css" href="../../css/ostp/person-center.css"/>
+		<style type="text/css">
+
+			.loginOuter{
+				width:400px; margin:40px auto;
+			}
+			.loginTitle{
+				width:100%; height:30px; font-size:20px; line-height:30px;
+				font-weight:bold; margin-bottom:70px;
+			}
+
+			.loginOuter input{
+				height:50px; margin-top:30px; 
+			}
+			.inpOuter{
+				position:relative;
+			}
+			.submit1{
+				width:220px; height:42px; background-color:#3499DA; 
+				border-radius:30px; font-size:16px; color:white;
+				margin:0 auto; display:block;
+				margin-top:75px;
+			}
+			
+			.link a{
+				outline:none; text-decoration:none; color:#949494;
+			}
+			.dynamicCode{
+				position:absolute;right:5px; top:50%; margin-top:-20px;
+				width:100px; height:40px; background-color:#999999; 
+				font-size:14px; color:white;
+			}
+			
+		</style>
+		<script>
+			//$('.bootstrap').remove();
+		</script>
+	</head>
+	<body>
+		<div class="topOuter">
+			<div class="topCon clearfix">
+				<a href="index.html" class="top2Con-index">
+					<img src="../../images/ostp/logo.png" class="logoPng" />
+					<div class="top2Tit">
+						在线自主技能训练平台
+					</div>					
+				</a>
+				<div class="top1Tit-right">
+					<img src="../../images/ostp/bell.png" class="bell" />
+					<img src="../../images/ostp/redCircle.png" class="redCircle" />
+					<img src="../../images/ostp/feifei.png" class="headImg" />
+					<div class="nameAndYear clearfix">
+						<div class="nameAndYearInner clearfix">
+							<div class="userName"></div>
+							<div class="year"></div>
+							<span class="arrow"></span>
+						</div>
+						<ul class="selectUl"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="main clearfix">
+			<div class="leftOuter">
+
+			</div>
+
+			<div class="rightOuter clearfix">
+				<div class="loginOuter clearfix">
+					<div class="loginTitle">
+						修改密码
+					</div>
+
+					<div class="inpOuter">
+						<input type="password" class="form-control oldpassword" placeholder="输入原始密码" maxlength="18" />
+						
+					</div>
+
+					<input type="password" class="form-control newpassword" placeholder="输入新密码(6位以上,英文,数字均可)" />
+					<input type="password" class="form-control newpassword2" placeholder="再输一次新密码" />
+					<button type="button" class="submit1">
+						保存
+					</button>
+					
+				</div>
+			</div>
+
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+			window.onload = function () {
+				'use strict';
+				common();
+				showpersoncenter('修改密码');	
+				$('.submit1').click(function () {
+					console.log($.trim($('.oldpassword').val()),$.trim($('.newpassword').val()),$.trim($('.newpassword2').val()));
+					if ($.trim($('.oldpassword').val())==''||$.trim($('.newpassword').val())==''||$.trim($('.newpassword2').val())=='') {
+						uselayer(3,'密码不能为空');
+						return false;
+					}
+					if ($.trim($('.oldpassword').val()).length<6||$.trim($('.newpassword').val()).length<6||$.trim($('.newpassword2').val()).length<6) {
+						uselayer(3,'密码至少为6位');
+						return false;
+					}
+					if ($.trim($('.newpassword').val())!=$.trim($('.newpassword2').val())) {
+						uselayer(3,'两次新密码输入不一样');
+						return false;
+					}
+					
+					Api.R({
+						url:'/usr/changepassword',
+						isrepeat:$(this),
+						json:{
+							"1": {
+								command: "usr/changepassword",
+								uid: getCookie('gy_u'),
+								sessionid: getCookie('gy_t'),
+								loginid: getCookie('gy_u'),
+								oldpassword:$.trim($('.oldpassword').val()),
+								newpassword:$.trim($('.newpassword').val())
+								
+							}
+						},
+						fn:function (json) {
+							json = json[1];
+							
+							if ( json.errcode != 0 ){
+								uselayer(3,'重置密码失败');
+								return false;
+							}
+
+							uselayer(3,'重置密码成功',function () {
+								removeCookie('gy_t');
+								window.location.href ="login.html";
+							});
+
+						}
+					});					
+				});
+					
+				
+			};
+
+	</script>
+
+</html>

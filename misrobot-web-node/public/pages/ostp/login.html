@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>登录</title>
+		<style type="text/css">
+			.topOuter{
+				width:100%; height:150px; background-color:#EFF2F5;
+			}
+			.topContent{
+				width:885px; height:100%; margin:0 auto;
+			}
+			.logoPng{
+				width:170px; height:95px; display:block;
+				float:left; margin-top:40px;
+			}
+			.titleOuter{
+				width:400px; height:60px; float:left; 
+				margin-left:10px; margin-top:52px;
+			}
+			.titleOuter span{
+				width:100%;
+				float:left; display:block;
+			}
+			.titleOuter .span1{
+				height:40px; font-size:24px; color:rgb(35,24,21);
+				font-weight:bold; line-height:40px;
+			}
+			.titleOuter .span2{
+				font-size:24px; color:rgb(35,24,21);
+				line-height:30px;
+			}
+			.link{
+				width:60px; height:18px; line-height:18px; 
+				font-size:14px; color:#949494; float:left;
+				margin-top:70px;
+			}
+			.link1{
+				margin-left:400px;
+			}
+			
+			.loginOuter{
+				width:400px; margin:90px auto;
+			}
+			.loginTitle{
+				width:100%; height:30px; font-size:18px; line-height:30px;
+			}
+
+			.loginOuter input{
+				height:50px; margin-top:30px; 
+				border-left:0px; border-right:0px; border-top:0px;
+			}
+			.submit1{
+				width:100%; height:50px; background-color:#3499DA; 
+				border-radius:2px; font-size:16px; color:white;
+				margin-top:20px;
+			}
+			.reminderOuter{
+				width:100%; height:30px; font-size:14px; 
+				line-height:30px; margin-top:15px;
+			}
+			.reminderOuter span{
+				display:block;
+			}
+			.reminderCon{
+				color:rgb(204,204,204); 
+				font-size: .2rem; float:left;
+			}
+			.forget{
+				color:rgb(51,51,51); float:right;
+			}
+			.forget a{
+				outline:none; text-decoration:none; color:black;
+			}
+			
+			.link a{
+				outline:none; text-decoration:none; color:#949494;
+			}
+
+			.bottomOuter{
+				width:100%; 
+				height:115px; 
+				font-size:14px; 
+				color:rgb(184,197,210);
+				text-align:center; 
+				padding-top: 10px;
+				line-height: 30px;
+				background-color:#EFF2F5;
+			}
+			.weixinLogo{
+				display: block;
+				width:25px;
+				height: 25px;
+				background-image: url(../../images/ostp/weixin.png);
+				background-size: 100% 100%;
+			}
+			.thirdLogin{
+				float: left;
+    			clear: both;
+			}
+		</style>
+		<script>
+			istruelogin();
+			// if (getCookie('gy_t')) {
+			// 	window.location.href = "index.html";
+			// }
+			window.onload = function () {
+				isComRequire();
+
+	            $(".usernumber").keyup(function () {
+	                //如果输入非数字，则替换为''
+//	                this.value = this.value.replace(/[^\d]/g, '');
+	            });
+
+				if (getCookie('gy_c')) {
+					$('.usernumber').val(getCookie('gy_c'));
+				}			
+				$('.submit1').click(tologin);	
+				$(document).on('keyup',function (e) {
+					if (e.keyCode==13) {
+						tologin();
+					}						
+				});
+				
+				function tologin() {
+					if ($.trim($('.usernumber').val())=='') {
+						uselayer(1,'用户名不能为空');
+						return false;
+					}
+					if ($.trim($('.password').val())=='') {
+						uselayer(1,'密码不能为空');
+						return false;
+					}
+					setCookie('gy_c',$.trim($('.usernumber').val()),7);
+					Api.R({
+						url: "/usr/login",
+						istoken:1,
+						isShade:1,
+						json:{
+							"1": {
+								command: "usr/login",
+								accountname: $.trim($('.usernumber').val()),
+								password:$.trim($('.password').val()),
+								type: 0
+							}							
+						},
+						fn:function (json) {
+							if(json["1"].errcode != 0){
+								uselayer(3, json["1"].errdesc);
+								return false;
+							}
+							setCookie('gy_t',json["1"].sessionid,'');
+							setCookie('gy_u',json["1"].userid, 7);
+							Api.R({
+								url: "/usr/querymyinfo",
+								istoken:1,
+								isShade: 1,
+								json: {
+									"1": {
+										command: "usr/querymyinfo",
+										uid: getCookie('gy_u'),
+										loginid:getCookie('gy_u'),
+										sessionid: getCookie('gy_t')
+									}
+								},
+								fn: function(result){
+									if(result["1"].errcode != 0){
+										uselayer(3, '登录失败!<br/>'+result["1"].errdesc);
+										return false;
+									}
+									setCookie('gy_a',result["1"].imgurl?result["1"].imgurl:'../../images/ostp/feifei.png',7);//头像
+									setCookie('gy_n',strtocode(result["1"].name),7);//姓名
+									setCookie('gy_un',result["1"].username,7); //用户名
+
+									setCookie('gy_mobile',result["1"].mobile,7); //用户名
+									setCookie('gy_cardno',result["1"].cardno,7); //用户名
+
+									// setCookie('gy_g',strtocode((json.grade?json.grade:16)+'级'));//哪一级
+									window.location.href = "index.html";
+								}
+							});					
+						},
+						error:function (str) {
+							uselayer(3,'登陆失败');
+						}
+					});		
+				}
+			};						
+		</script>
+	</head>
+	<body>
+		<div class="topOuter clearfix">
+			<div class="topContent">
+				<img src="../../images/ostp/logo.png" class="logoPng"/>
+				<div class="titleOuter clearfix">
+					<span class="span1">欢迎来到临床技能中心</span>
+					<span class="span2">四川大学华西临床医学院/华西医院</span>
+				</div>
+
+				<!--<div class="link link1">
+					<a href="#">关于工具</a>
+				</div>-->
+
+			</div>
+		</div>
+
+		<div class="loginOuter clearfix">
+			<div class="loginTitle">
+				欢迎回来
+			</div>
+
+			<input type="text" class="form-control usernumber" placeholder="请输入学号/手机号" />
+			<input type="password" class="form-control password" placeholder="请输入密码" />
+			<button type="button" class="submit1">
+				登录
+			</button>
+			<div class="reminderOuter">
+				<span class="reminderCon">
+					如登录出现异常，请清理浏览器缓存后再尝试。
+				</span>
+				<span class="forget">
+					<a href="forget-password.html">忘记密码？</a>
+				</span>
+
+				<p class="thirdLogin">
+					合作网站登录：
+					<a href = "http://misinfo.misrobot.com/passport/auth/weixin?type=1" class ="weixinLogo"></a>
+				</p>
+
+			</div>
+		</div>
+
+		<div class="bottomOuter">
+			MIS-OnlinePrac敏行在线技能训练分析测评系统软件 <br />
+			<!-- 黔ICP备12000314号-1\Powered by © 2008-2016 UI.CN -->
+		</div>
+	</body>
+	<script type="text/javascript">
+
+	</script>
+</html>

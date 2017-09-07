@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>任课老师</title>
+    <link rel="stylesheet" href="../../css/homepage/teacher.css">
+    <link rel="stylesheet" href="../../css/homepage/task-message.css">
+    <script src="../../js/jquery-3.1.1.min.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/base.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/echarts.min.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/homepage/common.js"></script>
+    <script src="../../js/homepage/homepage.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>临床技能中心</h1>
+        <!--<ul class="nav">-->
+            <!--<li class="active">首页</li>-->
+        <!--</ul>-->
+        <a href="./login.html" class="exit"><button>退出</button></a>
+    </div>
+    <div id="container" class="container" v-cloak>
+        <div class="left">
+            <div class="left_box">
+                <div class="photo"><img src="../../images/ostp/feifei.png"></div>
+                <ul class="basic_msg">
+                    <li><span>姓名:</span>{{name}}</li>
+                    <li><span>单位:</span>{{workunit || deptname}}</li>
+                    <li><span>手机号码:</span>{{mobile}}</li>
+                </ul>
+                <ul class="eval">
+                    <li>教师胜任力指数:<span class="score">{{alleval.teachingindex}}</span></li>
+                    <li>学生对你的评分:<span class="score">{{alleval.evaluationavg}}</span></li>
+                </ul>
+            </div>
+            <div class="left_box">
+                <p class="indicator">教学指数</p>
+                <div class="teacher_ability"></div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="nav_detail">
+                <div class="nav_container"  style="margin-left: 1.7vw">
+                    <ul>
+                        <h2>备课</h2>
+                        <li><a href="/teacherweb/index.html#/prepare/list" target="_blank">备课历史</a></li>
+                        <li><a href="/teacherweb/index.html#/prepare/list" target="_blank">备课记录</a></li>
+                    </ul>
+                    <ul>
+                        <h2>考试</h2>
+                        <li><a href="/teacherweb/index.html#/examManage/exam_test?value=1" target="_blank">考试管理</a></li>
+                        <li><a href="/teacherweb/index.html#/examManage/exam_test?value=2" target="_blank">试卷管理</a></li>
+                    </ul>
+                    <ul>
+                        <h2>报告</h2>
+                        <li><a href="/teacherweb/index.html#/report/allreport" target="_blank">教学报告</a></li>
+                    </ul>
+                </div>
+                <div class="nav_container" style="border-right: transparent">
+                    <ul>
+                        <h2>资料</h2>
+                        <li><a href="/teacherweb/index.html#/filemanage?ctype=4" target="_blank">文档</a></li>
+                        <li><a href="/teacherweb/index.html#/filemanage?ctype=3" target="_blank">图片</a></li>
+                        <li><a href="/teacherweb/index.html#/filemanage?ctype=1" target="_blank">视频</a></li>
+                    </ul>
+                    <ul>
+                        <h2>题库</h2>
+                        <li><a href="/teacherweb/index.html#/qmanage/qlist" target="_blank">新增</a></li>
+                        <li><a href="/teacherweb/index.html#/qmanage/qlist" target="_blank">导入</a></li>
+                    </ul>
+                    <!--<ul>-->
+                        <!--<h2>评价</h2>-->
+                        <!--<li><a href="#">班级</a></li>-->
+                        <!--<li><a href="#">课程</a></li>-->
+                    <!--</ul>-->
+                </div>
+                <!--<div class="nav_container">-->
+                    <!--<ul>-->
+                        <!--<h2>通知</h2>-->
+                        <!--<li><a href="#">发通知</a></li>-->
+                    <!--</ul>-->
+                    <!--<ul>-->
+                        <!--<h2>预约</h2>-->
+                        <!--<li><a href="#">教室</a></li>-->
+                        <!--<li><a href="#">会议室</a></li>-->
+                    <!--</ul>-->
+                    <!--<ul>-->
+                        <!--<h2>考勤</h2>-->
+                        <!--<li><a href="#">请假</a></li>-->
+                        <!--<li><a href="#">调课</a></li>-->
+                    <!--</ul>-->
+                <!--</div>-->
+                <!--<div class="nav_container" style="border-right: transparent">-->
+                    <!--<ul>-->
+                        <!--<h2>教室</h2>-->
+                        <!--<li><a href="#">介绍</a></li>-->
+                    <!--</ul>-->
+                    <!--<ul>-->
+                        <!--<h2>排行</h2>-->
+                        <!--<li><a href="#">老师</a></li>-->
+                    <!--</ul>-->
+                    <!--<ul>-->
+                        <!--<h2>下载</h2>-->
+                        <!--<li><a href="#">明日良医</a></li>-->
+                    <!--</ul>-->
+                <!--</div>-->
+            </div>
+            <div class="reminder">
+
+                <c-task-and-msg></c-task-and-msg>
+
+                <!--<div class="left_task">-->
+                    <!--<p>-->
+                        <!--<strong>任务</strong>-->
+                        <!--<span class="remind">-->
+                            <!--<b class="remind_num">{{taskcount}}</b>-->
+                            <!--<img class="remind_img" src="../../images/homepage/icon_shuzikuang.png">-->
+                        <!--</span>-->
+                        <!--&lt;!&ndash;<a href="#" class="scan_more">更多<span><img src="../../images/homepage/btn_zhankai.png"></span></a>&ndash;&gt;-->
+                    <!--</p>-->
+                    <!--<ul class="task_list">-->
+                        <!--<li class="list" v-for="value in alltask.tasklist">-->
+                            <!--<i class="mark"></i>-->
+                            <!--{{value.createdtimestr | str(11,19)}}&nbsp;{{value.taskname}}&nbsp;{{value.tasktype | tasktype}}-->
+                            <!--<span class="day">{{value.createdtimestr | str(0,10)}}</span>-->
+                            <!--&lt;!&ndash;<button class="load_more" @click="load_more" v-if="value.length > 5">加载更多</button>&ndash;&gt;-->
+                        <!--</li>-->
+                        <!--<span class="empty" v-show="blank_task"><span>暂无任务</span></span>-->
+                    <!--</ul>-->
+                <!--</div>-->
+                <!--<div class="right_message">-->
+                    <!--<p>-->
+                        <!--<strong>消息</strong>-->
+                        <!--<span class="remind">-->
+                            <!--<b class="remind_num">{{messagecount}}</b>-->
+                            <!--<img class="remind_img" src="../../images/homepage/icon_shuzikuang.png">-->
+                        <!--</span>-->
+                        <!--&lt;!&ndash;<a href="#" class="scan_more">更多<span><img src="../../images/homepage/btn_zhankai.png"></span></a>&ndash;&gt;-->
+                    <!--</p>-->
+                    <!--<ul class="msg_list">-->
+                        <!--<li class="list" v-for="value in allmessage">-->
+                            <!--<i class="mark"></i>{{value.title}}-->
+                            <!--<span class="day">{{value.departtime | str(0,10)}}</span>-->
+                            <!--&lt;!&ndash;<button class="load_more" @click="load_more" v-if="value.length > 5">加载更多</button>&ndash;&gt;-->
+                        <!--</li>-->
+                        <!--<span class="empty" v-show="blank_msg"><span>暂无消息</span></span>-->
+                    <!--</ul>-->
+                <!--</div>-->
+            </div>
+            <div class="course">
+                <div class="course_nav">
+                    <strong style="float: left;margin-top: .1vw">我的课程</strong>
+                    <ul class="dims">
+                        <li :class="{active_dims:today}" @click="resettoday">今日</li>
+                        <li :class="{active_dims:toweek}" @click="resettoweek" style="border-right: transparent">周</li>
+                        <!--<li >月</li>-->
+                    </ul>
+                    <ul class="course_type" style="margin-top: .1vw">
+                        <li><i class="box gray"></i>已结束</li>
+                        <li><i class="box green"></i>未结束</li>
+                        <!--<li><i class="box blue"></i>班级预约</li>-->
+                        <!--<li><i class="box orange"></i>考试</li>-->
+                    </ul>
+                </div>
+                <div class="course_detail">
+                    <div>
+                        <i class="prev" v-if="toweek" @click="prev">&nbsp;&nbsp;</i>
+                        <span>
+                            <p v-if="today">{{nowtime | str(0,4)}}年{{nowtime | str(6,7)}}月{{nowtime | str(8,10)}}日</p>
+                            <p v-if="toweek">{{nowyear}}年{{nowmonth}}月&nbsp;&nbsp;&nbsp;第{{nowweek}}周</p>
+                        </span>
+                        <i class="next" v-if="toweek" @click="next">&nbsp;&nbsp;</i>
+                    </div>
+                    <div class="show_box">
+                        <!--今日-->
+                        <div v-if="today">
+                            <ul class="day_title">
+                                <li v-for="item in courselist">{{item.starttime | str(11,16)}}-{{item.endtime | str(11,16)}}</li>
+                            </ul>
+                            <div class="box_day">
+                                <div class="day_double flex1 green" v-for="value in courselist"
+                                     :class="{green:value.classstatus==0 || value.classstatus==2 ,gray: value.classstatus==1}">
+                                    <b>{{value.coursename}}</b>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--周-->
+                        <div v-if="toweek">
+                            <ul class="week_title">
+                                <li style="border-left: 1px solid #ddd;"></li>
+                                <li v-for="item in weekdays" :class="{now:nowtime == item}">
+                                    {{item | str(0,10) | week}}<br>{{item | str(5,10)}}
+                                </li>
+                            </ul>
+                            <div class="box_week">
+                                <ul class="week_time">
+                                    <li v-for="(schedule,index) in schedulelist">{{schedule.starttime | str(0,5)}}-{{schedule.endime | str(0,5)}}</li>
+                                </ul>
+                                <ul class="week_detail" v-for="value in weeklist">
+                                    <li v-for="value2 in value"
+                                        class="week_double flex1"
+                                        v-if="value2.coursename"
+                                        :class="{green:value2.classstatus==0 || value2.classstatus==2 ,gray: value2.classstatus==1}">{{value2.coursename}}</li>
+                                    <li class="week_single flex1" v-else></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <span class="empty2" v-show="nocourse && today"><span>今日无课程</span></span>
+                        <!--月-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    var vm = new Vue({
+            el:"#container",
+            data: {
+//              用户信息
+                name:'',
+                mobile:'',
+                deptname:'',
+                workunit:'',
+
+                blank_task:false,
+                blank_msg:false,
+
+//              胜任力评价
+                alleval: {},
+//              任务
+                alltask:{},
+                taskcount:'',
+
+//              消息
+                allmessage:[],
+                messagecount:'',
+
+//              课程表
+                today: true,
+                toweek: false,
+                nocourse:false,
+                step: 0,
+                now: '',
+                nowtime: '',
+                nowyear: '',
+                nowmonth: '',
+                nowweek: '',
+                weekdays: [],
+                weeklist:[],
+                courselist: [],
+                schedulelist: [],
+                courseinfo: ''
+            },
+            computed: {},
+            filters: {
+                str: function (value, start, end) {
+                    if (value && typeof(value) === 'string') {
+                        return value.slice(start, end)
+                    }
+                    return value
+                },
+                tasktype: function (value) {
+                    switch(value.tasktype){
+                        case 1: return "个人预约"; break;
+                        case 2: return "班级预约"; break;
+                        case 3: return "出科考试预约"; break;
+                        case 5: return "评价"; break;
+                        case 6: return "上课"; break;
+                        case 7: return "问卷"; break;
+                        case 8: return "课前训练"; break;
+                        case 9: return "随堂小测"; break;
+                    }
+                },
+                week: function (value) {
+                    var year = value.split('-')[0];
+                    var month = value.split('-')[1];
+                    var day = value.split('-')[2];
+                    if (month.toString()[0] == 0) {
+                        month = month.toString().slice(1) - 1
+                    } else {
+                        month = month - 1
+                    }
+                    if (day.toString()[0] == 0) {
+                        day = day.toString().slice(1)
+                    }
+                    var temp = new Date();
+                    temp.setFullYear(year);
+                    temp.setMonth(month);
+                    temp.setDate(day);
+                    switch (temp.getDay()) {
+                        case 0:
+                            value = "星期日";
+                            break;
+                        case 1:
+                            value = "星期一";
+                            break;
+                        case 2:
+                            value = "星期二";
+                            break;
+                        case 3:
+                            value = "星期三";
+                            break;
+                        case 4:
+                            value = "星期四";
+                            break;
+                        case 5:
+                            value = "星期五";
+                            break;
+                        case 6:
+                            value = "星期六";
+                            break;
+                    }
+                    return value
+                }
+            },
+            mounted: function () {
+                this.show_my();         //用户信息
+                this.evaluation();        //胜任力评价
+                this.todoListLoad();    //任务
+                this.messages(1);        //消息
+                this.initday();         //课程-今天
+                this.initweek();        //课程-本周
+            },
+            methods: {
+//            登录超时
+            resetlogin:function () {
+                setTimeout(function () {
+                    document.location.href='login.html';
+                },2000)
+            },
+//          用户信息
+            show_my: function(){
+                var _this = this;
+                var _json = {
+                    "1": {
+                        command:'user/queryuserdetail',//接口地址
+                        sessionid:getCookie('sid'),
+                        loginid:getCookie('uid'),
+                        uid:getCookie('uid')
+                    }
+                };
+                var json = JSON.stringify(_json);
+                $.ajax({
+                    url: "/user/queryuserdetail",
+                    type: "POST",
+                    data: json,
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            _this.name=data.users[0].name;
+                            _this.deptname=data.users[0].deptname;
+                            _this.mobile=data.users[0].mobile;
+                            _this.workunit=data.users[0].workunit;
+                        } else if (data.errcode == 9904) {
+                            layer.msg("登录信息已失效，请重新登录");
+                            this.resetlogin();
+                        } else {
+                            layer.msg(data.errdesc)
+                        }
+                    }
+                })
+            },
+
+//          胜任力评价
+            evaluation:function () {
+                var _this = this;
+                var _json = {
+                    "1": {
+                        command: "report/queryEvaluation",
+                        accountname:getCookie('name'),
+                        sessionid:getCookie('sid'),
+                        loginid:getCookie('uid'),
+                        uid:getCookie('uid'),
+                    }
+                };
+                var json = JSON.stringify(_json);
+                $.ajax({
+                    url: "/report/queryEvaluation",
+                    type: "POST",
+                    data: json,
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            _this.alleval = data;
+                          if(data.queryresult.length != 0) {
+                              teacher_ability({
+                                  element:$('.teacher_ability')[0],
+                                  name:[
+                                      {text:data.queryresult[0].evaluationitem,max:data.queryresult[0].fullscore},
+                                      {text:data.queryresult[1].evaluationitem,max:data.queryresult[1].fullscore},
+                                      {text:data.queryresult[2].evaluationitem,max:data.queryresult[2].fullscore},
+                                      {text:data.queryresult[3].evaluationitem,max:data.queryresult[3].fullscore},
+                                      {text:data.queryresult[4].evaluationitem,max:data.queryresult[4].fullscore},
+                                  ],
+                                  color:'#11F0B9',
+                                  value:[
+                                      data.queryresult[0].score,
+                                      data.queryresult[1].score,
+                                      data.queryresult[2].score,
+                                      data.queryresult[3].score,
+                                      data.queryresult[4].score,
+                                  ],
+                              });
+                          }else{
+                              teacher_ability({
+                                  element:$('.teacher_ability')[0],
+                                  data_tit:'教师胜任力',
+                                  name:[
+                                      {text:'教学态度',max:21},{text:'教育技术',max:28},{text:'教学内容',max:35},
+                                      {text:'教学方法',max:28},{text:'教学效果',max:28}
+                                  ],
+                                  color:'#11F0B9',
+                                  value:[2.8,25,32,10.2,26]
+                              });
+
+                          }
+                        } else if (data.errcode == 9904) {
+                            layer.msg("登录信息已失效，请重新登录");
+                            this.resetlogin();
+                        } else {
+                            layer.msg(data.errdesc)
+                        }
+                    }
+                })
+            },
+
+//          任务
+            todoListLoad:function(){
+                var _this = this;
+                var _json = {
+                    "1": {
+                        command: "task/queryusertaskinfo",
+                        loginid:getCookie('uid'),
+                        sessionid:getCookie('sid'),
+                        uid:getCookie('uid'),
+                        page:1,
+                        reqnum:200,
+                        tasktype:'',
+                    }
+                };
+                var json = JSON.stringify(_json);
+                $.ajax({
+                    url: "/task/queryusertaskinfo",
+                    type: "POST",
+                    data: json,
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            if(!data.taskcount){
+                                _this.taskcount = 0;
+                            }else{
+                                _this.taskcount = data.taskcount;
+                            }
+                            if(data.tasklist.length == 0){
+                                _this.blank_task = true;
+                            }
+                            _this.alltask = data;
+                        } else if (data.errcode == 9904) {
+                            layer.msg("登录信息已失效，请重新登录");
+                            this.resetlogin();
+                        } else {
+                            layer.msg(data.errdesc)
+                        }
+                    }
+                })
+            },
+
+//          消息
+            messages: function(pag){
+                var _this = this;
+                var _json = {
+                    "1": {
+                        command:'announce/queryannouncelist',
+                        sessionid:getCookie('sid'),
+                        loginid:getCookie('uid'),
+                        page:pag,
+                        reqnum:100,
+                        uid:getCookie('uid')
+                    }
+                };
+                var json = JSON.stringify(_json);
+                $.ajax({
+                    url: "/announce/queryannouncelist",
+                    type: "POST",
+                    data: json,
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            if(!data.allcount){
+                                _this.messagecount = 0;
+                            }else{
+                                _this.messagecount = data.unreadcount;
+                            }
+                            if(data.announcelist.length == 0){
+                                _this.blank_msg = true;
+                            }
+                            _this.allmessage = data.announcelist;
+                        } else if (data.errcode == 9904) {
+                            layer.msg("登录信息已失效，请重新登录");
+                            this.resetlogin();
+                        } else {
+                            layer.msg(data.errdesc)
+                        }
+                    }
+                })
+            },
+
+//          课程表
+                resettoday:function () {
+                    this.today = true;
+                    this.toweek = false;
+                    this.initday();
+                },
+                resettoweek:function () {
+                    this.today = false;
+                    this.toweek = true;
+                    this.initweek();
+                },
+                initday: function () {
+                    var _this = this;
+                    var _json = {
+                        "1": {
+                            command: "course/listteacherschedulebydate",
+                            sessionid: getCookie('sid'),
+                            loginid: getCookie('uid'),
+                            teacherid: getCookie('uid')
+                        }
+                    };
+                    var json = JSON.stringify(_json);
+                    $.ajax({
+                        url: "/course/listteacherschedulebydate",
+                        type: "POST",
+                        data: json,
+                        success: function (data) {
+                            data = data["1"];
+                            if (data.errcode == 0) {
+                                _this.nowtime = '';
+                                _this.nowtime = data.nowtime;
+                                if (_this.nowtime && typeof(_this.nowtime) === 'string') {
+                                    _this.nowtime = _this.nowtime.slice(0, 10)
+                                }
+                                if (data.courselist.length==0){
+                                    _this.nocourse=true;
+                                }else {
+                                    _this.nocourse=false;
+                                    _this.courselist = data.courselist;
+                                }
+                            } else if (data.errcode == 9904) {
+                                layer.msg("登录信息已失效，请重新登录");
+                                this.resetlogin();
+                            } else {
+                                layer.msg(data.errdesc)
+                            }
+                        }
+                    })
+                },
+                initweek: function (prama) {
+                    var _this = this;
+                    var _json = {
+                        "1": {
+                            command: "course/listteacherschedulebyweek",
+                            sessionid: getCookie('sid'),
+                            loginid: getCookie('uid'),
+                            teacherid: getCookie('uid'),
+                            step: _this.step,
+                            scheduleid: prama
+                        }
+                    };
+                    var json = JSON.stringify(_json);
+                    $.ajax({
+                        url: "/course/listteacherschedulebyweek",
+                        type: "POST",
+                        data: json,
+                        success: function (data) {
+                            data = data["1"];
+                            if (data.errcode == 0) {
+//                            _this.weeks = false;
+                                _this.nowyear = "";
+                                _this.nowyear = data.nowyear;
+                                _this.nowmonth = "";
+                                _this.nowmonth = data.nowmonth;
+                                _this.nowweek = "";
+                                _this.nowweek = data.nowweek;
+                                _this.weekdays = '';
+                                _this.weekdays = data.weekdays;
+                                _this.schedulelist = '';
+                                _this.schedulelist = data.schedulelist;
+//                                $(_this.schedulelist).each(function (i, el) {
+//                                    $(el.applylist).each(function (j, val) {
+//                                        for (var name in val) {
+//                                            _this.weeks = true;
+//                                            return false
+//                                        }
+//                                        return true;
+//                                    });
+//                                });
+                                for(var i = 0; i < 7; i++){
+                                  _this.weeklist[i] = new Array();
+                                }
+
+                                $(data.schedulelist).each(function(i,el){
+                                    $(el.applylist).each(function(j,el2){
+                                        _this.weeklist[j].push(el2);
+                                    });
+                                })
+
+                            } else if (data.errcode == 9904) {
+                                layer.msg("登录信息已失效，请重新登录");
+                                this.resetlogin();
+                            } else {
+                                layer.msg(data.errdesc)
+                            }
+                        }
+                    })
+                },
+                prev: function () {
+                    this.step--;
+                    this.initweek()
+                },
+                next: function () {
+                    this.step++;
+                    this.initweek()
+                },
+            },
+        });
+
+        function teacher_ability (opt) {
+        var my_chart = echarts.init(opt.element);
+        var option = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            radar: [
+                {
+                    indicator : opt.name,
+                    // center: ['25%','40%'],
+                    radius: 70
+                },
+            ],
+            series : [
+                {
+                    type: 'radar',
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    itemStyle: {
+                        normal: {
+                            lineStyle:{
+                                width: 0,//数据区域的边框
+                                color:'transparent'
+                            },
+                            areaStyle:{
+                                color:'#11F0B9',//数据区域的颜色
+                                opacity:1
+                            }
+                        }
+                    },
+                    data : [
+                        {
+                            value : opt.value,
+                            name : "教学指数",
+                        }
+                    ]
+                }
+            ]
+        };
+        my_chart.setOption(option);
+        $(window).resize(function(){
+            my_chart.resize();
+        });
+        return my_chart;
+    }
+
+</script>
+</html>

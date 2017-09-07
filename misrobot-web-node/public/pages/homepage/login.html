@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>登录</title>
+    <script src="../../js/jquery-3.1.1.min.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/element.js"></script>
+    <script src="../../js/base.js"></script>
+    <script src="../../js/lodash.min.js"></script>
+    <link rel="stylesheet" href="../../css/element.css">
+    <link rel="stylesheet" type="text/css" href="../../css/homepage/login.css">
+    <style>
+        /*s扫描二维码*/
+        .loginBox{
+            position: relative;
+        }
+        .appBox{
+            float: right;
+            margin-right: calc(-95vw * 100 /1920);
+            margin-top: calc(-300vh * 100 /1024);
+            width: calc(135vw * 100 / 1920);
+        }
+        .appBox:hover .show_info{
+            display: block;
+        }
+        .appBox .appBtn{
+            text-decoration: none;
+            color: #fff;
+            border-radius: 15vw;
+            background-color: #00A0E9;
+            display: inline-block;
+            width: calc(90vw * 100 /1920);
+            height: calc(30vw * 100 / 1920);
+            line-height: calc(30vw * 100 / 1920);
+            font-size: calc(16vw * 100 /1920);
+            text-align: center;
+            position: absolute;
+            top: calc(18vh * 100 / 1920);
+        }
+        .appBox .ico{
+            width: calc(30vw * 100 /1920);
+            height: calc(30vw * 100 /1920);
+            position: absolute;
+            top: calc(18vh * 100 / 1920);
+            left:calc(522vw * 100 / 1920);
+        }
+        .show_info{
+            display: none;
+            position: absolute;
+            width: calc(200vw * 100 /1920);
+            height: calc(240vh * 100 /1024);
+            background-color: #fff;
+            box-shadow: 0 0 2px 1px #b7c1c5;
+            margin-top: calc(100vh * 100 /1024);
+            margin-left: calc(-20vh * 100 /1024);
+            text-align: center;
+        }
+        .show_info img{
+            margin-top:calc(25vh * 100 /1024);
+            width: calc(150vw * 100 / 1920);
+            height: calc(150vw * 100 / 1920);
+        }
+        .show_info p{
+            font-size: calc(18vw * 100 /1920);
+        }
+    </style>
+</head>
+<body>
+	<div id='app' class="box">
+	<div>
+			<p class="txt1">建智慧医教</p>
+			<p class="txt2">为明日良医</p>
+	</div>
+	<div class="loginBox">
+		<div class="logo">
+			<img src="../../images/homepage/logo.png" alt="">
+		</div>
+        <div class="appBox">
+            <a href="#" class="appBtn">app下载</a>
+            <img class="ico" src="../../images/news/ico.png">
+            <div class="show_info">
+                <img src="../../images/news/erweima.png">
+                <p>扫描下载 明日良医App</p>
+            </div>
+        </div>
+		<!-- <ul id="teb" class='clearfix'>
+			<li>扫码登录</li>
+			<li class="current">用户登录</li>
+		</ul> -->
+		<div class="sMLogin">
+			<img src="../../images/homepage/code.png" alt="">
+		</div>
+		<div class="inputLogin">
+				<input class="user" type="text" v-model='user'   placeholder="请输入账号" name=""><br>
+				<input class="pwd" type="password" v-model='pwd'  placeholder="请输入密码" name=""><br>
+				<span class="forget"></span><br>
+				<el-dialog
+				  class="selectTK"
+				  title="请选择登录身份!"
+				  :visible.sync="dialogVisible"
+				  size="tiny"
+				  :before-close="handleClose">
+				   <el-radio-group v-model="radio">
+				    <el-radio v-for='item in roles' v-model="select" :label="item.id">{{item.role}}</el-radio>
+				  </el-radio-group>
+				  <span slot="footer" class="dialog-footer">
+				    <el-button @click="dialogVisible = false">取 消</el-button>
+				    <el-button type="primary" @click="comfrim">确 定</el-button>
+				  </span>
+				</el-dialog>
+
+			     <button   @click = "login"  class="btn" type="">登录</button >
+		</div>
+	</div>
+</div>
+</body>
+</html>
+<script  type="text/javascript" charset="utf-8">
+	$(function(){
+
+        $("#teb li").on('click',function(e){
+        $(e.target).addClass('current').siblings().removeClass('current');
+           if($(this).index()==1){
+           	$('.inputLogin').show();
+           	$('.sMLogin').hide();
+           $(document).on('keyup',function (e) {
+					if (e.keyCode==13) {
+						vm.login();
+					}
+				});
+           }
+           else{
+           		$('.inputLogin').hide();
+           		$('.sMLogin').show();
+           			$(document).unbind('keyup');
+           }
+        })
+        if($("#teb li").eq(1).hasClass('current')){
+        	$(document).on('keyup',function (e) {
+					if (e.keyCode==13) {
+						vm.login();
+					}
+				});
+        }
+	})
+	var vm = new Vue({
+		el:'#app',
+		data:{
+			user:'',
+			pwd:'',
+			dialogVisible: false,
+			radio: '',
+            roles:[],
+           select:'',
+           result:'',
+           roleid:'',
+           indexConfig:0,
+		},
+		methods:{
+			init:function(){
+				if(getCookie('u_name')){
+					this.user=getCookie('u_name');
+				}
+			},
+			getConfig:function(){
+				var self = this;
+				$.ajax({  
+		                    type : "POST",   
+		                    url : "/conf/queryconflist",
+		                    dataType:'json',  
+		                    data :JSON.stringify({"1":{  
+			                    command: "conf/queryconflist",
+
+								loginid:getCookie('uid'),
+								sessionid: getCookie('sid'),
+								key:'newindexpage'
+
+		                    }}), 
+		                    success : function(data){
+									var res = data["1"];
+									if(res&&res.errcode==0){
+										self.indexConfig = res.value;
+									}
+
+							},
+							error:function (str) {
+
+			               
+		                        }
+
+		         })
+			},
+			comfrim:function(){
+                dialogVisible: false;
+                this.selectRole(vm.result,vm.radio)
+			},
+			 handleClose:function(done) {
+					done();
+		        },
+
+           login:function(){
+
+           	  if(this.user.trim()==''){
+           	  	this.$message({
+							type:'error',
+							message:'用户名不能为空'
+						})
+           	  	return false;
+           	  }
+           	   if(this.pwd.trim()==''){
+           	  	this.$message({
+							type:'error',
+							message:'密码不能为空'
+						})
+           	  	return false;
+           	  }
+           	  setCookie('u_name',this.user,7);
+           	  this.dialogVisible=false;
+           	  this.loginInterface();
+           },
+           selectRole:function(result,roleid){
+           		var self = this;
+				$.ajax({  
+		                    type : "POST",   
+		                    url : "/conf/queryconflist",
+		                    dataType:'json',  
+		                    data :JSON.stringify({"1":{  
+			                    command: "conf/queryconflist",
+
+								loginid:getCookie('uid'),
+								sessionid: getCookie('sid'),
+								key:'newindexpage'
+
+		                    }}), 
+		                    success : function(data){
+									var res = data["1"];
+									if(res&&res.errcode==0){
+										self.indexConfig = res.conflist[0].value;
+										self._selectRole(result,roleid);
+									}
+
+							},
+							error:function (str) {
+
+			               
+		                        }
+
+		         })
+           },
+           _selectRole:function(result,roleid){
+           	var self = this;
+           	  if(roleid==0){
+	                     	//学生
+	                        setCookie('gy_t',result["1"].sessionid,'');
+							setCookie('gy_u',result["1"].userid, 7);
+						$.ajax({  
+		                    type : "POST",   
+		                    url : "/usr/querymyinfo",
+		                    dataType:'json',  
+		                    data :JSON.stringify({"1":{  
+			                    command: "usr/querymyinfo",
+								uid: getCookie('gy_u'),
+								loginid:getCookie('gy_u'),
+								sessionid: getCookie('gy_t')
+
+		                    }}), 
+		                    success : function(data) {
+				                    if(data["1"].errcode != 0){
+										uselayer(3, '登录失败!<br/>'+data["1"].errdesc);
+										return false;
+									}
+									setCookie('gy_a',data["1"].imgurl?data["1"].imgurl:'../../images/ostp/feifei.png',7);//头像
+									setCookie('gy_n',strtocode(data["1"].name),7);//姓名
+									setCookie('gy_un',data["1"].username,7); //用户名
+
+									setCookie('gy_mobile',data["1"].mobile,7); //用户名
+									setCookie('gy_cardno',data["1"].cardno,7); //用户名
+									if(self.indexConfig==0){
+										window.location.href='/pages/ostp/index.html';
+									}else{
+										window.location.href='/pages/homepage/student.html';
+									}
+
+
+		                    },
+							error:function (str) {
+
+			               
+		                        }
+
+		                    })
+
+	                     }
+	                     else if(roleid==1 || roleid==2){
+                             //管理员
+                            setCookie("uid",result["1"].userid);
+			                setCookie("sid",result["1"].sessionid);
+			                setCookie("uname",result["1"].name);
+			                if(self.indexConfig==0){
+			                	window.location.href='/pages/scmp/index.html';
+			                }else{
+			                	window.location.href='/pages/homepage/operater.html';
+			                }
+
+	                     }
+	                     else if(roleid==3 || roleid==4){
+	                     	//教师
+	                     	setCookie('sid',result["1"].sessionid,'');
+							setCookie('uid',result["1"].userid, 7);
+							setCookie('name',result["1"].name, 7);
+							if(self.indexConfig==0){
+								window.location.href='/teacherweb/index.html#/prepare/list';
+							}else{
+								window.location.href='/pages/homepage/teacher.html?user='+getCookie('u_name');
+							}
+
+	                     }
+	                      else if(roleid==10){
+	                     	//校长
+	                     	 setCookie('sid',result["1"].sessionid,'');
+							setCookie('uid',result["1"].userid, 7);
+	                     	window.location.href='/pages/homepage/manager.html';
+	                     }else{
+	                     	return false;
+	                     }
+	                 },
+           loginInterface:function(){
+           	var user=this.user;
+           	var pwd=this.pwd;
+           	$.ajax({  
+                    type : "POST",   
+                    url : "/usr/login",
+                    dataType:'json',  
+                    data :JSON.stringify({"1":{  
+	                     "command": "usr/login",
+                        "accountname" :user,
+                        "password" :pwd,
+                        "type": 100
+                    }}), 
+                    success : function(result) {
+	                       console.log(result)
+                        if ( result["1"].errcode != 0) {  
+                        vm.$message({
+							type:'error',
+							message:result["1"].errdesc
+						})
+							return false;
+                        } else { 
+	                         vm.result=result;
+                            setCookie('sid',result["1"].sessionid,'');
+							setCookie('uid',result["1"].userid, 7);
+				$.ajax({  
+                    type : "POST",   
+                    url : "/user/queryuserdetail",
+                    dataType:'json',  
+                    data :JSON.stringify({"1":{  
+	                     "command": "user/queryuserdetail",
+                        "sessionid" :getCookie('sid'),
+                        "loginid" :getCookie('uid'),
+                        "uid": getCookie('uid')
+                    }}), 
+                    success : function(data) {
+		                  if ( result["1"].errcode != 0) {  
+	                        vm.$message({
+								type:'error',
+								message:result["1"].errdesc
+							})
+								return false;
+							}
+	                     var roleid=data['1'].users[0].roleid;
+
+	                     console.log(data['1'].users[0].roleid)
+	                     if(roleid.split(',').length>1){
+
+                            var _roles=roleid.split(',')
+                            var rolesNew=[];
+                            _roles.forEach(function(role,i){
+                            	if(role==0){
+                            		rolesNew.push({id:role,role:'学生'});
+                            	}
+                            	else if(role==1){
+                            		if(_.find(rolesNew,{id:"2",role:'教务'})){
+
+                            		}else{
+                            			rolesNew.push({id:role,role:'教务'})
+                            		}
+
+                            	}
+                            	else if(role==2){
+                            		if(_.find(rolesNew,{id:"1",role:'教务'})){
+
+                            		}else{
+                            			rolesNew.push({id:role,role:'教务'})
+                            		}
+
+                            	}
+                            	else if(role==3 ){
+                            		if(_.find(rolesNew,{id:"4",role:'老师'})){
+
+                            		}else{
+                            			rolesNew.push({id:role,role:'老师'})
+                            		}
+
+                            	}else if (role==4){
+                            		if(_.find(rolesNew,{id:"3",role:'老师'})){
+
+                            		}else{
+                            			rolesNew.push({id:role,role:'老师'})
+                            		}
+
+                            	}
+                            	else if(role==10){
+                            		rolesNew.push({id:role,role:'管理者'})
+                            	}
+
+                            })
+                           vm.radio=rolesNew[0].id;
+                           for(var i=0;i<rolesNew.length;i++){
+                           	if(rolesNew[i]==false){
+                           		 rolesNew.splice(i,1);
+                           	}
+                           }
+                           if(rolesNew.length>1){
+                           	 vm.dialogVisible=true;
+                           	 vm.roles=rolesNew;
+                           }
+                           else{
+                           	 vm.selectRole(result,rolesNew[0]['id']);
+                           }
+
+
+	                     }
+	                     else{
+	                     	 vm.selectRole(result,roleid);
+
+	                     }
+                    },
+					error:function (str) {
+
+	               
+                        }
+
+                    })
+			}
+		}
+			,
+					error:function (str) {
+							vm.$message({
+							type:'error',
+							message:'登录失败'
+						 })
+					   } 
+	               });  
+	           }
+		},
+		mounted:function(){
+			this.init();
+
+		}
+	})
+</script>

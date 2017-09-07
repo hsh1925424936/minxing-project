@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<meta name="renderer" content="webkit">
+		<link rel="stylesheet" href="../common/css/common.css" type="text/css" />
+		<script src="../common/js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../common/js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../common/js/common.js" type="text/javascript" charset="utf-8"></script>
+		<title>课上-学生-单次-虚实结合训练报告</title>
+		<style type="text/css">
+			body{
+				background-color:#F6F6F6;
+			}
+			
+			._title{
+				width:100%; height:46px; line-height:46px; text-align:center; font-size:22px;
+				/*background-image:url(../common/images/report_header.jpg);*/
+				/*background-size:100% 100%;*/
+			}
+			.mainOuter{
+				overflow:hidden; width:100%;
+			}
+			.reportOuter{
+				width:100%; background-color:white; position:relative;
+			}
+			.username{
+				height:20px; position:absolute; right:10px; top:10px;
+			}
+			.username img{
+				height:100%; display:block; float:left; margin-right:10px;
+			}
+			.username span{
+				display:block; float:left; line-height:20px;
+			}
+			.reportTit{
+				width:100%; font-size:18px; text-align:center;
+				line-height:45px;
+			}
+			.reportSubTit{
+				width:100%; font-size:12px; text-align:center;
+				line-height:45px; color:rgb(102,102,102);
+			}
+			.chartOuter{
+				width:100%;
+			}
+			.smartModeOuter{
+				width:100%; height:300px; margin:auto;
+			}
+			.smartModeBox{
+				width:165px; float:left; height:190px; margin-left:35px;
+				margin-right:35px;
+			}
+			.smartModeBox span{
+				display:block; width:100%;
+				font-size:14px; font-weight:bold;
+				margin-top:12px; text-align:center;
+			}
+			.smartModeCon{
+				width:160px; height:160px; margin: 0 auto; position: relative;
+				background: url(../common/images/train-record-detail-bg.png) no-repeat;
+				background-size: 100% 100%; text-align: center; line-height: 160px;
+				color: #333; border-radius: 50%; overflow: hidden;
+			}
+			.smartModeCon strong { font-size: 50px;}
+			.smartModeCon strong,.smartModeCon span { z-index: 2; position: relative;}
+			.smartModeCon div { width: 100%; background: #ff8019; position: absolute;
+				left: 0; bottom: 0; height: 0%;
+			}
+			
+			.abilityEvalute{
+				width:100%; height:250px;  position: relative;
+			}
+			.abilityEvalute span {
+				position:absolute;left:50%;top:0; margin:-30px; border-radius:50%;border: 1px solid #ccc;
+				text-align: center; width:60px; height:60px; line-height: 60px; background: #fff; font-size:12px ;
+			}
+			.abilityEvalute span.active { background: #dfebf7;}
+			
+			.abilityEvalute p {
+				position: absolute; left: 0; top: 0; width:200px; height:200px; line-height: 200px; text-align: center;
+			}
+			
+			.triOuter{
+				width:100%; height:16px; border-bottom:1px solid #F1F1F1;
+				float:left; margin-top:5px;
+			}
+			.triOn{
+				background-image:url('../common/images/tri.jpg');
+			}
+			.triOuter span{
+				display:block; width:36px; height:100%;
+				background-size:100% 100%; background-repeat:no-repeat;
+				margin-top:1px;
+			}
+			.tri1{
+				float:left; margin-left:100px;
+			}
+			.tri2{
+				float:right; margin-right:100px;
+			}
+			.summaryOuter{
+				width:100%; border-bottom:1px solid #F1F1F1;
+				float:left;
+			}
+			.summary{
+				display:block; float:left; width:33.3%; height:37px;
+				line-height:37px; text-align:center; font-size:14px;
+				color:rgb(2,2,2);
+			}
+			.summary span{
+				font-size:18px; color:rgb(255,127,25);
+			}
+
+			.th{
+				width:100%; background-color:#F7F7F7;
+				font-size:14px; height:54px;
+				line-height:54px; text-align:center;
+				border-bottom:2px solid #E6E6E6; color:rgb(2,2,2);
+			}
+			.th li{
+				float:left;
+			}
+			.th .learnPoint{
+				border-right:2px solid #E6E6E6; width:20%; 
+			}
+			.th .wrongTxt{
+				border-right:2px solid #E6E6E6; width:40%;
+			}
+			/*.th .accessory{
+				border-right:2px solid #E6E6E6; width:70px;
+			}*/
+			.th .score{
+				border-right:2px solid #E6E6E6; width:10%;
+			}
+			.th .abilityChange{
+				width:30%;
+			}
+
+			.tr{
+				width:100%; padding: 10px 0;
+				font-size:14px; 
+				/*text-align:center;*/ 
+				border-bottom:1px solid #E6E6E6;
+			}
+			.tr li{
+				float:left;
+			}
+			
+			.tr .learnPoint{
+				width:20%;padding-left: 1em;
+			}
+			.tr .wrongTxt{
+				width:40%;
+			}
+			/*.tr .accessory{
+				width:70px;
+			}
+			.tr .accessory span{
+				visibility: hidden;
+			}*/
+			.tr .score{
+				width:10%; text-align: center;
+			}
+			.tr .abilityChange{
+				width:30%;
+			}
+			.accessory>span{
+				display:block; margin:auto; width:25px; height:18px;
+				background-image:url('../common/images/movie.png');
+				background-size:100% 100%; background-repeat:no-repeat; 
+			}
+			.abilityChange>span{
+				display:block; float:left; width:18px; height:12px;
+				background-size:100% 100%; background-repeat:no-repeat;
+				margin-left:6px; margin-top: 5px;
+			}
+			.fishOn{
+				background-image:url('../common/images/fishOn.png');
+			}
+			.fish{
+				background-image:url('../common/images/fish.png');
+			}
+			.pad {
+				display: none;
+			}
+			@media screen and (min-width: 480px) {
+				.pad {
+					display: block;
+				}
+				.smartModeOuter{
+					width:50%; height:300px; margin:0;
+					float: left;
+				}
+				.abilityEvalute{
+					width:50%; height:250px;
+					float: left;
+				}
+			}
+		</style>
+		<script>
+			
+		</script>
+	</head>
+	<body>
+		<div class="_title pad">
+			课上-学生-单次-虚实结合训练报告
+		</div>
+		<div class="mainOuter">
+			<div class="reportOuter clearfix">
+				<div class="username">
+					<img src="../common/images/head3.png"> <span class="myname">刘邵雯</span>
+				</div>
+				<h3 class="reportTit">
+					&nbsp;
+				</h3>
+				<h4 class="reportSubTit">
+					来源：&nbsp;&nbsp;&nbsp;&nbsp;
+				</h4>
+
+				<div class="chartOuter clearfix">
+					<div class="smartModeOuter clearfix">
+						<div class="smartModeCon">
+							<strong>0</strong><span>分</span>
+							<div></div>
+						</div>
+
+			
+						<div class="summaryOuter clearfix">
+							
+							<span class="summary">
+								答题数
+							</span>
+							<span class="summary">
+								总用时长
+							</span>
+							<span class="summary">
+								击败同学
+							</span>
+							<span class="summary itemscount">
+								<span>0</span>/0题
+							</span>
+							<span class="summary itemstime">
+								<span>0</span>分钟
+							</span>
+							<span class="summary itemsrank">
+								<span>0</span>%
+							</span>
+
+						</div>
+					</div>
+
+					<div class="abilityEvalute">
+						<!--<div>
+							
+						</div>
+						<p>评测能力</p>-->
+					</div>
+				</div>
+
+				<ul class="th clearfix">
+					<li class="learnPoint">操作步骤</li>
+					<li class="wrongTxt">实际操作</li>
+					<!-- <li class="accessory">附件</li> -->
+					<li class="score">得分</li>
+					<li class="abilityChange">能力变化</li>
+				</ul>
+
+				<div class="table">
+					
+				</div>
+
+			</div>
+
+		</div>
+
+	</body>
+
+	<script src="../common/js/echarts-all.js"></script>
+	<script src="../common/js/web-chart.js"></script>
+
+	<script>
+		var R;
+		var base = {
+			"errcode":"0",
+			"yhgt_score":null,
+			"operatorstudentid":"149095",
+			"drillname":"胸腔穿刺术",
+			"audiofileid":null,
+			"totalscore":"93.000",
+			"zysy_score":"0.0",
+			"lcsw_score":"100.0",
+			"abilities":[
+				"病人安全",
+				"专业知识",
+				"专业技能",
+				"无菌观念",
+				"人文关怀",
+				"职业素养",
+				"临床思维"
+			],
+			"score":[
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"禁忌判断",
+					"begintime":null,
+					"itemno":"100-0-000000-0011001001000",
+					"rightoperation":"排除禁忌症",
+					"gradeitemscore":"4.000",
+					"lastscore":0,
+					"gradeitemcontent":"排除禁忌症：疑有巨大卵巢囊肿；腹腔内广泛粘连；肝性脑病前期；有明显出血倾向；肝包虫病；肠麻痹，腹部胀气明显；躁动不能合作；严重电解质紊乱；妊娠中后期",
+					"score":"3.000",
+					"subitemcontent":"禁忌症判断正确",
+					"subitemscore":"1.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"术前核对沟通",
+					"begintime":null,
+					"itemno":"100-0-000000-0011001201200",
+					"rightoperation":"核查患者检查资料",
+					"gradeitemscore":"3.000",
+					"lastscore":-5,
+					"gradeitemcontent":"核对X线胸片或胸部B超；核对凝血功能和血常规检查",
+					"score":"3.000",
+					"subitemcontent":"正确核对患者检查资料",
+					"subitemscore":"3.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"用物准备",
+					"begintime":null,
+					"itemno":"100-0-000000-0011001301300",
+					"rightoperation":"根据病人实际情况，选择用物",
+					"gradeitemscore":"4.000",
+					"lastscore":-1,
+					"gradeitemcontent":"选择用物，用物包括：胸腔穿刺针，手套、消毒液、消毒器械、5ml注射器、50ml注射器、2%利多卡因、可待因片、胶带、多余胸腔积液容器、弯盘）",
+					"score":"4.000",
+					"subitemcontent":"正确选择用物",
+					"subitemscore":"4.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"调整体位",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002102100",
+					"rightoperation":"患者常规取坐位，面向椅背，双手前臂平放于椅背，前额扶于前臂上（不能坐立者取半卧位）",
+					"gradeitemscore":"3.000",
+					"lastscore":-2,
+					"gradeitemcontent":"协助患者选择坐位",
+					"score":"2.000",
+					"subitemcontent":"协助患者选择正确体位",
+					"subitemscore":"3.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"穿刺定位",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002202201",
+					"rightoperation":"选肩胛下角线第7~9肋间或者腋后线第7、8肋间",
+					"gradeitemscore":"5.000",
+					"lastscore":0,
+					"gradeitemcontent":"穿刺点定位",
+					"score":"2.000",
+					"subitemcontent":"定位操作点错误",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"穿刺定位",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002202211",
+					"rightoperation":"穿刺点可用甲紫在皮肤上做标记",
+					"gradeitemscore":"3.000",
+					"lastscore":-2,
+					"gradeitemcontent":"标记穿刺点",
+					"score":"2.000",
+					"subitemcontent":"标记位置有少量偏差",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"穿刺定位",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002202220",
+					"rightoperation":"胸部叩诊，选择实音明显的部位进行穿刺",
+					"gradeitemscore":"2.000",
+					"lastscore":-3,
+					"gradeitemcontent":"胸部叩诊",
+					"score":"2.000",
+					"subitemcontent":"行胸部叩诊",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"消毒",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002302300",
+					"rightoperation":"拿取新棉球准备开始第一次消毒",
+					"gradeitemscore":"1.000",
+					"lastscore":-4,
+					"gradeitemcontent":"第一次消毒拿取新棉球",
+					"score":"1.000",
+					"subitemcontent":"拿取新棉球",
+					"subitemscore":"1.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"消毒",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002302320",
+					"rightoperation":"第一次消毒以穿刺点为圆心",
+					"gradeitemscore":"2.000",
+					"lastscore":-3,
+					"gradeitemcontent":"第一次消毒起点",
+					"score":"2.000",
+					"subitemcontent":"消毒起点正确",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"消毒",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002302330",
+					"rightoperation":"以穿刺点为中心，半径不小于15cm",
+					"gradeitemscore":"2.000",
+					"lastscore":-5,
+					"gradeitemcontent":"第一次消毒面积",
+					"score":"2.000",
+					"subitemcontent":"消毒外周面积正确（1-1.5）",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"消毒",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002302340",
+					"rightoperation":"更换新棉球准备开始第二次消毒",
+					"gradeitemscore":"2.000",
+					"lastscore":-5,
+					"gradeitemcontent":"第二次消毒更换棉球",
+					"score":"2.000",
+					"subitemcontent":"更换新棉球",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"消毒",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002302360",
+					"rightoperation":"第二次消毒以穿刺点为圆心",
+					"gradeitemscore":"2.000",
+					"lastscore":-5,
+					"gradeitemcontent":"第二次消毒起点",
+					"score":"2.000",
+					"subitemcontent":"消毒起点正确",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"消毒",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002302370",
+					"rightoperation":"以穿刺点为中心，半径略小于第一次，约10cm",
+					"gradeitemscore":"2.000",
+					"lastscore":-5,
+					"gradeitemcontent":"第二次消毒面积",
+					"score":"2.000",
+					"subitemcontent":"消毒外周面积正确（1-1.5）",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"消毒",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002302380",
+					"rightoperation":"更换新棉球准备开始第三次消毒",
+					"gradeitemscore":"2.000",
+					"lastscore":-3,
+					"gradeitemcontent":"第三次消毒更换棉球",
+					"score":"2.000",
+					"subitemcontent":"更换新棉球",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"消毒",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002302390",
+					"rightoperation":"第三次消毒以穿刺点为圆心",
+					"gradeitemscore":"2.000",
+					"lastscore":-3,
+					"gradeitemcontent":"第三次消毒起点",
+					"score":"2.000",
+					"subitemcontent":"消毒起点正确",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"消毒",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002302410",
+					"rightoperation":"以穿刺点为中心，半径略小于第二次，约8cm",
+					"gradeitemscore":"2.000",
+					"lastscore":-3,
+					"gradeitemcontent":"第三次消毒面积",
+					"score":"2.000",
+					"subitemcontent":"消毒外周面积正确（1-1.5）",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"消毒",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002302420",
+					"rightoperation":"消毒过程中术区应该无污染",
+					"gradeitemscore":"5.000",
+					"lastscore":0,
+					"gradeitemcontent":"术区有无污染",
+					"score":"3.000",
+					"subitemcontent":"术区无污染",
+					"subitemscore":"5.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"消毒",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002302430",
+					"rightoperation":"每次消毒应该无留白",
+					"gradeitemscore":"5.000",
+					"lastscore":0,
+					"gradeitemcontent":"消毒留白",
+					"score":"4.000",
+					"subitemcontent":"消毒无留白",
+					"subitemscore":"5.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"消毒",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002302440",
+					"rightoperation":"一般情况下，消毒次数应为2-3次",
+					"gradeitemscore":"2.000",
+					"lastscore":-3,
+					"gradeitemcontent":"消毒次数",
+					"score":"2.000",
+					"subitemcontent":"消毒次数合适（2-3次）",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"铺巾",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002302450",
+					"rightoperation":"将消毒孔巾铺在穿刺部位，使穿刺点位于孔巾的中心",
+					"gradeitemscore":"1.000",
+					"lastscore":-4,
+					"gradeitemcontent":"铺孔巾",
+					"score":"1.000",
+					"subitemcontent":"正确铺巾",
+					"subitemscore":"1.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"铺巾",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002302460",
+					"rightoperation":"用胶带将孔巾固定牢固，过程中无移动",
+					"gradeitemscore":"1.000",
+					"lastscore":-4,
+					"gradeitemcontent":"固定",
+					"score":"1.000",
+					"subitemcontent":"正确固定孔巾",
+					"subitemscore":"1.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"局麻",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002402402",
+					"rightoperation":"用5ml注射器，抽吸2ml利多卡因麻醉药",
+					"gradeitemscore":"2.000",
+					"lastscore":-3,
+					"gradeitemcontent":"抽吸2ml麻醉药",
+					"score":"2.000",
+					"subitemcontent":"抽吸量过少（<1）",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"局麻",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002402430",
+					"rightoperation":"打皮丘成功皮肤表面应该有皮丘出现",
+					"gradeitemscore":"2.000",
+					"lastscore":-3,
+					"gradeitemcontent":"打皮丘效果",
+					"score":"2.000",
+					"subitemcontent":"皮肤表面有出现皮丘",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"局麻",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002402480",
+					"rightoperation":"垂直进针",
+					"gradeitemscore":"3.000",
+					"lastscore":-2,
+					"gradeitemcontent":"局麻进针角度",
+					"score":"3.000",
+					"subitemcontent":"局麻进针角度80-90度",
+					"subitemscore":"3.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"局麻",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002402500",
+					"rightoperation":"每次推注麻醉药前回抽，观察有无气体、血液、腹水",
+					"gradeitemscore":"4.000",
+					"lastscore":-1,
+					"gradeitemcontent":"回抽",
+					"score":"2.000",
+					"subitemcontent":"每次推药前均有回抽",
+					"subitemscore":"4.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"局麻",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002402510",
+					"rightoperation":"自皮肤至腹膜壁层，由浅入深，逐层作局部浸润麻醉",
+					"gradeitemscore":"4.000",
+					"lastscore":-1,
+					"gradeitemcontent":"麻醉效果",
+					"score":"4.000",
+					"subitemcontent":"各层均有麻醉",
+					"subitemscore":"4.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"局麻",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002402520",
+					"rightoperation":"各层都匀速推药",
+					"gradeitemscore":"2.000",
+					"lastscore":-3,
+					"gradeitemcontent":"局麻推药速度",
+					"score":"2.000",
+					"subitemcontent":"各层匀速推药",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"局麻",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002402585",
+					"rightoperation":"局麻进针位置应为穿刺位置，在皮丘中心处进针",
+					"gradeitemscore":"2.000",
+					"lastscore":-3,
+					"gradeitemcontent":"局麻进针位置",
+					"score":"2.000",
+					"subitemcontent":"局麻位置偏差大",
+					"subitemscore":"3.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"局麻",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002402600",
+					"rightoperation":"核对麻药名称，剂量等",
+					"gradeitemscore":"4.000",
+					"lastscore":-3,
+					"gradeitemcontent":"核对麻药",
+					"score":"1.000",
+					"subitemcontent":"核对并选择了合适麻醉药",
+					"subitemscore":"4.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"穿刺",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002502514",
+					"rightoperation":"穿刺针经肋骨上缘刺入",
+					"gradeitemscore":"3.000",
+					"lastscore":-2,
+					"gradeitemcontent":"穿刺针进针位置",
+					"score":"3.000",
+					"subitemcontent":"穿刺针进针位置偏离较大",
+					"subitemscore":"0.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"穿刺",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002502520",
+					"rightoperation":"穿刺针经肋骨上缘垂直胸壁刺入",
+					"gradeitemscore":"4.000",
+					"lastscore":-1,
+					"gradeitemcontent":"穿刺针进针角度",
+					"score":"4.000",
+					"subitemcontent":"穿刺针进针方向正确在80~90°范围内",
+					"subitemscore":"4.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"穿刺",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002502550",
+					"rightoperation":"穿刺进针时，穿刺针应平稳，不晃动",
+					"gradeitemscore":"2.000",
+					"lastscore":-2,
+					"gradeitemcontent":"穿刺进针稳定性",
+					"score":"1.000",
+					"subitemcontent":"穿刺过程器械保持平稳",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"穿刺",
+					"begintime":null,
+					"itemno":"100-0-000000-0011002502600",
+					"rightoperation":"抽液量：首次不超过600ml，以后每次不超过1000ml",
+					"gradeitemscore":"4.000",
+					"lastscore":-1,
+					"gradeitemcontent":"抽液量",
+					"score":"4.000",
+					"subitemcontent":"抽液量适中（0.8-1.2）",
+					"subitemscore":"4.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"术后处理",
+					"begintime":null,
+					"itemno":"100-0-000000-0011003103020",
+					"rightoperation":"覆盖纱布、胶布固定",
+					"gradeitemscore":"2.000",
+					"lastscore":-3,
+					"gradeitemcontent":"覆盖纱布、胶布固定",
+					"score":"2.000",
+					"subitemcontent":"正确固定纱布、胶布",
+					"subitemscore":"2.000",
+					"itemtime":null
+				},
+				{
+					"imgfileid":null,
+					"endtime":null,
+					"opstepcontent":"标本收集",
+					"begintime":null,
+					"itemno":"100-0-000000-0011003203030",
+					"rightoperation":"标本送检（病原体检查，常规，生化，其他：TB—ab、CEA、细胞学等（只要有一种即可））顺序：第一管送病原体检查、其余不定",
+					"gradeitemscore":"2.000",
+					"lastscore":-3,
+					"gradeitemcontent":"标本送检",
+					"score":"2.000",
+					"subitemcontent":"正确收集标本送检",
+					"subitemscore":"2.000",
+					"itemtime":null
+				}
+			],
+			"wjgn_score":"100.0",
+			"stepinfo":[
+
+			],
+			"beat":"0.97",
+			"doneitems":"27",
+			"submittime":"2017-05-20 14:31:06.0",
+			"errdesc":"success",
+			"scoresheetcode":"100-0-000000-001",
+			"endtime":"2017-05-20 14:31:06.0",
+			"begintime":"2017-05-20 14:25:19.0",
+			"videofileid":null,
+			"drillno":"48",
+			"command":"grade/getscore",
+			"traintimes":"2",
+			"zyjn_score":"78.02197802197803",
+			"braq_score":"61.935483870967744",
+			"totalitems":"27",
+			"rwgh_score":"100.0",
+			"zyzs_score":"81.35593220338984"
+		};
+		window.onload = function () {
+			'use strict';			
+			// common();
+			var oId = findurl('detail');
+				$('.myname').html(base.myname);
+				var str = base.scoresheetcode;
+				str = str.substring(str.indexOf('-')+1,str.indexOf('-')+2);
+//				switch (str){
+//					case '2':
+//						$('.reportSubTit').html('来源：智能设备');
+//						$('._title').html('个人智能训练报告');
+//						break;
+//					case '1':
+//						$('.reportSubTit').html('来源：模拟训练');
+//						$('._title').html('个人模拟训练报告');
+//						break;
+//					default:
+//						$('.reportSubTit').html('来源：在线训练');
+//						$('._title').html('个人在线训练报告');
+//						break;
+//				}
+
+				$('.reportTit').html(base.drillname);
+				$('.smartModeCon strong').html(Math.round(isnull(base.totalscore)));
+				$('.smartModeCon div').stop().animate({'height':parseFloat(isnull(base.totalscore))+'%'});
+				$('.itemscount').html('<span>'+isnull(base.doneitems)+'</span>/'+isnull(base.totalitems)+'题');
+				var time = isnull((datetotime(base.endtime.split('.')[0])- datetotime(base.begintime.split('.')[0]))/60);
+				time = time < 1 ? 1 : time;
+				time = 17
+				$('.itemstime span').html(Math.round(time));
+				$('.itemsrank span').html((isnull(base.beat)*100));
+
+				var arr = base.score;
+				$('.table').html('');
+				for (var i = 0 ; i < arr.length; i++) {
+					var _str = '';
+					var _num = arr[i].score-arr[i].lastscore;
+					for (var j=0; j<5; j++  ) {
+						if (j<_num) {
+							_str+='<span class="fishOn"></span>';
+						} else {
+							_str+='<span class="fish"></span>';
+						}
+					}
+
+					var str =
+						'<ul class="tr clearfix">'
+							+'<li class="learnPoint">'+arr[i].opstepcontent+'</li>'
+							+'<li class="wrongTxt">'+arr[i].rightoperation+'</li>'
+							// +'<li class="accessory"><span></span></li>'
+							+'<li class="score">'+parseFloat(arr[i].score)+'</li>'
+							+'<li class="abilityChange">'
+								+_str
+							+'</li>'
+						+'</ul>';
+
+					$('.table').append(str);
+				}
+
+				//画单次训练的雷达图
+				function toPositive(num){//把负数转换成0
+					if(num < 0){
+						num = 0;
+					}
+					return num;
+				}
+
+				if (base.errcode!=0) {
+					uselayer(1,base.errdesc);
+					return false;
+				}
+				var arr1 = [
+					{text:'病人安全',max:100},
+					{text:'无菌观念',max:100},
+					{text:'人文关怀',max:100},
+					{text:'专业知识',max:100},
+					{text:'专业技能',max:100},
+					{text:'临床思维',max:100},
+					{text:'职业素养',max:100},
+					{text:'医患沟通',max:100}
+				];
+				var arr2 = [
+					toPositive(parseFloat(base.braq_score)).toFixed(2),
+					toPositive(parseFloat(base.wjgn_score)).toFixed(2),
+					toPositive(parseFloat(base.rwgh_score)).toFixed(2),
+					toPositive(parseFloat(base.zyzs_score)).toFixed(2),
+					toPositive(parseFloat(base.zyjn_score)).toFixed(2),
+					toPositive(parseFloat(base.lcsw_score)).toFixed(2),
+					toPositive(parseFloat(base.zysy_score)).toFixed(2),
+					toPositive(parseFloat(base.yhgt_score)).toFixed(2)
+				];
+
+				writeradar({
+					obj:$('.abilityEvalute')[0],
+					name:arr1,
+					value:[90,50,80,90,95,80,90,75],
+					show:true,
+					bg:'#ffffff',
+					line:'#0496ca',
+					type:'solid',
+					color:'rgba(4,150,202,0.2)'
+				});
+		};	
+				
+	</script>
+	
+</html>

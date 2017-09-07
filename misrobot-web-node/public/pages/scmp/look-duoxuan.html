@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>查看-多选</title>
+		<link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css" />
+		<script src="../../js/jquery-3.1.1.min.js"></script>
+		<script src="../../js/vue.min.js"></script>
+		<script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			::-webkit-scrollbar{width:0px}
+			ul,ol{list-style: none;}
+			#single-select{
+				margin: 20px;
+			}
+			#single-select>ul>li{overflow: hidden;margin-bottom: 20px;}
+			#single-select>ul>li>.singleLeft{
+				width: 90px;
+				float: left;
+			}
+			#single-select>ul>li>.singleRigh{
+				float: left;
+				width: 80%;
+			}
+			.singleList {
+				overflow: hidden;
+			}
+			.singleList li{
+				float: left;
+				margin-right: 30px;
+			}
+			#single-select p+img{
+				width: 50px;
+			}
+			#single-select p{
+				margin-bottom: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="single-select">
+			<ul>
+				<li>
+					<p class="singleLeft">题目 ：</p>
+					<div class="singleRigh">
+						<p>{{question.name}}</p>
+						<!--<img src="../../images/scmp/logo.png" alt="" />-->
+					</div>
+				</li>
+				<li>
+					<p class="singleLeft">选项 ：</p>
+					<div class="singleRigh">
+						<ol class="singleList">
+							<li v-for="item in question.questionitem">
+								<p>
+									<span>{{item.itemname}}.</span>
+									<span>{{item.content}}</span>
+								</p>
+								<!--<img src="../../images/scmp/logo.png" alt="" />-->
+							</li>
+						</ol>
+					</div>
+				</li>
+				<li>
+					<p class="singleLeft">正确答案 ：</p>
+					<p>{{question.answer}}</p>
+				</li>
+			</ul>
+			<hr />
+			<ul>
+				<li>
+					<p class="singleLeft">所属课程 ：</p>
+					<p>{{question.coursename}}</p>
+				</li>
+				<!--<li>
+					<p class="singleLeft">难度 ：</p>
+					<div></div>
+				</li>
+				<li>
+					<p class="singleLeft">标签 ：</p>
+					<div>
+						<span>无菌鼠</span>
+						<span>无菌鼠</span>
+						<span>无菌鼠</span>
+					</div>
+				</li>-->
+			</ul>
+			<div style="text-align: center;">
+				<button class="btn btn-primary" @click="sureBtn">确定</button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var m=window.location.href.split('=')[1];
+		var vm=new Vue({
+			el:'#single-select',
+			data:{
+				question:''
+			},
+			mounted(){
+//				this.getSingleSelect();
+			},
+			created(){
+				this.getSingleSelect();
+			},
+			methods:{
+				getSingleSelect:function(){
+					var self=this;
+					var data={
+						command:'question/querysinglequestion',
+						sessionid:getCookie('sid'),
+						loginid:getCookie('uid'),
+						questionbaseid:window.location.href.split('=')[1]
+					}
+					function callback(res){
+						self.question=res;
+					}
+					post('/question/querysinglequestion',data, callback, errcodefn, errfn)
+				},
+				sureBtn:function(){
+					closeAll();
+				}
+			}
+		})
+	</script>
+</html>

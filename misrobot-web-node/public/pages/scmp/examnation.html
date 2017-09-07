@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<title>OSCE考试>考区管理</title>
+	<script src="../../js/vue.js"></script>
+	<script src="../../js/element.js"></script>
+	<script src="../../js/jquery-1.11.3.js"></script>
+	<script src="../../layer/xie/layer1.js"></script>
+	<script src="../../js/futuredoctorapp/common.js"></script>
+	<script src="../../js/scmp/common.js"></script>
+	<script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../css/element.css">
+	<link rel="stylesheet" href="../../css/scmp/cert.css">
+	<style>
+		[v-cloak] {
+			display: none;
+		}
+		
+		#countSearch {
+			background-color: #F2F2F2;
+			height: 40px;
+			line-height: 40px;
+			padding-left: 20px;
+		}
+		#cret tr,th{
+			text-align: center;
+			vertical-align: middle;
+		}
+		#cret .middle{
+			line-height: 30px;
+			vertical-align: middle !important;
+		}
+	</style>
+</head>
+<body>
+<p id="countSearch">OSCE考试>考区管理</p>
+<div id="cret" v-cloak>
+	<template>
+			<section>
+                <div class="form-inline f12 sel-detail">
+                    <button @click = "add()" class="selDetail btn btn-primary" style = " width: 100px">
+                      	  增加
+                    </button>
+                </div>
+            </section>
+				<div style="clear: both;margin-top: 20px;">
+					<table class="table table-bordered table-hover">
+						<tr class="active">
+							<th>考区名称</th>
+							<th>考区描述</th>
+							<th>操作</th>
+						</tr>
+						<tr v-for="(value,index) in examlist">
+							<td>{{value.areaname}}</td>
+							<td>{{value.areadesc}}</td>
+							<td>
+								<button type="button" class="btn btn-primary btn-xs" @click="edui(value)">编辑</button>
+								<button type="button" class="btn btn-primary btn-xs" @click="delete_ex(value)">删除</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+	</template>
+</div>
+<script>
+	var vm = new Vue({
+		el: '#cret',
+		data: {
+			examlist:[],//考区列表
+		},
+		mounted: function() {
+			this.show_site();
+		},
+		methods: {
+			show_site:function(){
+				var self=this
+				var data={
+					command:'oscearea/queryareainfo',//接口地址
+					sessionid:getCookie('sid'),
+					loginid:getCookie('uid'),
+				};
+				function callback(res){
+					self.examlist=res.resultlist;
+					console.log(JSON.stringify(res))
+				};
+				post('/oscearea/queryareainfo',data,callback,errcodefn,errfn)
+			},
+			add:function(){
+				layer.open({
+			                type: 2,
+			                title:'增加考区',
+			                shadeClose: true,
+			                shade: 0.8,
+			                area: ['800px', '400px'],
+			                content: 'newExamnation.html',
+			            });
+			},
+			edui:function(value){
+				layer.open({
+			                type: 2,
+			                title:'编辑考区',
+			                shadeClose: true,
+			                shade: 0.8,
+			                area: ['800px', '400px'],
+			                content: 'examnationedui.html?id='+value.id,
+			            });
+			},
+			delete_ex:function(value){
+					var self=this
+					var L= layer.confirm('确定要删除此考区吗？', {
+                    btn: ['确定','取消'] //按钮
+                },function(){
+					var data={
+						command:'oscearea/delarea',//接口地址
+		    			sessionid:getCookie('sid'),
+		    			loginid:getCookie('uid'),
+						id:value.id
+					};
+					function callback(res){
+		    			layer.msg('成功删除');
+		    			self.show_site();
+		    		};
+		    		post('/oscearea/delarea',data,callback,errcodefn,errfn)
+                })
+					},
+		}
+	});
+</script>
+</body>
+
+</html>

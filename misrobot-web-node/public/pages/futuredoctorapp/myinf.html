@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>任务</title>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/futuredoctorapp/common.js"></script>
+    <script src="../../js/futuredoctorapp/vueMyInfo.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../css/futuredoctorapp/common.css">
+    <link rel="stylesheet" href="../../css/futuredoctorapp/vueComponent.css">
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <style>
+        .tp {
+            position: relative;
+            top: -1px;
+            height: 18px;
+        }
+
+        .lt {
+            float: left;
+            margin-left: 1.5rem;
+            color: #666;
+        }
+        .rt {
+            float: right;
+            margin-right: 1.5rem;
+            color: #333;
+        }
+        .lc {
+            line-height: 50px;
+        }
+        .container {
+            padding-left: 0;
+            padding-right: 0;
+            background-color: #F2F2F2;
+        }
+
+        .info {
+            background-color: #FFFFFF;
+            height: 60px;
+            border-width: 0 0 1px 0;
+            border-style: solid;
+            border-color: #E8E8E8;
+        }
+
+        .infotxwz {
+            float: left;
+            margin-top: 20px;
+        }
+
+        .infotx {
+            float: right;
+            margin-top: 5px;
+        }
+
+        .infoname {
+            background: #FFFFFF;
+            height: 50px;
+            border-width: 0 0 1px 0;
+            border-style: solid;
+            border-color: #E8E8E8;
+        }
+        .infoxh {
+            background: #FFFFFF;
+            height: 50px;
+            border-width: 0 0 1px 0;
+            border-style: solid;
+            border-color: #E8E8E8;
+        }
+        .infosj {
+            background: #FFFFFF;
+            height: 50px;
+            border-width: 0 0 1px 0;
+            border-style: solid;
+            border-color: #E8E8E8;
+        }
+        .infoyx {
+            background: #FFFFFF;
+            height: 50px;
+            border-width: 0 0 1px 0;
+            border-style: solid;
+            border-color: #E8E8E8;
+        }
+        .infodw {
+            background: #FFFFFF;
+            height: 50px;
+            border-width: 0 0 1px 0;
+            border-style: solid;
+            border-color: #E8E8E8;
+        }
+        .infobm {
+            background: #FFFFFF;
+            height: 50px;
+            border-width: 0 0 1px 0;
+            border-style: solid;
+            border-color: #E8E8E8;
+        }
+        #myzhongbu {
+            padding-top: 14px;
+        }
+
+        #myxiabu {
+            padding-top: 14px;
+        }
+    </style>
+</head>
+<body>
+<div id="container" class="container" v-cloak>
+    <headerbox :thistitle="headerTitle" id="header"></headerbox>
+    <div id="myshangbu" class="myshangbu">
+        <div class="info">
+            <span class="infotxwz lt">头像</span>
+            <img :src="imageurl" class="infotx rt"/>
+        </div>
+        <div class="infoname">
+            <span class="lc lt">姓名</span>
+            <span class="lc rt">{{name}}</span>
+        </div>
+    </div>
+    <div id="myzhongbu" class="myzhongbu">
+        <div class="infosj">
+            <span class="lc lt">绑定手机号码</span>
+            <span class="lc rt">{{mobile}}</span>
+        </div>
+        <div class="infoyx">
+            <span class="lc lt">绑定邮箱</span>
+            <span class="lc rt">{{email}}</span>
+        </div>
+    </div>
+    <div id="myxiabu" class="myxiabu">
+        <div class="infodw">
+            <span class="lc lt">单位</span>
+            <span class="lc rt">{{workunit}}</span>
+        </div>
+        <div class="infobm">
+            <span class="lc lt">部门</span>
+            <span class="lc rt">{{deptname}}</span>
+        </div>
+        <div class="infoxh">
+            <span class="lc lt">工号/学号</span>
+            <span class="lc rt">{{code}}</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    registerToNative('goBack', function (data) {
+        window.location.href = 'my.html'
+    });
+    var vm = new Vue({
+        el: '#container',
+        data: {
+            headerTitle: '个人信息',
+            imageurl: '../../images/futuredoctorapp/icon-wode-touxiang.png',
+            name: '',
+            code: '',
+            mobile: '',
+            email: '',
+            workunit: '',
+            deptname: ''
+        },
+        methods: {}
+    });
+    my_info();
+    function my_info() {
+        var data = {
+            command: 'user/queryuserdetail',//接口地址
+            sessionid: getCookie('sid'),
+            loginid: getCookie('uid'),
+            uid: getCookie('uid')
+        };
+
+        function callback(res) {
+            if (!res.users[0].imageurl) {
+                vm.imageurl = "../../images/futuredoctorapp/icon-wode-touxiang.png";
+            } else {
+                vm.imageurl = res.users[0].imageurl;
+            }
+            vm.name = res.users[0].name;
+
+            vm.code = res.users[0].code;
+
+            vm.mobile = res.users[0].mobile;
+
+            vm.email = res.users[0].email;
+
+            vm.workunit = res.users[0].workunit;
+
+            vm.deptname = res.users[0].deptname;
+        };
+        post('/user/queryuserdetail', data, callback, errcodefn, errfn)
+    }
+</script>
+</body>
+</html>

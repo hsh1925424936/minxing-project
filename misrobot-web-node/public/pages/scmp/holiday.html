@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>节假日设置</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style>
+			html,body{
+				background-color: white;
+			}
+			.holiday {
+				margin: 0 20px;
+			}
+			.holiday .op {
+				background-color: #E5E6E8;
+				height: 40px;
+				line-height: 40px;
+				padding-left: 20px;
+				margin-bottom: 20px;
+			}
+			.holiday .addHoliday {
+				margin: 20px 0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="holiday">
+			<p class="op">节假日设置</p>
+			<div class="addHoliday">
+				<el-button type="primary" @click="addObj">新增节假日</el-button>
+			</div>
+			<div>
+				<template>
+					<el-table :data="openList" border>
+						<el-table-column type="index" label="序号" width="80">
+						</el-table-column>
+						<el-table-column prop="year" label="年度" width="100">
+						</el-table-column>
+						<el-table-column label="节假日">
+							<template scope="scope">
+								<span v-for="dataVal in openList[scope.$index].datalist">{{ dataVal.day | filterFn}}&nbsp;&nbsp;&nbsp;</span>
+							</template>
+						</el-table-column>
+						<el-table-column label="例外工作日">
+							<template scope="scope">
+								<span v-for="excepetVal in openList[scope.$index].excepet">{{ excepetVal.orgday | filterFn}}&nbsp;&nbsp;&nbsp;</span>
+							</template>
+						</el-table-column>
+						<el-table-column label="操作">
+							<template scope="scope">
+								<el-button size="small" type="primary" @click="handleLook(scope.$index, scope.row)">查看</el-button>
+								<el-button size="small" type="success" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+								<el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+							</template>
+						</el-table-column>
+					</el-table>
+				</template>
+			</div>
+			<template>
+				<div class="block" style="margin-top: 20px;text-align: center;">
+					<el-pagination
+						 
+					      @size-change="handleSizeChange"
+					      @current-change="handleCurrentChange"
+					      :current-page="pageno"
+					      :page-sizes="[10, 20, 30, 50]"
+					      :page-size="pagesize"
+					      layout="total, sizes, prev, pager, next, jumper"
+					      :total="totalCount">
+					    </el-pagination>
+				</div>
+			</template>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '.holiday',
+			data: {
+				pickerOptions0: {
+					disabledDate(time) {
+						return time.getTime() < Date.now() - 8.64e7;
+					}
+				},
+				pageno:1,
+				pagesize:10,
+				totalCount:0,
+				openList:[],//节假日列表
+				dateObj:'',//编辑时
+				data:'',//查看时传一条参数
+				editData:''//编辑时传的参数
+			},
+			mounted: function() {
+                this.getHoliday();
+			},
+			filters:{
+				filterFn(val){
+					return val.substring(5,10)
+				}
+			},
+			methods: {
+				handleSizeChange:function(size){
+					this.pagesize = size;
+					this.getHoliday();
+				},
+				handleCurrentChange:function(currentPage){
+					this.pageno = currentPage;
+					this.getHoliday();
+				},
+				getHoliday:function(){
+					let self=this;
+					let data={
+						command:'holiday/listholiday',
+						sessionid:getCookie('sid'),
+						loginid:getCookie('uid'),
+						page:self.pageno,
+						reqnum:self.pagesize,
+						day:''
+					}
+					function callback(res){
+						if(res && res.errcode==0){
+							self.openList=res.holidaylist;
+							self.totalCount=res.pagecount;
+						}else{
+							layer.msg(res.errdesc)
+						}
+					}
+					post('/holiday/listholiday',data,callback,errcodefn,errfn)
+				},
+				addObj:function(){//新增节假日
+					layer.open({
+						type:2,
+						title:'新增节假日',
+						area: ['60%', '90%'],
+						content:'addHoliday.html?pram=0'
+					})
+					
+				},
+				handleEditv:function(index,row){//编辑节假日
+					this.editData=row;
+					layer.open({
+						type:2,
+						title:'编辑作休日',
+						area: ['60%', '90%'],
+						content:'addHoliday.html?pram=1'
+					})
+					
+				},
+				handleLook:function(index,row){//查看节假日
+					this.data=row;
+					layer.open({
+						type:2,
+						title:'查看作休日',
+						area: ['60%', '90%'],
+						content:'lookHoliday.html'
+					})
+				},
+				handleDelete:function(index,row){//删除节假日，2017/7/27新增的需求
+					console.log(JSON.stringify(row))
+					var self=this
+					var L=layer.confirm('确定要删除此节假日吗', {
+						btn: ['确定','取消'] //按钮
+					}, function(){
+						var data={
+							command:'holiday/deleteholiday',
+							sessionid:getCookie('sid'),
+							loginid:getCookie('uid'),
+							holidayid:row.holidayid
+						}
+						function callback(res){
+							layer.msg('删除成功')
+							self.getHoliday()
+						}
+						post('/holiday/deleteholiday',data,callback,errcodefn,errfn)
+					}, function(){
+						layer.close(L)
+					})
+				}
+			}
+		})
+	</script>
+
+</html>

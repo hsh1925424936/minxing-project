@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>成绩核查</title>
+  <link rel="stylesheet" href="../../css/scorereview/checkScore.css">
+  <link rel="stylesheet" href="../../css/scorereview/demo.css">
+  <link rel="stylesheet" href="../../css/scorereview/iconfont.css">
+  <script src="../../js/jquery-1.11.3.js"></script>
+  <script src="../../js/vue.js"></script>
+ </head>
+ <body style="font-size:18px;font-family:microsoft yahei;" >
+ 	 <div id="shadow" class="hide">
+		 <div style="height:10px;"></div>
+		 <div id="errorBox">
+			 <p class="boxHead">
+				 <i id="cha">×</i>
+			 </p>
+			 <div class="errorMsg">
+				 <img src="../../images/scorereview/ok0.png" alt="" class="okicon">
+				 <p>
+					 <span id="successMsg">初赛成绩发布成功！</span></br>
+					 <span style="font-size:12px">（发布后不可再修改）</span>
+				 </p>
+			 </div>
+			 <!--服务器连接超时，请稍后再试。-->
+			 <div>
+				 <p id="ok" class="btnBlue btnCenter">我知道了</p>
+			 </div>
+	 	 </div>
+ 	</div>
+ 	<div id="vuetest" v-cloak>
+  		<div id="header">
+			<span>成绩核查</span>
+			<div>
+				<span style="border-right:1px solid #aaa;padding-right:10px;color:#aaa">用户：{{username}}</span>
+				<a href="checkScoreLogin.html">退 出</a>
+			</div>
+  		</div>
+  		<div id="nav">
+			<ul>
+				<li v-on:click="showContent1()" v-bind:class=grayClass[0]>初赛</li>
+				<li v-on:click="showContent2()" v-bind:class=grayClass[1]>复赛</li>
+				<li v-on:click="showContent3()" v-bind:class=grayClass[2]>决赛</li>
+			</ul>
+  		</div>
+  		<div id="content1" v-show="isShow[0]">
+			<div id="check1">
+				<div v-show="loading[0]" class="loading">
+					<img src="../../images/scorereview/loading.gif" alt="">
+				</div>
+				<div class="checkhead">
+					<p>第 {{recvData1_1.checkround}} 轮成绩核查</p>
+					<span>本轮分数=0.8*(评委1分数+评委2分数)/2+0.2*电脑答题</span>
+				</div>
+				<table id="checkTable1">
+					<thead >
+						<tr>
+							<td>当前排名</td>
+							<td>小队</td>
+							<td>当前总分</td>
+							<td>评委1</td>
+							<td>评委2</td>
+							<td>电脑答题</td>
+							<td>本轮分数</td>
+							<td>核准分数</td>
+							<td>新总分</td>
+							<td>考完站数</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(value,index) in recvData1_1.checkresult">
+							<td>{{value.ranklist}}</td>
+							<td>{{value.examineeid}}</td>
+							<td class="oldTotal">{{value.totalscore}}</td>
+							<td>{{value.subscoreitem1}}</td>
+							<td>{{value.subscoreitem2}}</td>
+							<td>{{value.objscoreitem}}</td>
+							<td class="thisScore"></td>
+							<td>
+								<div class='changeScore'>
+									<input type='text':data-id="value.examineeid" :value="value.roundscore" @input="inputChange1(index)" :readonly="isNaN(value.roundscore)?true:false">
+									<p class='changeNum'>
+										<span class='anticon icon-up' @click="add1(index)"></span></br>
+										<i class='anticon icon-down' @click="min1(index)"></i>
+									</p>
+								</div>
+							</td>
+							<td class="newTotal">{{(parseFloat(value.totalscore)+parseFloat(value.roundscore)) | nan }}</td>
+							<td>{{value.finishstationcnt}}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div id="checkFooter1">
+					<p class="btnBlue btnLeft" id="check1Refresh" v-on:click="check1reload()">刷 新</p>
+					<p class="btnBlue btnRight" id="check1ToPreview" v-on:click="check1ToPreview()">预 览</p>
+				</div>
+			</div>
+			<div id="preview1">
+				<p>预 览</p>
+				<table id="previewTable1">
+					<thead>
+						<tr>
+							<td>排名</td>
+							<td>小队</td>
+							<td>总分</td>
+							<td>考完站数</td>
+							<td>第一站</td>
+							<td>第二站</td>
+							<td>第三站</td>
+							<td>第四站</td>
+							<td>第五站</td>
+							<td>第六站</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="value in recvData1_2.perviewresult">
+							<td>{{value.ranklist}}</td>
+							<td>{{value.examineeid}}</td>
+							<td>{{value.totalscore}}</td>
+							<td>{{value.finishstationcnt}}</td>
+							<td>{{value.scoredetail.split("@")[0]}}</td>
+							<td>{{value.scoredetail.split("@")[1]}}</td>
+							<td>{{value.scoredetail.split("@")[2]}}</td>
+							<td>{{value.scoredetail.split("@")[3]}}</td>
+							<td>{{value.scoredetail.split("@")[4]}}</td>
+							<td>{{value.scoredetail.split("@")[5]}}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div id="previewFooter1">
+					<button class="btnYellow btnCenter" v-on:click="ok1_2()" :disabled="isSubmit1Disable">核准发布</button>
+				</div>
+			</div>
+  		</div>
+  		<div id="content2" v-show="isShow[1]">
+	  		<div id="check2">
+				<div v-show="loading[1]" class="loading">
+					<img src="../../images/scorereview/loading.gif" alt="">
+				</div>
+				<div class="checkhead">
+					<p>第 {{recvData2_1.checkround}} 轮成绩核查</p>
+					<span>本轮分数=0.8*(评委1分数+评委2分数)/2+0.2*电脑答题</span>
+				</div>
+		  		<table id="checkTable2">
+			  		<thead >
+			  			<tr>
+				  			<td>当前排名</td>
+				  			<td>小队</td>
+				  			<td>当前总分</td>
+				  			<td>评委1</td>
+				  			<td>评委2</td>
+				  			<td>电脑答题</td>
+				  			<td>本轮分数</td>
+				  			<td>核准分数</td>
+				  			<td>新总分</td>
+			  			</tr>
+					</thead>
+					<tbody>
+						  <tr v-for="(value,index) in recvData2_1.checkresult">
+							  <td>{{value.ranklist}}</td>
+							  <td>{{value.examineeid}}</td>
+							  <td>{{value.totalscore}}</td>
+							  <td>{{value.subscoreitem1}}</td>
+							  <td>{{value.subscoreitem2}}</td>
+							  <td>{{value.objscoreitem}}</td>
+							  <td class="thisScore"></td>
+							  <td>
+								  <div class='changeScore'>
+									  <input type='text':value=value.roundscore :data-id="value.examineeid" @input="inputChange2(index)" :readonly="isNaN(value.roundscore)?true:false">
+									  <p class='changeNum'>
+										  <span class='anticon icon-up' @click="add2(index)"></span></br>
+										  <i class='anticon icon-down' @click="min2(index)"></i>
+									  </p>
+								  </div>
+							  </td>
+							  <td>{{(parseFloat(value.totalscore)+parseFloat(value.roundscore)) | nan }}</td>
+						  </tr>
+					</tbody>
+		  		</table>
+				<div id="checkFooter2">
+					<p class="btnBlue btnLeft" id="check2Refresh" v-on:click="check2reload">刷 新</p>
+					<p class="btnBlue btnRight" id="check2ToPreview" v-on:click="check2ToPreview">预 览</p>
+				</div>
+	  		</div>
+	  		<div id="preview2">
+				  <p>预 览</p>
+				  <table id="previewTable2">
+					  <thead>
+						  <tr>
+							  <td>排名</td>
+							  <td>小队</td>
+							  <td>总分</td>
+							  <td>考完站数</td>
+							  <td>第一站</td>
+							  <td>第二站</td>
+							  <td>第三站</td>
+							  <td>第四站</td>
+							  <td>第五站</td>
+							  <td>第六站</td>
+						  </tr>
+					  </thead>
+					  <tbody>
+						  <tr v-for="value in recvData2_2.perviewresult">
+							  <td>{{value.ranklist}}</td>
+							  <td>{{value.examineeid}}</td>
+							  <td>{{value.totalscore}}</td>
+							  <td>{{value.finishstationcnt}}</td>
+							  <td>{{value.scoredetail.split("@")[0]}}</td>
+							  <td>{{value.scoredetail.split("@")[1]}}</td>
+							  <td>{{value.scoredetail.split("@")[2]}}</td>
+							  <td>{{value.scoredetail.split("@")[3]}}</td>
+							  <td>{{value.scoredetail.split("@")[4]}}</td>
+							  <td>{{value.scoredetail.split("@")[5]}}</td>
+						  </tr>
+					  </tbody>
+				  </table>
+				  <div id="previewFooter2">
+					  <button class="btnYellow btnCenter" v-on:click="ok2_2()" :disabled="isSubmit2Disable">核准发布</button>
+				  </div>
+	  		</div>
+  		</div>
+		<div id="content3" v-show="isShow[2]">
+			 <div id="check3">
+				 <div v-show="loading[2]" class="loading">
+					 <img src="../../images/scorereview/loading.gif" alt="">
+				 </div>
+				 <div class="checkhead">
+					 <p>决赛核查</p>
+				 </div>
+				 <table id="checkTable3">
+					 <thead >
+					 <tr>
+						 <td>排名</td>
+						 <td>小队</td>
+						 <td>第一题</td>
+						 <td>第二题</td>
+						 <td>第三题</td>
+						 <td>第四题</td>
+						 <td>评委总分</td>
+						 <td>核准总分</td>
+					 </tr>
+					 </thead>
+					 <tbody>
+					 <tr v-for="(value,index) in recvData3_1.checkresult">
+						 <td>{{value.ranklist}}</td>
+						 <td>{{value.examineeid}}</td>
+						 <td>{{value.scoredetail.split("@")[0]}}</td>
+						 <td>{{value.scoredetail.split("@")[1]}}</td>
+						 <td>{{value.scoredetail.split("@")[2]}}</td>
+						 <td>{{value.scoredetail.split("@")[3]}}</td>
+						 <td class="lastExamTotal"></td>
+						 <td>
+							 <div class='changeScore'>
+								 <input type='text' :value=value.totalscore :data-id="value.examineeid" @input="inputChange3(index)" :readonly="isNaN(value.totalscore)?true:false">
+								 <p class='changeNum'>
+									 <span class='anticon icon-up' @click="add3(index)"></span></br>
+									 <i class='anticon icon-down' @click="min3(index)"></i>
+								 </p>
+							 </div>
+						 </td>
+					 </tr>
+					 </tbody>
+				 </table>
+				 <div id="checkFooter3">
+					 <p class="btnBlue btnLeft" id="check3Refresh" v-on:click="check3reload">刷 新</p>
+					 <p class="btnBlue btnRight" id="check3ToPreview" v-on:click="check3ToPreview">预 览</p>
+				 </div>
+			 </div>
+			 <div id="preview3">
+				 <p>预 览</p>
+				 <table id="previewTable3">
+					 <thead>
+					 <tr>
+						 <td>排名</td>
+						 <td>小队</td>
+						 <td>总分</td>
+					 </tr>
+					 </thead>
+					 <tbody>
+					 <tr v-for="value in recvData3_2.perviewresult">
+						 <td>{{value.ranklist}}</td>
+						 <td>{{value.examineeid}}</td>
+						 <td>{{value.totalscore}}</td>
+					 </tr>
+					 </tbody>
+				 </table>
+				 <div id="previewFooter3">
+					 <button class="btnYellow btnCenter" v-on:click="ok3_2()" :disabled="isSubmit3Disable">核准发布</button>
+				 </div>
+			 </div>
+	 	</div>
+ 	</div>
+  <script src="../../js/scorereview/checkScore.js"></script>
+ </body>
+</html>

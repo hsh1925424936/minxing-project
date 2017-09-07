@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>查看作休日</title>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/element.js"></script>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<link rel="stylesheet" href="../../css/element.css">
+		<link rel="stylesheet" href="../../css/reset.css">
+		<style type="text/css">
+			.addHoliday {
+				margin: 20px 0;
+			}
+			
+			.addHoliday .formInput {
+				width: 250px;
+				height: 36px !important;
+				
+			}
+			
+			.addHoliday ul li {
+				width: 90%;
+				margin: auto;
+				overflow: hidden;
+				margin-bottom: 20px;
+			}
+			
+			.addHoliday ul li .op {
+				height: 36px;
+				line-height: 36px;
+				width: 100px;
+			}
+			.addHoliday ul li #op {
+				height: 36px;
+				line-height: 36px;
+			}
+			
+			.addHoliday ul li>div {
+				float: left;
+				margin-right: 20px;
+			}
+			
+			.addHoliday .btn {
+				text-align: center;
+				margin-top: 50px;
+			}
+			
+			.addHoliday .btn .save {
+				margin-right: 20px;
+			}
+			.addHoliday .exceptDate{
+				height: 36px;
+				line-height: 36px;
+			}
+			.addHoliday .dates{
+				margin-bottom: 20px;
+				font-size: 14px;
+				overflow: hidden;
+			}
+			.addHoliday .dates span{
+				float: left;
+				margin-right: 10px;
+				margin-left: 14.5px;
+				margin-right: 14px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="addHoliday">
+			<ul>
+				<li>
+					<div>
+						<p class="op">年度 :</p>
+					</div>
+					<div>
+						<p class="op">{{data.year}}</p>
+					</div>
+				</li>
+				<li>
+					<div>
+						<p class="op">选择节假日 :</p>
+					</div>
+					<div>
+						<p id="op">
+							<span v-for="item in data.datalist">{{item.day}} &nbsp;&nbsp;</span>
+						</p>
+					</div>
+				</li>
+				<li style="border-bottom: 1px solid #F2F2F2;padding-bottom: 10px;">
+					<div>
+						<p class="op">例外工作日 :</p>
+					</div>
+				</li>
+				<li v-for="item in data.excepet" class="dates">
+					<span class="oSpan">例外工作日:</span>
+					<span id="oSpan">{{item.orgday}}</span>
+					<span class="oSpan">替换日期:</span>
+					<span>{{item.trageday}}</span>
+				</li>
+			</ul>
+			<div class="btn">
+				<el-button type="primary" class="save" @click="sure">确定</el-button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '.addHoliday',
+			data: {
+				data:window.parent.vm.data,
+			},
+			mounted() {
+               console.log(this.data)
+			},
+			methods: {
+               sure(){
+               	closeAll()
+               }
+			}
+		})
+	</script>
+
+</html>

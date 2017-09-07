@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文字特效库</title>
+    <script src="../../js/jquery-3.1.1.min.js"></script>
+    <style>
+        .letterfx-container{}
+        .letterfx{
+            display:inline-block;
+            margin:0;
+            padding:0;
+            transition: all 1s; -ms-transition: all 1s; -webkit-transition: all 1s;
+        }
+
+        /* Spin FX */
+        .letterfx-spin-before{
+            transform:rotate(3600deg); -ms-transform:rotate(3600deg); -webkit-transform:rotate(3600deg);
+        }
+
+        .letterfx-spin-after{
+            transform:none;
+        }
+
+        /* Fade FX */
+        .letterfx-fade-before{
+            opacity: 0;
+        }
+
+
+        /* Grow FX */
+        .letterfx-grow-before{
+            transform:scale(0,0); -ms-transform:scale(0,0); -webkit-transform:scale(0,0);
+        }
+
+        .letterfx-grow-after{
+            transform:none;
+        }
+
+
+        /* Smear FX */
+        .letterfx-smear-before{
+            color: transparent;
+            text-shadow:-1px -1px 25px transparent;
+        }
+
+        .letterfx-smear-after{
+            color:inherit;
+            text-shadow:0 0 #333;
+
+        }
+
+        /* Fall FX */
+        .letterfx-fall-before
+        {
+            visibility: hidden;
+            transform:scale(3,3); -ms-transform:scale(3,3); -webkit-transform:scale(3,3);
+        }
+
+        .letterfx-fall-after{
+            transform:scale(1,1); -ms-transform:scale(1,1); -webkit-transform:scale(1,1);
+            text-shadow:0;
+        }
+
+        /* Swirl FX */
+        .letterfx-swirl-before
+        {
+            visibility: hidden;
+            transform:scale(3,3) rotate(3600deg); -ms-transform:scale(3,3) rotate(3600deg); -webkit-transform:scale(3,3) rotate(3600deg);
+        }
+
+        .letterfx-swirl-after{
+            transform:none
+            text-shadow:0;
+        }
+
+
+        /* Wave FX */
+        .letterfx-wave-container .letterfx
+        {
+            position:relative;
+        }
+
+        .letterfx-wave-before
+        {
+            bottom:0;
+        }
+
+        .letterfx-wave-after{
+            bottom:15px;
+        }
+
+
+
+        /* FLY FX */
+        .letterfx-fly-left-container .letterfx,
+        .letterfx-fly-right-container .letterfx,
+        .letterfx-fly-top-container .letterfx,
+        .letterfx-fly-bottom-container .letterfx
+        {
+            position:relative;
+        }
+
+        .letterfx-fly-left-before{ left:-50em; }
+        .letterfx-fly-left-after{ left:0; }
+
+        .letterfx-fly-right-before{ right:-50em; }
+        .letterfx-fly-right-after{ right:0; }
+
+        .letterfx-fly-top-before{ top:-20em; }
+        .letterfx-fly-top-after{ top:0; }
+
+        .letterfx-fly-bottom-before{ bottom:-20em; }
+        .letterfx-fly-bottom-after{ bottom:0; }
+
+    </style>
+</head>
+<body>
+<div class="jumbotron">
+    <p class="tagline">A jQuery plugin to apply animated, visual effects to letters, words or other text patterns</p>
+    <button class="btn btn-default" data-letterfx="custom[0]">1</button>
+    <button class="btn btn-default" data-letterfx="custom[1]">2</button>
+    <button class="btn btn-default" data-letterfx="custom[2]">3</button>
+    <button class="btn btn-default" data-letterfx="custom[3]">4</button>
+    <button class="btn btn-default" data-letterfx="custom[4]">5</button>
+    <button class="btn btn-default" data-letterfx="custom[5]">6</button>
+    <button class="btn btn-default" data-letterfx="custom[6]">7</button>
+</div>
+<script type="text/javascript" src="../../js/bigdatascreen/jquery-letterfx.js"></script>
+<script type="text/javascript" src="../../js/bigdatascreen/script.js"></script>
+</body>
+</html>

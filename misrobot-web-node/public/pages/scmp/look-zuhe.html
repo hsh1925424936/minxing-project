@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>查看-操作</title>
+		<link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css" />
+		<script src="../../js/jquery-3.1.1.min.js"></script>
+		<script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+		<script src="../../js/vue.min.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			ul,
+			ol {
+				list-style: none;
+			}
+			#group{
+				margin: 20px;
+			}
+			ul>li {
+				margin-bottom: 20px;
+				overflow: hidden;
+				border-bottom: 1px solid lightgray;
+			}
+			
+			.title  {
+				display: flex;
+			}
+			.title p:nth-child(1){
+				width: 60px;
+			}
+			ul>li:nth-child(1) p:first-child {
+				margin-right: 20px;
+			}
+			ul>li>ol{
+				overflow: hidden;
+			}
+			ul>li>ol>li{
+				float: left;
+				margin-right: 30px;
+			}
+			::-webkit-scrollbar{width:0px}
+		</style>
+	</head>
+
+	<body>
+		<div id="group">
+			<ul>
+				<li class="title">
+					<p>题干：</p>
+					<p>{{groupQuestion.name}}</p>
+				</li>
+				<li v-for="(index,item) in groupQuestion.subitem">
+					<p>
+						<span>{{index+1}}.</span>
+						<span>{{item.itemquestion}}</span>
+						<span>({{item.cateid | filterFn}})</span>
+					</p>
+					<ol>
+						<li v-for="selectItem in item.questionitem">
+							<span>{{selectItem.itemname}}.</span>
+							<span>{{selectItem.content}}</span>
+						</li>
+					</ol>
+					<p>
+						<san>正确答案：</san>
+						<san v-if="item.cateid==4">{{item.answer | filterFns}}</san>
+						<san v-else>{{item.answer }}</san>
+					</p>
+				</li>
+			</ul>
+			<p>
+				<span>所属课程：</span>
+				<span>{{groupQuestion.coursename}}</span>
+			</p>
+			<div style="text-align: center;">
+				<button class="btn btn-primary" @click="sureBtn">确定</button>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '#group',
+			data: {
+				groupQuestion:''
+			},
+			filters:{
+				filterFn:function(value){
+					switch(value)
+					{
+						case 1:
+							return '单选题';
+							break;
+						case 2:
+							return '多选题';
+							break;
+						case 3:
+							return '不定项选择题';
+							break;
+						case 4:
+							return '判断题';
+							break;
+						case 5:
+							return '问答题';
+							break;
+						case 6:
+							return '组合题';
+							break;
+						case 7:
+							return 'osce操作题';
+							break;
+						case 8:
+							return 'learn训练操作题';
+							break;
+					}
+				},
+				filterFns:function(val){
+					if (val==0) {
+						return "正确"
+					} else{
+						return "错误"
+					}
+				}	
+			},
+			created(){
+				this.getGroup();
+			},
+			mounted(){},
+			methods:{
+				getGroup:function(){
+					var self=this;
+					var data={
+						command:'question/querycombinationquestion',
+						sessionid:getCookie('sid'),
+						loginid:getCookie('uid'),
+						questionbaseid:window.location.href.split('=')[1]
+					}
+					function callback(res){
+						console.log(res)
+						self.groupQuestion=res;
+					}
+					post('/question/querycombinationquestion',data,callback,errcodefn,errfn)
+				},
+				sureBtn:function(){
+					closeAll();
+				}
+			}
+		})
+	</script>
+
+</html>

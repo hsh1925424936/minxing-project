@@ -1,0 +1,190 @@
+#header{
+    background-color: #3499db;
+    color:white;
+    height:50px;
+    line-height:50px;
+    position:relative;
+    z-index: 100000;
+}
+#header p{
+    text-align: center;
+    font-size:20px;
+}
+#header p b{
+    font-weight:normal;
+}
+#header>span{
+    position:absolute;
+    top:0;
+    left:20px;
+    font-size:14px;
+}
+#header span img{
+    position:relative;
+    top:-1px;
+    height:18px;
+}
+#reload,#picker,.addicon{
+    position:absolute;
+    right:20px;
+    top:14px;
+    width:22px;
+    height:22px;
+}
+#nav{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    margin:0;
+    border-top:1px solid #DBDBDB;
+    box-shadow: 0 -1px 1px 1px #E4E4E4;
+    padding:6px 0 2px 0;
+    background-color: white;
+}
+#nav li{
+    width:24%;
+    padding:0;
+}
+#nav a{
+    text-decoration: none;
+}
+#nav img{
+    width:28px;
+    height:26px;
+}
+.navMsg{
+    position:relative;
+    width:100%;
+    display:block;
+}
+.navMsg>b{
+    position:absolute;
+    right:12px;
+    top:0;
+    background-color: #FE0101;
+    font-size:10px;
+    padding-bottom:-1px;
+}
+a span{
+    color:#B1B1B1;
+    font-size:12px;
+    padding-top:3px;
+}
+.navActive span{
+    color:#72ADD4;
+}
+#tosignfooter{
+    background-color: white;
+    margin:0;
+    position: fixed;
+    bottom:0;
+    width:100%;
+    border-top:1px solid #DBDBDB;
+    box-shadow: 0 -3px 2px 1px #E4E4E4;
+}
+#tosignfooter>li{
+    text-align: center;
+    font-size:12px;
+    padding:0;
+    width:49%;
+}
+#tosignfooter a{
+    padding-top:4px;
+    display:block;
+    width:25%;
+    margin:0 auto;
+}
+.signActive{
+    border-top:2px solid #2089C3;
+}
+.signActive>span{
+    color:#2089C3;
+}
+#tosignfooter a:hover{
+    text-decoration: none;
+}
+/*.headerdropdown{
+    position:absolute;
+    width: 150px;
+    top:60px;
+    right:10px;
+    border-radius: 5px;
+    box-shadow:0 0 5px 5px #CCCCCC,
+    0 0 5px 5px #CCCCCC;
+}
+.headerdropdown>img{
+	position: absolute;
+	top: -17px;
+	right: 8px;
+
+}
+.headerdropdown>li>span{
+	font-size: 16px;
+
+	color: black;
+}
+.headerdropdown>li img{
+	width: 20px;
+	margin-right: 10px;
+	margin-left: 40px;
+
+}*/
+
+/*TODO out 退出确认框*/
+.shade {/*遮罩层*/
+    position: absolute;
+    z-index: 999;
+    width:100%;
+    height:100%;
+    background: #000;
+    opacity: 0.2;
+    top:0;
+    left:0;
+    /*display: block*/
+}
+#confirmlogout {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#confirmlogout .content {
+    width:80vw;
+    background: #fff;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 1000;
+}
+#confirmlogout section {
+    border-bottom: 1px solid #DBDBDB;
+}
+#confirmlogout a {
+    display: inline-block;
+    width:48%;
+}
+#confirmlogout p {
+    padding:15px 0;
+}
+#confirmlogout section {
+    border-bottom: 1px solid #DBDBDB;
+}
+#confirmlogout .ac {
+    color: #878787;
+    padding:0 0 15px 0;
+}
+#confirmlogout .bc {
+    color: #bcbcbc;
+}
+#confirmlogout .sc {
+    color: #59AAE0;
+}
+#confirmlogout footer a:first-child {
+    border-right:1px solid #DBDBDB;
+}
+#confirmlogout .content section p:first-child {
+    font-weight: bold;
+}

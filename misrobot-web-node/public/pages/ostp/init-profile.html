@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>重置帐号数据</title>
+		<style type="text/css">
+			.topOuter{
+				width:100%; height:150px; background-color:#EFF2F5;
+			}
+			.topContent{
+				width:885px; height:100%; margin:0 auto;
+			}
+			.logoPng{
+				width:170px; height:95px; display:block;
+				float:left; margin-top:40px;
+			}
+			.titleOuter{
+				width:350px; height:60px; float:left; 
+				margin-left:10px; margin-top:52px;
+			}
+			.titleOuter span{
+				width:100%;
+				float:left; display:block;
+			}
+			.titleOuter .span1{
+				height:40px; font-size:25px; 
+				font-weight:bold; line-height:40px;
+			}
+			.titleOuter .span2{
+				font-size:18px;
+				line-height:30px;
+			}
+			.link{
+				width:60px; height:18px; line-height:18px; 
+				font-size:14px; color:#949494; float:left;
+				margin-top:70px;
+			}
+			.link1{
+				margin-left:130px;
+			}
+			.link2{
+				margin-left:60px;
+			}
+			.loginOuter{
+				width:400px; margin:90px auto;
+			}
+			.loginTitle{
+				width:100%; height:30px; font-size:20px; line-height:30px;
+			}
+
+			.loginOuter input, .loginOuter select{
+				height:50px; 
+				margin-top:30px; 
+				border-radius:0px;
+			}
+
+			.inpOuter{
+				position:relative;
+			}
+			.save{
+				width:100%; height:50px; background-color:#3499DA; 
+				border-radius:2px; font-size:16px; color:white;
+				margin-top:20px;
+			}
+
+			.personImgOuter{
+				/*width:100px; 
+				float:left; 
+				position: relative;*/
+				margin-top: 20px;
+			}
+			.personImg{
+				width:100px; height:100px; 
+				border-radius:50px; border:5px solid #F0F4F7;
+			}
+			.imgTip{
+				color:rgb(204,204,204); 
+				font-size:12px; 
+				line-height:18px;
+				margin: 5px 10px 10px; 
+				display: inline;
+			}
+
+			input[type=file] {
+				opacity: 0; 
+				width: 100px;
+				height: 100px;
+				margin-top: -100px;
+				display: block !important;
+				cursor: pointer;
+			}
+
+		</style>
+		<script>
+			window.onload = function () {
+				'use strict';
+				if(getCookie('stcode') == ''){
+					window.location.href = 'login.html';
+				}
+				
+				$('.save').click(function () {
+					
+					if ($.trim($('.password').val())=='') {
+						uselayer(3,'新密码不能为空');
+						return false;					
+					}					
+					if ($.trim($('.password').val()).length<6) {
+						uselayer(3,'密码长度不能少于6位');
+						return false;					
+					}
+
+					if ($.trim($('.password').val()) != $.trim($('.confirmPassword').val())) {
+						uselayer(3,'新密码和确认新密码不匹配');
+						return false;					
+					}
+
+					if($.trim($('.class_id').val()) == '') {
+						uselayer(3, '请选择班级');
+						return false;
+					}
+
+					if($('.personImg').attr('src') == '') {
+						uselayer(3,'请上传头像');
+						return false;
+					}
+					
+					Api.initProfile({
+						istoken:1,
+						isShade:1,
+						json:{
+							password: $.trim($('.password').val()),
+							imageurl: $.trim($('.personImg').val()),
+							class_id: $.trim($('.class_id').val()),
+							stcode: getCookie('stcode')
+						},
+						fn:function (json) {
+							uselayer(1,json.message,function () {
+								if (json.code==1) {
+									window.location.href="login.html";
+								}
+							});
+						}
+					});					
+						
+				});
+
+				$('.headImg_file').on('change',function () {
+				 	uploadFile({
+				 		url:Api.url+Api.uploadImage,
+				 		json:{
+				 			'access_token':getCookie("gy_t"),
+				 			"Filedata":$(this)[0].files[0]
+				 		},
+				 		success:function (str) {
+				 			var json = eval('('+str+')');
+				 			console.log(json);
+							if (json.code==1) {
+								$('.personImg').attr('src',Api.url+'/'+json.filepath);
+							}				 			
+							uselayer(1,json.message);	
+				 		}
+				 	});						
+				});
+
+				Api.getClass({
+					istoken:1,
+					isShade:1,
+					fn:function (json) {
+						var html = '<option value="">请选择班级</option>';
+						if(json.code == 1) {
+							for (var i = json.data.length - 1; i >= 0; i--) {
+								html += '<option value="' + json.data[i].id + '">' + json.data[i].name + '</option>';
+							}
+						}
+						
+						$('.class_id').html(html);
+					}
+				});
+			};
+			
+		</script>
+	</head>
+	<body>
+		<div class="topOuter clearfix">
+			<div class="topContent">
+				<img src="../../images/ostp/logo.png" class="logoPng"/>
+				<div class="titleOuter clearfix">
+					<span class="span1">欢迎来到临床技能中心</span>
+					<span class="span2">四川大学华西临床医学院/华西医院</span>
+				</div>
+
+				<div class="link link1">
+					<a href="#">关于助教</a>
+				</div>
+
+				<div class="link link2">
+					<a href="#">下载中心</a>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="loginOuter clearfix">
+			<div class="loginTitle">
+				重置帐号信息
+			</div>
+
+			<input type="password" class="form-control password" placeholder="输入新密码" />
+			<input type="password" class="form-control confirmPassword" placeholder="请输入确认新密码" />
+			<select class="form-control class_id">
+				<option value="">请选择班级</option>
+			</select>
+
+			<div class="personImgOuter">
+					<img src="" class="personImg" />
+					<div class="imgTip">
+						请使用本人头像照片，大小不超过2M
+					</div>
+					<!-- <button class="changeHeadBtn">
+						上传头像
+					</button> -->
+					<input type="file" accept="image/*" class="headImg_file hidden">
+				</div>
+
+			<button type="button" class="save">
+				保存
+			</button>
+			
+		</div>
+	</body>
+	
+</html>

@@ -1,0 +1,327 @@
+[v-cloak] {
+	display: none;
+}
+
+.mt20{
+	margin-top: 20px;
+}
+.left{
+	float: left;
+}
+.right{
+	float: right;
+	padding-top: 20px;
+}
+#addnewtestpaper {
+	background-color: #F2F2F2;
+	height: 50px;
+	line-height: 50px;
+}
+
+#addnew tr,th{
+	text-align: center;
+	vertical-align: middle;
+}
+#addnew .middle{
+	line-height: 30px;
+	vertical-align: middle !important;
+	text-align: center;
+}
+#addnew{
+	padding: 15px;
+}
+.gobackbtn{
+	float: right;
+	margin: 8px;
+}
+.boxNav{
+	width: 100%;
+	margin-bottom: 20px;
+	border-bottom: 1px solid #ccc;
+}
+.boxSelected{
+	border-bottom: 7px solid #20a0ff;
+	color: #20a0ff;
+}
+.boxt,.boxb{
+	padding: 5px 16px;
+	display: inline-block;
+}
+.question{
+	padding: 5px 16px;
+	display: inline-block;
+	cursor: pointer;
+}
+.clickque{
+	border-bottom: 2px solid #20a0ff;
+	color: #20a0ff;
+}
+/****************************************************中间按钮部分******************************************/
+.center {
+	margin: 0 20px 20px 20px;
+	
+}
+
+.center>#myButton {
+	float: left;
+}
+
+.center .load-in,.handle {
+	float: left;
+}
+
+.center .load-in {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+/****************************************************中间按钮部分******************************************/
+.center {
+	margin:20px;
+	
+}
+
+.center>#myButton {
+	float: left;
+}
+
+.center .load-in,.handle {
+	float: left;
+}
+
+.center .load-in {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+.center>.row>input {
+	height: 30px;
+}
+
+.center>.form-inline,.search {
+	float: right;
+}
+#input-search {
+	margin-right: 20px;
+}
+.center>.row>input {
+	height: 30px;
+}
+
+.center>.form-inline,.search {
+	float: right;
+}
+
+#input-search {
+	margin-right: 20px;
+}
+ 
+
+.search-wrap .form-group{
+	margin-right:20px;
+	margin-bottom: 10px;
+}
+
+.search-wrap .form-group .btn{
+	vertical-align: top;
+	width: 100px;
+}
+
+.user-detail{
+	display:block;
+	overflow-y: auto;
+}
+
+/****************************************************弹出窗口******************************************/
+.next{
+	width: 100%;
+	text-align: center;
+	margin-bottom: 50px;
+}
+.delete_sure{
+	width: 500px;
+	height: 250px;
+	border: 1px solid;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 200px;
+	bottom: 0;
+	margin: auto;
+	background-color: white;
+	display: none;
+	z-index: 5;
+}
+.c_studentTop{
+	height: 40px;
+	border-bottom: 1px solid;
+}
+.c_studentTop>p:nth-child(1){
+	position: absolute;
+	left: 10px;
+	top: 10px;
+}
+.c_studentTop>p:nth-child(2){
+	height: 50px;
+	line-height: 50px;
+	position: absolute;
+	right: 10px;
+	font-size: 20px;
+	cursor: pointer;
+}
+.delete_sure .btn-primary{
+	width: 100px;
+	height: 30px;
+	position: absolute;
+	left: 130px;
+	bottom: 30px;
+}
+.delete_sure .btn-default{
+	width: 100px;
+	height: 30px;
+	position: absolute;
+	left: 300px;
+	bottom: 30px;
+}
+.delete_sure .col-sm-4{
+	text-align: center;
+}
+.message-left{
+	margin:15px  auto;
+	text-align: center;	
+	height: 30px;
+}
+.c_classMessage button{
+	position: absolute;
+	bottom: 20px;
+}
+.c_classMessage .btn-primary{
+	left: 170px;
+}
+.c_classMessage .btn-default{
+	left: 250px;
+}
+.c_classMessage .message-left .form-control{
+	width: 80%;
+}
+.c_classMessage .message-left .radiochoice{
+	margin-left: 10px;
+}
+/****************************************************编辑试卷******************************************/
+#testpaper{
+	/*background-color: wheat;*/
+	width: 90%;
+}
+#testpaperoperate{
+	width: 100%;
+}
+#testpaper .title{
+	font-size: 30px;text-align: center;position: relative;
+}
+#testpaper .score{
+	font-size: 17px;text-align: center;position: relative;padding: 10px 0;
+}
+#testpaper .info{
+	font-size: 17px;text-align: center;margin-bottom: 40px;
+}
+#testpaper .questionlist{
+	font-size: 15px;text-align: left;margin-left: 20px;
+}
+#testpaper .questionlist span{
+	font-size: 15px;margin-left: 5px;
+}
+#testpaper .questionlist .mainquestiontitle{
+	padding: 10px 0;position: relative;
+}
+#testpaper .questionlist .mainquestion{
+	padding: 10px 0 30px 0;position: relative;
+}
+#testpaper .questionlist .choicebottom{
+	margin-bottom: 45px;
+}
+#testpaper .questionlist .choicebottom .correctchoice{
+    position: absolute;
+    display: none;
+    width: 100%;
+    bottom: -52px;
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid;
+    overflow: hidden;
+}
+#testpaper .questionlist .mainquestion .littletitle{
+	padding-bottom: 10px;
+}
+#testpaper .choiceanswer{
+	width: 100%;
+	text-align: left;
+}
+#testpaper .choiceanswer .choiceanswercell{
+	display: inline-block;
+	margin: 10px 20px;
+}
+
+.next .btnBg{
+	background-color: #fff;
+	color: #286090;
+}
+.next .btn{
+	margin: 0 10px;
+	width: 80px;
+}
+
+#addnew .setscore{
+	display: block;
+	margin: 30px 0 10px 0;
+}
+
+#testpaperoperate table tr input{
+	width: 80px;
+	text-align: center;
+	display: inline-block;
+}
+#testpaperoperate .scoreseted{
+	text-align: right;
+	margin-bottom: 50px;
+}
+
+.center .form-inline .form-group span{
+	margin-right: 50px;
+}
+
+/*悬浮*/
+.edit{
+	cursor: pointer;
+}
+.edittitlebtn{
+	position: absolute;
+	right: 4px;
+	top: 4px;
+	width: 100px;
+	display: none;
+}
+.editbtn{
+	margin: 0px 2px 4px 8px;
+	width: 100px;
+}
+.editbtnbox{
+	margin-top: -6px ;
+	float: right;
+	display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

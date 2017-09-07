@@ -1,0 +1,108 @@
+/* alice.box 样式模块 */
+.box {
+    border: 1px solid #C9CACA;
+    background: #FFF;
+    zoom: 1;
+    font-size: .20rem;
+    margin: 0;
+    padding: 0;
+    border-bottom: none;
+}
+.box-full{
+    border-left: none;
+    border-right: none;
+}
+.box-follow {
+    border-top: none;
+}
+
+.box-head {
+    border-bottom: 1px solid #C9CACA;
+    position: relative;
+    padding: .2rem .16rem;
+    line-height: .3rem;
+    zoom: 1;
+    font-family:"Microsoft Yahei";
+}
+
+.box:after, .box-head:after {
+    clear: both;
+    content: " ";
+    display: block;
+    font-size: 0;
+    height: 0;
+    visibility: hidden;
+}
+
+.box-head .box-head-icon{
+    display:inline-block;
+    *zoom:1;
+    *display:inline;
+    width:.24rem;
+    height:.24rem;
+    float:left;
+    font-size:.18rem;
+    font-weight: normal;
+}
+.box-head .box-head-title {
+    color: #656565;
+    font-size: .26rem;
+    float: left;
+    display: inline;
+    margin: 0;
+    padding: 0;
+    color:#333;
+}
+.box-head-vrect .box-head-title{
+    border-left: .08rem solid #FE434C;
+    padding-left: .1rem;
+}
+
+.box-head .box-head-more {
+    float: right;
+}
+.box-head .box-head-more i.iconfont{
+    position: relative;
+    font-size: .2rem;
+    top: -0.01rem;
+    margin-left: .01rem;
+}
+
+.box-head .box-head-text {
+    margin-left: 10px;
+    color: #808080;
+    float: left;
+}
+
+.box-container {
+    background: #fff;
+    border-bottom: 1px solid #C9CACA;
+}
+
+.box-content /* 可选，用于默认有内边距的box */ {
+    padding: .16rem;
+}
+
+.checkbox {
+    width: .3rem;
+    height: .3rem;
+    position: relative;
+    box-shadow: #dfdfdf 0 0 0 0 inset;
+    border-radius: .15rem;
+    border-top-left-radius: .15rem;
+    border-top-right-radius: .15rem;
+    border-bottom-left-radius: .15rem;
+    border-bottom-right-radius: .15rem;
+    background-clip: content-box;
+    display: inline-block;
+    -webkit-appearance: none;
+    user-select: none;
+    outline: none;
+
+    background-image: url('../assets/images/icon_weixuanzhong.png');
+    background-size: cover;
+}
+.checkbox:checked {
+    background-image: url('../assets/images/icon_xuanzhong.png');
+    background-size: cover;
+}

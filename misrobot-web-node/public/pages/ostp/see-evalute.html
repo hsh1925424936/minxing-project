@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<script type="text/javascript" src="../../js/jqPaginator.js"></script>
+		<meta charset="UTF-8">
+		<title>查看评论</title>
+		<link rel="stylesheet" type="text/css" href="../../css/ostp/person-center.css"/>
+		<style type="text/css">
+			.rightCon{
+				
+			}
+			.main { 
+				background-color:#FCFCFC;
+			}
+			.rightOuter{
+				background-color:#FCFCFC; position:relative; min-height:750px;
+			}
+			.rightTit{
+				padding:20px;
+			}
+			.rightTit span{
+				display:block; float:left; font-weight:bold; font-size:16px;
+			}
+			.rightTopBtn{
+				display:block; float:right; margin-left:20px;
+				width:80px; height:25px; line-height:21px;
+				text-align:center;
+				border:1px solid #D8D8D8; background-color:white;
+			}
+			.deleteBtn{
+				display:none;
+			}
+			.allSelect{
+				position:absolute; left:73px; top:115px; width:34px; height:30px;
+				color:#CAD3DA; border:2px solid #CAD3DA; border-radius:2px;
+				text-align:center; line-height:26px; font-size:12px; font-weight:bold;
+				display:none; cursor:pointer;
+			}
+			.bookmarkCon{
+				border-bottom:1px solid #E3E3E3;
+				margin-top:10px;
+			}
+			.bookmark{
+				width:80px; height:36px; margin-left:10px;
+				border-top:1px solid #E3E3E3;
+				border-left:1px solid #E3E3E3; border-right:1px solid #E3E3E3;
+				font-size:14px; line-height:34px; text-align:center;
+				float:left; margin-bottom:-1px; cursor:pointer;
+			}
+			.allBM{
+				margin-left:40px;
+			}
+			.bookmarkOn{
+				background-color:white; border-bottom:1px solid white;
+			}
+
+			.evaluteOuter{
+				padding:20px; padding-top:40px;
+				border-bottom:1px solid #E0E0E0; width:100%;
+				line-height:20px;
+			}
+			.evaluteBox{
+				width:750px; float: right; height:100%; 
+			}
+			.evaluteBox>div{
+				float:left;
+			}
+			.evaluteName{
+				font-size:18px; width:180px; height:100%;
+			}
+			.evaluteTeacher{
+				font-size:14px; width:130px; height:100%; text-align: center;
+			}
+			.time{
+				font-size:14px; width:170px; height:100%; text-align: center;
+			}
+			.address{
+				font-size:14px; width:160px; height:100%; text-align: center;
+			}
+			.evaluteBtn,.evaluteBtn:hover,.evaluteBtn:active,.evaluteBtn:visited,
+			.alreadyEvalute,.alreadyEvalute:hover,.alreadyEvalute:active,.alreadyEvalute:visited {
+				font-size:14px; color:#139FD2;
+				border:1px solid #139FD2; border-radius:30px;
+				text-align:center; margin-top:3px;
+				line-height:24px; float:left; text-decoration: none;
+				width:90px; height:26px; cursor:pointer; margin-left: 10px;
+			}
+			.alreadyEvalute,.alreadyEvalute:hover,.alreadyEvalute:active,.alreadyEvalute:visited{				
+				color:#ccc;
+				border:1px solid #ccc;			
+			}
+
+			.checkBoxSpan{
+				display:none; float:left; width:20px; height:20px;
+				margin-right:10px;
+				background-size:100% 100%; background-repeat:no-repeat;
+				cursor:pointer;
+			}
+			.checkBoxOn{
+				background-image:url('../../images/ostp/person-center-check-on.png');
+			}
+			.checkBoxNull{
+				background-image:url('../../images/ostp/person-center-check.png');
+			}
+
+			.fenyeCon{
+				width:700px; padding-bottom:50px; margin:auto;
+				position:absolute; left:120px; bottom:-60px;
+			}
+			
+		</style>
+		<script>
+			//$('.bootstrap').remove();
+		</script>
+	</head>
+	<body>
+		<div class="topOuter">
+			<div class="topCon clearfix">
+				<a href="index.html" class="top2Con-index">
+					<img src="../../images/ostp/logo.png" class="logoPng" />
+					<div class="top2Tit">
+						在线自主技能训练平台
+					</div>					
+				</a>
+				<div class="top1Tit-right">
+					<img src="../../images/ostp/bell.png" class="bell" />
+					<img src="../../images/ostp/redCircle.png" class="redCircle" />
+					<img src="../../images/ostp/feifei.png" class="headImg" />
+					<div class="nameAndYear clearfix">
+						<div class="nameAndYearInner clearfix">
+							<div class="userName"></div>
+							<div class="year"></div>
+							<span class="arrow"></span>
+						</div>
+						<ul class="selectUl"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="main clearfix">
+			<div class="leftOuter">
+
+			</div>
+
+			<div class="rightOuter clearfix">
+				<div class="rightTit clearfix">
+					<span>查看评论</span>
+					<button class="rightTopBtn editBtn" isedit="0">编辑</button>
+					<button class="rightTopBtn deleteBtn">删除</button>
+					<div class="allSelect" isselect="0">全选</div>
+				</div>
+
+				<div class="bookmarkCon clearfix" type="0">
+					<div class="bookmark allBM bookmarkOn" type="2">
+						全部
+					</div>
+					<div class="bookmark alreadyBM" type="1">
+						已评
+					</div>
+					<div class="bookmark notBM" type="0">
+						未评
+					</div>
+				</div>
+				
+				<div class="evalute-list">
+
+				</div>
+				<div class="fenyeCon" show="true">
+					<ul class="pagination" id="pagination1"></ul>
+				</div>
+			</div>
+
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		window.onload = function () {
+			'use strict';
+			common();			
+			showpersoncenter('查看评论');
+		};
+	
+		$('.bookmark').click(function() {
+			$('.bookmark').removeClass('bookmarkOn');
+			$(this).addClass('bookmarkOn');
+			$('.editBtn').html('编辑');
+			$('.deleteBtn').css('display', 'none');
+			$('.editBtn').attr('isedit','0');
+			$('.checkBoxSpan').css('display', 'none');
+			$('.allSelect').css('display', 'none');
+
+			getList($(this).attr('type'),1);
+
+			//把当前评论的类型存在bookmarkCon的type属性里
+			var type = $(this).attr('type');
+			$('.bookmarkCon').attr('type',type);
+			var str = 'num=1&type='+type;
+		    changepage(str);//url加上当前页数和评论的类型
+		});
+
+		if( findurltype('num') != '' && findurltype('type') != '' && $('.fenyeCon').attr('show') == 'true' ){
+			getList();
+		}else{
+			$('.bookmark').eq(0).click();
+		}
+		
+
+		function fenye(allcount,page){//分页的方法
+			var totalPages =  Math.ceil(allcount/8);
+			var type2 = $('.bookmarkCon').attr('type');
+			$.jqPaginator('#pagination1', {//分页
+		        totalPages:totalPages,
+	            visiblePages: 10,
+	            currentPage: page,
+	            first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
+	            prev: '<li class="prev"><a href="javascript:void(0);"><i class="_arrow arrow2"></i>上一页</a></li>',
+	            next: '<li class="next"><a href="javascript:void(0);">下一页<i class="_arrow arrow3"></i></a></li>',
+	            last: '<li class="last"><a href="javascript:void(0);">末页</a></li>',
+	            page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
+		        onPageChange: function (num, type) {
+		        	if(type == 'change'){
+		        		getList(type2,num);//type2为下拉列表的类型
+		        		var str = 'num='+num+'&type='+type2;
+		        		changepage(str);//url加上当前页数和评论的类型
+		        	}
+		            
+		        }
+		    });
+		}
+
+		function getList(type,page) {
+			var pagecount = 8;
+			
+			if( findurltype('num') != '' && findurltype('type') != '' && $('.fenyeCon').attr('show') == 'true' ){
+				page = findurltype('num');
+				type = findurltype('type');
+
+				//改变标签让指定的标签选中
+				$('.bookmark').removeClass('bookmarkOn');
+				$('.bookmark[type='+type+']').addClass('bookmarkOn');
+				//把当前评论的类型存在bookmarkCon的type属性里
+				$('.bookmarkCon').attr('type',type);
+			}
+			$('.fenyeCon').attr('show','false');
+
+			
+
+
+			Api.R({
+				url: "/evt/evtlist",
+				isShade:1,
+				json:{
+					"1": {
+						command: "evt/evtlist",
+						sessionid: getCookie('gy_t'),
+						uid: getCookie('gy_u'),
+						loginid: getCookie('gy_u'),
+						status: type,
+						reqnum: pagecount,
+						page: page
+					}
+				},
+				fn:function (result) {
+					if(result["1"].errcode != 0){
+						uselayer(3, result["1"].errdesc);
+						return;
+					}
+					var arr = result["1"].evtlist;
+					
+					$('.evalute-list').html('');
+
+					if( arr.length == 0 ){
+						$('.fenyeCon').css('display', 'none');
+						$('.editBtn').css('display', 'none');
+						$('.evalute-list').html('<p class="no-data">暂无评论</p>');
+						return false;
+					}
+
+					$('.fenyeCon').css('display', 'block');
+					$('.editBtn').css('display', 'block');
+					if( $('.bookmarkCon').attr('type') == 1 ){
+						$('.editBtn').css('display', 'none');
+					}
+
+					for (var i = 0 ; i < arr.length; i++) {
+						var _str = '<a href="evalute-detail.html?type=v&estu='+arr[i].commentid+'" class="alreadyEvalute">已评</a>';
+						if (arr[i].evtstatus== 0) {
+							var _str = '<a href="evalute-detail.html?type=e&estu='+arr[i].commentid+'" class="evaluteBtn">未评</a>';
+						}
+						
+						var str = 
+							'<div class="evaluteOuter clearfix haveEvalute">'
+								+(arr[i].evtstatus==0?'':'<div class="checkBoxSpan checkBoxNull" ischeck="0" _id="'+arr[i].commentid+'"></div>')
+								+'<div class="evaluteBox clearfix ">'
+									+'<div class="evaluteName">'+arr[i].coursename+'</div>'
+									+'<div class="evaluteTeacher">'+arr[i].teachername+'授课老师</div>'
+									+'<div class="time">'+timetodate(datetotime(arr[i].starttime),3)+'-'+timetodate(datetotime(arr[i].endtime),2)+'</div>'
+									+'<div class="address">'+ arr[i].coursesite + '</div>'
+									+_str
+								+'</div>'
+							+'</div>'							
+						$('.evalute-list').append(str);
+					}
+					
+					if( $('.checkBoxSpan').length < 1 ){
+						$('.editBtn').css('display', 'none');
+					}
+				
+					$('.checkBoxSpan').click(function() {
+						if( $(this).attr('ischeck') == '0' ){
+							$(this).addClass('checkBoxOn');
+							$(this).removeClass('checkBoxNull');
+							$(this).attr('ischeck','1');
+						}else{
+							$(this).addClass('checkBoxNull');
+							$(this).removeClass('checkBoxOn');
+							$(this).attr('ischeck','0');
+						}
+						
+					});					
+					
+					var allcount = result["1"].total;
+					fenye(allcount,page);//生成分页
+
+					$('.allSelect').css('display', 'none');
+				}
+				
+			});			
+			
+			
+		};
+
+		/*function gotoPgae(page){//刚加载的时候走到url对应的页
+			if( $('.fenyeCon').attr('show') == 'true' ){
+				var _href = window.location.href;
+				if ( _href.indexOf('#')==-1 ) {
+					$('.fenyeCon').attr('show', 'false');
+					return page;
+				} else {
+					var page1 = _href.substring(_href.indexOf('#')+1,_href.length);
+					$('.fenyeCon').attr('show', 'false');
+					return page1;
+				}
+			}else{
+				return page;
+			}
+			
+		}*/
+
+		$('.deleteBtn').click(function () {
+			var arr = [];
+			$('.checkBoxSpan').each(function () {
+				if ($(this).attr('ischeck')==1) {
+					arr.push($(this).attr('_id'));
+				}
+			});
+			if (arr.length==0) {
+				uselayer(3,'请选中要删除的评价');
+				return false;
+			}
+			uselayer(2,'确定要删除选中的评价信息吗？',function () {
+				Api.R({
+					url: "/evt/evtdel",
+					isShade: 1,
+					json:{
+						"1": {
+							command: "evt/evtdel",
+							sessionid: getCookie('gy_t'),
+							uid: getCookie('gy_u'),
+							loginid: getCookie('gy_u'),
+							evtids: arr
+						}
+					},
+					fn:function (json) {
+						if(json["1"].errcode != 0){
+							uselayer(3,json["1"].errdesc);
+							return;
+						}
+						$('.editBtn').click();
+						getList();
+					}
+				});				
+			});
+		});
+		
+
+		$('.editBtn').click(function() {
+			if( $('.editBtn').attr('isedit') == 0 ){
+				$('.editBtn').html('退出编辑');
+				$('.deleteBtn').css('display', 'block');
+				$('.editBtn').attr('isedit','1');
+				$('.checkBoxSpan').css('display', 'block');
+				$('.evaluteBox').css('width', '730px');
+				$('.evaluteName').css('width', '160');
+				$('.allSelect').css('display', 'block');
+			}else{
+				$('.editBtn').html('编辑');
+				$('.deleteBtn').css('display', 'none');
+				$('.editBtn').attr('isedit','0');
+				$('.checkBoxSpan').css('display', 'none');
+				//退出编辑后把勾清除掉
+				//退出编辑后把勾清除掉
+				$('.checkBoxSpan').addClass('checkBoxNull');
+				$('.checkBoxSpan').removeClass('checkBoxOn');
+				$('.checkBoxSpan').attr('ischeck','0');
+
+				$('.evaluteBox').css('width', '750px');
+				$('.evaluteName').css('width', '180');
+				$('.allSelect').css('display', 'none');
+			}	
+		});
+
+		$('.allSelect').click(function() {
+			if( $('.allSelect').attr('isselect') == 0 ){
+				$('.checkBoxNull').click();
+				$('.allSelect').attr('isselect','1');
+			}else{
+				$('.checkBoxOn').click();
+				$('.allSelect').attr('isselect','0');
+			}
+			
+		});
+	</script>
+
+</html>

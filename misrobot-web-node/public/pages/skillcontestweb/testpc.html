@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=5;IE=7;IE=8;IE=9;" />
+    <title>osce_test_PC</title>
+    <link rel="stylesheet" href="../../css/skillcontestweb/testpc.css">
+    <script src="../../js/jquery-1.11.3.js"></script>
+	<script src="../../js/skillcontestweb/methods.js"></script>
+</head>
+<body>
+    <div id="shadow" class="hide">
+        <div id="shadowErrorBox" class="hide">
+            <p class="boxHead">
+                <span>错误提示</span>
+                <i id="cha" class="cha">×</i>
+            </p>
+            <p class="errorMsg">服务器繁忙，请稍后再提交</p>
+            <!--服务器连接超时，请稍后再试。-->
+            <div>
+                <p id="ok" class="btnCenter">我知道了</p>
+            </div>
+        </div>
+        <div id="confirmBox" class="hide">
+            <p class="boxHead">
+                <span>温馨提示</span>
+                <i onclick="cancelSubmit()" class="cha">×</i>
+            </p>
+            <p class="errorMsg" style="padding:36px 0">答案提交后不可以再修改<br>
+                <span style="color:orangered"></span>
+            </p>
+            <div>
+                <button class="btnLeft" id="confirmSubmit" onclick="confirmSubmit()">提 交</button>
+                <button class="btnRight" onclick="cancelSubmit()">取 消</button>
+            </div>
+        </div>
+    </div>
+    <div id="container">
+        <div id="header">
+            <p>武汉大学医学部第三届临床医学专业学生临床技能竞赛</p>
+            <h1 id="stationNum"></h1>
+            <span id="groupNum"></span>
+			<div id="errorBox" class="hide"></div>
+            <div class="blueLine"></div>
+            <div id="params" class="hide"></div><span id="leftTime" class="hide"></span>
+        </div>
+        <div id="content">
+            <ul id="questions">
+                <!--<li data-type="multiple" data-id="">
+                    <div>1-5题，888888888888888888888888888888888888888888888888888888888sdfasdfasdfasdfasdfasdfsdfsadfsdfsdfsdf88888888888888888888888888888888888888888888888888888888888888</div>
+                    <p>1．心血管系统的回顾问诊内容包括以下哪些项目？（多选）</p>
+                    <ul class="choice">
+                        <li><img src="../../images/skillcontestweb/ok.png" alt=""></li>
+                        <li><b class="mulno"></b><span>A．心悸</span></li>
+                        <li><b class="mulno"></b><span>B．头痛</span></li>
+                        <li><b class="mulno"></b><span>C．记忆力减退</span></li>
+                        <li><b class="mulno"></b><span>D．颜面水肿</span></li>
+                        <li><b class="mulno"></b><span>E．活动后气短</span></li>
+                    </ul>
+                </li>
+                <li data-type="option">
+                    <div>1-5题，888888888888888888888888888888888888888888888888888888888sdfasdfasdfasdfasdfasdfsdfsadfsdfsdfsdf88888888888888888888888888888888888888888888888888888888888888</div>
+                    <p>1．心血管系统的回顾问诊内容包括以下哪些项目？（多选）2．肺结核合并肺气肿的患者咳嗽后突然感到剧烈的胸痛、气短，以下哪一种诊断的可能性最大？（单选）</p>
+                    <ul class="choice">
+                        <li><img src="" alt=""></li>
+                        <li><i class="optno"></i><span>A．心绞痛</span></li>
+                        <li><i class="optno"></i><span>B．急性胰腺炎</span></li>
+                        <li><i class="optno"></i><span>C．急性胃肠穿孔</span></li>
+                        <li><i class="optno"></i><span>D．消化性溃疡</span></li>
+                        <li><i class="optno"></i><span>E．自发性气胸</span></li>
+                    </ul>
+                </li>-->
+            </ul>
+        </div>
+        <div id="footer">
+            <p class="btnBlue" id="requestSubmit">提 交</p>
+        </div>
+        <div id="errorMsg"></div>
+    </div>
+    <script src="../../js/skillcontestweb/testpc.js"></script>
+    <script>
+        var resultArr=[];//将url里的参数解析到数组里
+        $(window).load(function(){
+			devID = window.external.get_cfg("js.device_id");//调用外部c++方法，获取本机deviceid
+            pushHeatBeat();
+            var timerHeartBeat=setInterval(pushHeatBeat,300000);//每5分钟调用一次心跳函数
+            autoSubmit();//进入答题界面后，启动8分钟后自动提交成绩的定时器。
+            getAllParams();//获取本页需要的所有参数，取到后再查询题目
+            var url=decodeURI(window.location.href);
+            var arr=url.split("&&");
+            for(var i=0;i<arr.length;i++){
+                resultArr.push(arr[i].split("=")[1]);
+            };
+            $("#stationNum").html(resultArr[0]);//页面头部显示roomname（第一站：问诊）
+            $("#groupNum").html(resultArr[1]);//页面头部显示name(小队名)
+            sendAnswers.examineeid=resultArr[2];//小队id,上传答案要用
+            sendAnswers.begintime=getTimeStr();//指定考试开始时间
+        });
+    </script>
+</body>
+</html>

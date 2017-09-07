@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>考生单次考试报告</title>
+    <link href="../../css/oscereport/report.css" rel="stylesheet" type="text/css">
+</head>
+<script src="../../js/jquery-3.1.1.min.js" charset="utf-8" type="text/javascript"></script>
+<script src="../../layer/xie/layer1.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/oscereport/common.js" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript">
+	$( document ).ready(function() {
+		if ( !GetQueryString('isjump') ){
+			$('.return_span').remove();
+		}
+	  /*
+	  
+	  数据格式：{"1":{"command": "report/testreport", "errdesc":"invalid command.","errcode":"11",
+   	   "reportinfo":
+	  {
+		  "testname": "预防医学概论(考试名称)",
+		  "stuName": "李白(考生姓名)",
+		  "stuNo": "2632465636565（学号）",
+		  "stuClass" : "临床医学2014级定向丙班(班级)",
+		  "testTime" : "2016-12-03 08:00-10:00(考试时间)",
+		  "testWay" : " OSCE(考试方式)",
+		  "fullScore" : 100(本次考试总分，int),
+		  "getScore" : 85(本次考试得分，int),
+		  "stuNum" : 130(本次考试总人数，int),
+		  "ranknum" : 20(本次考试排名，int),
+		  "summaries" : [ (考试项，数组)
+		      {"itemName" : "病史采集(考试项)", "totalScore" : 20(此项总分,int), "maxScore" : 18(最高分,int), "mediuScore" : 15(中值分,int), "avgScore(平均分,int)" : 14, "minScore" : 8(最低分,int), "getScore" : 16(得分,int)},
+		      {"itemName" : "病例分析", "totalScore" : 40, "maxScore" : 38, "mediuScore" : 32, "avgScore" : 33, "minScore" : 27, "getScore" : 36},
+		      {"itemName" : "病史采集", "totalScore" : 40, "maxScore" : 37, "mediuScore" : 33, "avgScore" : 14, "minScore" : 28, "getScore" : 34}
+		  ],
+		  "deficiencies":[(不足点，数组)
+		    {"itemName": "病史采集", "itemPoints" : [{"point": "患者身份核对", "deficiency" : "没有核对患者身份"}, {"point": "家族病史询问", "deficiency" : "没有询问家族病史"}]},
+		    {"itemName": "病例分析", "itemPoints" : [{"point": "患者身份核对2", "deficiency" : "没有核对患者身份2"}, {"point": "家族病史询问2", "deficiency" : "没有询问家族病史2"}]}
+		  ]
+		}  }}
+	  
+	  
+	  */
+		my_require.R({
+			isShade:1,
+			url:'/osce/report/testreport',
+			data:{
+				command:"osce/report/testreport",
+				examid:GetQueryString('examid'),
+				studentid:GetQueryString('studentid'),
+				reporttype:4,
+				sessionid:GetQueryString('sessionid'),
+				loginid:GetQueryString('studentid')
+			},
+			callback:function(base){
+				console.log(base);
+				if( !base.reportinfo ){
+					return false;
+				}
+
+				var info = base.reportinfo;
+
+			  // student basic info  基本信息
+			  $("#testname").text(info.testname + "成绩单");
+	          $("#examineename").text(info.studentname);  
+			  $("#uid").text(info.studentno);
+			  $("#stuclass").text(info.studentclass);
+			  $("#testtime").text(info.testtime);
+			  $("#testway").text(info.testway);
+
+			  $("#fullscore").text(info.fullscore);
+			  $("#getscore").text(info.getscore);
+			  $("#ranknum").text(info.scoreranking);
+			  $("#stunum").text(info.studentcount);
+
+	          // summary data 各考站成绩分析
+	          if(info.summaries){
+	             
+				  var $tabsum = $("#tabsum");
+
+				  for(var i=0; i< info.summaries.length; i++){
+	                 
+					  var tmpstr = "<tr>";
+	                  var str1 = "<td>" +  info.summaries[i].itemname + "</td>";
+					  tmpstr = tmpstr + str1;
+	                  var str2 = "<td>" +  info.summaries[i].totalscore + "</td>";
+					  tmpstr = tmpstr + str2;
+					  var str3 = "<td>" +  info.summaries[i].maxscore.toFixed(2) + "</td>";
+					  tmpstr = tmpstr + str3;
+					  var str4 = "<td>" +  info.summaries[i].medianscore.toFixed(2) + "</td>";
+					  tmpstr = tmpstr + str4;
+					  var str5 = "<td>" +  info.summaries[i].avgscore.toFixed(2) + "</td>";
+					  tmpstr = tmpstr + str5;
+					  var str6 = "<td>" +  info.summaries[i].minscore.toFixed(2) + "</td>";
+					  tmpstr = tmpstr + str6;
+					  var str7 = "<td style='font-weight: bold;'>" +  info.summaries[i].getscore.toFixed(2) + "</td>";
+					  tmpstr = tmpstr + str7;
+
+					  tmpstr = tmpstr + "</tr>";
+
+					  
+					  $tabsum.append(tmpstr);
+					 
+				  }
+
+				  // last <tr> tag
+				  var tmpstr = "<tr style='font-weight: bold;'>";
+	                  var str1 = "<td>合计</td>";
+					  tmpstr = tmpstr + str1;
+	                  var str2 = "<td>" + info.fullscore + "</td>";
+					  tmpstr = tmpstr + str2;
+					  var str3 = "<td>-</td>";
+					  tmpstr = tmpstr + str3;
+					  var str4 = "<td>-</td>";
+					  tmpstr = tmpstr + str4;
+					  var str5 = "<td>-</td>";
+					  tmpstr = tmpstr + str5;
+					  var str6 = "<td>-</td>";
+					  tmpstr = tmpstr + str6;
+					  var str7 = "<td>" +  info.getscore + "</td>";
+					  tmpstr = tmpstr + str7;
+
+					  tmpstr = tmpstr + "</tr>";
+
+					  
+					  $tabsum.append(tmpstr);
+
+			  }
+
+			  //各考站主要不足点
+
+			  if(info.deficiencies){
+				  var $tabdef = $("#tabdef");
+
+	              for(var i = 0 ;i< info.deficiencies.length;i++){
+	                  var th = "<tr><th colspan='3' style='text-align: left;'>" + (i+1) + "、";
+					  th = th + info.deficiencies[i].itemname + "</th></tr>";
+	                  $tabdef.append(th);
+
+					  if(info.deficiencies[i].itempoints){
+	                      for(var j=0;j< info.deficiencies[i].itempoints.length; j++){
+	                          var tr = "<tr>";
+							  var td1 = "<td style='text-align: left;'>" + (i+1) + "." + (j+1) + "</td>";
+							  tr = tr + td1;
+
+							  var td2 = "<td style='text-align: left;'>" + info.deficiencies[i].itempoints[j].point + "</td>";
+							  tr = tr + td2;
+
+							  //var td3 = "<td style='text-align: left;'>" + info.deficiencies[i].itempoints[j].deficiency + "</td></tr>";
+							  //tr = tr + td3;
+
+							  $tabdef.append(tr);
+
+	                      }
+	                  }
+				  }
+	          }
+			}
+		});
+
+
+	});
+</script>
+<body>
+    <div id="container">
+        <h2><span class="return_span" onclick="history.go(-1);"><</span><span id="testname">成绩单</span></h2>
+        <div class="contentbox">
+            <!--用户信息-->
+            <div class="userinfo">
+                <ul>
+                    <li>
+                        <span class="fontstyle">姓名</span>
+                        <span class="usenm" id="examineename"></span>
+                    </li>
+                    <li>
+                        <span class="fontstyle">学号</span>
+                        <span class="usenm" id="uid"></span>
+                    </li>
+                    <li>
+                        <span class="fontstyle">班级</span>
+                        <span class="usenm" id="stuclass"></span>
+                    </li>
+                    <li>
+                        <span class="fontstyle">时间</span>
+                        <span class="usenm" id="testtime"></span>
+                    </li>
+                    <li>
+                        <span class="fontstyle">方式</span>
+                        <span class="usenm" id="testway"></span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="score">
+                <div class="score-classfiy fontalgin" >满分 <span id="fullscore">100</span>分</div>
+                <div class="score-classfiy">
+                    <span class="score-numb" id="getscore">0</span> 分
+                </div>
+                <div class="score-classfiy fontalgin">排名 <span class="colorred" id="ranknum">0</span>（共<span id="stunum">0</span>人）</div>
+            </div>
+            <!--各考站成绩分析-->
+            <div class="contentbox">
+                <table cellpadding="0" cellspacing="0" border="0" class="datalist" width="100%" id="tabsum">
+                    <tr>
+                        <th colspan="7" style="text-align: center; background-color: #cccccc;">各考站成绩分析</th>
+                    </tr>
+                    <tr>
+                        <th>考试项目</th>
+                        <th>满分</th>
+                        <th>最高分</th>
+                        <th>中值分</th>
+                        <th>平均分</th>
+                        <th>最低分</th>
+                        <th>得分</th>
+                    </tr>
+					
+                </table>
+            </div>
+            <!--各考站主要不足点-->
+            <div class="contentbox">
+                <table width="100%" cellspacing="0" cellpadding="0" border="0" class="datalist" id="tabdef">
+                    <tr style="text-align: left;">
+                        <th colspan="3" style="text-align: center; background-color: #cccccc;">各考站主要不足点</th>
+                    </tr>
+                    
+                </table>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

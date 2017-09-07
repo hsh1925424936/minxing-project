@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <script src="js/vue.js"></script>
+    <script src="js/scoket.io.js"></script>
+    <script src="js/jquery-1.11.3.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/reset.css">
+    <link rel="stylesheet" type="text/css" href="css/pad.css">
+    <title>药学</title>
+</head>
+<body>
+    <div class="control flex flex-column">
+        <header class="flex flex-h-center">
+            <i></i>
+            <span class="font-normal">中药宝典</span>
+        </header>
+        <section class="flex flex-full">
+            <nav class="flex" v-if="levellist.length>0">
+                <ul>
+                    <li class="font-normal optionleft" v-for="(val,index) in levellist" @click="init(val.id,index)" :class="active(index)">{{val.name}}</li>
+                </ul>
+            </nav>
+            <aside class="flex flex-column" v-if="list.length>0">
+                <span class="font-normal name">
+                    <i>{{name}}</i>
+                </span>
+                <ul class="flex">
+                    <li class="flex flex-column" v-for='(item,index) in list' @click="select(index)">
+                        <img :src="item.typical">
+                        <label>{{item.name}}</label>
+                    </li>
+                </ul>
+            </aside>
+        </section>
+    </div>
+    <script>
+        var  _setupWebViewJavascriptBridge = function(callback){
+            if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+        };
+        var invokeNative = function(methodName, param, callback) {
+            _setupWebViewJavascriptBridge(function(bridge) {
+                bridge.callHandler(methodName, param, function responseCallback(responseData) {
+                    callback && callback(responseData);
+                });
+            });
+        };
+        window.onerror=function(a,b,c){
+            alert(a+b+c)
+        };
+        vm = new Vue({
+            el: '.control',
+            data: {
+                levellist:[],
+                subjectid:'',
+                id:'',
+                name:'',
+                list:[],
+                group:'',
+                socket:{}
+            },
+            mounted:function(){
+                invokeNative('getGroupInfo',{},this.getgroup);
+            },
+            methods:{
+                getgroup:function(data){
+                    this.group = JSON.parse(data).Paramname;
+                    this.queryLevel();
+                    this.init();
+                },
+                queryLevel:function() {
+                    var _this = this;
+                    var _json = {
+                        "1": {
+                            command: "hr/querylevellist",
+                            sessionid: 111,
+                            loginid: 111,
+                            code: 'medicine'
+                        }
+                    };
+                    var json = JSON.stringify(_json);
+                    $.ajax({
+                        url: "/hr/querylevellist",
+                        type: "POST",
+                        data: json,
+                        contentType: "application/json",
+                        success: function (data) {
+                            data = data["1"];
+                            if (data.errcode == 0) {
+                                _this.levellist = data.levellist;
+                                _this.subjectid = _this.levellist[0].id;
+                                _this.init(_this.subjectid);
+                            }
+                        }
+                    })
+                },
+                active:function(index) {
+                    return {
+                        'active': index == 0
+                    }
+                },
+                init :function(param,index){
+                    var _this = this;
+                    $('.optionleft').removeClass('active');
+                    $($('.optionleft')[index]).addClass('active');
+                    var _json = {
+                        "1": {
+                            command: "medicine/list",
+                            sessionid: 111,
+                            loginid: 111,
+                            subject:param
+                        }
+                    };
+                    var json = JSON.stringify(_json);
+                    $.ajax({
+                        url: "/medicine/list",
+                        type: "POST",
+                        data: json,
+                        contentType: "application/json",
+                        success: function (data) {
+                            data = data["1"];
+                            if (data.errcode == 0) {
+                                _this.list=data.medicinelist;
+                                if(_this.list.length>0){
+                                    _this.name=_this.list[0].subjectname;
+                                }
+                            }
+                        }
+                    })
+                },
+                select: function(index) {
+                    var self = this;
+                    self.id = this.list[index].id;
+                    var data = {
+                        group: self.group,
+                        data: self.id
+                    };
+                    $.ajax({
+                        url: '/medicine/show',
+                        type: 'POST',
+                        contentType: 'application/json;charset=utf-8',
+                        data: JSON.stringify(data)
+                    }).done(function (data) {
+                        if(data && data.data) {
+
+                        }
+                    }).fail(function () {
+                        alert('显示失败！');
+                    });
+                }
+            }
+        })
+    </script>
+</body>
+</html>

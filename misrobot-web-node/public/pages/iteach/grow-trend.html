@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/iteach/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>成长趋势</title>
+		<style type="text/css">
+			.outer{
+				color:#8ED0E7; height:auto; padding-bottom: 70px;
+			}
+
+			.topOuter img{
+				display:block; width:70px; height:40px; margin:0 auto 0; padding-top: 16px;
+			}
+			.chart1Outer{
+				width:100%; height:200px; background-color:#0496CA;
+			}
+			.monthChartTxt{
+				width:100%; height:20px; text-align:center; display: none;
+				font-size:14px; color:#747676; margin-top:20px;
+			}
+			.chart2Outer{
+				width:100%; height:250px; margin-top:15px;
+			}
+			.txt2{
+				width:100%; height:20px; text-align:center; 
+				font-size:14px; color:#747676; 
+			}
+			.txt3{
+				width:100%; height:20px; text-align:center; 
+				font-size:12px; color:#848485; margin-top:10px;
+			}
+			
+		</style>
+		<script>
+			//$('.bootstrap').remove();
+		</script>
+	</head>
+	<body>
+		
+		<div class="box clearfix">
+			<div class="outer clearfix">
+				<div class="topOuter">
+					<div class="return1">
+						
+					</div>
+					<img src="../images/iteach/iteach.png" />
+				</div>				
+				
+				<div class="chart1Outer">
+					
+				</div>
+
+				<div class="monthChartTxt">
+					近6个月成长趋势
+				</div>
+
+				<div class="chart2Outer">
+
+				</div>
+
+				<div class="txt2"></div>
+
+				<div class="txt3">
+					<!--评估时间5月8日-->
+				</div>
+				
+				<div class="bottomOuter">
+					<a href="schedule.html" class="bottomItem clearfix">
+						<img src="../images/iteach/kebiao.png"/>
+						<span>课表</span>
+					</a>
+
+					<a href="report.html" class="bottomItem clearfix">
+						<img src="../images/iteach/baogao.png"/>
+						<span>报告</span>
+					</a>
+
+					<a href="message-list.html" class="bottomItem clearfix">
+						<img src="../images/iteach/message.png"/>
+						<span>通知</span>
+					</a>
+
+					<a href="person-center.html" class="bottomItem clearfix">
+						<img src="../images/iteach/head2.png"/>
+						<span>我</span>
+					</a>
+				</div>
+
+			</div>
+
+		</div>
+
+		<script src="../../js/echarts-all.js"></script>
+		<script src="../../js/iteach/web_chart.js"></script>
+		<script>
+			window.onload = function () {
+				'use strict';
+				webcommon();	
+				
+				Api.R({
+					url: '/teachingindex/querymyevaluation',
+					isShade:1, //是否显示加载圆圈
+					json:{
+						"1": {
+							command: "teachingindex/querymyevaluation",
+							accountname: getCookie('gy_un'),  //用户名
+							sessionid: getCookie('gy_t')
+						}
+					},
+					fn:function (json) {
+						json = json[1];
+						if (json.queryresult.length==0) {
+							$('.chart1Outer').html('<p class="no-data">暂无数据</p>');
+						}else{
+							var arr1 = [];
+							var arr2 = [];
+							for (var i = 0 ; i < json.queryresult.length; i++) {
+								arr1.push({text:json.queryresult[i].evaluationitem,max:100});
+								arr2.push(json.queryresult[i].score);
+							}
+							writeradar({
+								obj:$('.chart1Outer')[0],
+								name:arr1,
+								value:arr2,
+								line:'#76e5ff',
+								type:'solid',
+								color:'rgba(255,255,255,0.2)'
+							});	
+						}
+						
+					}
+				});
+
+				Api.R({
+					isShade:1, //是否显示加载圆圈
+					json:{
+						"1": {
+							command:'teachingindex/querymygrowthtrend', //接口地址
+							accountname: getCookie('gy_un'),
+							sessionid: getCookie('gy_t')
+						}	
+					},
+					fn:function (arr) {
+						console.log(arr);
+						arr = arr[1].teachingindex;
+						var arr1 = [];
+						var arr2 = [];
+						for (var i = 0 ; i < arr.length; i++) {
+							arr1.push(arr[i].time+'月');
+							arr2.push(arr[i].value);
+						}
+						var str = '';
+						if( typeof(arr.length) == 'undefined' || arr.length == 0 ){
+
+						}else{
+							if (arr.length==1) {
+								str = arr1[0]+arr2[0]+'分';
+							} else {
+								if (arr2[arr.length-1]>=arr2[arr.length-2]) {
+									str = (arr1[arr.length-1]+arr2[arr.length-1])+'分，比上个月增长'+(arr2[arr.length-1]-arr2[arr.length-2])+'分';
+								} else {
+									str = (arr1[arr.length-1]+arr2[arr.length-1])+'分，比上个月降低'+(arr2[arr.length-2]-arr2[arr.length-1])+'分';
+								}
+							}
+						}
+						
+						$('.txt2').html(str);						
+						writeline($('.chart2Outer')[0],arr1,arr2,'近6个月成长趋势');
+					}
+				});				
+			};
+
+		
+		</script>
+		
+		
+	</body>
+	
+</html>

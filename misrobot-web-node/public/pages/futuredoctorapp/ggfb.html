@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>任务</title>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/jquery-1.11.3.js"></script>
+    <script src="../../layer/xie/layer1.js"></script>
+    <script src="../../js/futuredoctorapp/common.js"></script>
+    <script src="../../js/futuredoctorapp/vueGgfb.js"></script>
+    <script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../css/futuredoctorapp/common.css">
+    <link rel="stylesheet" href="../../css/futuredoctorapp/vueComponent.css">
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <style>
+     .tp{
+      	position:relative;
+    	top:-1px;
+    	height:18px;
+      }
+    #fabu{
+    	position:absolute;
+    	right:20px;
+    	top:0px;
+		font-weight: normal;
+		}
+        .ggbj{ padding-left:0px;padding-right:0px}
+        .ggbtzt{
+	 		border-bottom: 1px solid #E8E8E8;
+	 		height: 50px;
+		}
+		.ggbtmc{
+			float: left;
+			margin-left: 18px;
+			margin-top: 17px;
+		}
+		.ggbt{
+			float: left;
+			margin-left: 5px;
+			margin-top: 17px;
+			width: 70%;
+			border:none;
+			outline: none;
+		}
+		.fabuzhezt{
+			border-bottom: 1px solid #E8E8E8;
+			height: 50px;
+		}
+		.fabuzhemc{
+			float: left;
+			margin-left: 18px;
+			margin-top: 17px;
+		}
+		.fabuzhe{
+			float: left;
+			margin-left: 5px;
+			margin-top: 17px;
+			width: 70%;
+			border:none;
+			outline: none;
+		}
+		.ggnr{
+			float: left;
+			padding-left: 15px;
+			resize: none;
+			min-height: 150px;
+			width: 100%;
+			border:none;
+			outline: none;
+			border-bottom: 1px solid #E8E8E8;
+		}
+		.tjljwz{
+			float: left;
+			margin-left: 18px;
+			margin-top: 7px;
+		}
+		.lianjie{
+			float: left;
+			border:none;
+			resize: none;
+			outline: none;
+			height: 20px;
+			width: 60%;
+			float: left;
+			margin-left: 5px;
+			margin-top: 7px;
+		}
+		.tjljtu{
+			float: left;
+			margin-left: 7px;
+			margin-top: 5px;
+		}
+
+    </style>
+	</head>
+	<body>
+		<div id="ggbj" class="ggbj" v-cloak>
+        <headerbox :thistitle="headerTitle" id="header"></headerbox>
+  	<div class="ggbtzt">
+  		<span class="ggbtmc">公告标题</span>
+  		<input class="ggbt" maxlength="20" placeholder="请输入公告标题（不得超过20字）"/>
+  	</div>
+  	<div class="fabuzhezt">
+  		<span class="fabuzhemc">发布者</span>
+  		<input class="fabuzhe" maxlength="20" placeholder="请输入发布者姓名"/>
+  	</div> 
+  	<div class="ggnrzt">
+  		<textarea class="ggnr" maxlength="1000" placeholder="请输入公告内容（不得超过1000字）"></textarea>
+  	</div>
+  	<div class="tjlj">
+  		<span class="tjljwz">添加链接</span>
+  		<input class="lianjie"/>
+  		<img src="../../images/futuredoctorapp/icon-lianjie.png" class="tjljtu"/>
+  	</div>
+  <script>
+    	registerToNative('goBack', function (data) {
+	         window.location.href='publicmsg.html'
+	    });
+    	var vm=new Vue({
+        el:'#ggbj',
+        data:{
+            headerTitle:'发公告',
+           },
+        methods:{
+			
+        }
+    });
+    function fabu(){
+    	if($(".ggbt").val().length==0){
+    		layer.msg('请输入公告标题');
+    		return
+    	};
+    	if($(".fabuzhe").val().length==0){
+    		layer.msg('请输入发布者');
+    		return
+    	};
+    	if($(".ggnr").val().length==0){
+    		layer.msg('请输入公告内容');
+    		return
+    	};
+    	layer.load(1);
+    	var data={
+ 		command:'announce/addannouncement',
+ 		sessionid:getCookie('sid'),
+    	loginid:getCookie('uid'),
+		title:$(".ggbt").val(),
+		author:$(".fabuzhe").val(),
+		content:$(".ggnr").val(),
+		url:$(".lianjie").val(),
+		authorid:getCookie('uid'),
+		type:0
+    	};
+  	function callback(res){
+  		layer.closeAll('loading');
+  		layer.msg('成功发布一条公告', {icon: 1});
+  		setTimeout(function(){
+  			window.location.href='msg.html';
+  		},2000)
+    };
+    function errcodefn1(res){//公用错误码函数
+    	alert(res.errcode);
+    	if(res.errcode==9904){
+        layer.msg("登录信息已失效，请重新登录");
+        setTimeout(futureAppLogout,2000)
+    }else{
+        layer.msg(res.errdesc);
+        layer.closeAll('loading');
+        setTimeout(function(){window.location.href='ggfb.html';},2000)  
+    }
+};
+	function errfn1(){//公用连接失败函数
+		alert('failed');
+    	layer.msg("连接服务失败");
+    	layer.closeAll('loading');
+  		window.location.href='ggfb.html';
+    
+	};
+  	post('/announce/addannouncement',data,callback,errcodefn1,errfn1)
+  	
+  }
+  </script>
+		</div>
+	</body>
+</html>

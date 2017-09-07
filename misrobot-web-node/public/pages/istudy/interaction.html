@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/istudy/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>欢迎来到智能助教系统</title>
+		
+		<style>	
+			#bgimg { display: block; width: 100%; height: 100%;}
+			.sign_bg {display: block;}
+			.hide{
+				display:none;
+			}
+			#msgBox{
+				width:80%;
+				margin:0 auto;
+				border-radius: 5px;
+				background-color: white;
+			}
+			#msgBox>div{
+				padding:20px;
+			}
+			.bottomHandler>button{
+				float:right;
+			}
+			.bottomHandler{
+				overflow:hidden;
+				margin-top:10px;
+			}
+			#msgContainer{
+				position:fixed;
+				z-index:100;
+				top:140px;
+				width:100%;
+			}
+			.msgHead{
+				background-color: #fefefe;
+				border-bottom:1px solid #eee;
+				border-radius: 5px 5px 0 0;
+				padding:5px 20px;
+			}
+			.msgHead>i{
+				color:#ddd;
+				float:right;
+			}
+			#header span{display:none}
+		</style>			
+	</head>
+	<body>
+		<div id="header" style="position:fixed;z-index:200;width:100%;">
+			<headerbox thistitle="互动课堂"></headerbox>
+		</div>
+		<div id="msgContainer" class="hide">
+			<div id="msgBox">
+				<p class="msgHead">
+					<span>提示</span>
+					<i class="glyphicon glyphicon-remove" onclick="closeMsgBox()"></i>
+				</p>
+				<div>
+					<p>如果您尚未签到，请先去签到</br>如果您已签到，请尝试刷新页面</p>
+					<p class="bottomHandler">
+						<button onclick="closeMsgBox()" class="btn btn-primary btn-sm">确定</button>
+					</p>
+				</div>
+			</div>
+		</div>
+		<img id="bgimg" src="../../images/istudy/wx_sign_in.jpg" />
+		<div class="sign_bg"></div>
+		<script src="../../js/istudy/vueComponent.js"></script>
+		<script>
+			function closeMsgBox(){
+				$("#msgContainer").addClass('hide');
+			};
+			var username='';
+			if(navigator.userAgent.indexOf("iPhone") != -1){
+				username=decodeURIComponent(getCookie('u_name'))
+			}else{
+				username=getCookie('u_name')
+			};
+			window.onerror=function(msg,url,line){
+				alert("错误："+msg+"url:"+url+"行数："+line);
+			};
+			var userid="";
+			var sessionid="";
+			var loginid="";
+			if(navigator.userAgent.indexOf("iPhone") != -1){//如果是苹果，延迟2秒再去读取cookie
+				setTimeout(function(){
+					userid=getCookie('gy_u');
+					loginid=getCookie('gy_u');
+					sessionid=getCookie('gy_t');
+					if(!userid || !sessionid) {
+						uselayer(3,"没有读取到用户信息，尝试刷新页面");
+						//setTimeout(function(){
+						//	logout();
+						//},2000)
+					};
+					Api.R({
+						isShade: 1,
+						url: "/course/querycourseinfo",
+						json: {
+							"1": {
+								command: "course/querycourseinfo",
+								uid: userid,
+								timetype: 0, //0 当前时间
+								sessionid: sessionid,
+								loginid: userid
+							}
+						},
+						fn: function(result){
+							var isCourse=-1;
+							if(result["1"].errcode!=0){
+								uselayer(3, result["1"].errdesc);
+								return;
+							}
+							if(result["1"].schedules==null){
+								uselayer(3, '当前时间没有课程');
+								return;
+							}
+							setCookieIOS('gy_istudy_course',result["1"].schedules[0].coursename);
+							setCookieIOS('gy_istudy_teacher',result["1"].schedules[0].teachers[0].name);
+							setCookie('gy_istudy_scid',result["1"].schedules[0].scheduleid);
+							setCookie('gy_course_endTime', result["1"].schedules[0].endtime);
+							for(var i=0;i<result["1"].schedules.length;i++){
+								if(result["1"].schedules[i].issigned==1){
+									isCourse=1;
+								}
+							}
+							if(isCourse==-1){
+								$("#msgContainer").removeClass('hide');
+							}
+							else{
+								Api.R({
+									isShade: 1,
+									url: "/course/querycoursedetailinfo",
+									json: {
+										"1": {
+											command: "course/querycoursedetailinfo",
+											scheduleid: result["1"].schedules[0].scheduleid,
+											sessionid: sessionid,
+											loginid: userid
+										}
+									},
+									fn: function(result){
+										var cls = new Array();
+										var stus = result["1"].students;
+										for(var i=0;i<stus.length;i++)
+										{
+											cls[i] = stus[i].clsname;
+										}
+										var norepeat = notRepeat(cls);
+										setCookieIOS('gy_u_classname', norepeat[0]);
+									},
+									error: function(str){
+										uselayer(3, '连接服务失败');
+									}
+								});
+								setTimeout(function () {
+									window.location.href = 'startstu.html';
+								},1000);
+							}
+						},
+						error: function(str){
+							uselayer(3, '连接服务失败');
+						}
+					});
+				},2000)
+			}//如果是苹果
+			else{//如果是安卓，直接去读cookie
+				userid=getCookie('gy_u');
+				loginid=getCookie('gy_u');
+				sessionid=getCookie('gy_t');
+				if(!userid || !sessionid) {
+					uselayer(3,"没有读取到用户信息，尝试刷新页面");
+					//setTimeout(function(){
+						//logout();
+					//},2000)
+				};
+				Api.R({
+					isShade: 1,
+					url: "/course/querycourseinfo",
+					json: {
+						"1": {
+							command: "course/querycourseinfo",
+							uid: userid,
+							timetype: 0, //0 当前时间
+							sessionid: sessionid,
+							loginid: userid
+						}
+					},
+					fn: function(result){
+						var isCourse=-1;
+						if(result["1"].errcode!=0){
+							uselayer(3, result["1"].errdesc);
+							return;
+						}
+						if(result["1"].schedules==null){
+							uselayer(3, '当前时间没有课程');
+							return;
+						}
+						setCookieIOS('gy_istudy_course',result["1"].schedules[0].coursename);
+						setCookieIOS('gy_istudy_teacher',result["1"].schedules[0].teachers[0].name);
+						setCookie('gy_istudy_scid',result["1"].schedules[0].scheduleid);
+						setCookie('gy_course_endTime', result["1"].schedules[0].endtime);
+						for(var i=0;i<result["1"].schedules.length;i++){
+							if(result["1"].schedules[i].issigned==1){
+								isCourse=1;
+							}
+						}
+						if(isCourse==-1){
+							$("#msgContainer").removeClass('hide');
+						}
+						else{
+							Api.R({
+									isShade: 1,
+									url: "/course/querycoursedetailinfo",
+									json: {
+										"1": {
+											command: "course/querycoursedetailinfo",
+											scheduleid: result["1"].schedules[0].scheduleid,
+											sessionid: sessionid,
+											loginid: userid
+										}
+									},
+									fn: function(result){
+										var cls = new Array();
+										var stus = result["1"].students;
+										for(var i=0;i<stus.length;i++)
+										{
+											cls[i] = stus[i].clsname;
+										}
+										var norepeat = notRepeat(cls);	
+										setCookieIOS('gy_u_classname', norepeat[0]);
+									},
+									error: function(str){
+										uselayer(3, '连接服务失败');
+									}
+							});
+							setTimeout(function () {
+								window.location.href = 'startstu.html';
+							},1000);
+						}
+					},
+					error: function(str){
+						uselayer(3, '连接服务失败');
+					}
+				});
+			}
+			
+			function notRepeat(arr){//数组去重函数
+    				var noRepeat=[];
+   				noRepeat[0]=arr[0];
+    				for(var i=1;i<arr.length;i++){
+        				var repeat=false;
+        				for(var j=0;j<noRepeat.length;j++){
+            					if(arr[i]==noRepeat[j]){
+                					repeat=true;
+                					break
+            					}
+        				};
+       					if(!repeat){
+            					noRepeat.push(arr[i]);
+        				}
+    				};
+    				return noRepeat
+			}
+
+		</script>
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

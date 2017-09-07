@@ -1,0 +1,362 @@
+[v-cloak] { display: none }
+/*设置滚动条*/
+::-webkit-scrollbar/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+{
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track/*定义滚动条轨道 内阴影+圆角*/
+{
+    /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);*/
+    border-radius: 10px;
+    background-color: #c6cbda;
+}
+::-webkit-scrollbar-thumb/*定义滑块 内阴影+圆角*/
+{
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #01c6ac;
+}
+body {
+    font-size: 62.5%;
+    user-select: none;
+}
+.flex {
+    display: -webkit-box; /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
+    display: -moz-box; /* Firefox 17- */
+    display: -webkit-flex; /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
+    display: -moz-flex; /* Firefox 18+ */
+    display: -ms-flexbox; /* IE 10 */
+    display: flex; /* Chrome 29+, Firefox 22+, IE 11+, Opera 12.1/17/18, Android 4.4+ */
+}
+.flex-full {
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -ms-flex: 1;
+    flex:1;
+}
+.flex-column {
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    box-orient: vertical;
+    flex-direction: column;
+}
+.flex-w-center {
+    -webkit-justify-content:center;
+    justify-content:center;
+    -moz-box-pack:center;
+    -webkit--moz-box-pack:center;
+    box-pack:center;
+}
+.flex-h-center {
+    box-align:center;
+    -moz-box-align:center;
+    -webkit-box-align:center;
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    -ms-flex-align:center;/* IE 10 */
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    align-items: center;
+}
+.cabinet {
+    width:100vw;
+    height:100vh;
+}
+.cabinet>header{
+    width:100vw;
+    height:8.5vh;
+    line-height: 8.5vh;
+    font-size: 1.5rem;
+    text-align: center;
+    background: #01c6ac;
+    color: #fff;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.1);
+    z-index: 3;
+}
+.cabinet>section{
+    width:100vw;
+    height:91.5vh;
+    position: relative;
+}
+.icon-box {
+    display: inline-block;
+    width: 6vw;
+    height:6vw;
+    background: url("../images/medicine_box.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+    position: absolute;
+    top:2vw;
+    right:3vw;
+    z-index: 100;
+    cursor: pointer;
+}
+.icon-box b {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    position: absolute;
+    text-align: center;
+    color: #fff;
+    background: #F8BC06;
+    border-radius: 50%;
+    padding: 0.2rem;
+    top: 0.5rem;
+    right: 0;
+}
+nav {
+    width:17.7vw;
+    height:91.5vh;
+    overflow: hidden;
+}
+aside {
+    width:80vw;
+    height:91.5vh;
+    padding:0 2.5vw;
+    background: url("../images/cabinet_box.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+}
+nav ul::-webkit-scrollbar{
+    width: 0;
+}
+nav ul {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding:3vh 0;
+    background: url("../images/left_opition.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+}
+nav li.active {
+    background: #e6f4f2!important;
+    color: #00927f;
+}
+nav li{
+    width:17.2vw;
+    height:4.375vw;
+    line-height: 4.375vw;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    background: url("../images/left_op.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+}
+nav li:last-child {
+    background: url("../images/left_op2.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+}
+aside ul {
+    overflow-y: auto;
+    overflow-x: hidden;
+    width:100%;
+    height:91.5vh;
+    color: #168775;
+    font-size: 1.7rem;
+    flex-wrap: wrap;
+}
+aside li {
+    width:100%;
+    height:33.33%;
+}
+aside li:after {
+    content: '';
+    background: url(../images/what.png) 0 0 no-repeat;
+    background-size: 100% 100%;
+    display: inline-block;
+    width:100%;
+    height: 3.85vw;
+    position: relative;
+    bottom: 1vw;
+}
+.box {
+    height:30.5vh;
+    margin: 3vw 3vw 0;
+    z-index: 2;
+}
+aside li span {
+    width:15vw;
+    height:calc(30.5vh - 5vw);
+    background: #fff;
+    cursor: pointer;
+    margin: 0 1.375vw;
+}
+aside li b {
+    width:90%;
+    height:90%;
+    border:2px solid #168775;
+    text-align: center;
+}
+aside li span.active {
+    background: #F8BC06;
+    color: #fff;
+}
+aside li span.active b{
+    border:0;
+}
+.detailbox {
+    width:42vw;
+    height:37vw;
+    background: #fff;
+    border-radius: 5px;
+    z-index: 1000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.shade {
+    position: absolute;
+    z-index: 999;
+    width:100%;
+    height:100%;
+    background: #000;
+    opacity: 0.5;
+    top:0;
+    left:0;
+    display: block
+}
+.detailbox header , .seletdetaillist header {
+    height:5vw;
+    line-height: 5vw;
+    font-size: 1.5rem;
+    color: #01c6ac;
+    text-align: center;
+    position: relative;
+}
+.detailbox header i , .seletdetaillist header i {
+    display: inline-flex;
+    width:1.67vw;
+    height:1.67vw;
+    background: url("../images/btn_closed.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+    position: absolute;
+    right:2vw;
+    top: 1.65vw;
+    cursor: pointer;
+}
+.detailbox section {
+    height: 60%;
+    font-size: 1rem;
+    color: #333;
+    padding:0 2vw;
+    overflow: auto;
+}
+.detailbox section li {
+    line-height: 2rem;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+.detailbox li b {
+    display: inline-block;
+    width: 6rem;
+    text-align: left;
+    flex:0 0 auto;
+    color: #666;
+}
+.btn {
+    display: inline-block;
+    min-width:7.3vw;
+    height:1.875vw;
+    line-height: 1.875vw;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 1rem;
+    padding:0.5rem;
+    cursor: pointer;
+    margin: 1rem 1rem 0;
+}
+.btn-sure {
+    color: #fff;
+    background: #01c6ac;
+}
+.btn-close {
+    color: #01c6ac;
+    background: #fff;
+    border:1px solid #01c6ac;
+}
+.detailbox footer p{
+    color: #e99400;
+    font-size: 1rem;
+    text-align: center;
+    line-height: 3rem;
+}
+.toast {
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 1001;
+    font-size: 1.2rem;
+    color: #fff;
+    background: #e99400;
+    border-radius: 5px;
+    padding:1rem;
+}
+.seletdetaillist {
+    display: inline-block;
+    width:42vw;
+    height:25vw;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 999;
+    background: #fff;
+    border-radius: 5px;
+}
+.seletdetaillist section {
+    height:55%;
+    overflow: auto;
+}
+.seletdetaillist section ul {
+    padding:1rem;
+    margin-top:1rem;
+    overflow: auto;
+    overflow-x: hidden;
+    flex-wrap: wrap;
+}
+.seletdetaillist section li {
+    width:33%;
+    margin-bottom: 1.5rem;
+}
+.seletdetaillist li p {
+    color: #999;
+    font-size: 1rem;
+    line-height:2rem;
+    text-align: center;
+}
+.seletdetaillist section div {
+    position: relative;
+    display: inline-block;
+    width:85%;
+    height: 8vw;
+    text-align: center;
+    color: #01c6ac;
+    font-size: 1.2rem;
+    border: 2px solid #01c6ac;
+}
+.seletdetaillist section span {
+    height:8vw;
+}
+.seletdetaillist li i {
+    display: inline-block;
+    width:1.5vw;
+    height:1.5vw;
+    background: url("../images/pop_medicine_closed.png") 0 0 no-repeat;
+    background-size: 100% 100%;
+    cursor: pointer;
+    position: absolute;
+    top: -2px;
+    right: -1.5vw;
+}
+.disabled {
+    color: #888!important;
+    background: #c6cbda!important;
+    pointer-events: none;
+}

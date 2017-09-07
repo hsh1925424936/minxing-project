@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/assistant/layout.js" ></script>
+		<script src="../../js/jquery.qrcode.min.js"></script>
+		<meta charset="UTF-8">
+		<title>分组</title>
+		<style type="text/css">
+			body{
+				background-color:#ECECEC; padding-bottom:70px;
+			}
+
+			.topBar{
+				width:100%; height:60px; background-color:#F5F5F5;
+				border-top:1px solid #DCDCDC; border-bottom:1px solid #DCDCDC;
+				font-size:16px; position:fixed; top:0; left:0; z-index: 1;
+			}
+			.topBarInner{
+				width:1024px; height:100%; margin:auto;
+			}
+
+			.myselect{
+				float:left; position:relative; top:50%; margin-top:-18px;
+				width:108px; height:38px; text-align:center; line-height:36px;
+				border:1px solid #c3c3c3; box-sizing:border-box; border-radius:3px;
+				cursor:pointer; background-color:white;
+				position:relative; margin-right:18px;
+			}
+			.myselect:hover{
+				border:1px solid #999999; background-color:#e5e5e5;
+			}
+			.myselect>p{
+				width:85%; height:100%; float:left; margin-right:-8px;
+			}
+			.myselect>img{
+				display:block; float:left; width:12px; height:8px; margin-top:14px;
+			}
+			.myselect select{
+				position:absolute; width:100%; border-radius:3px;
+				top:46px; z-index:1; border:1px solid #c3c3c3; font-size:16px;
+				display:none; text-align:center;
+			}
+			.myselect select option{
+				padding-top:8px; padding-bottom:8px;
+			}
+			.myselect select option:hover{
+				background-color:#dcdcdc;
+			}
+			.myselect>span{
+				background-image:url(../../images/assistant/sanjiao-xiala.png);
+				background-repeat:no-repeat; background-size:100% 100%;
+				width:16px; height:11px; display:none; position:relative;
+				top:36px; left:70px; z-index:2;
+			}
+
+			.adjustBtn{
+				float:left; position:relative; top:50%; margin-top:-18px;
+				width:148px; height:38px; text-align:center;
+				border:1px solid #0496C9; box-sizing:border-box; border-radius:3px;
+				background-color:#ffffff; color:rgb(4,150,202);
+				cursor:pointer;
+			}
+			.adjustBtn:hover{
+				background-color:#f2fafc;
+			}
+			.adjustBtn p{
+				width:132px; height:100%; line-height:36px; margin-right:-10px; float:left;
+			}
+			.adjustBtn span{
+				font-size:9px; display:block; float:left;
+				border-radius:15px; color:white; line-height:20px; position:relative;
+				top:50%; margin-top:-10px; width:20px; height:20px; background-color:rgb(4,150,202);
+			}
+
+			.radioCon{
+				height:100%; float:left; margin-left:18px;
+			}
+			.radioCon div{
+				float:left; width:18px; height:18px;
+				background-image:url('../../images/assistant/dianxuan.png');
+				border-radius:15px;
+				background-size:100% 100%; background-repeat:no-repeat;
+				margin-right:7px; position:relative; margin-top:-9px; top:50%;
+				cursor:pointer;
+			}
+			.radioCon span{
+				width:100%; height:100%; display:none;
+				background-image:url('../../images/assistant/dianxuan-h.png');
+				border-radius:15px;
+				background-size:100% 100%; background-repeat:no-repeat;
+			}
+			.radioCon p{
+				float:left; height:100%; line-height:56px; font-size:14px;
+			}
+			.randomgroup{
+				margin-top:-19px; top:50%; float:right; position:relative;
+			}
+			.randomgroup button{
+				height:38px;
+			}
+
+			.mainOuter{
+				width:1024px; margin:auto; padding-top:80px;
+			}
+			.mainCon{
+				width:100%;
+			}
+			.mainCon>div{
+				float:left;
+			}
+			
+			.signin_outer{
+				padding-right:18px; padding-bottom:10px;
+			}
+			.signin_outer1{
+				width:100%; height:450px;
+			}
+			.signin_outer2{
+				width:50%; height:450px;
+			}
+			.signin_outer3{
+				width:33.33%; height:450px;
+			}
+			.signin_outer4{
+				width:25%; height:450px;
+			}
+			.signin_outer5{
+				width:25%; height:250px;
+			}
+			.signin_outer2{
+				
+			}
+			.signin_box{
+				width:100%; box-sizing:border-box; border:1px solid #DCDCDC; height:100%;
+				background-color:white;
+			}
+			.box_tit{
+				width:100%; height:64px; line-height:62px;
+				text-align:center; font-size:19px; color:rgb(51,51,51);
+			}
+			.box_tit>img{
+				width:23px; height:23px; margin-bottom:5px;
+			}
+			.box_tit>span{
+				font-size:14px;
+			}
+			.stu_outer{
+				width:100%; padding-top:60px; margin-top:-64px; height:100%;
+			}
+			.stuBox{
+				width:40px; height:76px; float:left; cursor:pointer; position:relative;
+			}
+			/*.group_leader{
+				background-image:url(../../images/assistant/team_leader.png);
+			}
+			.recorder{
+				background-image:url(../../images/assistant/recorder.png);
+			}*/
+			.group_leader,.recorder{
+				display:block; width:18px; height:18px; position:absolute;
+				/*background-image:url(../../images/assistant/recorder.png);*/
+				background-repeat:no-repeat; background-size:100% 100%;
+				left:10px; top:30px; border-radius:10px; background-color:white;
+				font-size:12px; text-align:center; line-height:16px; border:1px solid #DCDCDC;
+			}
+
+			.flowerCon{
+				position:absolute; right:-8px; top:0;
+			}
+			.flowerCon>img{
+				width:18px; height:18px; margin-bottom:5px;
+			}
+			.flowerCon>span{
+				font-size:14px;
+			}
+			.stu_outer2{
+				
+			}
+			.stuCon{
+				width:100%; height:100%; overflow-y:auto; padding-left:5px; padding-right:5px;
+				position:relative;
+			}
+
+			.signin_outer1 .stuBox{
+				margin-left:9.2px; margin-right:9.2px;
+			}
+			.signin_outer2 .stuBox{
+				margin-left:10px; margin-right:10px;
+			}
+			.signin_outer3 .stuBox{
+				margin-left:11px; margin-right:11px;
+			}
+			.signin_outer4 .stuBox,.signin_outer5 .stuBox{
+				margin-left:8.2px; margin-right:8.2px;
+			}
+			.stuBox>img{
+				display:block; width:40px; height:40px; border-radius:30px;
+			}
+			.stuBox h5{
+				width:100%; font-size:12px;
+				text-align:center; padding-top:10px;
+			}
+			.stuBox select{
+				width:70px; font-size:13px;
+    			position:absolute; left:-40%; border:1px solid #0496C9;
+    			top:65px; z-index:1; display:none; text-align:center;
+    			border-radius:3px; overflow:hidden;
+			}
+			.stuBox select option{
+				padding-top:3px; padding-bottom:3px;
+			}
+			.stuBox select option:hover{
+				background-color:#dcdcdc;
+			}
+			.stuBox:hover select{
+				display:block;
+			}
+
+			.mainOuter>p{
+				font-size:16px; margin-top:18px; color:rgb(51,51,51);
+			}
+			.randomactive{
+				background-color: #489AB7;
+				border-radius: 18px;
+			}
+			.randomhandlers{
+				position:absolute;
+				bottom:20px;
+				right:20px;
+			}
+			.pinkback{
+				/*background-color:rgba(255,20,147,0.2);*/
+				background-color: #489AB7;
+				/*border:2px solid #f6de9b;*/
+				border-radius: 10px;
+			}
+
+		</style>
+	</head>
+	<body>
+		<div class="topBar">
+			<div class="topBarInner">
+				<div class="myselect">
+					<p>未分组</p><img src="../../images/assistant/sanjiao-xian.png">
+					<span></span>
+					<select size='6' class="select1">
+						<option value='1'>未分组</option>
+						<option value='2'>2组</option>
+						<option value='3'>3组</option>
+						<option value='4'>4组</option>
+						<option value='5'>5组</option>
+						<option value='6'>6组</option>
+						<option value='7'>7组</option>
+						<option value='8'>8组</option>
+						<option value='9'>9组</option>
+						<option value='10'>10组</option>
+						<option value='11'>11组</option>
+						<option value='12'>12组</option>
+						<option value='13'>13组</option>
+						<option value='14'>14组</option>
+						<option value='15'>15组</option>
+						<option value='16'>16组</option>
+						<option value='17'>17组</option>
+						<option value='18'>18组</option>
+						<option value='19'>19组</option>
+						<option value='20'>20组</option>
+						
+					</select>
+					
+				</div>
+				<div class="myselect" style="width:130px;">
+					<p>按学号分组</p><img src="../../images/assistant/sanjiao-xian.png">
+					<span></span>
+					<select size='6' class="select2">
+						<option value='1'>按学号分组</option>
+						<option value='2'>随机分组</option>
+						
+					</select>
+				</div>
+
+				<!-- <div class="radioCon" value='2'>
+					<div><span></span></div>
+					<p>随机分组</p>
+				</div>
+				<div class="radioCon" value='1' checked='checked'>
+					<div><span style="display:block;"></span></div>
+					<p>按学号顺序分组</p>
+				</div> -->
+
+				<div class="adjustBtn">
+					<p>批量调整组员</p>
+					<span>0</span>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="mainOuter">
+			
+			<div class="mainCon clearfix">
+				
+				<div class="signin_outer">
+					<div class="signin_box">
+						<h2 class="box_tit">
+							第1组<img src="../../images/assistant/flower.png"><span>×8</span>
+						</h2>
+						<div class="stu_outer stu_outer2">
+							<div class="stuCon">
+								<div class="stuBox">
+									<span class="group_leader"></span>
+									<div class="flowerCon">
+										<img src="../../images/assistant/flower.png"><span>×8</span>
+									</div>
+									
+									<img src="../../images/assistant/default_head.png">
+									<h5>王恩亭</h5>
+								</div>
+								<div class="stuBox">
+									<span class="recorder"></span>
+									<img src="../../images/assistant/default_head.png">
+									<h5>王恩亭</h5>
+									
+								</div>
+								<div class="stuBox">
+									<img src="../../images/assistant/default_head.png">
+									<h5>王恩亭</h5>
+								</div>
+								<div class="stuBox">
+									<img src="../../images/assistant/default_head.png">
+									<h5>王恩亭</h5>
+								</div>
+								<div class="stuBox">
+									<img src="../../images/assistant/default_head.png">
+									<h5>王恩亭</h5>
+								</div>
+								<div class="stuBox">
+									<img src="../../images/assistant/default_head.png">
+									<h5>王恩亭</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="signin_outer">
+					<div class="signin_box">
+						<h2 class="box_tit">
+							第2组
+						</h2>
+						<div class="stu_outer stu_outer2">
+							<div class="stuCon">
+								<div class="stuBox">
+									<img src="../../images/assistant/default_head.png">
+									<h5>王恩亭</h5>
+								</div>
+								<div class="stuBox">
+									<img src="../../images/assistant/default_head.png">
+									<h5>王恩亭</h5>
+								</div>
+								<div class="stuBox">
+									<img src="../../images/assistant/default_head.png">
+									<h5>王恩亭</h5>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<p class="footer_txt">
+				              已签到 人/未签到 人
+			</p>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		var lightedgroup=-1000;//2017.3.10修改，谢吟东，新增随机选组，随机选人功能
+		var lightedstu=-1000;//2017.3.10修改，谢吟东，新增随机选组，随机选人功能
+		var schedules_coursename;//课程名称
+		var scheduleid;//课程表id
+		var t;//方法定时刷新显示分组信息用的定时器
+
+		//自定义的radiobutton 需要给radioCon一个name
+		$('.radioCon').click(function() {
+			var radioCon_name = $('.radioCon').attr('name');
+			$('.radioCon').find('span').css('display', 'none');
+			$('.radioCon').removeAttr('checked');
+			$(this).find('span').css('display', 'block');
+			$(this).attr('checked', 'checked');//标记为已选择
+		});
+
+		//自定义的select
+		$('.myselect').click(function(event) {
+			$(document).click();
+			if( $(this).find('select').css('display') == 'none' ){
+				$(this).find('select').css('display', 'block');
+				$(this).children('span').css('display', 'block');
+			}else{
+				$(this).find('select').css('display', 'none');
+				$(this).children('span').css('display', 'none');
+			}
+			 event.stopPropagation();
+		});
+		$(document).click(function() {
+			$('.myselect select').css('display', 'none');
+			$('.myselect span').css('display', 'none');
+			//$('.stuBox select').css('display', 'none');
+		});
+		$('.myselect select').change(function() {
+			var text = $(this).find('option:selected').html();
+			$(this).siblings('p').html(text);
+		});
+
+		$('.adjustBtn').click(function() {//打开iframe
+			//判断是否有分组
+			var json = {
+				'1':{
+					command:'group/querygroupinfo', //接口地址
+					scheduleid:scheduleid,
+					sessionid:getCookie('sessionid'),
+					loginid:getCookie('loginid')
+				}
+			};
+			Api.dataToJava({
+				json:{
+					url:'/group/querygroupinfo', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+					//groupresult  signedlist
+					if( !base.groupresult ){//没有分组
+						uselayer(3,'您还没有分组！');
+						return false;
+					}
+					open_dialog('adjust_group.html');//打开弹窗的方法
+				}
+			});
+			
+		});
+
+		function show_group(){//显示分组信息
+			var json = {
+				'1':{
+					command:'group/querygroupinfo', //接口地址
+					scheduleid:scheduleid,
+					sessionid:getCookie('sessionid'),
+					loginid:getCookie('loginid')
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/group/querygroupinfo', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+					if( !$('.mainCon').attr('istogroup') ){
+						togroup(base);//点击下拉框或者单选框触发分组方法
+					}
+					
+					$('.mainCon').attr('istogroup', '1');//标记togroup方法执行过
+
+					$('.mainCon').html('');//清空各组数据
+					if( base.groupresult ){//有分组
+						var groupNum = base.groups;//组数
+						var signin_outer = groupNum;
+						if( signin_outer > 5 ){
+							signin_outer = 5;
+						}
+						var signin_outer_class;
+						signin_outer_class = 'signin_outer'+signin_outer;//根据组数调整div的大小
+
+						var groupFlower = {};//用于存放每组的小红花数
+						for ( var i = 0; i < base.groupresult.length; i++ ){
+							var sgindex = base.groupresult[i].sgindex;
+							if ( !groupFlower[sgindex] ){
+								groupFlower[sgindex] = 0;
+							}
+							groupFlower[sgindex] += base.groupresult[i].redflower;
+						}
+
+						var str = '';
+						for ( var i = 0; i < groupNum; i++ ){//生成对应个数的组容器
+							str+=
+							'<div class="signin_outer '+signin_outer_class+'">'+
+								'<div class="signin_box">'+
+									'<h2 class="box_tit">'+
+										'第'+(i+1)+'组';
+										if( groupFlower[i+1] > 0 ){
+											str += 
+												'<img src="../../images/assistant/flower.png"><span>×'+
+												groupFlower[i+1]+'</span>';
+										}
+
+										str +=
+									'</h2>'+
+									'<div class="stu_outer stu_outer2">'+
+										'<div class="stuCon">'+
+										'</div>'+
+									'</div>'+
+								'</div>'+
+							'</div>';
+						}
+						$('.mainCon').html(str);
+						$('.randomgroup').remove();
+						$('.topBarInner').append('<p class="randomgroup text-right" style="padding-right:20px"><button class="btn btn-primary">随机选组</button>&nbsp;&nbsp;&nbsp;<button class="btn btn-primary">随机选人</button>&nbsp;&nbsp;&nbsp;<button class="btn btn-default" onclick="resetrandom_nogroup()">重置</button></p>');
+						$('p.randomgroup button:eq(0)').on("click",function(){//2017.3.10修改，谢吟东，新增随机选组，随机选人功能
+							resetrandom_nogroup();
+							layer.load();
+							setTimeout(function(){
+								layer.closeAll('loading');
+								var range=parseInt(Math.random()*groupNum);
+								$('.signin_box').each(function(){
+									$(this).removeClass('pinkback')
+								});
+								$('.signin_box:eq('+range+')').addClass('pinkback');
+								lightedgroup=range;
+							}, 2000);
+						});
+						$('p.randomgroup button:eq(1)').on("click",function(){//2017.3.10修改，谢吟东，新增随机选组，随机选人功能
+							resetrandom_nogroup();
+							var totalstunum=base.groupresult.length;
+							layer.load();
+							setTimeout(function(){
+								layer.closeAll('loading');
+								var range=parseInt(Math.random()*totalstunum);
+								$('.stuBox').each(function(){
+									$(this).removeClass('randomactive')
+								});
+								$('.stuBox:eq('+range+')').addClass('randomactive');
+								lightedstu=range;
+							}, 2000);
+						})
+						var groupresult = base.groupresult;
+						for ( var i = 0; i < groupresult.length; i++ ){//生成学生并放到容器里
+							str = '';//放入小组的学生div
+							var role = '';//记录角色
+							if ( groupresult[i].role == 1){
+								role = '<span class="group_leader">组</span>';
+							}else if( groupresult[i].role == 2 ){
+								role = '<span class="recorder">记</span>';
+							}
+							groupresult[i].imageurl = groupresult[i].imageurl || '../../images/assistant/default_head.png';
+							str =
+							'<div class="stuBox" stdid="'+groupresult[i].stdid+'">'+
+								role;
+								if ( groupresult[i].redflower > 0 ){
+									str += 
+										'<div class="flowerCon">'+
+											'<img src="../../images/assistant/flower.png">'+
+											'<span>×'+
+												groupresult[i].redflower+
+											'</span>'+
+										'</div>';
+								}
+							str +=
+								'<img src="'+groupresult[i].imageurl+'">'+
+								'<h5>'+groupresult[i].name+'</h5>'+
+								'<select multiple size="3">'+
+									'<option value="1">1朵小红花</option>'+
+									'<option value="2">2朵小红花</option>'+
+									'<option value="3">3朵小红花</option>'+
+								'</select>'+
+							'</div>';
+							$('.stuCon').eq(groupresult[i].sgindex-1).append(str);
+						}
+						if(lightedgroup!=-1000){//2017.3.10修改，谢吟东，新增随机选组，随机选人功能
+							$('.signin_box:eq('+lightedgroup+')').addClass('pinkback');
+						}
+						if(lightedstu!=-1000){//2017.3.10修改，谢吟东，新增随机选组，随机选人功能
+							$('.stuBox:eq('+lightedstu+')').addClass('randomactive')
+						}
+					}else{
+						var signedlist = base.signedlist;
+						$('.mainCon').html(
+							'<div class="signin_outer signin_outer1">'+
+								'<div class="signin_box">'+
+									'<h2 class="box_tit">'+
+										'未分组'+
+									'</h2>'+
+									'<div class="stu_outer stu_outer2">'+
+										'<div class="stuCon">'+
+										'</div>'+
+									'</div>'+
+								'</div>'+
+							'</div>'
+						);
+						for ( var i = 0; i < signedlist.length; i++ ){//生成学生并放到容器里
+							str = '';//放入小组的学生div
+							signedlist[i].imageurl = signedlist[i].imageurl || '../../images/assistant/default_head.png';
+							str =
+							'<div class="stuBox" stdid="'+signedlist[i].stdid+'">';
+							if ( signedlist[i].redflower > 0 ){
+								str += 
+									'<div class="flowerCon">'+
+										'<img src="../../images/assistant/flower.png">'+
+										'<span>×'+
+											signedlist[i].redflower+
+										'</span>'+
+									'</div>';
+							}
+							str +=
+								'<img src="'+signedlist[i].imageurl+'">'+
+								'<h5>'+signedlist[i].name+'</h5>'+
+								'<select multiple size="3">'+
+									'<option value="1">1朵小红花</option>'+
+									'<option value="2">2朵小红花</option>'+
+									'<option value="3">3朵小红花</option>'+
+								'</select>'+
+							'</div>';
+							$('.stuCon').append(str);
+						}
+						$('.randomgroup').remove();
+						$('.topBarInner').append('<p class="randomgroup text-right" style="padding-right:20px">&nbsp;&nbsp;&nbsp;<button class="btn btn-primary">随机选人</button>&nbsp;&nbsp;&nbsp;<button class="btn btn-default" onclick="resetrandom_nogroup()">重置</button></p>');
+						$('p.randomgroup button:eq(0)').on("click",function(){//2017.3.10修改，谢吟东，新增随机选组，随机选人功能
+							layer.load();
+							setTimeout(function(){
+								layer.closeAll('loading');
+								var range=parseInt(Math.random()*signedlist.length);
+								$('.stu_outer .stuBox').each(function(){
+									$(this).removeClass('randomactive')
+								});
+								$('.stu_outer .stuBox:eq('+range+')').addClass('randomactive');
+								lightedstu=range;
+							}, 2000);
+						});
+						if(lightedstu!=-1000){//2017.3.10修改，谢吟东，新增随机选组，随机选人功能
+							$('.stuBox:eq('+lightedstu+')').addClass('randomactive')
+						}
+					}
+					$('.stuBox').click(function() {
+						//$(document).click();
+						event.stopPropagation();
+						//$(this).children('select').css('display', 'block');
+					});
+					$('.stuBox select').click(function(){
+						var json = {
+							'1':{
+								command:'question/addredflower', //接口地址
+								scheduleid:scheduleid,
+								stdid:$(this).parent().attr('stdid'),
+								count:$(this).val()[0],
+								sessionid:getCookie('sessionid'),
+								loginid:getCookie('loginid')
+							}
+						};
+						Api.dataToJava({//打红花接口
+							isShade:1,
+							json:{
+								url:'/question/addredflower', //一次性走几个接口
+								data:JSON.stringify(json)
+							},
+							fn:function (base) {
+								base = base[1]; //取接口的第一个返回值
+								console.log(base);
+								
+								//判断接口是否走成功， errcode为0是成功
+								if (base.errcode!=0) {
+									uselayer(3,'新增失败<br/>'+base.errdesc);
+									$('.stuBox select').css('display', 'none');
+									return false;
+								}
+
+								uselayer(3,'新增小红花成功!');
+								$('.stuBox select').css('display', 'none');
+								show_group();//显示分组信息
+							}
+						});
+
+					});
+
+					$('.stuBox img').attr('onerror', 'this.src="../../images/assistant/default_head.png"');
+
+					if( base.groupresult ){
+						$('.adjustBtn span').html(base.groupresult.length+base.signedlist.length);
+					}else{
+						$('.adjustBtn span').html(base.signedlist.length);
+					}
+				}
+			});
+
+		}
+
+		function get_starttime(){//查询课程名称和课程表id
+			schedules_coursename = getCookie('coursename');//课程名称
+			scheduleid = getCookie('scheduleid');//课程表id
+			get_stu_num();//获取已签到和未签到学生人数
+			show_group();//显示分组信息
+			t = setInterval(function(){//定时刷新显示分组信息
+				show_group();
+			},10000);
+		}
+		function togroup(base){//点击下拉框或者单选框触发分组方法并且页面加载后选择下拉框对应的组数
+			//把筛选条件显示成之前操作过的状态
+			$('.myselect .select1').val(base.groups); $('.myselect .select1').change();
+			$('.select1').attr('preval',base.groups);
+			$('.myselect .select2').val(base.grouptype); $('.myselect .select2').change();
+			$('.select2').attr('preval',base.grouptype);
+			// if( base.grouptype == 2 ){//随机
+			// 	$('.radioCon').eq(1).click();
+			// }
+
+			$('.myselect .select1').change(function() {
+				layer.confirm('调整分组后，将重新统计小组得分。',{btn: ['确定','取消']},
+					function(){
+						$('.select1').attr('preval',$('.myselect .select1').val());
+						grouping();
+						resetrandom_nogroup();
+					},
+					function(){//如果取消把下拉框还原为之前状态
+						$('.select1').val( $('.select1').attr('preval') );
+						var text = $('.select1').find('option:selected').html();
+						$('.select1').siblings('p').html(text);
+					}
+				)
+				
+			});
+
+			$('.myselect .select2').change(function() {
+				layer.confirm('调整分组后，将重新统计小组得分。',{btn: ['确定','取消']},
+					function(){
+						$('.select2').attr('preval',$('.myselect .select2').val());
+						grouping();
+						resetrandom_nogroup();
+					},
+					function(){//如果取消把下拉框还原为之前状态
+						$('.select2').val( $('.select2').attr('preval') );
+						var text = $('.select2').find('option:selected').html();
+						$('.select2').siblings('p').html(text);
+					}
+				)
+			});
+			
+		}
+
+		function get_stu_num(){//获取已签到和未签到学生人数
+			var json = {
+				'1':{
+					command:'sign/signquery', //接口地址
+					scheduleid:scheduleid,
+					sessionid:getCookie('sessionid'),
+					loginid:getCookie('loginid')
+				}
+			};
+
+			Api.dataToJava({
+				json:{
+					url:'/sign/signquery', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,base.errdesc);
+						return false;
+					}
+
+					var unsigned_num = base.unsignedlist.length;//未签到的人数
+					var signed_num = base.signedlist.length;//已经签到的人数
+
+					$('.footer_txt').html(schedules_coursename+' 已签到'+signed_num+'人/未签到'+unsigned_num+'人');
+				}
+			});
+
+		}
+		function grouping(){//分组
+			var groups = $('.myselect .select1').val();
+			// var grouptype = $('.radioCon[checked=checked]').attr('value');
+			var grouptype = $('.myselect .select2').val();
+			var json = {
+				'1':{
+					command:'group/group', //接口地址
+					scheduleid:scheduleid,
+					groups:groups,//分几组
+					grouptype:grouptype,//分组方式
+					sessionid:getCookie('sessionid'),
+					loginid:getCookie('loginid')
+				}
+			};
+			Api.dataToJava({
+				isShade:1,
+				json:{
+					url:'/group/group', //一次性走几个接口
+					data:JSON.stringify(json)
+				},
+				fn:function (base) {
+					base = base[1]; //取接口的第一个返回值
+					console.log(base);
+					
+					//判断接口是否走成功， errcode为0是成功
+					if (base.errcode!=0) {
+						uselayer(3,'分组失败<br/>'+base.errdesc);
+						return false;
+					}
+
+					uselayer(3,'分组成功!');
+					show_group();//显示分组信息
+				}
+			});
+		}
+
+		$(function() {
+			c_interface.getLoginInfo({
+			    fn:function(loginInfo){
+			    	get_starttime();
+			    	login_info = loginInfo;
+			    	console.log(loginInfo);
+				}
+			});
+			
+			$('.mainCon').html('');
+		});
+		function randomstu_nogroup(totalsignednum){//未分组的情况下，随机选人
+			var range=parseInt(Math.random()*totalsignednum);
+			$('.stu_outer .stuBox').each(function(){
+				$(this).removeClass('randomactive')
+			});
+			$('.stu_outer .stuBox:eq('+range+')').addClass('randomactive');
+		};
+		function resetrandom_nogroup(){//取消随机选人
+			lightedgroup=-1000;
+			lightedstu=-1000;
+			$('.stu_outer .stuBox').each(function(){
+				$(this).removeClass('randomactive')
+			});
+			$('.signin_box').each(function(){
+				$(this).removeClass('pinkback')
+			});
+		}
+	</script>
+
+</html>

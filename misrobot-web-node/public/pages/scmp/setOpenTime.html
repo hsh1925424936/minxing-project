@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+		<script src="../../js/jquery-1.11.3.js"></script>
+		<script src="../../layer/xie/layer1.js"></script>
+		<script src="../../js/scmp/common.js"></script>
+		<script src="../../js/vue.js"></script>
+		<script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+		<script src="../../js/base.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/scmp/jquery-ui.js"></script>
+		<link rel="stylesheet" href="../../css/assistant/style.css">
+		<link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="../../css/scmp/scmpcommon.css">
+		<style>
+			.container-fluid {
+				height: 100%;
+				min-height: 100%;
+			}
+			::-webkit-scrollbar{width:0px}
+			.activeStep {
+				border-bottom: 2px solid #FFD629;
+				color: #2088c2;
+				font-weight: bold;
+			}
+			
+			.normalStep {
+				border-bottom: 2px solid #ACAC7C;
+				color: #aaa;
+			}
+			
+			#nav {
+				clear: both;
+				margin-bottom: 20px;
+				padding-top: 20px;
+			}
+			
+			#setTime th,
+			#setTime td {
+				text-align: center;
+			}
+			
+			#ui-datepicker-div {
+				border-radius: 5px;
+				background-color: white;
+				padding: 10px 20px;
+				box-shadow: 10px 10px 5px #222;
+			}
+			
+			#headerForm {
+				padding-left: 40px;
+			}
+			
+			#headerForm select {
+				margin-left: 40px;
+			}
+			
+			#title {
+				background-color: #E5E6E8;
+				height: 40px;
+				line-height: 40px;
+				padding-left: 20px;
+				margin-bottom: 20px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container-fluid" v-cloak>
+			<!-- 增加时间段模态框（Modal） -->
+			<div class="modal fade" id="setTimeRange" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+							<h4 class="modal-title" id="myModalLabel">
+                            新增开放时段
+                        </h4>
+						</div>
+						<div class="modal-body">
+							<div class="row mt20">
+								<span class="col-sm-2 text-right">开放时段:</span>
+								<div class="col-sm-10">
+									<table class="table table-striped table-bordered table-hover" id="setTime">
+										<tr>
+											<th>课节</th>
+											<th>上课时间</th>
+											<th>下课时间</th>
+											<th>开放</th>
+										</tr>
+										<tr v-for="(item,index) in timeList">
+											<td>第{{item.value}}节</td>
+											<td>{{item.starttime | filterFun}}</td>
+											<td>{{item.endtime | filterFun}}</td>
+											<td>
+												<input type="checkbox" :value="item" v-model="checkList" />
+											</td>
+
+										</tr>
+									</table>
+								</div>
+							</div>
+							<div class="row mt20">
+								<span class="col-sm-2 text-right">生效期:</span>
+								<div class="col-sm-10">
+									<div class="row">
+										<div class="col-sm-5">
+											<input type="text" placeholder="点击选择开始日期" class="form-control f12" id="startDate">
+										</div>
+										<div class="col-sm-1 text-center" style="line-height:34px;height:34px">至</div>
+										<div class="col-sm-5">
+											<input type="text" placeholder="点击选择结束日期" class="form-control f12" id="endDate">
+										</div>
+										<div class="col-sm-1 text-center"></div>
+									</div>
+								</div>
+							</div>
+							<div class="row mt20 mb20">
+								<span class="col-sm-2 text-right">开放日:</span>
+								<div class="col-sm-10" id="week">
+									<label for="z1" class="checkbox-inline">
+                                    <input type="checkbox" id="z1" value="1">周一
+                                </label>
+									<label for="z2" class="checkbox-inline">
+                                    <input type="checkbox" id="z2" value="2">周二
+                                </label>
+									<label for="z3" class="checkbox-inline">
+                                    <input type="checkbox" id="z3" value="3">周三
+                                </label>
+									<label for="z4" class="checkbox-inline">
+                                    <input type="checkbox" id="z4" value="4">周四
+                                </label>
+									<label for="z5" class="checkbox-inline">
+                                    <input type="checkbox" id="z5" value="5">周五
+                                </label>
+									<label for="z6" class="checkbox-inline">
+                                    <input type="checkbox" id="z6" value="6">周六
+                                </label>
+									<label for="z7" class="checkbox-inline">
+                                    <input type="checkbox" id="z7" value="7">周日
+                                </label>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" @click="saveTimeRange()">保存</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						</div>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
+			<!-- /.modal -->
+			<!-- 修改时间段模态框（Modal） -->
+			<div class="modal fade" id="reviseTimeRange" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+							<h4 class="modal-title" id="myModalLabel">
+                            修改开放时段
+                        </h4>
+						</div>
+						<div class="modal-body">
+							<div class="row mt20">
+								<span class="col-sm-2 text-right">开放时段:</span>
+								<div class="col-sm-10">
+									<table class="table table-striped table-bordered table-hover" id="setTime">
+										<tr>
+											<th>课节</th>
+											<th>上课时间</th>
+											<th>下课时间</th>
+											<th>开放</th>
+										</tr>
+										<tr v-for="(item,index) in timeList">
+											<td>第{{item.value}}节</td>
+											<td>{{item.starttime | filterFun}}</td>
+											<td>{{item.endtime | filterFun}}</td>
+											<td>
+												<input type="checkbox" :value="index" v-model="checkListRevise" />
+											</td>
+
+										</tr>
+									</table>
+								</div>
+							</div>
+							<div class="row mt20">
+								<span class="col-sm-2 text-right">生效期:</span>
+								<div class="col-sm-10">
+									<div class="row">
+										<div class="col-sm-5">
+											<input type="text" placeholder="点击选择开始日期" class="form-control f12" id="reviseStartDate" v-model="startTimeDt">
+										</div>
+										<div class="col-sm-1 text-center" style="line-height:34px;height:34px">至</div>
+										<div class="col-sm-5">
+											<input type="text" placeholder="点击选择结束日期" class="form-control f12" id="reviseEndDate" v-model="endTimeDt">
+										</div>
+										<div class="col-sm-1 text-center"></div>
+									</div>
+								</div>
+							</div>
+							<div class="row mt20 mb20">
+								<span class="col-sm-2 text-right">开放日:</span>
+								<div class="col-sm-10" id="weekRevise">
+									<label for="z1" class="checkbox-inline">
+                                    <input type="checkbox" id="z1" value="1" v-model="weekList">周一
+                                </label>
+									<label for="z2" class="checkbox-inline">
+                                    <input type="checkbox" id="z2" value="2" v-model="weekList">周二
+                                </label>
+									<label for="z3" class="checkbox-inline">
+                                    <input type="checkbox" id="z3" value="3" v-model="weekList">周三
+                                </label>
+									<label for="z4" class="checkbox-inline">
+                                    <input type="checkbox" id="z4" value="4" v-model="weekList">周四
+                                </label>
+									<label for="z5" class="checkbox-inline">
+                                    <input type="checkbox" id="z5" value="5" v-model="weekList">周五
+                                </label>
+									<label for="z6" class="checkbox-inline">
+                                    <input type="checkbox" id="z6" value="6" v-model="weekList">周六
+                                </label>
+									<label for="z7" class="checkbox-inline">
+                                    <input type="checkbox" id="z7" value="7" v-model="weekList">周日
+                                </label>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" @click="reviseTimeRange()">保存</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						</div>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
+			<!-- /.modal -->
+			<div id="header">
+				<div id="title">
+					<a href="addvance.html">开放日历设置&gt;&gt;设置开放日历</a>
+				</div>
+				<p>场地 ：{{getPlace}}</p>
+			</div>
+
+			<div id="content">
+
+				<div id="setOpenTime" class=" table-responsive">
+					<table class="table table-bordered table-striped  f12">
+						<tr>
+							<th>开放日期</th>
+							<th>时间段</th>
+							<th>有效期</th>
+							<th>操作</th>
+						</tr>
+						<tr v-for="(value,index) in choosedTimeRange">
+							<td style="vertical-align: middle;">{{ value.open_day | week }}</td>
+							<td style="vertical-align: middle;">
+								<span v-for="item in value.opentimes">{{item.open_start_dt |filterFun }}-{{item.open_end_dt | filterFun }} &nbsp;&nbsp;</span>
+							</td>
+							<td style="vertical-align: middle;">
+								{{ value.start_dt.slice(0,10) }}~{{ value.end_dt.slice(0,10) }}
+							</td>
+							<td style="vertical-align: middle;">
+								<button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#reviseTimeRange" @click="reviseBtn(index)">
+                                修改
+                            </button>
+								<button class="btn btn-danger btn-xs" @click="deleteOneTimeRange(index)">
+                                删除
+                            </button>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>
+								<button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#setTimeRange" id="addOneTime" @click="addNewTime">
+                                新增开放时间段
+                            </button>
+							</td>
+						</tr>
+					</table>
+					<div class="bottomHandlers" style="display: flex;justify-content: center;">
+						<button class="btn btn-primary" @click="saveTimeBtn">保存</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<button class="btn btn-default" @click="removeBtn">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			Vue.filter('week', function(value) { //过滤训练项类型
+				value = value.split(",");
+				var newArr = [];
+				for(index in value) {
+					value[index] == 1 && newArr.push('周一');
+					value[index] == 2 && newArr.push('周二');
+					value[index] == 3 && newArr.push('周三');
+					value[index] == 4 && newArr.push('周四');
+					value[index] == 5 && newArr.push('周五');
+					value[index] == 6 && newArr.push('周六');
+					value[index] == 7 && newArr.push('周日')
+				};
+				return newArr.join(',')
+			});
+			Vue.filter('learntype', function(value) { //过滤训练项类型
+				if(value == "0") {
+					return "在线训练"
+				} else if(value == "1") {
+					return "模型"
+				} else if(value == "2") {
+					return "智能设备"
+				}
+			});
+			Vue.filter('filterFun', function(val) {
+				return val.substring(0, 5)
+			});
+			var vm = new Vue({
+				el: '.container-fluid',
+				data: {
+					siteList: [],
+					choosedSite: [{ sitename: '请选择场地' }],
+					exeListById: [],
+					choosedTotal: [], //用户在第一步：设置训练项页面上选择的记录
+					choosedTimeArr: [],
+					choosedTimeRange: [],
+					timeList: '',
+					checkList: [],
+					startTime: '',
+					endTime: '',
+					allTimeList: [],
+					placeId: GetQueryString('placeid'),
+					newArr: [],
+					newTimeArr: [],
+					choosedTimeReviseArr: [],
+					checkListRevise: [],
+					startTimeDt: '',
+					endTimeDt: '',
+					reviseIndex: '',
+					placeOpenTime: [],
+					zhouStr: '',
+					zhouStrRevise: '',
+					getPlace: '',
+					weekList: [],
+					skip: ''
+				},
+				watch: {
+					checkListRevise: function(curVal, oldval) {
+						//console.log(curVal)
+					}
+				},
+				mounted: function() {
+					let self = this;
+					self.findPlace();
+					$.ajax({
+						type: "post",
+						url: "/examapply/queryexamtimeslist",
+						async: true,
+						data: JSON.stringify({
+							'1': {
+								command: "examapply/queryexamtimeslist",
+								sessionid: getCookie('sid'),
+								loginid: getCookie('uid')
+
+							}
+						}),
+						success: function(data) {
+							self.timeList = JSON.parse(data['1'].timeslist);
+
+						}
+					});
+					var data = {
+						command: "learn/listplaceopentime",
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						placeid: self.placeId
+					}
+
+					function callback(res) {
+						self.choosedTimeRange = res.placeopentime;
+					}
+					post('/learn/listplaceopentime', data, callback, errcodefn, errfn)
+				},
+				methods: {
+					findPlace: function() {
+						var self = this;
+						var data = {
+							command: "site/findplace",
+							sessionid: getCookie('sid'),
+							loginid: getCookie('uid'),
+							id: self.placeId
+
+						}
+
+						function callback(res) {
+							self.getPlace = res.place.roomnum;
+						}
+						post('/site/findplace', data, callback, errcodefn, errfn)
+					},
+					removeBtn: function() {
+						var iframe1 = window.parent.document.getElementById('test2');
+						var testTitle = window.parent.document.getElementById('title');
+
+						var boxlist = window.parent.document.getElementById('addvanceShowList');
+						$(boxlist).removeClass('hide');
+						$(iframe1).remove();
+						$(testTitle).removeClass('hide');
+					},
+					saveTimeBtn: function() {
+						var self = this;
+						for(var i = 0; i < self.choosedTimeRange.length; i++) {
+							if(self.choosedTimeRange[i].place_id) {
+								self.placeOpenTime.push({
+									id: self.choosedTimeRange[i].id,
+									start_dt: self.choosedTimeRange[i].start_dt,
+									end_dt: self.choosedTimeRange[i].end_dt,
+									open_day: self.choosedTimeRange[i].open_day,
+									opentimes: self.choosedTimeRange[i].opentimes,
+									place_id: self.choosedTimeRange[i].place_id
+
+								})
+							} else {
+								self.placeOpenTime.push({
+									id: self.choosedTimeRange[i].id,
+									start_dt: self.choosedTimeRange[i].start_dt,
+									end_dt: self.choosedTimeRange[i].end_dt,
+									open_day: self.choosedTimeRange[i].open_day,
+									opentimes: self.choosedTimeRange[i].opentimes,
+									place_id: self.placeId
+
+								})
+							}
+						}
+						if(self.choosedTimeRange.length == 0) {
+							layer.msg('请增加开放时间')
+						} else {
+							var data = {
+								command: "learn/updateplaceopentime",
+								sessionid: getCookie('sid'),
+								loginid: getCookie('uid'),
+								addPlaceOpenTimeInfo: self.placeOpenTime
+							}
+
+							function callback(res) {
+								layer.msg("保存成功！", { icon: 6 }, function() {
+									self.removeBtn();
+								})
+							}
+							post('/learn/updateplaceopentime', data, callback, errcodefn, errfn)
+						}
+
+					},
+					addNewTime: function() {
+						this.zhouStrRevise = '';
+					},
+					reviseBtn: function(index) {
+
+						var self = this;
+						self.skip = index;
+						self.zhouStrRevise = '';
+						self.checkListRevise = [];
+						console.log(self.choosedTimeRange[index].open_day);
+						self.weekList = self.choosedTimeRange[index].open_day.split(',')
+						self.startTimeDt = self.choosedTimeRange[index].start_dt.substring(0, 10);
+
+						self.endTimeDt = self.choosedTimeRange[index].end_dt.substring(0, 10);
+						self.reviseIndex = index;
+						var newTimeList = [];
+						for(var j = 0; j < self.timeList.length; j++) {
+							newTimeList.push(self.timeList[j].starttime)
+						}
+						var indexList = [];
+						for(var i = 0; i < self.choosedTimeRange[index].opentimes.length; i++) {
+							for(var m = 0; m < newTimeList.length; m++) {
+								if(self.choosedTimeRange[index].opentimes[i].open_start_dt == newTimeList[m]) {
+									indexList.push(m);
+								}
+							}
+						}
+						for(var n = 0; n < indexList.length; n++) {
+							self.checkListRevise.push(indexList[n])
+						}
+
+					},
+					deleteOneExe: function(index) {
+						this.choosedTotal.splice(index, 1);
+					},
+					choosePreExe: function(index) {
+						var self = this;
+						self.choosedSite = [];
+						self.choosedSite.push(
+							self.siteList[index]
+						);
+						$("#placeDropDown").addClass('hide')
+					},
+					deleteOneTime: function(index) { //删除一条开始-结束时间点记录
+						var self = this;
+						self.choosedTimeArr = deleteItem(self.choosedTimeArr, index);
+					},
+					saveTimeRange: function() {
+
+						for(var i = 0; i < this.checkList.length; i++) {
+							this.choosedTimeArr.push({
+								open_start_dt: this.checkList[i].starttime,
+								open_end_dt: this.checkList[i].endtime
+							});
+						}
+						var self = this;
+
+						$("#week input:checked").each(function() {
+							self.zhouStr += ($(this).val() + ',')
+						});
+						if(self.checkList.length == 0) {
+							layer.msg('请添加开放时段', { icon: 5 });
+							self.zhouStr = "";
+							self.choosedTimeArr = [];
+
+							self.checkList = [];
+							self.allTimeList = [];
+							return
+						};
+						if($("#startDate").val().length == 0 || $("#endDate").val().length == 0) {
+							layer.msg('请选择生效期', { icon: 5 }, function() {
+								self.zhouStr = "";
+								self.choosedTimeArr = [];
+
+								self.checkList = [];
+								self.allTimeList = [];
+							});
+
+							return
+						};
+						if(getTimes($("#startDate").val()) > getTimes($("#endDate").val())) {
+							layer.msg("结束时间必须大于开始时间", { icon: 5 })
+							self.zhouStr = "";
+							self.choosedTimeArr = [];
+
+							self.checkList = [];
+							self.allTimeList = [];
+							return
+						}
+						if(self.zhouStr.length == 0) {
+							layer.msg('请选择开放日', { icon: 5 });
+
+							self.choosedTimeArr = [];
+
+							self.checkList = [];
+							self.allTimeList = [];
+							return
+						};
+						if(self.choosedTimeRange.length != 0) { //如果已有>=1条时间段记录
+							var choosedWeekDay = [];
+							for(var i = 0; i < self.choosedTimeRange.length; i++) { //得到所有已选的周几
+								var weekArr = self.choosedTimeRange[i].open_day.split(',');
+								for(var j = 0; j < weekArr.length; j++) {
+									choosedWeekDay.push(weekArr[j])
+								}
+							};
+							tempStr = self.zhouStr.slice(0, self.zhouStr.length - 1);
+							var weekDayThisTime = tempStr.split(',');
+							var repeatWeekDay = [];
+							for(var i = 0; i < weekDayThisTime.length; i++) {
+								for(var j = 0; j < choosedWeekDay.length; j++) {
+									if(weekDayThisTime[i] == choosedWeekDay[j]) {
+										repeatWeekDay.push(weekDayThisTime[i])
+									}
+								}
+							};
+							for(var i = 0; i < self.choosedTimeRange.length; i++) {
+								var oldTimeSt = Date.parse(new Date(self.choosedTimeRange[i].start_dt));
+								var oldTimeEt = Date.parse(new Date(self.choosedTimeRange[i].end_dt));
+								var newTimeSt = Date.parse(new Date($('#startDate').val()));
+								var newTimeEt = Date.parse(new Date($('#endDate').val()));
+								if(newTimeSt <= oldTimeSt && newTimeEt >= oldTimeSt && repeatWeekDay.length != 0) {
+									layer.msg('对不起！您已选择周' + repeatWeekDay.join(',') + ',不能重复选择', { icon: 5 });
+									self.choosedTimeArr = [];
+									self.checkList = [];
+									self.allTimeList = [];
+									return
+								}
+								if(newTimeSt <= oldTimeEt && newTimeEt >= oldTimeEt && repeatWeekDay.length != 0) {
+									layer.msg('对不起！您已选择周' + repeatWeekDay.join(',') + ',不能重复选择', { icon: 5 });
+									self.choosedTimeArr = [];
+									self.checkList = [];
+									self.allTimeList = [];
+									return
+								}
+
+								if(newTimeSt >= oldTimeSt && newTimeEt <= oldTimeEt && repeatWeekDay.length != 0) {
+									layer.msg('对不起！您已选择周' + repeatWeekDay.join(',') + ',不能重复选择', { icon: 5 });
+									self.choosedTimeArr = [];
+									self.checkList = [];
+									self.allTimeList = [];
+									return
+								}
+
+							};
+
+							for(var i = 0; i < self.checkList.length; i++) {
+								self.allTimeList.push(self.checkList[i].starttime.substring(0, 5) + "-" + self.checkList[i].endtime.substring(0, 5))
+							}
+
+							for(var i = 0; i < self.choosedTimeArr.length; i++) {
+
+							}
+							self.choosedTimeRange.push({
+								open_day: self.zhouStr,
+								start_dt: $("#startDate").val() + " 00:00:00",
+								end_dt: $("#endDate").val() + " 00:00:00",
+								opentimes: self.choosedTimeArr
+
+							});
+							layer.msg('已保存一条开放时间段', { icon: 1 });
+							self.zhouStr = "";
+							self.choosedTimeArr = [];
+							$("#setTimeRange").modal('hide');
+							self.checkList = [];
+							self.allTimeList = [];
+						} else {
+							for(var i = 0; i < self.checkList.length; i++) {
+								self.allTimeList.push(self.checkList[i].starttime.substring(0, 5) + "-" + self.checkList[i].endtime.substring(0, 5))
+							}
+
+							for(var i = 0; i < self.choosedTimeArr.length; i++) {
+
+							}
+							self.choosedTimeRange.push({
+								open_day: self.zhouStr,
+								start_dt: $("#startDate").val() + " 00:00:00",
+								end_dt: $("#endDate").val() + " 00:00:00",
+								opentimes: self.choosedTimeArr
+
+							});
+							layer.msg('已保存一条开放时间段', { icon: 1 });
+							self.zhouStr = "";
+							self.choosedTimeArr = [];
+							$("#setTimeRange").modal('hide');
+							self.checkList = [];
+							self.allTimeList = [];
+						}
+					},
+					deleteOneTimeRange: function(index) {
+						layer.open({
+							type: 2,
+							title: '删除',
+							shadeClose: true,
+							shade: 0.8,
+							area: ['50%', '40%'],
+							content: 'deleteOpenTime.html?index=' + index
+						});
+					},
+					reviseTimeRange: function() {
+
+						console.log(Date.parse(new Date(this.endTimeDt)))
+
+						for(var i = 0; i < this.checkListRevise.length; i++) {
+							this.choosedTimeReviseArr.push({
+								open_start_dt: this.timeList[this.checkListRevise[i]].starttime,
+								open_end_dt: this.timeList[this.checkListRevise[i]].endtime
+							});
+						}
+						var self = this;
+						self.zhouStrRevise = ""; //用户本次选择的周字符串
+						$("#weekRevise input:checked").each(function() {
+							self.zhouStrRevise += ($(this).val() + ',')
+						});
+						console.log(self.weekList);
+						console.log(self.zhouStrRevise);
+						if(self.checkListRevise.length == 0) {
+							layer.msg('请添加开放时段', { icon: 5 });
+							self.choosedTimeReviseArr = [];
+							self.checkListRevise = [];
+							self.allTimeList = [];
+							return
+						};
+						if($("#reviseStartDate").val().length == 0 || $("#reviseEndDate").val().length == 0) {
+							layer.msg('请选择生效期', { icon: 5 });
+							self.choosedTimeReviseArr = [];
+							self.checkListRevise = [];
+							self.allTimeList = [];
+							return
+						};
+						if(getTimes($("#reviseStartDate").val()) > getTimes($("#reviseEndDate").val())) {
+							layer.msg("结束时间必须大于开始时间", { icon: 5 });
+							self.choosedTimeReviseArr = [];
+							self.checkListRevise = [];
+							self.allTimeList = [];
+							return
+						}
+						if(self.zhouStrRevise.length == 0) {
+							layer.msg('请选择开放日', { icon: 5 });
+							self.choosedTimeReviseArr = [];
+							self.checkListRevise = [];
+							self.allTimeList = [];
+							return
+						};
+						if(self.choosedTimeRange.length != 0) { //如果已有>=1条时间段记录
+							var choosedWeekDay = [];
+							for(var i = 0; i < self.choosedTimeRange.length; i++) { //得到所有已选的周几
+								var weekArr = self.choosedTimeRange[i].open_day.split(',');
+								for(var j = 0; j < weekArr.length; j++) {
+									choosedWeekDay.push(weekArr[j])
+								}
+							};
+							tempStr = self.zhouStrRevise.slice(0, self.zhouStrRevise.length - 1);
+							var weekDayThisTime = tempStr.split(',');
+							var repeatWeekDay = [];
+							for(var i = 0; i < weekDayThisTime.length; i++) {
+								for(var j = 0; j < choosedWeekDay.length; j++) {
+									if(weekDayThisTime[i] == choosedWeekDay[j]) {
+										repeatWeekDay.push(weekDayThisTime[i])
+									}
+								}
+							};
+						};
+						for(var i = 0; i < self.choosedTimeRange.length; i++) {
+							if(i == self.skip) {
+								continue
+							}
+							var oldTimeSt = Date.parse(new Date(self.choosedTimeRange[i].start_dt));
+							var oldTimeEt = Date.parse(new Date(self.choosedTimeRange[i].end_dt));
+							var newTimeSt = Date.parse(new Date($('#reviseStartDate').val()));
+							var newTimeEt = Date.parse(new Date($('#reviseEndDate').val()));
+							console.log(oldTimeSt);
+							console.log(oldTimeEt);
+							console.log(newTimeSt);
+							console.log(newTimeEt);
+							if(newTimeSt <= oldTimeSt && newTimeEt >= oldTimeSt && repeatWeekDay.length != 0) {
+								layer.msg('对不起！您已选择周' + repeatWeekDay.join(',') + ',不能重复选择', { icon: 5 });
+								self.choosedTimeArr = [];
+								self.checkList = [];
+								self.allTimeList = [];
+								return
+							}
+							if(newTimeSt <= oldTimeEt && newTimeEt >= oldTimeEt && repeatWeekDay.length != 0) {
+								layer.msg('对不起！您已选择周' + repeatWeekDay.join(',') + ',不能重复选择', { icon: 5 });
+								self.choosedTimeArr = [];
+								self.checkList = [];
+								self.allTimeList = [];
+								return
+							}
+
+							if(newTimeSt >= oldTimeSt && newTimeEt <= oldTimeEt && repeatWeekDay.length != 0) {
+								layer.msg('对不起！您已选择周' + repeatWeekDay.join(',') + ',不能重复选择', { icon: 5 });
+								self.choosedTimeArr = [];
+								self.checkList = [];
+								self.allTimeList = [];
+								return
+							}
+						}
+
+						for(var i = 1; i < self.checkListRevise.length; i++) {
+							self.allTimeList.push(self.timeList[self.checkListRevise[i]].starttime.substring(0, 5) + "-" + self.timeList[self.checkListRevise[i]].endtime.substring(0, 5))
+						}
+
+						for(var i = 0; i < self.choosedTimeReviseArr.length; i++) {
+
+						}
+
+						self.choosedTimeRange.splice(self.reviseIndex, 1, {
+							open_day: self.zhouStrRevise,
+							start_dt: $("#reviseStartDate").val(),
+							end_dt: $("#reviseEndDate").val(),
+							opentimes: self.choosedTimeReviseArr
+
+						});
+
+						layer.msg('已保存一条开放时间段', { icon: 1 });
+						self.zhouStrRevise = "";
+						self.choosedTimeReviseArr = [];
+						$("#reviseTimeRange").modal('hide');
+						self.checkListRevise = [];
+						self.allTimeList = [];
+
+					}
+				}
+			});
+
+			function openControlExeType() {
+				layer.open({
+					type: 2,
+					title: '训练项类型维护',
+					shadeClose: true,
+					shade: 0.7,
+					area: ['90%', '90%'],
+					content: 'addvanceExeType.html'
+				});
+			};
+
+			function getExeList(elem) {
+				var value = $(elem).val();
+				var data = {
+					command: 'learn/querylearninfobyid',
+					sessionid: getCookie('sid'),
+					loginid: getCookie('uid'),
+					workstationtypeid: value
+				};
+
+				function callback(res) {
+					vm.exeListById = res.learnids;
+				};
+				post('/learn/querylearninfobyid', data, callback, errcodefn, errfn)
+			};
+
+			function addOneTime() {
+				//开始时间必须早于结束时间
+				if(new Date('2017-2-14 ' + $("#startH").val() + ':' + $("#startM").val() + ':00').getTime() >= new Date('2017-2-14 ' + $("#endH").val() + ':' + $("#endM").val() + ':00').getTime()) {
+					layer.msg('开始时间必须小于结束时间', { icon: 5 });
+					return
+				};
+				if(vm.choosedTimeArr.length != 0) { //后面选的时间段不能与前面冲突
+					for(var i = 0; i < vm.choosedTimeArr.length; i++) {
+						var begini = new Date('2017-2-14 ' + vm.choosedTimeArr[i].open_start_dt).getTime();
+						var endi = new Date('2017-2-14 ' + vm.choosedTimeArr[i].open_end_dt).getTime();
+						var beginj = new Date('2017-2-14 ' + vm.checkList[0].starttime).getTime();
+						var endj = new Date('2017-2-14 ' + vm.checkList[0].endtime).getTime();
+						if(begini == beginj && endi == endj) { //完全相等的两个时段
+							layer.msg('请不要选择重复的时间段', { icon: 5 });
+							return
+						};
+						if(begini > beginj && begini < endj) { //有重复的时段,但不全等
+							layer.msg('请不要选择重复的时间段', { icon: 5 });
+							return
+						};
+						if(endi > beginj && endi < endj) { //有重复的时段,但不全等
+							layer.msg('请不要选择重复的时间段', { icon: 5 });
+							return
+						}
+					}
+				};
+			};
+			setCalendarInput('#startDate');
+			setCalendarInput('#endDate');
+			setCalendarInput('#reviseStartDate');
+			setCalendarInput('#reviseEndDate');
+
+			function getTimes(date) {
+				var timestamp = Date.parse(new Date(date));
+				timestamp = timestamp / 1000;
+				return timestamp
+			}
+		</script>
+	</body>
+
+</html>

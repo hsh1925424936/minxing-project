@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title>训练记录</title>
+		<style type="text/css">
+			.mainOuter {}
+			.recordOuter{
+				width:100%; background-color:white; margin-top:10px;
+				
+			}
+			.recordCon{
+				width:1024px; margin:0 auto; 
+			}
+			.recordTit{
+				width:100%; margin-top:35px;
+				margin-bottom:35px; padding-left:30px;
+				padding-right:30px; padding-top: 35px;
+			}
+			.recordTit>span{
+				height:100%; float:left; font-size:16px;
+				line-height:28px;
+			}
+			.changeBtn{
+				width:90px; height:100%; float:right;
+				font-size:14px; line-height:28px; color:#A7A7A7;
+				cursor:pointer; color:rgb(153,153,153);
+			}
+			.changeBtn img{
+				width:28px; height:28px; display:block; float:left;
+			}
+			.changeBtn span{
+				width:50px; height:100%; color:#A7A7A7; margin-left:10px;
+			}
+			.changeBtn1{
+				
+			}
+			.changeBtn2{
+				display:none;
+			}
+
+			.skillOuter{
+				width:100%; height:33px;
+			}
+			.skillOuter img{
+				width:33px; height:30px; float:left; display:block; cursor: pointer;
+			}
+			.turnLeft,.turnRight { visibility: hidden;}
+			.skillCon{
+				width:840px; margin-left:55px; margin-right:55px;
+				height:100%; float:left; overflow: hidden; position: relative;
+			}
+			.skillList { position: absolute; left: 0; top: 0; height: 100%;}
+			.skillItem{
+				width:120px; height:33px; line-height:33px;
+				text-align:center; font-size:14px; float:left;
+				cursor:pointer; color:rgb(153,153,153);
+			}
+			.skillItemOn{
+				color:white; border-radius:20px;
+				background-color:#0497CB;
+			}
+
+			.table{
+				width:100%; margin: 0; margin-top:20px; font-size:14px;
+			}
+			.table-con {
+				width: 100%; height: 500px;
+				overflow: auto;
+				
+			}
+			
+			.table-con>div{
+				padding-left:20px; padding-right:20px;
+			}
+			.th1{
+				min-width: 1000px; background-color:#0497CB; color:white;
+				height:58px; padding-top:10px; padding-bottom:10px;
+				line-height:18px; top:0px;
+			}
+			.td1{
+				width:174px; float:left; height:100%; text-align: center;
+			}
+			.tdLeftTop{
+				
+			}
+			
+			.td{
+				width:140px; float:left; height:100%; text-align: center; line-height: 38px;
+			}
+			.th1 .td { line-height: 20px;}
+			.th1 .td p { width: 100%; height: 20px; overflow: hidden;}
+			
+			.th2{min-width: 1000px;
+				background-color:rgb(230,245,250); color:rgb(102,102,102);
+				line-height:45px;
+			}
+			.tr{
+				width:100%; line-height:45px; height:45px; color:rgb(102,102,102);
+			}
+			.tr:nth-child(odd)
+			{
+			background-color:white;
+			}
+			.tr:nth-child(even)
+			{
+			background-color:rgb(244,247,248);
+			}
+
+			.chartOuter{
+				width:100%; margin-top:20px; display:none;
+			}
+			.timeOuter{
+				width:400px; height:45px; margin:20px auto;
+			}
+			.timeOuterSpan{
+				width:45px; height:45px; text-align:center; cursor: pointer;
+				line-height:42px; margin-left:40px; margin-right:40px;
+				border:1px solid #9A9A9A; border-radius:30px;
+				font-size:14px; color:rgb(153,153,153); display:block; float:left;
+			}
+			.timeOuterSpanOn{
+				color:white; background-color:#019DDA;
+			}
+			.chartCon{
+				width:100%; height:280px;
+			}
+			.tr .td { line-height: 45px;}
+			.tr { display: block; width: 100%; height: 100%;} 
+			.month-time { cursor: pointer; border-bottom: 1px solid #ccc; }
+			.month-list {background: #fff; display: none;}
+			
+		</style>
+		<script>
+			//$('.bootstrap').remove();
+		</script>
+	</head>
+	<body>
+	
+		<div class="top1Con">
+			<div class="top1Outer clearfix">
+				<a href="index.html" class="top1Tit">临床技能中心</a>
+				<div class="top1Tit-right">
+					<img src="../../images/ostp/bell.png" class="bell" />
+					<img src="../../images/ostp/redCircle.png" class="redCircle" />
+					<img src="../../images/ostp/feifei.png" class="headImg" />
+					<div class="nameAndYear clearfix">
+						<div class="nameAndYearInner clearfix">
+							<div class="userName"></div>
+							<div class="year"></div>
+							<span class="arrow"></span>
+						</div>
+						<ul class="selectUl"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="top2Outer">
+			<div class="top2Con clearfix">
+				<a href="index.html" class="top2Con-index">
+					<img src="../../images/ostp/logo.png" class="logoPng" />
+					<div class="top2Tit">在线自主技能训练平台</div>					
+				</a>
+				<div class="navigateOuter clearfix">
+					<a href="index.html" class="navigate">
+						首页
+					</a>
+					<a href="my-work.html" class="navigate">
+						我的作业
+					</a>
+					<a href="self-train.html" class="navigate">
+						自主训练
+					</a>
+					<a href="online-study.html" class="navigate">
+						自主学习
+					</a>
+					<div class="navigate navigateOn">
+						成长中心
+						<ul>
+							<li><a href="grow-center.html">学习指数</a></li>
+							<li><a href="train-record.html">训练记录</a></li>
+						</ul>
+					</div>	
+					<!-- <a href="subscribe-train.html" class="navigate">
+						预约训练
+					</a> -->
+				</div>
+			</div>
+		</div>
+
+		<div class="mainOuter">
+			<div class="recordOuter">
+				<div class="recordCon">
+					<div class="recordTit clearfix" isfirst='0'>
+						<span>我的训练记录</span>
+						<div class="changeBtn changeBtn1">
+							<img src="../../images/ostp/curve.jpg" />
+							<span>曲线图</span>
+						</div>
+						<div class="changeBtn changeBtn2">
+							<img src="../../images/ostp/list.jpg" />
+							<span>列表</span>
+						</div>
+					</div>
+
+					<div class="skillOuter">
+						<img src="../../images/ostp/turnLeft.jpg" class="turnLeft" />
+
+						<div class="skillCon">
+							<div class="skillList">
+						
+							</div>		
+						</div>
+						<img src="../../images/ostp/turnRight.jpg" class="turnRight" />
+					</div>
+
+					<div class="table">
+						<div class="table-con">
+							<div class="th1">
+							</div>							
+						</div>
+					</div>
+
+					<div class="chartOuter">
+						<div class="chartCon">
+							
+						</div>
+						<div class="timeOuter">
+							<span class="timeOuterSpan timeOuterSpanOn" _times="10">
+								10次
+							</span>
+							<span class="timeOuterSpan" _times="20">20次</span>
+							<span class="timeOuterSpan" _times="30">30次</span>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+
+	</body>
+	<script src="../../js/echarts-all.js"></script>
+	<script src="../../js/ostp/train-record.js"></script>
+
+</html>

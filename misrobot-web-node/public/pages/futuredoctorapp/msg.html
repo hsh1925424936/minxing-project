@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>任务</title>
+    <link rel="stylesheet" href="../../css/futuredoctorapp/common.css">
+    <link rel="stylesheet" href="../../css/futuredoctorapp/vueComponent.css">
+    <link rel="stylesheet" href="../../bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <style>
+      .container{ padding:0;background-color:#F2F2F2;}
+      .ggqf{
+      	height: 42px;
+      	width: 100%;
+      	background: #FFFFFF;
+      	border-width:0 0 1px 0 ;
+		border-style:solid ;
+		border-color: #E8E8E8;
+      }
+      .weidu{
+      	float: left;
+      	width: 50%;
+      	text-align: center;
+      	margin-top: 11px;
+      	border-width:0 1px 0 0 ;
+		border-style:solid ;
+		border-color: #E8E8E8;
+      }
+      .yidu{
+      	float: right;
+      	width: 50%;
+      	text-align: center;
+      	margin-top: 11px;
+      }
+      .ggneirong{
+        border-width:0 0 1px 0 ;
+		border-style:solid ;
+		border-color: #E8E8E8;
+      	background-color: #FFFFFF;
+      	overflow:hidden;
+		  padding:10px;
+      }
+      .fbtx{
+
+      }
+      .fbz{
+      	font-size:16px;
+      	width: 60%;
+      	text-overflow:ellipsis;
+      	white-space: nowrap;
+		  padding-left:10px;
+		  color:#333333;
+      }
+      .fbsj{
+      	font-size:12px;
+      	color:#999999;
+		  flex-grow: 1;
+		  text-align: right;
+      }
+      .fbbt{
+      	float: left;
+      	margin-left: 36px;
+      	margin-right: 10px;
+		  color:#666666;
+      }
+ 	.shangbu{
+ 		overflow: hidden;
+ 		position:relative;
+		display:flex;
+		align-items: center;
+ 	}
+ 	.zhuti{
+ 		padding-top: 50px;
+ 		padding-bottom: 50px;
+ 	}
+ 	#header{
+ 		position: fixed;
+ 		top: 0;
+ 		left: 0;
+ 		width: 100%;
+ 		z-index:99
+ 	}
+ 	.redTab{
+ 		position:absolute;
+ 		top:0;
+ 		left:24px;
+ 		width:8px;
+ 		height:8px;
+ 		background-color:red;
+ 		border-radius: 50%;
+ 	}
+    </style>
+	</head>
+	<body>
+	<div id="container" class="container" v-cloak>
+        <headerbox :thistitle="headerTitle" id="header"></headerbox>
+        <div class="zhuti" v-load-more="getMoreAnnounce">
+  		<div v-for="(value,index) in announcelist" class="ggneirong" @click="ggnrtz(value)">
+  			<p class="shangbu">
+  				<b class='redTab' v-show='value.status!=1'></b>
+  			<img :src="value.imageurl?value.imageurl:'../../images/futuredoctorapp/icon-xiaoxi-wuda.png'" class="fbtx" />
+			<span class="fbz">{{value.author | limitlength}}</span>
+			<span class="fbsj">{{value.departtime | chmonthandday}}</span>
+			</p>
+			<span class="fbbt">{{value.title | limitlength1}}</span></br>
+  		</div>
+  		</div>
+  		<confirmlogout></confirmlogout>
+  		<footertab :todoNum="todonum" :msgNum="msgnum" :isactive="isactive" :navimgsrc="navimgsrc"></footertab>
+  	</div>
+
+	<script src="../../js/vue-2.1.6.min.js"></script>
+	<script src="../../js/jquery-3.1.1.min.js"></script>
+	<script src="../../layer/xie/layer1.js"></script>
+	<script src="../../js/futuredoctorapp/common.js"></script>
+	<script src="../../js/futuredoctorapp/vueMsg.js"></script>
+	<script src="../../bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+  	 <script>
+  	registerToNative('goBack', function (data) {
+		$('#confirmlogout').removeClass('hide');
+	});
+    	var vm=new Vue({
+        el:'#container',
+        data:{
+            headerTitle:'消息',
+                todonum:0,
+                msgnum:0,
+                titlenum:0,
+                isactive:[false,true,false,false],
+                navimgsrc:['../../images/futuredoctorapp/nav-renwu.png','../../images/futuredoctorapp/nav-xiaoxi-h.png','../../images/futuredoctorapp/nav-yinyong.png','../../images/futuredoctorapp/nav-touxiang.png'],
+                announcelist:[],
+                page:1,
+                preventRepeatRequest:false,
+           },
+           mounted:function(){
+                this.msgnum=queryMsgNum();
+                this.todonum=queryTodoNum();
+                jump_msxxq();
+            },
+        directives: {
+        'load-more': {
+          bind: function(el, binding) {
+            var windowHeight = window.screen.height;
+            var height;
+            var setTop;
+            var paddingBottom;
+            var marginBottom;
+            var requestFram;
+            var oldScrollTop;
+            var scrollEl;
+            var heightEl;
+            var scrollType = el.attributes.type && el.attributes.type.value;
+            var scrollReduce = 2;
+            if (scrollType == 2) {
+              scrollEl = el;
+              heightEl = el.children[0];
+            } else {
+              scrollEl = document.body;
+              heightEl = el;
+            }
+
+            el.addEventListener('touchstart',function(){
+              //alert('touchstart')
+              height = heightEl.clientHeight;
+              if (scrollType == 2) {
+                height = height
+              }
+              setTop = el.offsetTop;
+              paddingBottom = vm.getStyle(el, 'paddingBottom');
+              marginBottom = vm.getStyle(el, 'marginBottom');
+            }, false)
+
+            el.addEventListener('touchmove', function(){
+              //alert('touchmove')
+              loadMore();
+            }, false)
+
+            el.addEventListener('touchend', function(){
+              //alert('touchend')
+              oldScrollTop = scrollEl.scrollTop;
+              moveEnd();
+            }, false)
+
+            var moveEnd = function() {
+              requestFram = requestAnimationFrame(function(){
+                if (scrollEl.scrollTop != oldScrollTop) {
+                  oldScrollTop = scrollEl.scrollTop;
+                  moveEnd()
+                } else {
+                  cancelAnimationFrame(requestFram);
+                  height = heightEl.clientHeight;
+
+                  loadMore();
+                }
+              })
+            }
+
+            var loadMore =function (){
+
+              if (scrollEl.scrollTop + windowHeight+50 >= height + setTop + paddingBottom + marginBottom - scrollReduce) {
+
+                binding.value();
+              }
+            }
+          }
+        }
+      },
+			filters:{
+				chmonthandday:function(str){
+					var result=''
+					var arr1=str.slice(0,11).split('-')
+					var str2=str.slice(11,16)
+					var month=arr1[1]
+					var day=arr1[2]
+					result=month+'月'+day+'日'+' '+str2
+					return result
+				},
+				limitlength:function(str){
+					var shortstr=''
+					if(str.length>=10){
+						shortstr=str.slice(0,9)+'...'
+						return shortstr
+					}else{
+						return str
+					}
+				},
+				limitlength1:function(str){
+					var shortstr=''
+					if(str.length>=20){
+						shortstr=str.slice(0,19)+'...'
+						return shortstr
+					}else{
+						return str
+					}
+				}
+			},
+        methods:{
+          getStyle:function(element, attr, NumberMode){
+              var target;
+              // scrollTop 获取方式不同，没有它不属于style，而且只有document.body才能用
+              if (attr === 'scrollTop') {
+                  target = element.scrollTop;
+              }else if(element.currentStyle){
+                  target = element.currentStyle[attr];
+              }else{
+                  target = document.defaultView.getComputedStyle(element,null)[attr];
+              }
+              //在获取 opactiy 时需要获取小数 parseFloat
+              return  NumberMode == 'float'? parseFloat(target) : parseInt(target);
+          },
+          getMoreAnnounce:function(){
+
+            if(this.preventRepeatRequest){
+              return;
+            }
+            this.preventRepeatRequest= true;
+            this.page=this.page+1;
+            var data = {
+              command:'announce/queryannouncelist',
+              sessionid:getCookie('sid'),
+              loginid:getCookie('uid'),
+              page:this.page,
+              reqnum:20,
+              uid:getCookie('uid')
+            }
+            post('/announce/queryannouncelist',data,this.loadMoreSuccess,errcodefn,errfn)
+          },
+          loadMoreSuccess:function(res){
+            this.preventRepeatRequest= false;
+            this.announcelist=this.announcelist.concat(res.announcelist);
+          },
+			ggnrtz:function(value){
+				window.location.href='msxxq.html?param='+encodeURIComponent(JSON.stringify(value))
+			}
+        }
+    })
+    show_weidu(1);
+    function show_weidu(pag){
+    	var data={
+    		command:'announce/queryannouncelist',
+    		sessionid:getCookie('sid'),
+    		loginid:getCookie('uid'),
+    		page:pag,
+    		reqnum:20,
+    		uid:getCookie('uid')
+    	}
+    	function callback(res){
+    		canFooterRefresh = data.page < parseInt(res.allcount/8);
+    		vm.announcelist= (vm.announcelist || []).concat(res.announcelist);
+		}
+		post('/announce/queryannouncelist',data,callback,errcodefn,errfn)
+	}
+    </script>
+	</body>
+</html>

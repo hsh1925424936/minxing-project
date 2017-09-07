@@ -1,0 +1,34 @@
+.tag {
+    display: inline;
+    padding: .2em .6em .25em;
+    font-size: 80%;
+    line-height: 1 !important;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 1em;
+    margin-left: .1em;
+    margin-right: .1em;
+    top: -.2em;
+	position: relative;
+}
+
+.tag-blue{
+    color: #FFF;
+    background: #4389FE;
+}
+.tag-red{
+    color: white;
+    background: #FE434C;
+}
+.tag-xred{
+    color: white;
+    background: #F77;
+}
+.tag-green{
+    background: #66D296;
+}
+.tag-orange{
+    background: #F0A009;
+}

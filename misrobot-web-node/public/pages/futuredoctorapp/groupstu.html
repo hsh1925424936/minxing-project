@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="../../js/futuredoctorapp/layout.js" ></script>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			.kt-group-title { height: 10%; padding-top: 5%; text-align: center;}
+			.kt-group-title h4 {  color:#333; text-align: center;}
+			.kt-group-title span { float: right;  font-size: 18px; color: #7e7e7e; padding-right: 1em;}
+			.kt-group-con { width: 100%; height:66%; overflow-y: auto;}
+			.kt-group-con li { float: left; margin: 0 5.5%; width: 22%; height: 150px;font-size: 14px; color: #020202;}
+			.kt-group-con li img { display: block; margin: 0 auto 6px; height: 70px; width: 70px; border-radius: 50%;}
+			.kt-group-con li p { width: 100%; height: 24px; overflow: hidden;  word-wrap: break-word; word-break:break-all; text-align: center }
+			.kt-group-con li span {display: none;}
+			.kt-group-con li.active { color: #6c84b4;}
+			.kt-group-con li.active span { display: block;}
+			.kt-group-foot { height: 15%; padding: 6% 7%;}
+			.kt-group-foot input { padding: 2%;  width: 35%; border: none; background: #6c83b5; border-radius: 4px; color: #fff; font-size: 16px;}
+			.kt-group-foot input.active { background: #ccc;}
+			.kt-group-foot-btn { display: none;}
+			.kt-group-foot-btn input { width: 56%; display: block; margin: 0 auto;}
+			.kt-group-foot { display: none}
+		</style>
+	</head>
+	<body>
+		<div class="sign_bg"></div>
+		<div id="vmcontainer" v-cloak>
+			<headerbox :thistitle="headerTitle" :showback="showback" :showreload="showreload" :titlenum="titlenum" id="header"></headerbox>
+		</div>
+		<div class="kt-group-title clearfix"></div>
+		<ul class="kt-group-con center clearfix">
+		</ul>
+		<div class="kt-group-foot clearfix">
+			<div class="kt-group-foot-menu clearfix">
+				<input type="button" value="申请组长" class="kt-group-leader" style="float: left;" />
+				<input type="button" value="申请记录员" class="kt-group-recorder" style="float: right;" />
+			</div>
+			<div class="kt-group-foot-btn">
+				<input type="button" value="完成" />
+			</div>
+		</div>
+		<script src="../../js/futuredoctorapp/vueComponent.js"></script>
+		<script>
+			registerToNative('goBack', function (data) {
+				window.location.href='startstu.html'
+			});
+			var vm=new Vue({
+				el:"#vmcontainer",
+				data:{
+					headerTitle:'分组信息',
+					showback:true,
+					showreload:true,
+					titlenum:0,
+					//以上是头部配置
+				}
+			});
+			function goBack(){
+				window.location.href="startstu.html"
+			}
+			var sgid="";//分组id
+			var sgindex="";//组号
+			window.onload = function () {
+				'use strict';
+				wxcommon(1);
+				(function(){//查询分组信息
+					var data={
+						command: "group/querygroupinfo",
+						scheduleid: getCookie('gy_istudy_scid'),
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid')
+					};
+					function callback(result){
+						if (result.groupresult==null) {
+							$('.kt-group-title').html('<h4>暂未分组</h4>');
+							$('.kt-group-foot').css('display','none');
+						} else {
+							var groupNum=0;
+							for(var i=0;i<result.groupresult.length;i++){
+								if(result.groupresult[i].stdid==getCookie('uid')){//找到自己所在的小组
+									sgindex=result.groupresult[i].sgindex;
+									sgid=result.groupresult[i].sgid;
+								}
+							}
+							for(var i=0;i<result.groupresult.length;i++){
+								if(result.groupresult[i].sgindex==sgindex){//找到自己这组有多少人
+									groupNum++;
+								}
+							}
+							$('.kt-group-title').html('<h4>第'+ sgindex +'组</h4><span>共'+ groupNum +'人</span>	');
+							$('.kt-group-foot').css('display','block');
+						}
+						$('.kt-group-con').html('');
+						var arr = (result.groupresult!=null) ? result.groupresult : result.signedlist;
+						for (var i = 0 ; i < arr.length; i++) {
+							if(arr==result.groupresult){//如果已分组
+								if(arr[i].sgindex!=sgindex){//过滤掉非本组成员
+									continue
+								}
+							}
+							if ( result.groupresult && arr[i].role==1) {
+								$('.kt-group-leader').attr('disabled','disabled');
+								$('.kt-group-leader').css('background','#ccc');
+								if (arr[i].stdid== getCookie('uid')) {
+									$('.kt-group-recorder').attr('disabled','disabled');
+									$('.kt-group-recorder').css('background','#ccc');
+								}
+							}
+							if (result.groupresult && arr[i].role==2) {
+								$('.kt-group-recorder').attr('disabled','disabled');
+								$('.kt-group-recorder').css('background','#ccc');
+								if (arr[i].stdid==getCookie('uid')) {
+									$('.kt-group-leader').attr('disabled','disabled');
+									$('.kt-group-leader').css('background','#ccc');
+								}
+							}
+							if (result.groupresult==null ) {
+								var str =
+										'<li class="" _id="'+arr[i].stdid+'">'
+										+'<img src="'+(arr[i].imageurl==null?'../../images/futuredoctorapp/feifei.png': arr[i].imageurl)+'" />'
+										+'<p>'+arr[i].name+'</p>'
+										+'<span></span>'
+										+'<input type="hidden" value="'+arr[i].stdid+'" />'
+										+'</li>';
+							} else {
+								var str =
+										'<li class="'+(arr[i].role== 0?'':'active')+'" _id="'+arr[i].stdid+'">'
+										+'<img src="'+(arr[i].imageurl==null?'../../images/futuredoctorapp/feifei.png':arr[i].imageurl)+'" />'
+										+'<p>'+arr[i].name+'</p>'
+										+'<span>'+(arr[i].role==1?'组长':'记录员')+'</span>'
+										+'<input type="hidden" value="'+arr[i].stdid+'" />'
+										+'</li>';
+							}
+							$('.kt-group-con').append(str);
+						}
+
+						$('.kt-group-leader').click(function () {
+							uselayer(2,'确定要申请组长吗？',function () {
+								applyrole('1');
+							});
+
+						});
+						$('.kt-group-recorder').click(function () {
+							uselayer(2,'确定要申请记录员吗？',function () {
+								applyrole('2');
+							});
+						});
+					};
+					post('/group/querygroupinfo',data,callback,errcodefn,errfn);
+				})();
+				function applyrole(role){
+					var data={
+						command: "group/chooserole",
+						stdid: getCookie("uid"),
+						role: role,
+						sessionid: getCookie('sid'),
+						loginid: getCookie('uid'),
+						sgid:sgid,
+						sgindex:sgindex
+					};
+					function callback(result){
+						window.location.reload();
+					};
+					post('/group/chooserole',data,callback,errcodefn,errfn)
+				}
+			}
+		</script>
+	</body>
+</html>
+
+
+

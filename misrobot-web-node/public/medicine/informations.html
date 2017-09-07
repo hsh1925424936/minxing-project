@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <script src="js/vue.js"></script>
+    <script src="js/scoket.io.js"></script>
+    <script src="js/jquery-1.11.3.js"></script>
+    <script src="js/echarts.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/reset.css">
+    <link rel="stylesheet" type="text/css" href="css/information.css">
+    <title>药学</title>
+</head>
+<body>
+<div class="information">
+    <div v-if="type == 0" class="zero">
+        <h2>模拟药房</h2>
+        <h4>建智慧医教，为明日良医</h4>
+        <p>敏行技术支持</p>
+    </div>
+    <div v-if="type == 1" class="first">
+        <h2>你的同伴正在熟悉标准化病例，请耐心稍等一会...</h2>
+        <p>他会是怎样的一个病人呢？</p>
+        <p>想一想你平时所学知识，我能帮他吗？</p>
+    </div>
+    <div v-if="type == 2" class="second flex flex-h-center flex-w-center">
+            <span class="flex flex-h-center flex-w-center">
+                <i>{{time}}</i>
+            </span>
+    </div>
+    <div v-if="type == 3" class="third flex flex-h-center flex-w-center">
+        <h2>请开始你的表演...</h2>
+    </div>
+    <div v-if="type == 4" class="fourth flex flex-column">
+        <header>
+            模拟病例的基本信息
+        </header>
+        <section class="flex flex-h-center flex-w-center flex-column">
+            <div class="box flex">
+                    <span class="flex flex-h-center flex-w-center">
+                        <img :src="detail.head">
+                    </span>
+                <div class="flex flex-w-center flex-h-center">
+                    <ul>
+                        <li>
+                            <span>姓名：{{detail.name}}</span>
+                        </li>
+                        <li>
+                            <span>性别：{{detail.sex}}</span>
+                        </li>
+                        <li>
+                            <span>年龄：{{detail.age}}</span>
+                        </li
+                        ><li>
+                        <span>备注：{{detail.remark}}</span>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+            <h2>运用你的专业知识帮他排忧解难吧~</h2>
+        </section>
+    </div>
+    <div v-if="type == 5" class="fifth flex flex-column">
+        <header>
+            模拟病例的基本信息
+        </header>
+        <section class="flex">
+            <div class="flex flex-w-center flex-h-center flex-column">
+                <p>病人基本信息</p>
+                <div class="left flex flex-h-center flex-w-center flex-column">
+                    <span class="flex flex-h-center flex-w-center">
+                        <img :src="detail.head">
+                    </span>
+                    <div class="flex flex-w-center flex-h-center">
+                        <ul>
+                            <li>
+                                <span>姓名：{{detail.name}}</span>
+                            </li>
+                            <li>
+                                <span class="sex">性别：{{detail.sex | sex}}</span>
+                            </li>
+                            <li>
+                                <span>年龄：{{detail.age}}</span>
+                            </li
+                            ><li>
+                            <span>备注：{{detail.remark}}</span>
+                        </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-w-center flex-h-center flex-column">
+                <p>处方单</p>
+                <div class="right flex flex-w-center flex-h-center">
+                    <img :src="detail.recipe">
+                </div>
+            </div>
+        </section>
+        <i v-if="medicine" class="shade"></i>
+        <div v-if="medicine" class="big-mecidine">
+            <img :src="detail.recipe">
+        </div>
+    </div>
+    <div v-if = 'type == 6' class="sixth">
+        <header class="flex flex-w-center flex-h-center">
+            <span class="flex flex-h-center flex-w-center">
+                <i></i>
+                {{name}}
+            </span>
+            模拟店员得分
+        </header>
+        <section>
+            <div id="main" style="width: 100%;height:80vh;">
+            </div>
+        </section>
+    </div>
+</div>
+<script>
+    window.onerror=function(a,b,c){
+        alert(a+b+c)
+    };
+    var vm = new Vue({
+        el: '.information',
+        data: {
+            socket: {},
+            type: 0,
+            time: 3,
+            name: '233',
+            detail: {
+                head: '',
+                name: '',
+                sex: '',
+                age: '',
+                remark: '',
+                recipe: ''
+            },
+            medicine: false,
+            option : {
+            radar: [
+                {
+                    indicator: [],//每一项的名称
+                    axisLabel:{
+                        show:true,
+                        margin:-6
+                    },
+                    axisLine: {            // 坐标轴线
+                    show: true,        // 默认显示，属性show控制显示与否
+                    lineStyle:{
+                        type:'dashed'
+                    }
+                    },
+                    center: ['50%', '50%'],
+                    radius: 150,
+                    startAngle: 90,
+                    splitNumber: 5,
+                    splitArea : {
+                        show : true,
+                        areaStyle : {
+                            color: ['#F8F9FB']
+                        }
+                    },
+                    name: {
+                        formatter:'【{value}】',
+                        textStyle: {
+                            color:'#00a0e9',
+                            fontSize:'10px'
+                        }
+                    }
+                }
+            ],
+            series: [
+                {
+                    type: 'radar',
+                    data : [
+                        {
+                            symbolSize:0,
+                            itemStyle: {
+                                normal: {
+                                    lineStyle:{
+                                        width: 0,//数据区域的边框
+                                        color:'transparent'
+                                    },
+                                    areaStyle:{
+                                        color:'#00dba5',//数据区域的颜色
+                                        opacity:1
+                                    }
+                                }
+                            },
+                            value : []//每一项的值
+                        }
+                    ]
+                }
+            ]
+        }
+        },
+        filters :{
+            'sex':function(val){
+                return val? '女性' : '男性'
+            }
+        },
+        watch: {
+
+        },
+        mounted:function(){
+            this.initscoket();
+        },
+        methods:{
+            initscoket:function(){
+                var self = this;
+                this.socket = io.connect('/medicine/cabinet', {});
+                //  开始
+                this.socket.on('reset',function(msg){
+                    console.log('reset');
+                    self.type = 0;
+                    self.option.radar[0].indicator = [];
+                    self.option.series[0].data[0].value = [];
+                });
+                this.socket.on('start',function(msg){
+                    self.type = 1;
+                });
+                this.socket.on('recipe',function(msg){
+                    self.type = 5;
+                });
+                this.socket.on('boost',function(msg){
+                    self.medicine = true;
+                });
+                this.socket.on('closed',function(msg){
+                    self.medicine = false;
+                });
+                this.socket.on('play',function(msg){
+                    self.type = 2;
+                    self.detail = msg;
+                    if (self.detail.head == ''){
+                        self.detail.head = './images/woman.png';
+                    }
+                    self.start();
+                });
+                this.socket.on('end',function(msg){
+                    self.type = 6;
+                    self.name=msg.name;
+                    self.result(msg.id);
+                });
+            },
+            second:function(){
+                var self = this;
+                this.time -- ;
+                if (self.time == 0){
+                    clearInterval(self.timer);
+                    self.type = 3;
+                    setTimeout(function(){
+                        self.time = 3;
+                        self.type = 4;
+                    },2000)
+                }
+            },
+            start: function(){
+                var self = this;
+                self.timer = setInterval(function () {
+                    self.second();
+                }, 1000);
+            },
+            result:function(param){
+                var _this = this;
+                var _json = {
+                    "1": {
+                        command: 'commonNaire/dataAnalysis',
+                        sessionid: '111',
+                        loginid: '111',
+                        model_type: 'M001',
+                        type: 1 ,
+                        submit_id:param
+                    }
+                };
+                var json = JSON.stringify(_json);
+                $.ajax({
+                    url: "/commonNaire/dataAnalysis",
+                    type: "POST",
+                    data: json,
+                    contentType: "application/json",
+                    success: function (data) {
+                        data = data["1"];
+                        if (data.errcode == 0) {
+                            for ( var i in data.analysis_result){
+                                _this.option.radar[0].indicator.push({'text': data.analysis_result[i].category,'max':10});
+                                _this.option.series[0].data[0].value.push(data.analysis_result[i].cate_score/10);
+                            }
+                            // 基于准备好的dom，初始化echarts实例
+                            var myChart = echarts.init(document.getElementById('main'));
+                            console.log(_this.option)
+                            myChart.setOption(_this.option);
+                        }
+                    }
+                });
+            }
+        }
+    })
+</script>
+</body>
+</html>
