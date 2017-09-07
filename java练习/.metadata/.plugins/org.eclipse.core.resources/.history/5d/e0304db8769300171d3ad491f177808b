@@ -1,0 +1,9 @@
+package myProject01;
+
+public class ClassMethods {
+	public static void main(String[] args){
+		
+	}
+	
+	
+}

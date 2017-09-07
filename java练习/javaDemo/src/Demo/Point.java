@@ -1,0 +1,15 @@
+package Demo;
+
+public class Point {
+	double x,y,z;
+	public Point(double _x,double _y,double _z){
+		x = _x;
+		y = _y;
+		z = _z;
+	}
+	
+	public static void main(String[] args) {
+		Point p = new Point(3,1,2);
+		System.out.println(p.x);
+	}
+}
