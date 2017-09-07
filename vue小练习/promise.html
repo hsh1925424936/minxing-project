@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>promise</title>
+</head>
+<body>
+    <script>
+        // var p1 = new Promise(function(resolve,reject){
+        //     setTimeout(function(){
+        //         if(Math.random()>0.5){
+        //             resolve('成功了')
+        //         }else{
+        //             reject('失败了')
+        //         }
+        //     },Math.random()*1000)
+        // })
+        // var p2 = new Promise(function(resolve,reject){
+        //     setTimeout(function(){
+        //         if(Math.random()>0.5){
+        //             resolve('hello hushihao')
+        //         }else{
+        //             reject('failed')
+        //         }
+        //     },Math.random()*1000)
+        // })
+        // p1单独处理
+        // p1.then(function(value){
+        //     console.log(value)
+        // }).catch(function(error){
+        //     console.log(error)
+        // })
+
+        // p2单独处理
+        // p2.then(function(value){
+        //     console.log(value)
+        // }).catch(function(error){
+        //     console.log(error)
+        // })
+
+        // p1,p2都成功了，执行
+        // Promise.all([p1,p2]).then(function(value){
+        //     console.log(value)
+        // }).catch(function(error){
+        //     console.log(error)
+        // })
+
+        // p1,p2一个成功了，就结束
+        // Promise.race([p1,p2]).then(function(value){
+        //     console.log(value)
+        // }).catch(function(error){
+        //     console.log(error)
+        // })
+
+        // 封装promise对象的方法
+        function helloWorld(ready){
+            return new Promise(function(resolve,reject){
+                if(ready){
+                    resolve('hello world')
+                }else{
+                    reject('good bye')
+                }
+            })
+        }
+       function hello(){
+           setTimeout(function(){
+               console.log('hushihao')
+           },2000)
+        }
+        function world(){
+            setTimeout(function(){
+                console.log('fanzhenzhen')
+            },2000)
+            
+        }
+        helloWorld(true).then(function(message){
+            console.log(message)
+        }).then(hello()).then(world())
+        
+    </script>
+</body>
+</html>

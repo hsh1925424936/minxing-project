@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        .select{
+            width: 15px;
+            height: 15px;
+            border: solid 1px gray;
+            display: inline-block;
+            border-radius: 50%;
+        }
+        .check{
+            background: red!important;
+        }
+        .checkAll{
+            background: orange;
+        }
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div>
+            <dl v-for='(item,index) in goods'>
+                <dd>
+                    <a href="javascript:void(0)" class="select" :class="{'check' : item.checked}" @click='check(item)'></a>
+                    <span>{{item.name}}&#x3000;&#x3000;</span>
+                    <span>单价：{{'￥' + item.price}}&#x3000;&#x3000;</span>
+                    <a @click='changeCount(-1,item)'>-</a>
+                    <input type="text" min='1' :value='item.count' v-model='item.count' @input='writeNum' size='1' style="text-align: center;">
+                    <a @click='changeCount(1,item)'>+</a>
+                    <span>&#x3000;&#x3000;&#x3000;共:{{'￥'+item.count*item.price}}</span>
+                    <a @click='deleteGoods(index)'>&#x3000;&#x3000;&#x3000;删除</a>
+                </dd>
+            </dl>
+            <div>
+                <a href="javascript:void(0)" class="select" :class="{'checkAll':select}" @click="checkAll"></a>
+                <span>全选</span>
+                <span>总价：{{'￥'+allPrice}}</span>
+            </div>
+        </div>
+    </div>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            goods: [
+                { name: 'iphone6', price: 20, id: 1, count: 1},
+                { name: '小米5', price: 10, id: 2, count: 1},
+                { name: '华为', price: 5, id: 3, count: 1},
+                { name: '黑莓', price: 100, id: 4, count: 1}
+            ],
+            select: false,
+            selectedShop:false,
+            allPrice: 0,
+            checkedNum: []
+        },
+        methods: {
+            // 单选
+            check: function (item) {
+                if (typeof item.checked == 'undefined') {
+                    this.$set(item, 'checked', true)
+                    this.select = false
+                } else {
+                    item.checked = !item.checked
+                }
+                // 单选全部选定，全选会选上
+                if (item.checked == false) {
+                    this.select = item.checked
+                    this.allPrice = 0
+                } else {
+                    this.select = true
+                }
+                // 判断checkedNum数组中的每一项是否为false,或者为undefined
+                //如果有，全选就不能选中
+                this.checkedNum = []
+                for (let i = 0; i < this.goods.length; i++) {
+                    this.checkedNum.push(this.goods[i].checked)
+                }
+                console.log(this.checkedNum)
+                if (this.checkedNum.indexOf(false) > -1 || this.checkedNum.indexOf(undefined) > -1) {
+                    this.select = false
+                    console.log('aaa')
+                } else {
+                    this.select = true
+                }
+                this.sumPrice()
+            },
+            // 全选
+            checkAll: function () {
+                this.select = !this.select
+                this.goods.map(function (item, index, arr) {
+                    if (typeof item.checked == 'undefined') {
+                        this.$set(item, 'checked', this.select)
+                    } else {
+                        item.checked = this.select
+                    }
+                }.bind(this))
+                if (this.select == false) {
+                    this.allPrice = 0
+                }
+                this.sumPrice()
+            },
+            // 删除商品
+            deleteGoods: function (index) {
+                this.goods.splice(index, 1)
+                this.sumPrice()
+                if (this.goods.length == 0) {
+                    this.allPrice = 0
+                    this.select = false
+                }
+            },
+            // 加减商品
+            changeCount: function (key, item) {
+                if (key < 0) {
+                    if (item.count < 2) {
+                        item.count = 1
+                    } else {
+                        item.count--
+                    }
+
+                } else {
+                    item.count++
+                }
+                this.sumPrice()
+            },
+            // 计算商品的总价
+            sumPrice: function () {
+                this.allPrice = 0
+                this.goods.reduce(function (value, item, index, arr) {
+                    if (item.checked == true) {
+                        value += item.count * item.price
+                        this.allPrice = value
+                    }
+                    return this.allPrice
+                }.bind(this), 0)
+            },
+            writeNum: function () {
+                this.sumPrice()
+            }
+        }
+    })
+</script>
+</body>
+
+</html>

@@ -1,0 +1,7 @@
+1.text-size-adjust:auto | none | <percentage>; 检索或设置移动端页面中对象文本的大小调整。
+    该属性只在移动设备上生效；
+    如果你的页面没有定义meta viewport，此属性定义将无效；
+    对应的脚本特性为textSizeAdjust。
+2.text-transform:uppercase | lowercase | capitalize;设置文本的大小写
+3.display:table-cell;声明元素在浏览器中的样式
+4.

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="author" content="胡世豪">
+        <title>vue-router</title>
+    </head>
+    <body>
+       <script src="https://unpkg.com/vue/dist/vue.js"></script> 
+       <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+       <div id="app">
+           <router-link to='/home'>首頁</router-link>
+           <router-link to='/my'>我的</router-link>
+           <router-view></router-view>
+       </div>
+       <script>
+            const home = {template:'<h1>home</h1>'};
+            const my = {template:'<h1>my</h1>'};
+            const routes = [
+                {path:'/home',component:home},
+                {path:'/my',component:my}
+            ]
+            const router = new VueRouter({
+                routes
+            })
+            var app = new Vue({
+                router,
+                el:'#app',
+                data:{
+                    
+                },
+
+            }).$mount('#app')
+       </script>
+    </body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue-swiper DEMO</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        html, body {
+            margin: 0;
+        }
+        h2, h3 {
+            text-align: center;
+        }
+        button {
+            background-color: skyblue;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            font-size: 1rem;
+            border-radius: 0.3rem;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            outline: none;
+            appearance: none;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #fff;
+            color: #000;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            transform: scale(1.05);
+        }
+        button:active {
+            background-color: #ddd;
+            color: #333;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            transform: scale(1);
+        }
+        .swiper {
+            height: 200px;
+            margin-bottom: 80px;
+        }
+        .swiper-wrap > div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 48px;
+            color: #fff;
+        }
+        .swiper-wrap > div:nth-child(3n) {
+            background-color: skyblue;
+        }
+        .swiper-wrap > div:nth-child(3n + 1) {
+            background-color: yellowgreen;
+        }
+        .swiper-wrap > div:nth-child(3n + 2) {
+            background-color: rosybrown;
+        }
+        #append_child {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        #swiper_children_size {
+            height: 400px;
+        }
+        #swiper_children_size .slide-1 {
+            height: 200px;
+        }
+        #swiper_children_size .slide-2 {
+            height: 150px;
+        }
+        #swiper_children_size .slide-3 {
+            height: 100px;
+        }
+        #swiper_children_size .slide-4 {
+            height: 350px;
+        }
+        .swiper-nested-inner {
+            width: 100%;
+            height: 100%;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body v-cloak>
+<h2>vue-swiper demo</h2>
+<h3>Vertical</h3>
+<swiper id="swiper_vertical"
+        :pagination-visible="true"
+        @slide-change-start="onSlideChangeStart"
+        @slide-change-end="onSlideChangeEnd"
+        @slide-revert-start="onSlideRevertStart"
+        @slide-revert-end="onSlideRevertEnd"
+        @slider-move="onSliderMove">
+    <div class="slide-1">↑<br>o<br>↓</div>
+    <div v-for="n in [2,3]">Page {{n}}</div>
+</swiper>
+<h3>Horizontal</h3>
+<swiper id="swiper_horizontal"
+        :pagination-visible="true"
+        direction="horizontal">
+    <div v-for="slideText in slides" track-by="$index">{{slideText}}</div>
+</swiper>
+<h3>Loop Mode / Infinite Loop</h3>
+<swiper id="swiper_loop"
+        :loop="true"
+        :pagination-visible="true"
+        direction="horizontal">
+    <div v-for="slideText in slides" track-by="$index">{{slideText}}</div>
+</swiper>
+<h3>Append Child</h3>
+<div id="append_child">
+    <button @click="appendSlide('New Page!')">Append child to the horizontal slider</button>
+</div>
+<h3>Different children size</h3>
+<swiper id="swiper_children_size">
+    <div class="slide-1">↑<br>o<br>↓</div>
+    <div v-for="n in [2,3,4]" class="slide-{{n}}">Page {{n}}</div>
+</swiper>
+<!-- Nested swiper no supported yet-->
+<!--<h3>Nested</h3>-->
+<!--<swiper id="swiper_nested"-->
+<!--direction="horizontal"-->
+<!--@slide-change-start="onSlideChangeStart"-->
+<!--@slide-change-end="onSlideChangeEnd">-->
+<!--<div class="slide-1">-->
+<!--<swiper class="swiper-nested-inner"-->
+<!--direction="vertical">-->
+<!--<div class="slide-1">1-1</div>-->
+<!--<div class="slide-2">1-2</div>-->
+<!--<div class="slide-3">1-3</div>-->
+<!--</swiper>-->
+<!--</div>-->
+<!--<div class="slide-2">-->
+<!--<swiper class="swiper-nested-inner"-->
+<!--direction="vertical">-->
+<!--<div class="slide-1">2-1</div>-->
+<!--<div class="slide-2">2-2</div>-->
+<!--<div class="slide-3">2-3</div>-->
+<!--</swiper>-->
+<!--</div>-->
+<!--<div class="slide-3">-->
+<!--<swiper class="swiper-nested-inner"-->
+<!--direction="vertical">-->
+<!--<div class="slide-1">3-1</div>-->
+<!--<div class="slide-2">3-2</div>-->
+<!--<div class="slide-3">3-3</div>-->
+<!--</swiper>-->
+<!--</div>-->
+<!--</swiper>-->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="vue-swiper.js"></script>
+<script>
+    new Vue({
+        el: 'body',
+        components: {swiper: VueSwiper},
+        data: {
+            slides: ['← o →', 'Page 2', 'Page 3']
+        },
+        methods: {
+            onSlideChangeStart: function (currentPage) {
+                console.log('onSlideChangeStart', currentPage);
+            },
+            onSlideChangeEnd: function (currentPage) {
+                console.log('onSlideChangeEnd', currentPage);
+            },
+            onSlideRevertStart: function (currentPage) {
+                console.log('onSlideRevertStart', currentPage);
+            },
+            onSlideRevertEnd: function (currentPage) {
+                console.log('onSlideRevertEnd', currentPage);
+            },
+            onSliderMove: function (offset) {
+                console.log('onSliderMove', offset);
+            },
+            prependSlide: function (slideText) {
+                this.slides.unshift(slideText);
+            },
+            appendSlide: function (slideText) {
+                this.slides.push(slideText);
+            },
+            removeSlide: function () {
+            }
+        }
+    });
+</script>
+</body>
+</html>

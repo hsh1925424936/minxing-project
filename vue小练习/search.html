@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>模糊查询</title>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" @blur='blur' @focus='focus' v-model='search'>
+        <div v-show='show'>
+            <div v-for='item in newList'>{{item}}</div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <label>监视input的值，当输入200时，会弹出success</label>
+        <input type="text" v-model='messages'>{{messages}}
+        <ul style="list-style: none;">
+            <li>过滤器，将一百以内的数字转换成大写</li>
+            <li v-for='item in number'>{{item | Uppercase}}</li>
+        </ul>
+    </div>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            list: ['小明', '小红', '张明', '张宏', '李明', '李红', '陶红', '陶明', '高明', '高红', '高sir'],
+            show: false,
+            search: '',
+            newList: [],
+            messages: '',
+            // 过滤器
+            number: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
+        },
+        // 过滤器，将一百以内的小写数字转换成大写
+        filters: {
+            Uppercase: function (val) {
+                var test = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十']
+                var number = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                if (val <= 10) {
+                    return test[number.indexOf(val)]
+                } else if (val < 20) {
+                    return '十' + test[number.indexOf(val - 10)]
+                } else if (val % 10 != 0) {
+                    return test[number.indexOf(Math.floor(val / 10))] + '十' + test[number.indexOf(val % 10)]
+                } else if (val % 10 == 0) {
+                    return test[number.indexOf(Math.floor(val / 10))] + '十'
+                }
+            }
+        },
+        // 监视messages的变化
+        watch: {
+            messages: function (curVal, oldVal) {
+                // console.log(curVal+'---'+oldVal)
+                if (curVal == 200) {
+                    alert('success')
+                }
+            },
+            search: function (newVal, oldVal) {
+                this.newList = this.list
+                this.changeArr()
+                console.log('aaa')
+            }
+        },
+        methods: {
+            focus: function () {
+                this.newList = this.list
+                this.show = true
+            },
+            blur: function () {
+                this.show = false
+            },
+            changeArr: function () {
+                if (this.search === '') {
+                    this.newList = this.list
+                } else {
+                    this.newList = []
+                    this.list.map(function (item, index, arr) {
+                        if (item.indexOf(this.search) > -1) {
+                            this.newList.push(item)
+                        }
+                    }.bind(this))
+                }
+            }
+        }
+    })
+</script>
+</body>
+
+</html>

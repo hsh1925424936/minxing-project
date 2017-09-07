@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <div class="container">
+        <component :is="currentView"></component>
+        <button @click='home'>切换组件home</button>
+        <button @click='posts'>切换组件posts</button>
+        <button @click='archive'>切换组件archive</button>
+    </div>
+    <script>
+        // Vue.component('home',{
+        //     template:'<div>home</div>',
+        //     // data:function(){
+        //     //     return{
+        //     //         name:'home'
+        //     //     }
+        //     // }
+        // })
+        //  Vue.component('posts',{
+        //     template:'<div>posts</div>',
+        //     // data:function(){
+        //     //     return{
+        //     //         name:'posts'
+        //     //     }
+        //     // }
+        // })
+        //  Vue.component('archive',{
+        //     template:'<div>archive</div>',
+        //     // data:function(){
+        //     //     return{
+        //     //         name:'archive'
+        //     //     }
+        //     // }
+        // })
+        var vm = new Vue({
+            el:'.container',
+            data:{
+                currentView:'home'
+            },
+            components:{
+                'home':{template:'<div>home</div>'},
+                'posts':{template:'<div>posts</div>'},
+                'archive':{template:'<div>archive</div>'},
+                // 'home':home,
+                // 'posts':posts,
+                // 'archive':archive,
+            },
+            mounted:function(){
+
+            },
+            methods:{
+                home:function(){
+                    this.currentView = 'home'
+                },
+                posts:function(){
+                    this.currentView = 'posts'
+                },
+                archive:function(){
+                    this.currentView = 'archive'
+                }
+            }
+        })
+    </script>
+</body>
+</html>

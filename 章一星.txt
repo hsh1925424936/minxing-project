@@ -1,0 +1,379 @@
+http://www.tuicool.com/articles/ju26riE --解析 神奇的 Object.defineProperty
+
+封装多选框 下拉刷新 多选框bug修改 分页bug修改 导excel es6
+vue进阶 flex canvas element ckplayer 前端导出excel http://fex.baidu.com/webuploader/
+
+vue中的import
+	var a = 1;(自己封装的js通过export输出)
+	function b(){
+		console.log(a);
+	}
+	export {a,b}
+
+	import * as test from '../../vuex/test';
+	console.log(test.b());
+
+
+http://www.111cn.net/wy/js-ajax/javascript-throw.htm(自定义抛出异常)
+
+覆盖原生方法
+	1.
+	console.error = (function(origin){
+		return function(errorlog) {
+			handler();//基于业务的日志记录及数据报错
+			origin.call(console,errorlog); 
+		}
+	})(console.error);
+	2.
+	var oldLog=console.log;
+	console.log=function(){
+	   //your code;
+	   oldLog.apply(console,arguments);
+	}
+	3.
+	console.error = function(msg){
+		alert(msg);
+	}
+
+http://blog.csdn.net/magneto7/article/details/70854472(flex教学)
+https://vuex.vuejs.org/zh-cn/(Vuex)
+
+http://blog.allenm.me/2010/02/javascript%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BA%8B%E4%BB%B6event/
+(javascript自定义事件(event))
+
+vue中的一些概念
+	emit bus select on
+	http://www.cnblogs.com/whyue/p/6374568.html  vue---子调父 $emit (把子组件的数据传给父组件)
+	http://www.cnblogs.com/zsongs/p/6388932.html(Vuejs 用$emit 与 $on 来进行兄弟组件之间的数据传输)
+	http://blog.csdn.net/u013778905/article/details/53864289(Vue.js系列之项目结构说明（2）)
+
+http://www.cnblogs.com/znsongshu/p/6108177.html (js阻塞)
+
+http://blog.csdn.net/chenhao0568/article/details/69100668(html5 video自动播放下一个源码)
+
+http://webglstudio.org/demo/ 3d
+
+关于文件下载的问题
+	1.http://blog.csdn.net/u013096666/article/details/51484393(静态文件下载)
+	2.<a href='file.js' download='not-a-file.js'>file.js</a>
+	3.https://segmentfault.com/q/1010000000473230(post请求并且跳转)
+
+https://www.w3cplus.com/css3/pseudo-class-selector(CSS3 选择器——伪类选择器)
+
+require 异步 图表懒加载
+
+https://segmentfault.com/q/1010000007510692(vue渲染经过转义的html字符串)
+
+http://www.jb51.net/article/48202.htm(判断字符串长度)
+
+require define $router nodejs文档
+
+http://blog.csdn.net/zhangliangzi/article/details/50413727(不同语言的区别)
+
+http://www.2cto.com/kf/201410/347045.html(判断对象相等)(==和===的区别)
+
+文本编辑器
+	http://ueditor.baidu.com/website/onlinedemo.html(百度文本编辑器插件)
+
+es6中的Promise 和 jquery中类似的语法
+	1.es6 promise
+		http://www.cnblogs.com/lvdabao/p/es6-promise-1.html(promise)
+	2.jquery promise
+		http://www.cnblogs.com/lvdabao/p/jquery-deferred.html(jquery promise)
+	3.调用jquery ajax的方法(.done .fail .then .when)
+		1.
+		$.ajax({
+			url: '../report-static/afterclass.json',
+			type: 'GET',
+		})
+		.done(function(base) {
+			console.log(base);
+		})
+		.fail(function() {
+			console.log("error");
+		})
+		$.ajax({
+			url: 'test.txt',
+			type: 'GET',
+		})
+		.done(function(base) {
+			console.log(base);
+			$('body').html(base);
+		})
+		.fail(function() {
+			console.log("error");
+		})
+		2.
+		$.ajax({
+			url: '../report-static/afterclass.json',
+			type: 'GET',
+		})
+		.then(function(base){
+			console.log(base);
+			return $.ajax({
+				url: 'test.txt',
+				type: 'GET',
+			})
+		},function(){
+			console.log('error');
+		})
+		.then(function(base){
+			console.log(base);
+			$('body').html(base);
+		},function(){
+			console.log('error');
+		});
+		3.
+		$.when(
+			$.ajax({
+				url: '../report-static/afterclass.json',
+				type: 'GET',
+			}),
+			$.ajax({
+				url: 'test.txt',
+				type: 'GET',
+			})
+		)
+		.then(function(data1, data2){
+			console.log(data1[0],data2[0]);
+			$('body').html(data2[0]);
+		},function(){
+			console.log('err');
+		});
+
+关于this 
+	//改变上下文环境
+	1.setTimeout(function(){
+	   console.log(this.type + ' says ' + say)
+	}.bind(this), 1000)
+	2.jquery 代理
+		setTimeout(function(){
+			$.proxy(function(){
+				console.log(this.type + ' says ' + say)
+			},this);
+		},1000);
+	3.apply();
+		setTimeout.apply(this,[function(){console.log();},1000])
+	4.call();
+		setTimeout.call(this,function(){console.log();},1000);
+
+es6
+	https://segmentfault.com/a/1190000004365693(es6特性)
+	https://www.w3cschool.cn/ecmascript/1pz41q5r.html(w3cschool es6)
+
+iframe中的一些方法
+	$('iframe')[i].contentWindow.send_height();
+	$(this).contents().find("html").css('overflow', 'hidden');
+
+闭包
+	http://www.cnblogs.com/yunfeifei/p/4019504.html(全面理解Javascript闭包和闭包的几种写法及用途)
+
+闭包和全局变量导致的网页性能问题
+	1.全局变量会污染全局，不利于维护
+	2.全局查找影响性能
+
+	在一个函数中会用到全局对象存储为局部变量来减少全局查找，因为访问局部变量的速度要比访问全局变量的速度更快些
+    function search() {
+        //当我要使用当前页面地址和主机域名
+        alert(window.location.href + window.location.host);
+    }
+    //最好的方式是如下这样  先用一个简单变量保存起来
+    function search() {
+        var location = window.location;
+        alert(location.href + location.host);
+    }
+	3.
+		http://www.zymseo.com/306.html(JavaScript对象循环引用与闭包导致的内存泄漏及其解决方案)
+		http://blog.csdn.net/taoerchun/article/details/51394525(释放浏览器内存)
+
+for循环里的闭包写法
+	1.
+	var arr = new Array(10);
+	for( var i = 0; i < 10; i++ ){
+		(function(i1){
+			arr[i1] = function(){console.log(i1)};
+		})(i);
+	}
+	2.
+	var arr = new Array(10);
+	for( var i = 0; i < 10; i++ ){
+		(function(i1){
+			var i1 = i;
+			arr[i1] = function(){console.log(i1)};
+		})();
+	}
+
+Chrome 中的 JavaScript 断点设置和调试技巧  
+	http://han.guokai.blog.163.com/blog/static/136718271201321402514114/
+
+关于类和对象
+	1.原型链与继承
+		原型链表明了类的继承关系
+	2.确定实例和类的关系
+		alert(instance instanceof Object); //true
+		alert(instance instanceof SuperType); //true
+		alert(instance instanceof SubType); //true
+	3.https://www.zhihu.com/question/34183746(js中__proto__和prototype的区别和关系？)
+		_proto_是隐式原型，每个对象都有一个这属性
+		prototype是显式原型，构造函数的显式原型指向对应的原型对象
+	4.object.hasOwnProperty( propertyName )(判断属性是否是对象的自有属性)
+	5.判断对象是否指向该构造的原型、判断属性是在构造函数的实例里
+		http://blog.sina.com.cn/s/blog_6d3f840a0102v1qa.html
+	6.自己封装的一个类的例子
+	function Api(){
+		var a = 0;
+		Api.prototype.get = function(){
+			console.log(a);
+		};
+		Api.prototype.set = function(new_value){
+			a = new_value;
+			console.log(a);
+		};
+	}
+	7.in 操作符会在通过对象能够访问给定属性时返回true，无论该属性存在于实例中还是原型中。
+		alert('name' in box);  //true，存在实例中或原型中
+	8.js中的私有属性方法的写法
+		http://blog.csdn.net/li346985170/article/details/39677399
+		http://www.jb51.net/article/64278.htm
+	9.对象的属性，原型的属性，类的属性
+	http://www.cnblogs.com/brucetie/p/4844526.html
+
+	10.创建类和类的继承
+		//es6中的创建类的格式
+		class Person{
+		    // 构造  
+		    constructor(x,y){  
+		        this.x = x;  
+		        this.y = y;  
+		    }  
+		  
+		  
+		    toString(){  
+		        return (this.x + "的年龄是" +this.y+"岁");  
+		    }  
+		}
+
+		//es6中类的继承
+		class ColorPoint extends Point {
+		    constructor(x, y, color) {
+		        super(x, y); // 调用父类的constructor(x, y)
+		        this.color = color;
+		    }
+
+		    toString() {
+		        return this.color + ' ' + super.toString(); // 调用父类的toString()
+		    }
+		}
+
+		//es5中创建类的格式
+		function Car(sColor,iDoors,iMpg) {
+		  this.color = sColor;
+		  this.doors = iDoors;
+		  this.mpg = iMpg;
+		  this.drivers = new Array("Mike","John");
+		  
+		  if (typeof Car._initialized == "undefined") {
+		    Car.prototype.showColor = function() {
+		      alert(this.color);
+		    };
+			
+		    Car._initialized = true;
+		  }
+		}
+
+		//es5中类的继承
+		function ClassA(sColor) {
+		    this.color = sColor;
+		}
+
+		ClassA.prototype.sayColor = function () {
+		    alert(this.color);
+		};
+
+		function ClassB(sColor, sName) {
+		    ClassA.call(this, sColor);
+		    this.name = sName;
+		    ClassB.prototype.sayName = function () {
+			    alert(this.name);
+			};
+		}
+
+		ClassB.prototype = new ClassA();
+
+delete 关键字
+	总结:能删除对象属性，不能删除变量，实例中不能删除原型链属性,不能删除函数
+	http://www.cnblogs.com/yuzhongwusan/archive/2012/06/14/2549879.html
+	本质是没有声明的变量或函数或对象属性可以delete，声明过的具有dontdelete属性不能delete
+
+关于插件的开发
+	1.封装原生方法
+	http://pigkiller.iteye.com/blog/2225561(简单的原生插件开发文章)
+	//格式
+	;! function(global,undefined){
+		global.Swiper = 1;
+	}(window),
+	"undefined" != typeof module ?
+		module.exports = window.Swiper
+		:
+		"function" == typeof define && define.amd && define([], function() {
+			"use strict";
+	    	return window.Swiper
+	    });
+	2.http://www.cnblogs.com/ajianbeyourself/p/5815689.html(jquery插件的开发)
+
+localstorage
+	http://www.111cn.net/wy/html5/97141.htm
+	http://www.cnblogs.com/yuzhongwusan/archive/2011/12/19/2293347.html
+
+销售系统 报销 内存 webpack vue babel jsvm 做表格用nth-of-type 
+
+大文件上传封装
+	;! function(global,$,undefined){
+		global.bigfileUpload =function(file,MB){//参数1.文件 参数2.切片大小
+            var name = file.name,        //文件名
+                size = file.size,        //总大小
+                succeed = 0;
+                  
+            var shardSize = MB * 1024 * 1024,     //以2MB为一个分片
+                shardCount = Math.ceil(size / shardSize);   //总片数
+                  
+            for(var i = 0;i < shardCount;++i){
+                //计算每一片的起始与结束位置
+                var start = i * shardSize,
+                    end = Math.min(size, start + shardSize);
+ 
+                //构造一个表单，FormData是HTML5新增的
+                var form = new FormData();
+                form.append("data", file.slice(start,end));  //slice方法用于切出文件的一部分
+                form.append("name", name);
+                form.append("total", shardCount);   //总片数
+                form.append("index", i + 1);        //当前是第几片
+                 
+                //Ajax提交
+                $.ajax({
+                    url: "../File/Upload",
+                    type: "POST",
+                    data: form,
+                    async: true,         //异步
+                    processData: false,  //很重要，告诉jquery不要对form进行处理
+                    contentType: false,  //很重要，指定为false才能形成正确的Content-Type
+                    success: function(){
+                        ++succeed;
+                        console.log('成功个数:'+succeed+'/总切片个数'+shardCount);
+                    }
+                });
+            }
+
+		}
+
+		$.fn.bigfileUpload = function(MB){
+			bigfileUpload(this[0].files[0],MB);
+			return this;
+		}
+	}(window,jQuery);
+
+	//调用的格式
+	$('.fileinput').bigfileUpload(4);
+	//或者
+	bigfileUpload($('.fileinput')[0].files[0],4);
+	(文件拖拽上传)

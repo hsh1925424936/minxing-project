@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--<script src="src/vue.min.js"></script>
+    <script src="src/vue-validator.min.js"></script>-->
+    <script src="https://unpkg.com/vue@1.0.26/dist/vue.min.js"></script>
+    <script src="https://unpkg.com/vue-validator@2.1.7/dist/vue-validator.min.js"></script>
+    <style>
+        .red {
+            color: red;
+        }
+        .btn{
+            display: inline-block;
+            padding: 10px;
+            background: orange;
+            color: #FFF;
+            cursor: pointer;
+        }
+        .btn:hover{
+            background: orangered;
+        }
+    </style>
+</head>
+<body id="app">
+
+<validator name="validatorMethod">
+    <div class="username">
+        <label for="">用户名：</label>
+        <input type="text" v-model="username" initial="off" v-validate:username="['username']" placeholder="请输入用户名">
+        <p class="red" v-show="$validatorMethod.username.noempty">用户名不能为空</p>
+        <p class="red" v-show="$validatorMethod.username.username">由数字、26个英文字母或下划线和中文组成的字符串</p>
+    </div>
+    <div class="password">
+        <label for="">密码：</label>
+        <input type="password" v-model="password" initial="off" v-validate:password="['integer']" placeholder="请输入密码">
+        <p class="red" v-if="$validatorMethod.password.integer">只能是数字</p>
+    </div>
+    <div class="password">
+        <label for="">确认密码：</label>
+        <input type="password" v-model="newpassword" initial="off" v-validate:newpassword="{match:matchPassword}" placeholder="请输入确认密码">
+        <p class="red" v-if="$validatorMethod.newpassword.match">确认密码和密码不一致</p>
+    </div>
+    <div><a @click="loginMethods" class="btn">登录</a></div>
+</validator>
+
+</body>
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            comment:"",
+            username: "",
+            password: "",
+            newpassword:"",
+            matchPassword:false
+        },
+        validators: {
+            noempty:function(val){
+                var reg = /^\s*$/g, isFlag = true;
+                if(val == "" || reg.test(val)){
+                    isFlag = false;
+                }
+                return  isFlag;
+            },
+            username: function (val) {
+                return /^[A-Za-z0-9_\-\u4e00-\u9fa5]{1,10}$/.test(val);
+            },
+            integer: function (val) {
+                return /^[1-9]\d*$/.test(val);
+            },
+            match:function (val,result) {
+                return result;
+            }
+        },
+        methods:{
+            loginMethods:function () {
+                var self = this;
+                /**
+                 * 验证目标表单元素。
+                 * true:验证所有
+                 */
+                self.$validate(true,function () {
+                    /*如果所有条件都是false*/
+                    if(!self.$validatorMethod.invalid){
+                        alert("登录成功");
+                    }
+                })
+            }
+        },
+        computed:{
+            matchPassword:function () {
+                return this.password == this.newpassword
+            }
+        }
+    })
+</script>
+</html>

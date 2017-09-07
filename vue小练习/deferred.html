@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>deferred对象</title>
+</head>
+<body>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+         var dfd = $.Deferred();
+         var wait = function(dfd){
+             var tasks = function(){
+                 console.log('success');
+                 dfd.resolve('fail')
+             };
+             setTimeout(tasks,3000)
+             return dfd;
+         }
+         var test = function(dfd){
+             var test1 = function(){
+                 console.log('hello fanzhenzhen');
+                 dfd.resolve('fanzhenzhen')
+             };
+             setTimeout(test1,4000)
+         }
+         $.when(wait(dfd),test(dfd))
+         .done(function(value){
+             console.log(value)
+         })
+         .fail(function(error){
+             console.log(error)
+         })
+    </script>
+</body>
+</html>
