@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>图片的预加载</title>
+    <style>
+        html,body{
+            margin:0;
+            padding:0;
+            height: 100%;
+        }
+        .container{
+            text-align: center;
+        }
+        .container img{
+            width:100%;
+        }
+        a{
+            text-decoration: none;
+        }
+        .btn{
+            display: inline-block;
+            height: 30px;
+            line-height: 30px;
+            border:solid 1px #ccc;
+            background-color: #fff;
+            padding:0 10px;
+            margin-right: 50px;
+            color: #333;
+        }
+        .btn:hover{
+            background:#eee;
+        }
+        .loading{
+            position:fixed;
+            top:0;
+            text-align: center;
+            width:100%;
+            height: 100%;
+            background: #eee;
+        }
+        .loading p{
+            margin-top: 300px;
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="./images/11.jpg" alt="" id="img">
+        <p>
+            <a href="javascript:;" class="btn" data-control="prev">上一张</a>
+            <a href="javascript:;" class="btn" data-control="next">下一张</a>
+        </p>
+        <div class="loading">
+            <p class="progress">0%</p>
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+    <script src="./preload.js"></script>
+    <script>
+        var imgs = [
+            './images/11.jpg',
+            './images/12.jpg',
+            './images/13.jpg',
+            './images/14.jpg',
+            './images/15.jpg',
+        ]
+        var index = 0,
+            len = imgs.length,
+            $progress = $('.progress');
+        
+        $.preload(imgs,{
+            each:function(count){
+                $('.progress').html(Math.round((count+1)/len*100)+'%');
+            },
+            all:function(){
+                $('.loading').hide()
+            }
+        })
+        // $.each(imgs,function(i,src){
+        //     var imgObj = new Image();
+        //     $(imgObj).on('load error',function(){
+        //         $('.progress').html(Math.round((count+1)/len*100)+'%')
+        //         if(count >= len -1){
+        //             $('.loading').hide()
+        //         }
+        //         count++
+        //     });
+        //     imgObj.src = src
+        // })
+        $('.btn').on('click',function(e){
+            if('prev' === $(this).attr('data-control')){
+                index = Math.max(0,--index);
+            }else{
+                index = Math.min(len-1,++index);
+            }
+            $('#img').attr('src',imgs[index])
+        })
+    </script>
+</body>
+</html>
