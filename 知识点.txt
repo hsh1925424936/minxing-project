@@ -1,0 +1,18 @@
+1.移动端监视屏幕尺寸的变化及屏幕是否横屏事件来设置html的font-size大小,配合rem单位来进行适配；
+(function(doc, win) {  
+            var docEl = doc.documentElement,  
+            resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',  
+            recalc = function() {  
+            var clientWidth = docEl.clientWidth;  
+            console.log(clientWidth)
+            if (!clientWidth) return;  
+            docEl.style.fontSize = 16 * (clientWidth / 320) + 'px';  
+            if(clientWidth>768) docEl.style.fontSize = '38.4px';
+            if(clientWidth<320) docEl.style.fontSize = '16px';
+            };  
+            if (!doc.addEventListener) return;  
+            win.addEventListener(resizeEvt, recalc, false);  
+            doc.addEventListener('DOMContentLoaded', recalc, false);  
+            })  
+            (document, window); 
+2.提示未找到sass-loader模块，先cnpm install node-sass,然后在cnpm install sass-loader;
