@@ -1,7 +1,8 @@
-连接github远程仓库
+﻿连接github远程仓库
 1.先在github上新建一个新的远程仓库，并将公钥添加进去
 2.在本地新建一个文件夹，git init 初始化本地仓库
 3.连接远程仓库：git remote add origin + 远程仓库地址
+		提示remote origin already exists; 使用git remote rm origin这个命令
 4.git push -u origin master ----从本地向远程master推送
 5.git pull -------从远程拉倒本地
 6.git add .--------添加到暂存区
