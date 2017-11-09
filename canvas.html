@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="drawing" width="400" height="400"></canvas>
+    <script>
+        window.onload = function(){
+            var drawing = document.getElementById('drawing');
+            // console.log(drawing.getContext)
+            if(drawing.getContext){
+                var context = drawing.getContext('2d');
+                // console.log(context)
+                // context.fillStyle = '#ff0000';
+                // context.fillRect(10,10,100,100);
+                // context.strokeRect(10,10,50,50);
+                // context.clearRect(10,10,50,50);
+                // context.lineWidth = 10;
+
+                
+
+                // 绘制钟表
+                // 开始绘制
+                context.beginPath();
+                // 外圆
+                context.arc(200,200,199,0,2*Math.PI,false);
+                // 内圆
+                context.moveTo(395,200);
+                context.arc(200,200,195,0,2*Math.PI,false);
+                // 变换原点
+                context.translate(200,200);
+                // 旋转表针
+                // context.rotate(1)
+                // 绘制秒针
+                context.moveTo(0,0);
+                context.lineTo(-150,-100)
+                // 绘制分针
+                context.moveTo(0,0);
+                context.lineTo(0,160);
+                // 绘制时针
+                context.moveTo(0,0);
+                context.lineTo(140,0);
+                context.font = 'bold 16px Arial';
+                context.textAlign = 'center';
+                context.textBaseline = 'middle';
+                context.fillText('12',0,-180);
+                context.fillText('3',180,0);
+                context.fillText('6',0,180);
+                context.fillText('9',-180,0);
+                
+                context.stroke();
+
+                var imgUrl = drawing.toDataURL("image/png");
+                var image = document.createElement('img');
+                image.src = imgUrl;
+                document.body.appendChild(image);
+            }
+        }
+    </script>
+</body>
+</html>
