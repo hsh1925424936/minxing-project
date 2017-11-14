@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        h1{
+            color:transparent;
+            -webkit-text-stroke:1px red;
+            font-style:italic;
+            text-shadow: 2px 2px 5px black;
+        }
+        div.circle{
+            width:0;
+            height:200px;
+            border-left:solid 100px black; 
+            border-right:solid 100px white;  
+            border-radius: 50%;
+            position:relative; 
+            animation:rotate 5s linear infinite;    
+            box-shadow: 2px 2px 5px black;
+        }
+        div.circle::before,div.circle::after{
+            content:'';
+            position:absolute;
+            width:20px;
+            height:20px;
+            left:-50px;  
+            border-radius: 50%;
+        }
+        div.circle::before{
+            background:white;
+            border:solid 40px black; 
+            top:0;
+        }
+        div.circle::after{
+            background:black; 
+            border:solid 40px white;
+            top:100px;
+        }
+        @keyframes rotate{
+            from{
+                transform:rotate(0);
+            }
+            to{
+                transform:rotate(360deg)
+            }
+        }
+        div.meimei{
+            width:300px;
+            height:500px;
+            background:url(img/4.jpg) repeat;
+            background-size:100% 100%;
+            -webkit-mask:-webkit-gradient(linear,left top,left bottom,from(
+                rgba(0,0,0,1)
+            ),to(rgba(0,0,0,0)));
+            overflow:hidden;
+        }
+    </style>
+</head>
+<body>
+    <h1>韩大集团</h1>
+    <div class="circle"></div>
+    <div class="meimei"><h1 style="margin-top:300px;font-weight:bolder;">小美眉</h1></div>
+</body>
+</html>
