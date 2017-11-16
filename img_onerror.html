@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <!-- <img src="img/20.jpg" alt="" onerror="javascript:this.src='img/2.jpg';"> -->
+    <img src="img/20.jpg" alt="" onerror="nofind();">
+    <script>
+        function nofind(){
+            var img = event.srcElement;
+            img.src = "img/2.jpg";
+            img.onerror = null;//
+        }
+    </script>
+</body>
+</html>
