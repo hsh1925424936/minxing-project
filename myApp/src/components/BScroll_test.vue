@@ -1,19 +1,19 @@
 <template>
     <div class="root">
         <!-- {{message}} -->
-        <div class="main">
+         <div class="main">
             <ul>
                <li v-for="item in 100">{{item}}</li> 
             </ul>
-        </div>
+        </div> 
     </div>
 </template>
 <style scoped>
-    .main{
+     .main{
         width:100vw;
         height:100vh;
         overflow:hidden;
-    }
+    } 
 </style>
 <script>
     import BScroll from 'better-scroll';
@@ -22,6 +22,7 @@
         data(){
             return{
                 message:'hellO',
+                items:[]
             }
         },
         created(){
