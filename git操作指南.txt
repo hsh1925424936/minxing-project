@@ -1,4 +1,11 @@
-﻿连接github远程仓库
+1.先配置git
+git config --global user.name 'your name'
+git config --global user.email 'your email'
+
+2.生成公钥私钥
+ssh-keygen -t rsa -C 'your email'
+
+3.连接github远程仓库
 1.先在github上新建一个新的远程仓库，并将公钥添加进去
 2.在本地新建一个文件夹，git init 初始化本地仓库
 3.连接远程仓库：git remote add origin + 远程仓库地址
