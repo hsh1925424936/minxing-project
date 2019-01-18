@@ -10,18 +10,34 @@ ssh-keygen -t rsa -C 'your email'
 2.在本地新建一个文件夹，git init 初始化本地仓库
 3.连接远程仓库：git remote add origin + 远程仓库地址
 		提示remote origin already exists; 使用git remote rm origin这个命令
+		
 4.git push -u origin master ----从本地向远程master推送
 5.git pull -------从远程拉倒本地
 6.git add .--------添加到暂存区
 7.git commit -m 'name' ----添加到持久区
+
 8.git log ------------查看提交日志
 9.git status --------查看提交状态
+
+查看分支，并切换分支
 10.git branch -a ----查看远程分支
 11.git branch ----查看本地分支
 12.git checkout dev---切换到dev分支
 13.git checkout -b test-----先创建test分支，在切换到test分支
-14.git push origin 新的分支的名字-------将分支推动到远程仓库
+
+合并分支，并同步到远程
 15.git merge 分支------------首先要切到相应的分支后，在合并
 然后在 git push origin 分支-----将合并后的分支同步到远程
-16.git branch -d test ---------删除本地test分支
+
+删除分支
+16.git branch -D test ---------删除本地test分支
 17.git push origin --delete dev----删除远程分支
+
+本地新建分支推送到远程仓库
+1.git checkout -b dev
+2.git push origin dev
+
+从远程仓库拉取新的分支到本地
+1.git fetch origin dev
+2.git checkout -b dev origin dev
+3.git pull origin dev
