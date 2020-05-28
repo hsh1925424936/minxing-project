@@ -10,7 +10,8 @@ ssh-keygen -t rsa -C 'your email'
 2.在本地新建一个文件夹，git init 初始化本地仓库
 3.连接远程仓库：git remote add origin + 远程仓库地址
 		提示remote origin already exists; 使用git remote rm origin这个命令
-		
+（3.1 git pull origin master------拉取远程主分支）
+	
 4.git push -u origin master ----从本地向远程master推送
 5.git pull -------从远程拉倒本地
 6.git add .--------添加到暂存区
